@@ -56,13 +56,15 @@ Docker **ไม่ได้ตั้งให้เปิดเองตอน�
 
 ```bash
 # เปิด
-sudo systemctl start docker
+docker-on                      # = sudo systemctl start docker
 make prod                      # ครั้งแรกหลังเปิด Docker (ถ้า container ถูกลบไปแล้ว)
 
 # ปิด
 make down                      # หยุดและลบ container (ข้อมูลใน volume ยังอยู่)
-sudo systemctl stop docker docker.socket
+docker-off                     # = sudo systemctl stop docker.service docker.socket
 ```
+
+`docker-on` และ `docker-off` เป็นสคริปต์ลัดของผู้ใช้ที่ `~/.local/bin/` (อยู่นอก repo)
 
 - ถ้าปิด Docker โดยไม่ได้สั่ง `make down` ก่อน เมื่อเปิด Docker ครั้งถัดไป แอปจะกลับมารันเองโดยไม่ต้องสั่ง `make prod` (เพราะ compose ตั้ง `restart: unless-stopped`)
 - ช่วงที่ Docker ปิดอยู่ ยังฝึกบทที่ดาวน์โหลดไว้ในมือถือได้ ผลการฝึกจะ sync เมื่อเปิดแอปบนเครื่องอีกครั้ง
