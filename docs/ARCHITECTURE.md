@@ -85,9 +85,9 @@ english_zero_to_hero/
 
 | Service | Image | หน้าที่ |
 |---|---|---|
-| `app` | สร้างจาก `Dockerfile` (Node LTS + pnpm) | Next.js: โหมด dev มี hot reload โดย mount โค้ดเข้าไป, โหมด prod ใช้ production build |
+| `app` | สร้างจาก `Dockerfile` target `dev` (Node 26 LTS + pnpm 12) | Next.js: โหมด dev มี hot reload โดย mount โค้ดเข้าไป (`node_modules` และ `.next` อยู่ใน named volume, รันเป็น uid 1000, เปิด port ที่ `127.0.0.1:3000` เท่านั้น); target `prod` (standalone build) มีใน Dockerfile แล้ว แต่ compose profile `prod` ทำใน PR 13 |
 | `postgres` | `postgres:17-alpine` | ฐานข้อมูล (มีฐานข้อมูลแยกสำหรับเทสต์) |
-| `e2e` | Playwright image | รัน E2E test (เปิดเฉพาะตอนสั่งเทสต์) |
+| `e2e` | `mcr.microsoft.com/playwright` (เวอร์ชันตรงกับ `@playwright/test`) | รัน E2E test (compose profile `e2e` เปิดเฉพาะตอนสั่งเทสต์) เข้าถึงแอปที่ `http://app:3000` ในเครือข่ายของ compose |
 
 คำสั่งทั้งหมดเรียกผ่าน `make` ซึ่งไปสั่ง `docker compose` อีกที:
 
@@ -96,7 +96,8 @@ english_zero_to_hero/
 | `make up` / `make down` | เปิด / ปิดแอปโหมด dev ที่ `http://localhost:3000` |
 | `make test` | รัน unit + component + integration test |
 | `make e2e` | รัน Playwright |
-| `make check` | lint + typecheck + test + content:validate (ต้องผ่านก่อนเปิด PR) |
+| `make check` | lint + typecheck + test (+ content:validate เมื่อมี PR 2) ต้องผ่านก่อนเปิด PR ไม่รวม e2e |
+| `make lint` / `make typecheck` / `make logs` | ESLint / `tsc --noEmit` / ดู log ของ app |
 | `make validate` | ตรวจไฟล์ใน `content/` |
 | `make db-generate` / `make db-migrate` | สร้าง / รัน migration |
 | `make db-studio` | เปิด Drizzle Studio |
@@ -104,6 +105,8 @@ english_zero_to_hero/
 | `make audio` | สร้างไฟล์เสียง TTS ที่ยังไม่มี |
 | `make sh` | เปิด shell ใน container `app` |
 | `make prod` | build และรันโหมดใช้งานจริง |
+
+คำสั่งที่ฟีเจอร์ยังไม่มี (`validate`, `db-*`, `audio`, `prod`) จะแจ้งว่า "not implemented yet (PR n)" และออกด้วย exit code ไม่เป็นศูนย์ จนกว่า PR นั้นจะ merge
 
 ชื่อสคริปต์แบบ `pnpm xxx` ที่เอกสารอื่นพูดถึง คือสคริปต์ใน `package.json` ที่รัน**ภายใน container** เท่านั้น
 

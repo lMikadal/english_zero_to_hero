@@ -37,8 +37,8 @@
 ### Milestone 0: วางรากฐาน
 - [x] เอกสารแผน หลักสูตร สถาปัตยกรรม และ content schema
 - [x] นิยามทีม AI (`.claude/agents/`), แผน branch/PR และแนวทาง TDD
-- [ ] Dockerfile + compose + Makefile ให้ทุกอย่างรันใน Docker
-- [ ] Scaffold โปรเจกต์ Next.js + TypeScript + Tailwind + Vitest + Playwright
+- [x] Dockerfile + compose + Makefile ให้ทุกอย่างรันใน Docker
+- [x] Scaffold โปรเจกต์ Next.js + TypeScript + Tailwind + Vitest + Playwright
 - [ ] Zod schema สำหรับตรวจไฟล์บทเรียนและคลังคำศัพท์ + สคริปต์ `pnpm content:validate`
 - [ ] สคริปต์ `pnpm vocab:import` นำเข้ารายการ Oxford 3000/5000 (headword, pos, level) แล้วสร้างโครงคำใน `content/vocab/`
 - [ ] จัดคำ Oxford 3000 ทุกคำเข้าหมวด (topic) และวางแผนว่าคำไหนสอนวันที่เท่าไร
