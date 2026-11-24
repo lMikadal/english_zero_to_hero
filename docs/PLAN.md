@@ -38,7 +38,9 @@
 - [x] เอกสารแผน หลักสูตร สถาปัตยกรรม และ content schema
 - [x] นิยามทีม AI (`.claude/agents/`), แผน branch/PR และแนวทาง TDD
 - [x] Dockerfile + compose + Makefile ให้ทุกอย่างรันใน Docker
-- [x] Scaffold โปรเจกต์ Next.js + TypeScript + Tailwind + Vitest + Playwright
+- [x] Scaffold โปรเจกต์ Next.js + TypeScript + Tailwind + Vitest
+- [ ] Playwright E2E รันผ่านจริงใน Docker (ตั้งค่าและเขียนเทสต์แรกแล้ว แต่ยังไม่เคยรัน เพราะดาวน์โหลด image ของ Playwright ไม่สำเร็จ)
+- [ ] ลอง build image ชุด prod (เขียน stage ไว้แล้ว ยังไม่เคย build)
 - [ ] Zod schema สำหรับตรวจไฟล์บทเรียนและคลังคำศัพท์ + สคริปต์ `pnpm content:validate`
 - [ ] สคริปต์ `pnpm vocab:import` นำเข้ารายการ Oxford 3000/5000 (headword, pos, level) แล้วสร้างโครงคำใน `content/vocab/`
 - [ ] จัดคำ Oxford 3000 ทุกคำเข้าหมวด (topic) และวางแผนว่าคำไหนสอนวันที่เท่าไร

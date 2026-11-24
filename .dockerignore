@@ -13,5 +13,7 @@ data
 playwright-report
 test-results
 *.log
+*.tsbuildinfo
+next-env.d.ts
 Dockerfile
 docker-compose*.yml

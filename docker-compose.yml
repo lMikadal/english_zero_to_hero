@@ -42,12 +42,15 @@ services:
       interval: 5s
       timeout: 30s
       retries: 30
-      start_period: 120s
+      # the first start runs a full pnpm install, which can be slow on a bad network
+      start_period: 300s
 
   e2e:
     profiles: ["e2e"]
     image: mcr.microsoft.com/playwright:v1.65.1-noble
     user: "1000:1000"
+    # Chromium needs more shared memory than Docker's 64 MB default
+    shm_size: "1gb"
     working_dir: /app
     environment:
       HOME: /tmp
