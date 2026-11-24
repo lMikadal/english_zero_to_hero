@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := help
 COMPOSE := docker compose
-RUN := $(COMPOSE) run --rm app
+# reuse the running app container when there is one, otherwise start a throwaway one
+RUN = $(if $(shell $(COMPOSE) ps --status running -q app 2>/dev/null),$(COMPOSE) exec -T app,$(COMPOSE) run --rm --no-deps app)
 
 .PHONY: help up down logs sh test e2e lint typecheck check validate db-generate db-migrate db-studio db-reset audio prod
 
