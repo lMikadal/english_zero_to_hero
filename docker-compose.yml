@@ -16,5 +16,51 @@ services:
       timeout: 5s
       retries: 10
 
+  app:
+    build:
+      context: .
+      target: dev
+    # uid/gid 1000 = host user, so files written into the bind mount are not root-owned
+    user: "1000:1000"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-ezh}:${POSTGRES_PASSWORD:-ezh}@postgres:5432/${POSTGRES_DB:-english_zero_to_hero}
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      # any HTTP response means the dev server is up (even a 404/500 while developing)
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(()=>process.exit(0),()=>process.exit(1))"]
+      interval: 5s
+      timeout: 30s
+      retries: 30
+      start_period: 120s
+
+  e2e:
+    profiles: ["e2e"]
+    image: mcr.microsoft.com/playwright:v1.65.1-noble
+    user: "1000:1000"
+    working_dir: /app
+    environment:
+      HOME: /tmp
+      BASE_URL: http://app:3000
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    depends_on:
+      app:
+        condition: service_healthy
+    command: ["node_modules/.bin/playwright", "test"]
+
 volumes:
   pgdata:
+  node_modules:
+  next_cache:
