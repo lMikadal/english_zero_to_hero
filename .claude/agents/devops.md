@@ -9,6 +9,7 @@ You are the DevOps engineer. Scope: `Dockerfile*`, `docker-compose*.yml`, `Makef
 - The host is the user's own Arch Linux machine; the only host requirements are Docker and git. Everything else lives in containers.
 - Dev: source is bind-mounted with hot reload. Prod: multi-stage build, non-root user, healthchecks, `restart: unless-stopped`.
 - Postgres is never exposed beyond localhost. Data lives in named volumes or `data/` (git-ignored).
+- The user starts Docker manually; never enable the Docker service at boot (`systemctl enable docker`) or suggest it.
 - Never run commands that need sudo; write them in your report for the user to run.
 - Verify with `docker compose config -q` and by actually building and starting the stack.
 
