@@ -1,0 +1,74 @@
+# Curriculum: 365 Days
+
+## 1. ภาพรวม 4 เฟส
+
+| เฟส | วันที่ | ระดับ CEFR | คำศัพท์ (Oxford) | คำสะสม | เน้นอะไร |
+|---|---|---|---|---|---|
+| 1. Foundation | 1–60 | Pre-A1 → A1 | 3000 ระดับ A1 (ใช้บ่อยสุด) | ~500 | เสียงและ IPA, phonics, ประโยคพื้นฐาน |
+| 2. Survival | 61–150 | A1 → A2 | 3000 ระดับ A1–A2 | ~1,500 | สถานการณ์ในชีวิตประจำวัน, tenses หลัก |
+| 3. Conversation | 151–270 | A2 → B1 | 3000 ระดับ B1 | ~2,300 | สนทนาจริง, ไวยากรณ์ระดับกลาง, เขียนย่อหน้า |
+| 4. Fluency | 271–365 | B1 → B2 | 3000 ระดับ B2 + 5000 บางส่วน | ~3,000–3,500 | ข่าว, การแสดงความเห็น, เรียงความ, พูดต่อเนื่อง |
+
+แผนคำศัพท์ฉบับเต็มดูได้ที่ [VOCABULARY.md](VOCABULARY.md)
+
+## 2. จังหวะแต่ละสัปดาห์
+
+| วัน | ประเภท | ทำอะไร |
+|---|---|---|
+| 1–5 | `lesson` | เรียนเนื้อหาใหม่ |
+| 6 | `review` | ทบทวนเนื้อหาทั้งสัปดาห์ เน้นข้อที่เคยผิด |
+| 7 | `challenge` | ภารกิจรวม เช่น อัดคลิปพูดแนะนำตัว 30 วินาที หรือเขียนไดอารี่ |
+
+ทุกช่วง 30 วัน (วันที่ 30, 60, 90, ...) เป็น `checkpoint` คือสอบวัดผลครบทุกทักษะ
+
+## 3. โครงบทเรียนรายวัน (`lesson`)
+
+| ลำดับ | Section | เวลา | ตัวอย่าง exercise |
+|---|---|---|---|
+| 1 | Review | 5 นาที | flashcard SRS |
+| 2 | Pronunciation | 5 นาที | `minimal_pair`, `repeat_after_me` |
+| 3 | Listening | 7 นาที | `listen_choose`, `dictation` |
+| 4 | Speaking | 8 นาที | `shadowing`, `speak_answer`, `roleplay` |
+| 5 | Reading | 5 นาที | `read_passage` + คำถาม |
+| 6 | Writing | 5 นาที | `arrange_words`, `translate_th_en`, `free_write` |
+
+สัดส่วนเวลาจะเปลี่ยนตามเฟส เฟส 1 เน้นการออกเสียงและฟัง ส่วนเฟส 3–4 เน้นพูดและเขียน
+
+## 4. เฟส 1: Foundation (วันที่ 1–60)
+
+### เสียงที่คนไทยมักมีปัญหา (ต้องฝึกให้ครบในเฟสนี้)
+
+| เสียง | ปัญหาที่พบบ่อย | คู่คำตัวอย่าง |
+|---|---|---|
+| /θ/ /ð/ | ออกเป็น ท/ด | think–sink, this–dis |
+| /v/ | ออกเป็น ว | van–wan, very–wary |
+| /r/ vs /l/ | ใช้สลับกัน | rice–lice, right–light |
+| /z/ | ออกเป็น ซ | zoo–sue, rise–rice |
+| /ʃ/ vs /tʃ/ | ใช้สลับกัน | ship–chip, shoe–chew |
+| /ɪ/ vs /iː/ | ไม่แยกเสียงสั้น/ยาว | ship–sheep, live–leave |
+| /æ/ vs /e/ | ออกเป็นเสียงเดียวกัน | bad–bed, man–men |
+| เสียงท้ายคำ | ไม่ออกเสียงหรือเปลี่ยนเป็นเสียงอื่น | five, nice, bag, good |
+| -s / -ed | ไม่ออกเสียงท้าย | cats, played, wanted |
+| เสียงควบกล้ำ | เติมสระแทรก | street, spring, desk |
+| Word stress | ลงน้ำหนักทุกพยางค์เท่ากัน | PHOtograph, phoTOgraphy |
+| Intonation | ใช้วรรณยุกต์แบบภาษาไทย | Yes/No question ↗, Wh- question ↘ |
+
+### แผนรายสัปดาห์
+
+| สัปดาห์ | วันที่ | หัวข้อ | Grammar / Vocab |
+|---|---|---|---|
+| 1 | 1–7 | ตัวอักษร A–Z, สระสั้น | ทักทาย, แนะนำตัว |
+| 2 | 8–14 | สระยาว, /ɪ/ vs /iː/ | ตัวเลข 1–100, verb to be |
+| 3 | 15–21 | /θ/ /ð/, /v/ | ครอบครัว, this/that |
+| 4 | 22–28 | /r/ vs /l/, /z/ | สี, สิ่งของ, a/an/the |
+| 5 | 29–35 | เสียงท้ายคำ | ร่างกาย, have/has (checkpoint วันที่ 30) |
+| 6 | 36–42 | /ʃ/ /tʃ/ /dʒ/ | อาหาร, Present Simple |
+| 7 | 43–49 | เสียงควบกล้ำ | กิจวัตรประจำวัน, คำบอกความถี่ |
+| 8 | 50–56 | -s / -ed endings | เวลา, วัน, เดือน |
+| 9 | 57–60 | Word stress, intonation | ทบทวนทั้งเฟส (checkpoint วันที่ 60) |
+
+## 5. เฟส 2–4 (โครงคร่าว จะลงรายละเอียดทีหลัง)
+
+- **เฟส 2 Survival:** ซื้อของ, ร้านอาหาร, ถามทาง, เดินทาง, สุขภาพ, ที่ทำงาน · Past Simple, Future, Continuous, Comparatives, Modals (can/should/must)
+- **เฟส 3 Conversation:** เล่าประสบการณ์, วางแผน, ให้คำแนะนำ, แก้ปัญหา · Present Perfect, Conditionals 0–2, Passive, Relative clauses, Phrasal verbs
+- **เฟส 4 Fluency:** ข่าว, เทคโนโลยี, สิ่งแวดล้อม, วัฒนธรรม, ธุรกิจ · Conditional 3, Reported speech, Linking words, Idioms, เรียงความแสดงความเห็น

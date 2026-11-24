@@ -1,0 +1,72 @@
+# Deployment: Host บนเครื่องตัวเอง
+
+แอปนี้ใช้เองคนเดียว และรันบนเครื่องของเราเองตลอด ไม่ใช้ cloud hosting
+
+## 1. ภาพรวม
+
+```
+มือถือ / คอม (PWA)
+      │  HTTPS ผ่าน Tailscale (https://<เครื่อง>.<tailnet>.ts.net)
+      ▼
+เครื่องตัวเอง (Arch Linux)
+  └── docker compose
+        ├── app       Next.js (production build) :3000
+        └── postgres  PostgreSQL 17             :5432 (เปิดเฉพาะใน Docker network)
+  └── data/
+        ├── recordings/   ไฟล์เสียงที่อัด
+        └── backups/      pg_dump รายวัน
+```
+
+## 2. ทำไมต้องใช้ Tailscale
+
+- **PWA และไมโครโฟนต้องใช้ HTTPS:** ถ้าเปิดผ่าน `http://192.168.x.x` จากมือถือ จะติดตั้งแอป อัดเสียง และใช้ service worker ไม่ได้
+- **`tailscale serve` มีใบรับรอง HTTPS ให้อัตโนมัติ:** ได้โดเมน `*.ts.net` โดยไม่ต้องซื้อโดเมนหรือเปิด port ที่ router
+- **ใช้นอกบ้านได้และปลอดภัย:** เข้าได้เฉพาะอุปกรณ์ใน tailnet ของเรา คนอื่นมองไม่เห็นแอป
+
+ทางเลือกอื่นคือ Cloudflare Tunnel (ต้องมีโดเมนของตัวเอง และแอปจะออกสู่อินเทอร์เน็ตสาธารณะ)
+
+## 3. ขั้นตอนติดตั้ง (ครั้งแรก)
+
+```bash
+# 1. ติดตั้ง Tailscale บนเครื่อง (รันเอง เพราะต้องใช้ sudo)
+sudo pacman -S tailscale
+sudo systemctl enable --now tailscaled
+sudo tailscale up
+# ติดตั้งแอป Tailscale บนมือถือ แล้ว login บัญชีเดียวกัน
+# เปิดใช้ MagicDNS และ HTTPS Certificates ในหน้า admin ของ Tailscale
+
+# 2. ตั้งค่า env
+cp .env.example .env   # กรอก secret และ API key
+#    DATABASE_URL ใช้ host `postgres` (ชื่อ service ใน Docker)
+#    BETTER_AUTH_URL=https://<เครื่อง>.<tailnet>.ts.net
+
+# 3. รันแอป
+make prod          # build แล้วรัน app + postgres
+make db-migrate
+
+# 4. เปิด HTTPS ผ่าน Tailscale
+sudo tailscale serve --bg 3000
+```
+
+จากนั้นเปิด `https://<เครื่อง>.<tailnet>.ts.net` บนมือถือแล้วกด "ติดตั้งแอป" หรือ "เพิ่มไปยังหน้าจอโฮม"
+
+## 4. อัปเดตแอป
+
+```bash
+git pull
+make prod
+make db-migrate
+```
+
+## 5. Backup
+
+- cron/systemd timer รัน `pg_dump` ทุกวัน เก็บไฟล์ไว้ที่ `data/backups/` ย้อนหลัง 30 วัน
+- สำรอง `data/recordings/` ด้วย ถ้าต้องการเก็บเสียงที่อัดไว้
+- เนื้อหาบทเรียนอยู่ใน git อยู่แล้ว ไม่ต้อง backup แยก
+
+## 6. ข้อควรรู้
+
+- **เครื่องปิดอยู่ก็ยังฝึกได้:** บทเรียน 7 วันถัดไปถูกดาวน์โหลดเก็บในมือถือ ผลการฝึกจะ sync ขึ้นเครื่องเมื่อเครื่องเปิด
+- **ช่วงที่เครื่องปิดจะใช้ไม่ได้:** การแจ้งเตือน (push) และฟีเจอร์ AI จะใช้ไม่ได้จนกว่าเครื่องจะเปิด ถ้าอยากให้เตือนตรงเวลาทุกวัน ควรตั้งให้เครื่องเปิดค้างไว้ หรือย้าย reminder ไปเป็นนาฬิกาปลุกบนมือถือ
+- **ให้ Docker เปิดเองตอนบูต:** `sudo systemctl enable docker` และใส่ `restart: unless-stopped` ใน compose (มีแล้ว)
+- **ผู้ใช้คนเดียว:** ปิดหน้าสมัครสมาชิกหลังสร้างบัญชีแรก (`ALLOW_SIGNUP=false`)

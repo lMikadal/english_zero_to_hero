@@ -1,0 +1,60 @@
+[
+  {
+    "id": "v-hello",
+    "word": "hello",
+    "pos": "exclamation",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/həˈloʊ/", "uk": "/həˈləʊ/" },
+    "th": "สวัสดี",
+    "topics": ["greetings"],
+    "examples": [{ "en": "Hello, I'm Ann.", "th": "สวัสดี ฉันชื่อแอน" }],
+    "collocations": ["say hello"]
+  },
+  {
+    "id": "v-name",
+    "word": "name",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/neɪm/", "uk": "/neɪm/" },
+    "th": "ชื่อ",
+    "topics": ["greetings", "people_family"],
+    "examples": [{ "en": "My name is Sam.", "th": "ฉันชื่อแซม" }],
+    "collocations": ["first name", "last name"],
+    "forms": { "plural": "names" }
+  },
+  {
+    "id": "v-nice",
+    "word": "nice",
+    "pos": "adjective",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/naɪs/", "uk": "/naɪs/" },
+    "th": "ดี, น่ายินดี",
+    "topics": ["greetings", "feelings"],
+    "examples": [{ "en": "Nice to meet you.", "th": "ยินดีที่ได้รู้จัก" }],
+    "collocations": ["nice to meet you", "a nice day"],
+    "forms": { "comparative": "nicer", "superlative": "nicest" }
+  },
+  {
+    "id": "v-meet",
+    "word": "meet",
+    "pos": "verb",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/miːt/", "uk": "/miːt/" },
+    "th": "พบ, เจอ, ได้รู้จัก",
+    "topics": ["greetings", "communication"],
+    "examples": [{ "en": "Nice to meet you, Ann.", "th": "ยินดีที่ได้รู้จักนะ แอน" }],
+    "collocations": ["meet a friend", "nice to meet you"],
+    "forms": { "past": "met", "pastParticiple": "met" }
+  },
+  {
+    "id": "v-cat",
+    "word": "cat",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/kæt/", "uk": "/kæt/" },
+    "th": "แมว",
+    "topics": ["home"],
+    "examples": [{ "en": "I have a cat.", "th": "ฉันมีแมว" }],
+    "forms": { "plural": "cats" }
+  }
+]

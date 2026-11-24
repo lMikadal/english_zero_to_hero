@@ -1,0 +1,94 @@
+{
+  "day": 1,
+  "phase": 1,
+  "week": 1,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": { "en": "Hello! Short vowel /æ/", "th": "สวัสดี! และเสียงสระสั้น /æ/" },
+  "objectives": [
+    { "en": "Greet someone and say your name", "th": "ทักทายและบอกชื่อตัวเองได้" },
+    { "en": "Hear and say the /æ/ sound", "th": "ฟังและออกเสียง /æ/ ได้" }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": ["v-hello", "v-name", "v-nice", "v-meet", "v-cat"],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": { "en": "The /æ/ sound", "th": "เสียง /æ/" },
+      "exercises": [
+        { "id": "d001-pron-01", "type": "phoneme_intro",
+          "instruction": { "th": "ฟังและสังเกตรูปปาก" },
+          "phoneme": "ae", "ipa": "/æ/",
+          "tipTh": "อ้าปากกว้างกว่าเสียง 'แอ' ของไทย ลิ้นต่ำ มุมปากดึงไปด้านข้างเล็กน้อย",
+          "examples": ["cat", "bad", "man", "apple"] },
+        { "id": "d001-pron-02", "type": "minimal_pair",
+          "instruction": { "th": "ฟังแล้วเลือกคำที่ได้ยิน" },
+          "pairs": [
+            { "a": "bad", "b": "bed", "answer": "a" },
+            { "a": "man", "b": "men", "answer": "b" },
+            { "a": "cat", "b": "cut", "answer": "a" }
+          ] },
+        { "id": "d001-pron-03", "type": "repeat_after_me",
+          "instruction": { "th": "ฟังแล้วพูดตาม" },
+          "text": "The cat is bad.", "ipa": "/ðə kæt ɪz bæd/" }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": { "en": "Greetings", "th": "การทักทาย" },
+      "exercises": [
+        { "id": "d001-listen-01", "type": "listen_choose",
+          "instruction": { "th": "ฟังแล้วตอบว่าเขาชื่ออะไร" },
+          "audioText": "Hello! My name is Sam. Nice to meet you.",
+          "question": { "en": "What is his name?", "th": "เขาชื่ออะไร" },
+          "choices": ["Sam", "Ann", "Tom"], "answer": 0 },
+        { "id": "d001-listen-02", "type": "dictation",
+          "instruction": { "th": "ฟังแล้วพิมพ์ตาม" },
+          "audioText": "Nice to meet you.",
+          "accept": ["nice to meet you"] }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": { "en": "Introduce yourself", "th": "แนะนำตัว" },
+      "exercises": [
+        { "id": "d001-speak-01", "type": "shadowing",
+          "instruction": { "th": "พูดตามทันทีทีละประโยค" },
+          "lines": ["Hello!", "My name is Ann.", "Nice to meet you."] },
+        { "id": "d001-speak-02", "type": "speak_answer",
+          "instruction": { "th": "ตอบคำถามด้วยเสียง โดยบอกชื่อของคุณ" },
+          "prompt": "Hello! What's your name?",
+          "sampleAnswer": "Hello! My name is Ann. Nice to meet you.",
+          "keywords": ["name"] }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": { "en": "A short hello", "th": "อ่านบทสนทนาสั้น" },
+      "exercises": [
+        { "id": "d001-read-01", "type": "read_passage",
+          "instruction": { "th": "อ่านแล้วตอบคำถาม" },
+          "text": "Sam: Hello! My name is Sam.\nAnn: Hi, Sam. I'm Ann.\nSam: Nice to meet you, Ann.\nAnn: Nice to meet you, too.",
+          "glossary": { "too": "ด้วยเช่นกัน" },
+          "questions": [
+            { "question": { "en": "What is her name?", "th": "เธอชื่ออะไร" },
+              "choices": ["Sam", "Ann"], "answer": 1 }
+          ] }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": { "en": "Write your first sentence", "th": "เขียนประโยคแรก" },
+      "exercises": [
+        { "id": "d001-write-01", "type": "arrange_words",
+          "instruction": { "th": "เรียงคำให้เป็นประโยค" },
+          "words": ["name", "My", "Sam", "is"],
+          "answer": "My name is Sam" },
+        { "id": "d001-write-02", "type": "translate_th_en",
+          "instruction": { "th": "แปลเป็นภาษาอังกฤษ" },
+          "th": "ยินดีที่ได้รู้จัก",
+          "accept": ["Nice to meet you", "Nice to meet you."] }
+      ]
+    }
+  ]
+}
