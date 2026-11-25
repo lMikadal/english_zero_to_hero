@@ -3,8 +3,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAudio } from "@/lib/audio/context";
 import LearnLayout from "./layout";
 
-const getAccent = vi.hoisted(() => vi.fn<() => Promise<"us" | "uk">>());
-vi.mock("./access", () => ({ getAccent }));
+const access = vi.hoisted(() => ({ accent: "us" as "us" | "uk" | Error }));
+vi.mock("./access", () => ({
+  getAccent: async () => {
+    if (access.accent instanceof Error) throw access.accent;
+    return access.accent;
+  },
+}));
 
 function Probe() {
   const { source, accent } = useAudio();
@@ -14,7 +19,7 @@ function Probe() {
 const show = async () => render(await LearnLayout({ children: <Probe /> }));
 
 describe("learn layout", () => {
-  beforeEach(() => getAccent.mockResolvedValue("us"));
+  beforeEach(() => { access.accent = "us"; });
 
   it("wraps its children in an AudioProvider with the speech source", async () => {
     await show();
@@ -22,13 +27,13 @@ describe("learn layout", () => {
   });
 
   it("passes the learner's accent from the profile", async () => {
-    getAccent.mockResolvedValue("uk");
+    access.accent = "uk";
     await show();
     expect(screen.getByText("speech:uk")).toBeInTheDocument();
   });
 
   it("falls back to us (and does not crash) when the profile cannot be read", async () => {
-    getAccent.mockRejectedValue(new Error("db down"));
+    access.accent = new Error("db down");
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
     await show();
     expect(screen.getByText("speech:us")).toBeInTheDocument();

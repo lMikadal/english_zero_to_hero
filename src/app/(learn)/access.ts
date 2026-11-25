@@ -2,9 +2,16 @@
 // (profiles.current_day of whoever getCurrentUserId() says is signed in).
 import { getDb } from "@/db/client";
 import { getProfile } from "@/db/queries/progress";
+import type { Accent } from "@/lib/audio/source";
 import { getCurrentUserId } from "@/lib/server/current-user";
 
 export async function getCurrentDay(): Promise<number> {
   const userId = await getCurrentUserId();
   return (await getProfile(getDb(), userId)).currentDay;
+}
+
+/** The learner's preferred accent for spoken English (profiles.accent, "us" by default). */
+export async function getAccent(): Promise<Accent> {
+  const userId = await getCurrentUserId();
+  return (await getProfile(getDb(), userId)).accent;
 }
