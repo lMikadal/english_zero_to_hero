@@ -42,4 +42,4 @@
 | `frontend-dev`, `backend-dev` | เขียน unit / component / integration test **ก่อน**โค้ดของตัวเอง |
 | `qa-tester` | เขียน E2E, หาเคสที่ dev ไม่ได้คิดถึง, ตรวจว่าเทสต์ทดสอบพฤติกรรมจริง |
 | `code-reviewer` | ตรวจว่า PR มีเทสต์ครอบคลุมสิ่งที่เปลี่ยน และ commit เทสต์มาก่อนโค้ด |
-| CI | GitHub Actions (`.github/workflows/ci.yml`) รัน `make check` และตรวจ migration (`make db-migrate`, `make db-generate` ต้องไม่มีไฟล์เปลี่ยน) ทุก PR ถ้าไม่ผ่านห้าม merge; job `e2e` (`make e2e`) รันแยกและ**ยังไม่บล็อก merge** (`continue-on-error`) จนกว่าจะเห็นผ่านบน CI แล้วค่อยเปลี่ยนเป็น required |
+| CI | GitHub Actions (`.github/workflows/ci.yml`) รัน `make check` และตรวจ migration (`make db-migrate`, `make db-generate` ต้องไม่มีไฟล์เปลี่ยน) ทุก PR ถ้าไม่ผ่านห้าม merge; job `e2e` (`make e2e`) รันแยกและต้องผ่านเช่นกัน |

@@ -83,14 +83,12 @@ jobs:
         if: always()
         run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
 
-  # Playwright E2E at 360px. It has never been run anywhere before this job existed, so it must
-  # not block merging yet. Once it has been seen green on CI, remove `continue-on-error` and
-  # make `e2e` a required status check in the branch protection rules.
+  # Playwright E2E at 360px. First seen green on CI on 2026-11-25 (PR #9); it now blocks merging.
+  # The developer machine cannot pull the Playwright image, so CI is where E2E runs.
   e2e:
-    name: e2e (not required yet)
+    name: e2e (Playwright, 360px)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
         with:
