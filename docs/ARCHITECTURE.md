@@ -211,6 +211,8 @@ reminder_settings   user_id PK, enabled bool, remind_at time, types text[], upda
 - `push_subscriptions`: `id` default `gen_random_uuid()`; `p256dh`, `auth` NOT NULL
 - `reminder_settings`: `enabled` default false, `remind_at` NOT NULL default `20:00`, `types` NOT NULL default `{}`
 
+**คะแนนทุกค่าเป็นเศษส่วน 0..1** (`attempts.score`, `progress.score`, คะแนน checkpoint) ไม่ใช่เปอร์เซ็นต์ ข้อที่ไม่ให้คะแนน (พูดแล้วประเมินตัวเอง, `free_write`) เก็บ `score = NULL` และถูกตัดออกจากคะแนนบท การหาจุดอ่อน และความแม่นยำรายทักษะ `attempts` จะมีคอลัมน์ `attempt_no` (1 = ตอบครั้งแรก, 2 = รอบทวนท้ายบท) เพิ่มใน PR `feat/m1-attempts-api`; คะแนนและจุดอ่อนใช้เฉพาะ `attempt_no = 1`
+
 `exercise_id` และ `vocab_id` เป็น ID แบบ string ที่กำหนดไว้ในไฟล์ content (เช่น `d001-pron-01`) จึงผูกกับ git ได้โดยตรง
 
 ## 5. Flow ของ Lesson Player
@@ -219,3 +221,77 @@ reminder_settings   user_id PK, enabled bool, remind_at time, types text[], upda
 2. หน้า `/day/[day]` render ทีละ section ทีละ exercise
 3. แต่ละ exercise ส่งผลลัพธ์ไปที่ `attempts`
 4. เมื่อจบบท จะอัปเดต `progress` และ `streaks` แล้วเพิ่มคำศัพท์ของบทเข้า `srs_cards`
+
+### 5.1 API contract (Milestone 1)
+
+สัญญาที่ server (`src/app/api/**`) และ client (player, คิว offline) ใช้ร่วมกันอยู่ที่ `src/lib/attempts/contract.ts` (Zod) การตรวจคำตอบอยู่ที่ `src/lib/answers/grade.ts` และการหา `skill`/`tags` อยู่ที่ `src/lib/attempts/derive.ts` ทั้งหมดเป็นฟังก์ชันล้วนที่ client ใช้แสดงผลทันทีและ server ใช้ตัดสินค่าที่เก็บจริง
+
+**หลักการ:** client ส่งแค่ `exerciseId` กับ `answer` server หา exercise จาก content แล้วคำนวณ `day`, `skill`, `exercise_type`, `tags`, `correct`, `score` เอง (ฟิลด์เกินจะถูกปฏิเสธ เพราะทุก object เป็น strict) ทุก endpoint ใช้ JSON เป็น URL ธรรมดา (ไม่ใช่ Server Action) เพื่อให้คิว offline เก็บแล้วส่งซ้ำได้หลัง deploy ใหม่
+
+#### `POST /api/attempts`
+
+Request (`postAttemptsRequestSchema`): `{ attempts: AttemptInput[] }` 1–50 รายการ
+
+| ฟิลด์ | ชนิด | หมายเหตุ |
+|---|---|---|
+| `id` | uuid | สร้างที่ client (`newId()`) เป็นตัวกันบันทึกซ้ำ |
+| `exerciseId` | string | `dXXX-<skill>-NN` |
+| `sessionId` | uuid | สร้างครั้งเดียวต่อการเล่นบท |
+| `source` | `lesson\|drill\|retest\|checkpoint` | default `lesson` (ต้องตรง `AttemptSource` ใน `src/db/schema.ts`) |
+| `attemptNo` | `1 \| 2` | default 1; 2 = รอบทวนท้ายบท |
+| `answer` | union ตาม `kind` | `choice{selected}`, `choices{selected[]}`, `pairs{selected[]: a\|b}`, `text{text}`, `texts{texts[]}`, `match{pairs: {vocabId: vocabId}}`, `self{rating: ok\|unsure, recordingId?}` |
+| `durationMs` | int 0..3 600 000 | ไม่บังคับ |
+| `createdAt` | ISO datetime | เวลาฝั่ง client |
+
+Response `200` สำหรับ batch ที่รูปแบบถูกต้อง: `{ results: [...] }` หนึ่งรายการต่อหนึ่ง attempt ตามลำดับ
+
+| `status` | ความหมาย | ฟิลด์เพิ่ม |
+|---|---|---|
+| `created` | บันทึกแล้ว | `correct`, `score` |
+| `duplicate` | `id` นี้เคยบันทึกแล้ว ไม่ทำอะไรซ้ำ | `correct`, `score` (ถ้ามี) |
+| `rejected` | ไม่บันทึก | `reason`: `unknown_exercise` (ไม่มี exercise นี้ใน content), `kind_mismatch` (ชนิดหรือจำนวนของ `answer` ไม่ตรงกับ exercise), `unsupported` (ชนิดที่ไม่มี attempt เช่น `phoneme_intro`, `roleplay`), `locked_day` (วันของ exercise มากกว่า `profiles.current_day`) |
+
+- `400`: body ทั้งก้อนผิดรูปแบบ (JSON เสีย, ไม่ผ่าน schema, เกิน 50 รายการ) ไม่มีรายการใดถูกบันทึก
+- `5xx`: server ล้มเหลว ไม่มีอะไรรับประกันว่าบันทึกแล้ว ส่งซ้ำได้อย่างปลอดภัยเพราะ `id` กันซ้ำ
+
+#### `POST /api/lessons/complete`
+
+Request (`completeLessonRequestSchema`): `{ day: 1..365, sessionId: uuid, completedAt: ISO datetime }`
+Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", score, completedAt }, streak: { current, longest }, currentDay }` เรียกซ้ำได้โดยผลไม่เปลี่ยน
+- `409`: วันนั้นยังล็อกอยู่ (`day > profiles.current_day`) ไม่ควรส่งซ้ำ
+- `400`: body ผิดรูปแบบ
+
+#### การล็อกบทเรียน
+
+เล่นได้เมื่อ `day <= profiles.current_day` (`current_day` = วันสูงสุดที่เรียนจบ + 1) ใช้ `isDayUnlocked(day, currentDay)` จาก `src/lib/attempts/unlock.ts` ทั้งสองฝั่ง
+
+#### กติกาของคิว offline
+
+- ส่งตามลำดับเข้าก่อนออกก่อน และ `completeLesson` ส่งหลัง attempt ก่อนหน้าทั้งหมด
+- **ทิ้งจากคิว:** รายการที่ได้ `created`, `duplicate` หรือ `rejected` (ส่งซ้ำก็ได้ผลเดิม); คำขอที่ได้ `400` หรือ `409` (ส่งซ้ำก็ผิดเหมือนเดิม)
+- **เก็บไว้ส่งใหม่:** network error, timeout และ `5xx` เท่านั้น
+- `attempts` เป็นแบบ append-only ไม่แก้ไขภายหลัง
+
+#### กติกาการตรวจ (`gradeExercise`)
+
+ทุกคะแนนเป็นเศษส่วน 0..1; `correct` ของข้อที่มีหลายรายการหมายถึงถูกครบทุกรายการ
+
+| type | `answer.kind` | `correct` / `score` |
+|---|---|---|
+| `listen_choose` | `choice` | ตรง `answer` / 1 หรือ 0 |
+| `read_passage` | `choices` (หนึ่งต่อคำถาม) | ถูกครบ / สัดส่วนที่ถูก |
+| `minimal_pair` | `pairs` (หนึ่งต่อคู่) | ถูกครบ / สัดส่วนที่ถูก |
+| `dictation` | `text` | ตรงกับ `accept` หรือ `audioText` หลัง normalise / 1 หรือ 0 |
+| `translate_th_en` | `text` | ตรงกับ `accept` หลัง normalise / 1 หรือ 0 |
+| `arrange_words` | `text` (แผ่นป้ายที่ต่อกัน) | ตรง `answer` หลัง normalise / 1 หรือ 0 |
+| `fill_blank` | `texts` (หนึ่งต่อ `___`) | ถูกครบ / สัดส่วนที่ถูก |
+| `vocab_match` | `match` | จับคู่ถูกครบ / สัดส่วนที่ถูก |
+| `repeat_after_me`, `shadowing`, `speak_answer` | `self` | `rating === "ok"` / `null` |
+| `free_write` | `text` | จำนวนคำ `>= minWords` / `null` |
+| `phoneme_intro`, `roleplay`, `spell_word`, `use_in_sentence` | - | ไม่มี attempt (`unsupported`) |
+
+รอบทวนท้ายบทใช้ได้เฉพาะชนิดที่ตรวจอัตโนมัติ (`isRetryable(type)` ใน `src/lib/answers/grade.ts`): ไม่รวม `phoneme_intro`, ข้อพูดที่ประเมินตัวเอง และ `free_write`
+
+#### `tags`
+
+`phoneme:<p>` ใส่ให้ section ที่เป็น pronunciation และ exercise ชนิด `minimal_pair` / `phoneme_intro` ตาม `phoneme_intro` ทุกข้อของบทนั้น (วันทบทวนที่ไม่มี `phoneme_intro` จึงไม่มี tag นี้); `vocab:<id>` ใส่ให้ทุก `vocabId` ที่ exercise ระบุ และทุกคำใน `lesson.vocab` ที่ปรากฏเป็นคำเต็ม (ไม่สนตัวพิมพ์และเครื่องหมายวรรคตอน) ในข้อความอังกฤษของ exercise
