@@ -6,6 +6,7 @@ import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
 import { shuffleSeeded } from "./ui/shuffle";
 import { Mark } from "./ui/Mark";
+import { capitaliseFirst, tileLabel } from "./ui/tile-label";
 import { rightWrong, toneClass } from "./ui/tone";
 
 const TILE = "min-h-11 rounded-lg border px-3 py-2 text-base font-medium disabled:cursor-default";
@@ -22,6 +23,8 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
     return shuffleSeeded(indexes, exercise.id, (order) => correct.has(normalizeAnswer(order.map((i) => exercise.words[i]).join(" "))));
   }, [exercise]);
 
+  const sentences = [exercise.answer, ...(exercise.accept ?? [])];
+  const label = (i: number) => tileLabel(exercise.words[i], sentences);
   const remaining = poolOrder.filter((i) => !placed.includes(i));
   const complete = placed.length === exercise.words.length;
   const answerTone = result ? rightWrong(result.correct) : "idle";
@@ -41,10 +44,10 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
         lang="en"
         className={`flex min-h-14 flex-wrap gap-2 rounded-xl border-2 border-dashed p-2 ${toneClass(answerTone)}`}
       >
-        {placed.map((i) => (
+        {placed.map((i, n) => (
           <li key={i}>
             <button type="button" disabled={locked} onClick={() => setPlaced(placed.filter((p) => p !== i))} className={`${TILE} ${toneClass(result ? answerTone : "selected")}`}>
-              {exercise.words[i]}
+              {n === 0 ? capitaliseFirst(label(i)) : label(i)}
             </button>
           </li>
         ))}
@@ -59,7 +62,7 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
         {remaining.map((i) => (
           <li key={i}>
             <button type="button" disabled={locked} onClick={() => setPlaced([...placed, i])} className={`${TILE} ${toneClass("idle")}`}>
-              {exercise.words[i]}
+              {label(i)}
             </button>
           </li>
         ))}

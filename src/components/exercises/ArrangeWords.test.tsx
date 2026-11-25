@@ -37,7 +37,7 @@ describe("ArrangeWords", () => {
     expect(placed().getAllByRole("button").map((b) => b.textContent)).toEqual(["My", "name"]);
     expect(poolWords()).not.toContain("my");
     fireEvent.click(placed().getByRole("button", { name: "My" }));
-    expect(placed().getAllByRole("button").map((b) => b.textContent)).toEqual(["name"]);
+    expect(placed().getAllByRole("button").map((b) => b.textContent)).toEqual(["Name"]);
     expect(poolWords()).toContain("my");
     tap("my");
     tap("is");
@@ -95,7 +95,7 @@ describe("ArrangeWords", () => {
       for (const w of ["is", "Sam", "my", "name"]) tap(w);
       expect(placed().getAllByRole("button").map((b) => b.textContent)).toEqual(["Is", "Sam", "my", "name"]);
       fireEvent.click(check());
-      expect(props.onAnswer).toHaveBeenCalledWith({ kind: "text", text: "is Sam my name" });
+      expect(props.onAnswer).toHaveBeenCalledWith({ kind: "text", text: "is Sam My name" });
     });
   });
 
