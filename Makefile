@@ -4,7 +4,13 @@ COMPOSE := docker compose
 # Both paths go through dev-entrypoint.sh, so node_modules is re-synced if the lockfile changed.
 # Targets that need the database (`test`, `db-*`) depend on `postgres-up`, which starts postgres
 # and waits until it is healthy, so neither path needs `make up` first.
-RUN = $(if $(shell $(COMPOSE) ps --status running -q app 2>/dev/null),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
+# Only the long-running `app` service container from THIS checkout counts: `compose ps` also lists
+# one-off `run` containers (e.g. another agent's test run from a git worktree using the same project
+# name), and exec-ing into one of those runs the wrong code and dies with it (exit 137).
+APP_UP = $(shell docker ps -q --filter status=running --filter label=com.docker.compose.service=app \
+	--filter label=com.docker.compose.oneoff=False \
+	--filter "label=com.docker.compose.project.working_dir=$(CURDIR)" 2>/dev/null)
+RUN = $(if $(APP_UP),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
 
 .PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset audio prod
 
