@@ -30,7 +30,7 @@
           ] },
         { "id": "d001-pron-03", "type": "repeat_after_me",
           "instruction": { "th": "ฟังแล้วพูดตาม" },
-          "text": "The cat is bad.", "ipa": "/ðə kæt ɪz bæd/" }
+          "text": "Hello, Sam! Nice cat!", "ipa": "/həˈloʊ sæm naɪs kæt/" }
       ]
     },
     {
@@ -45,7 +45,7 @@
         { "id": "d001-listen-02", "type": "dictation",
           "instruction": { "th": "ฟังแล้วพิมพ์ตาม" },
           "audioText": "Nice to meet you.",
-          "accept": ["nice to meet you"] }
+          "accept": ["nice to meet you", "Nice to meet you", "Nice to meet you."] }
       ]
     },
     {
@@ -68,7 +68,7 @@
       "exercises": [
         { "id": "d001-read-01", "type": "read_passage",
           "instruction": { "th": "อ่านแล้วตอบคำถาม" },
-          "text": "Sam: Hello! My name is Sam.\nAnn: Hi, Sam. I'm Ann.\nSam: Nice to meet you, Ann.\nAnn: Nice to meet you, too.",
+          "text": "Sam: Hello! My name is Sam.\nAnn: Hello, Sam. I'm Ann.\nSam: Nice to meet you, Ann.\nAnn: Nice to meet you, too.",
           "glossary": { "too": "ด้วยเช่นกัน" },
           "questions": [
             { "question": { "en": "What is her name?", "th": "เธอชื่ออะไร" },

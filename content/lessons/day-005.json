@@ -1,0 +1,320 @@
+{
+  "day": 5,
+  "phase": 1,
+  "week": 1,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Spell your name! Short vowel /ʌ/",
+    "th": "สะกดชื่อของคุณ และเสียงสระสั้น /ʌ/"
+  },
+  "objectives": [
+    {
+      "en": "Ask and answer 'How do you spell it?'",
+      "th": "ถามและตอบว่า 'How do you spell it?' ได้"
+    },
+    {
+      "en": "Hear and say the /ʌ/ sound",
+      "th": "ฟังและออกเสียง /ʌ/ ได้"
+    },
+    {
+      "en": "Say the letter names V to Z and spell your name aloud",
+      "th": "บอกชื่อตัวอักษร V ถึง Z และสะกดชื่อตัวเองออกเสียงได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-spell",
+    "v-letter",
+    "v-do",
+    "v-cup",
+    "v-bus",
+    "v-sun",
+    "v-come",
+    "v-please"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The /ʌ/ sound and letters V–Z",
+        "th": "เสียง /ʌ/ และตัวอักษร V–Z"
+      },
+      "exercises": [
+        {
+          "id": "d005-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "ah",
+          "ipa": "/ʌ/",
+          "tipTh": "เสียงสั้นคล้าย 'อะ' ที่ออกจากลำคอ ปากไม่กลม ลิ้นอยู่กลางปาก คนไทยมักออกเป็น 'อา' หรือ 'ออ' เช่น bus เป็น 'บอส' ให้พูด 'บัส' สั้น ๆ แล้วปล่อยลมเสียง s ท้ายคำให้ได้ยิน (ไม่ใช่ 'บัด') และปิดเสียง p, n ท้ายคำให้ชัด สังเกตว่า come สะกดด้วย o แต่ออกเสียง /ʌ/",
+          "examples": [
+            "cup",
+            "bus",
+            "sun",
+            "come"
+          ]
+        },
+        {
+          "id": "d005-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "cup",
+              "b": "cap",
+              "answer": "b"
+            },
+            {
+              "a": "bus",
+              "b": "boss",
+              "answer": "a"
+            },
+            {
+              "a": "but",
+              "b": "bet",
+              "answer": "b"
+            }
+          ]
+        },
+        {
+          "id": "d005-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตามชื่อตัวอักษร ระวัง V ต้องใช้ฟันบนแตะริมฝีปากล่าง (ไม่ใช่ 'ว') และ Z สำเนียงอเมริกันเรียก 'zee' (ซี ที่มีเสียงสั่นในลำคอ) ส่วนสำเนียงอังกฤษเรียก 'zed' (เซ็ด)"
+          },
+          "text": "V, W, X, Y, Z",
+          "ipa": "/viː ˈdʌbəljuː eks waɪ ziː/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Spelling names",
+        "th": "ฟังการสะกดชื่อ"
+      },
+      "exercises": [
+        {
+          "id": "d005-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วเลือกว่าชื่อสะกดอย่างไร"
+          },
+          "audioText": "My name is Jen. J, E, N.",
+          "question": {
+            "en": "How do you spell the name?",
+            "th": "ชื่อนี้สะกดอย่างไร"
+          },
+          "choices": [
+            "J, E, N",
+            "G, E, N",
+            "J, I, N"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d005-listen-02",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังตัวอักษรแล้วพิมพ์ตาม"
+          },
+          "audioText": "B, U, S",
+          "accept": [
+            "B, U, S",
+            "B,U,S",
+            "b,u,s",
+            "B U S",
+            "BUS",
+            "bus",
+            "b, u, s",
+            "b u s",
+            "B-U-S",
+            "b-u-s"
+          ]
+        },
+        {
+          "id": "d005-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "How do you spell it?",
+          "accept": [
+            "How do you spell it",
+            "How do you spell it?"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Spell your name",
+        "th": "สะกดชื่อของคุณ"
+      },
+      "exercises": [
+        {
+          "id": "d005-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "How do you spell your name?",
+            "My name is Ann.",
+            "A, N, N."
+          ]
+        },
+        {
+          "id": "d005-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียง โดยบอกชื่อแล้วสะกดชื่อของคุณ"
+          },
+          "prompt": "What's your name? How do you spell it?",
+          "sampleAnswer": "My name is Ann. A, N, N.",
+          "keywords": [
+            "name"
+          ]
+        },
+        {
+          "id": "d005-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /ʌ/ ใน come"
+          },
+          "text": "Come and sit, please.",
+          "ipa": "/kʌm ən sɪt pliːz/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Spell it, please",
+        "th": "ช่วยสะกดหน่อย"
+      },
+      "exercises": [
+        {
+          "id": "d005-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Sam: Hello! My name is Sam.\nAnn: Hi, Sam. How do you spell it?\nSam: S, A, M. And you? What's your name?\nAnn: My name is Ann. A, N, N.\nSam: Nice to meet you, Ann. Come and sit, please.\nAnn: Thank you!",
+          "glossary": {
+            "What's": "What is (ย่อ)"
+          },
+          "questions": [
+            {
+              "question": {
+                "en": "How do you spell Ann?",
+                "th": "Ann สะกดอย่างไร"
+              },
+              "choices": [
+                "A, N, N",
+                "A, N",
+                "A, M, N"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Ann say at the end?",
+                "th": "สุดท้ายแอนพูดว่าอะไร"
+              },
+              "choices": [
+                "Thank you!",
+                "Goodbye!"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about spelling",
+        "th": "เขียนเรื่องการสะกด"
+      },
+      "exercises": [
+        {
+          "id": "d005-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "you",
+            "How",
+            "do",
+            "spell",
+            "it"
+          ],
+          "answer": "How do you spell it"
+        },
+        {
+          "id": "d005-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "How do you ___ your name? A, N, N.",
+          "answer": [
+            "spell"
+          ]
+        },
+        {
+          "id": "d005-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ช่วยสะกดชื่อของคุณหน่อย",
+          "accept": [
+            "Please spell your name",
+            "Please spell your name.",
+            "Spell your name, please",
+            "Spell your name, please.",
+            "Spell your name please",
+            "Spell your name please."
+          ]
+        },
+        {
+          "id": "d005-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-spell"
+            },
+            {
+              "vocabId": "v-letter"
+            },
+            {
+              "vocabId": "v-cup"
+            },
+            {
+              "vocabId": "v-bus"
+            },
+            {
+              "vocabId": "v-sun"
+            },
+            {
+              "vocabId": "v-please"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

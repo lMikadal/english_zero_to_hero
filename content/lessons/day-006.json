@@ -1,0 +1,301 @@
+{
+  "day": 6,
+  "phase": 1,
+  "week": 1,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 1 review: vowels, alphabet and greetings",
+    "th": "ทบทวนสัปดาห์ที่ 1: สระ ตัวอักษร และการทักทาย"
+  },
+  "objectives": [
+    {
+      "en": "Tell this week's five vowel sounds apart",
+      "th": "แยกเสียงสระทั้งห้าเสียงของสัปดาห์นี้ได้"
+    },
+    {
+      "en": "Say the whole alphabet A–Z",
+      "th": "ออกเสียงตัวอักษร A–Z ครบได้"
+    },
+    {
+      "en": "Use this week's greetings and introductions",
+      "th": "ใช้ประโยคทักทายและแนะนำตัวของสัปดาห์นี้ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Vowels and the alphabet",
+        "th": "สระและตัวอักษร"
+      },
+      "exercises": [
+        {
+          "id": "d006-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bat",
+              "b": "bet",
+              "answer": "b"
+            },
+            {
+              "a": "pen",
+              "b": "pin",
+              "answer": "a"
+            },
+            {
+              "a": "hot",
+              "b": "hut",
+              "answer": "b"
+            },
+            {
+              "a": "sit",
+              "b": "set",
+              "answer": "a"
+            },
+            {
+              "a": "cup",
+              "b": "cap",
+              "answer": "b"
+            },
+            {
+              "a": "dog",
+              "b": "dig",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d006-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตามตัวอักษรให้ครบ A–Z ระวัง G/J, V/W และ Z (US 'zee' / UK 'zed')"
+          },
+          "text": "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z",
+          "ipa": "/eɪ biː siː diː iː ef dʒiː eɪtʃ aɪ dʒeɪ keɪ el em en oʊ piː kjuː ɑːr es tiː juː viː ˈdʌbəljuː eks waɪ ziː/"
+        },
+        {
+          "id": "d006-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม เสียงสระทั้งห้าของสัปดาห์นี้: /æ/ /e/ /ɪ/ /ɑː/ /ʌ/"
+          },
+          "text": "A cat, a pen, a fish, a box, a bus.",
+          "ipa": "/ə kæt ə pen ə fɪʃ ə bɑːks ə bʌs/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d006-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วเลือกว่าชื่อสะกดอย่างไร"
+          },
+          "audioText": "My name is Jim. J, I, M.",
+          "question": {
+            "en": "How do you spell the name?",
+            "th": "ชื่อนี้สะกดอย่างไร"
+          },
+          "choices": [
+            "J, I, M",
+            "G, I, M",
+            "J, E, M"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d006-listen-02",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Good morning. How are you?",
+          "accept": [
+            "Good morning. How are you?",
+            "Good morning. How are you",
+            "Good morning, how are you?",
+            "Good morning, how are you",
+            "Good morning! How are you?",
+            "Good morning! How are you"
+          ]
+        },
+        {
+          "id": "d006-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "I'm from Thailand. Nice to meet you.",
+          "accept": [
+            "I'm from Thailand. Nice to meet you.",
+            "I'm from Thailand. Nice to meet you",
+            "I am from Thailand. Nice to meet you.",
+            "I am from Thailand. Nice to meet you",
+            "I'm from Thailand, nice to meet you.",
+            "I'm from Thailand, nice to meet you"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d006-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Hello! My name is Mai.",
+            "Nice to meet you.",
+            "I'm from Thailand.",
+            "How are you?",
+            "I'm fine, thank you.",
+            "Goodbye. See you!"
+          ]
+        },
+        {
+          "id": "d006-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียง บอกชื่อและบอกว่ามาจากที่ไหน"
+          },
+          "prompt": "Hello! What's your name? Where are you from?",
+          "sampleAnswer": "Hello! My name is Mai. I'm from Thailand.",
+          "keywords": [
+            "name",
+            "from"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d006-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Tom: Good afternoon! I'm Tom. Nice to meet you.\nMai: Hello, Tom. My name is Mai. M, A, I.\nTom: Where are you from, Mai?\nMai: I'm from Thailand. And you?\nTom: I'm from England. How are you?\nMai: I'm fine, thank you. Goodbye. See you!",
+          "questions": [
+            {
+              "question": {
+                "en": "How does Mai spell her name?",
+                "th": "ไหมสะกดชื่อของเธออย่างไร"
+              },
+              "choices": [
+                "M, A, I",
+                "M, I, A"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is Tom from?",
+                "th": "ทอมมาจากที่ไหน"
+              },
+              "choices": [
+                "Thailand",
+                "England"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d006-write-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-hello"
+            },
+            {
+              "vocabId": "v-name"
+            },
+            {
+              "vocabId": "v-fine"
+            },
+            {
+              "vocabId": "v-friend"
+            },
+            {
+              "vocabId": "v-goodbye"
+            },
+            {
+              "vocabId": "v-country"
+            }
+          ]
+        },
+        {
+          "id": "d006-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "How ___ you?",
+          "answer": [
+            "are"
+          ]
+        },
+        {
+          "id": "d006-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันชื่อแอน ฉันมาจากประเทศไทย",
+          "accept": [
+            "My name is Ann. I'm from Thailand.",
+            "My name is Ann. I'm from Thailand",
+            "My name is Ann. I am from Thailand.",
+            "My name is Ann. I am from Thailand",
+            "My name is Ann, I'm from Thailand.",
+            "My name is Ann, I'm from Thailand",
+            "I'm Ann. I'm from Thailand.",
+            "I'm Ann. I'm from Thailand",
+            "I am Ann. I am from Thailand.",
+            "I am Ann. I am from Thailand",
+            "I'm Ann. I am from Thailand",
+            "I am Ann. I'm from Thailand"
+          ]
+        }
+      ]
+    }
+  ]
+}

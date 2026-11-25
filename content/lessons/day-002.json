@@ -1,0 +1,306 @@
+{
+  "day": 2,
+  "phase": 1,
+  "week": 1,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "How are you? Short vowel /e/",
+    "th": "สบายดีไหม และเสียงสระสั้น /e/"
+  },
+  "objectives": [
+    {
+      "en": "Ask and answer 'How are you?'",
+      "th": "ถามและตอบว่า 'How are you?' ได้"
+    },
+    {
+      "en": "Hear and say the /e/ sound",
+      "th": "ฟังและออกเสียง /e/ ได้"
+    },
+    {
+      "en": "Say the letter names A to G",
+      "th": "บอกชื่อตัวอักษร A ถึง G ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-how",
+    "v-fine",
+    "v-thank",
+    "v-good",
+    "v-bed",
+    "v-pen",
+    "v-friend"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The /e/ sound and letters A–G",
+        "th": "เสียง /e/ และตัวอักษร A–G"
+      },
+      "exercises": [
+        {
+          "id": "d002-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "eh",
+          "ipa": "/e/",
+          "tipTh": "เสียงใกล้ 'เอะ' ของไทย ปากเปิดครึ่งหนึ่ง ลิ้นสูงกว่า /æ/ คนไทยมักเปลี่ยน bed เป็น 'แบด' จนฟังเหมือน bad ให้ยิ้มเล็กน้อยแล้วพูด 'เบ็ด' สั้น ๆ และอย่าลืมปิดเสียง d ท้ายคำ",
+          "examples": [
+            "bed",
+            "pen",
+            "ten",
+            "red"
+          ]
+        },
+        {
+          "id": "d002-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bad",
+              "b": "bed",
+              "answer": "b"
+            },
+            {
+              "a": "pan",
+              "b": "pen",
+              "answer": "a"
+            },
+            {
+              "a": "sat",
+              "b": "set",
+              "answer": "b"
+            }
+          ]
+        },
+        {
+          "id": "d002-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตามชื่อตัวอักษร ระวัง G ออกเสียง 'จี' (ไม่ใช่ 'กี') และ F ต้องมีเสียง f ท้ายคำ"
+          },
+          "text": "A, B, C, D, E, F, G",
+          "ipa": "/eɪ biː siː diː iː ef dʒiː/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "How are you?",
+        "th": "ถามสารทุกข์สุกดิบ"
+      },
+      "exercises": [
+        {
+          "id": "d002-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วเลือกว่าผู้พูดถามอะไร"
+          },
+          "audioText": "Hello, Sam. How are you?",
+          "question": {
+            "en": "What does the speaker ask?",
+            "th": "ผู้พูดถามอะไร"
+          },
+          "choices": [
+            "What is your name?",
+            "How are you?",
+            "Nice to meet you."
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d002-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วเลือกตัวอักษรที่ได้ยิน"
+          },
+          "audioText": "G, E, B",
+          "question": {
+            "en": "Which letters do you hear?",
+            "th": "ได้ยินตัวอักษรอะไร"
+          },
+          "choices": [
+            "G, E, B",
+            "G, E, D",
+            "G, A, B"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d002-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "I'm fine, thank you.",
+          "accept": [
+            "I'm fine, thank you",
+            "I'm fine, thank you.",
+            "I am fine, thank you",
+            "I am fine, thank you.",
+            "I'm fine thank you",
+            "I'm fine thank you.",
+            "I am fine thank you",
+            "I am fine thank you."
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say how you are",
+        "th": "บอกว่าสบายดีไหม"
+      },
+      "exercises": [
+        {
+          "id": "d002-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Hello, Sam!",
+            "How are you?",
+            "I'm fine, thank you.",
+            "And you?"
+          ]
+        },
+        {
+          "id": "d002-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียง"
+          },
+          "prompt": "Hello! How are you?",
+          "sampleAnswer": "I'm fine, thank you. And you?",
+          "keywords": [
+            "fine",
+            "thank"
+          ]
+        },
+        {
+          "id": "d002-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /e/ ในคำว่า friend และ Ben"
+          },
+          "text": "This is my friend, Ben.",
+          "ipa": "/ðɪs ɪz maɪ frend ben/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Meet a friend",
+        "th": "แนะนำเพื่อน"
+      },
+      "exercises": [
+        {
+          "id": "d002-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Ann: Hello, Sam! How are you?\nSam: I'm good, thank you. And you?\nAnn: I'm fine, thank you. This is my friend, Ben.\nSam: Hello, Ben. Nice to meet you.\nBen: Nice to meet you, too.",
+          "glossary": {
+            "too": "ด้วยเช่นกัน",
+            "This is": "นี่คือ (ใช้แนะนำคน)"
+          },
+          "questions": [
+            {
+              "question": {
+                "en": "Who is Ann's friend?",
+                "th": "ใครเป็นเพื่อนของแอน"
+              },
+              "choices": [
+                "Sam",
+                "Ben"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What does Sam say to Ben?",
+                "th": "แซมพูดอะไรกับเบน"
+              },
+              "choices": [
+                "Nice to meet you.",
+                "Thank you."
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write what you say",
+        "th": "เขียนประโยคที่ใช้จริง"
+      },
+      "exercises": [
+        {
+          "id": "d002-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "you",
+            "are",
+            "How"
+          ],
+          "answer": "How are you"
+        },
+        {
+          "id": "d002-write-02",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "pen",
+            "This",
+            "my"
+          ],
+          "answer": "This is my pen"
+        },
+        {
+          "id": "d002-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันสบายดี ขอบคุณ",
+          "accept": [
+            "I'm fine, thank you",
+            "I'm fine, thank you.",
+            "I am fine, thank you",
+            "I am fine, thank you.",
+            "I'm fine thank you",
+            "I'm good, thank you",
+            "I'm good, thank you.",
+            "I'm fine thank you.",
+            "I am good, thank you",
+            "I am good, thank you.",
+            "I'm good thank you",
+            "Fine, thank you",
+            "Fine, thank you."
+          ]
+        }
+      ]
+    }
+  ]
+}
