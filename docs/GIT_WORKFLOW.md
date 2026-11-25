@@ -41,7 +41,7 @@ fix(srs): use user timezone for due date    ← เทสต์ผ่าน (gre
 1. งานผ่าน `make check` ใน Docker (lint, typecheck, test และ content:validate) และ `make e2e` สำหรับ PR ที่แก้หน้าเว็บ
 2. `qa-tester` และ reviewer (`code-reviewer` หรือ `content-reviewer`) ตรวจผ่านแล้ว
 3. orchestrator push branch และเปิด PR ตาม `.github/pull_request_template.md`
-4. CI บน GitHub ต้องผ่าน
+4. CI บน GitHub ต้องผ่าน (job `check`; job `e2e` ยังไม่บล็อก merge แต่ให้ดูผลและบันทึกไว้ใน PR ถ้าล้ม จนกว่าจะเปลี่ยนเป็น required)
 5. **orchestrator merge เองได้ทุก PR** เมื่อข้อ 1–4 ผ่านครบ โดย merge แบบ **squash** ด้วย `gh pr merge --squash --delete-branch` (1 PR = 1 commit บน `main`) แล้วสรุปให้ผู้ใช้ในแชตหลัง merge (ผู้ใช้อนุญาตไว้เมื่อ 2026-11-24)
    - ถ้ามีสิ่งที่ยังไม่ได้ทดสอบหรือยังไม่เสร็จ ต้องเขียนไว้ใน PR และ `docs/PLAN.md` ให้ชัดก่อน merge ห้ามอ้างว่าเสร็จ
    - ถ้ามีเรื่องที่ผู้ใช้ต้องเป็นคนตัดสินใจ ให้หยุดถามก่อน merge
