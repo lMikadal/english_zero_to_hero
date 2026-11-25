@@ -13,10 +13,26 @@ type Options = {
 const LANG: Record<Accent, string> = { us: "en-US", uk: "en-GB" };
 const norm = (lang: string) => lang.replace("_", "-").toLowerCase();
 
+/** A one-off failure (blocked by autoplay policy, network, busy engine ...). The buttons stay; trying again may work. */
+export class AudioPlaybackError extends Error {
+  constructor(message = "playback failed") {
+    super(message);
+    this.name = "AudioPlaybackError";
+  }
+}
+
+const hasEnglish = (voices: readonly SpeechSynthesisVoice[]) => voices.some((v) => norm(v.lang).startsWith("en"));
+
+/** Exact accent first, then any English; a local (offline) voice before a network one. */
 function pickVoice(voices: readonly SpeechSynthesisVoice[], accent: Accent): SpeechSynthesisVoice | null {
   const english = voices.filter((v) => norm(v.lang).startsWith("en"));
-  return english.find((v) => norm(v.lang) === norm(LANG[accent])) ?? english[0] ?? null;
+  const best = (list: readonly SpeechSynthesisVoice[]) => list.find((v) => v.localService) ?? list[0] ?? null;
+  const exact = english.filter((v) => norm(v.lang) === norm(LANG[accent]));
+  return best(exact.length > 0 ? exact : english);
 }
+
+/** Held so the browser cannot garbage-collect the utterance before it fires `end` (a known Chrome bug). */
+let currentUtterance: SpeechSynthesisUtterance | null = null;
 
 export function createSpeechAudioSource(options: Options = {}): AudioSource {
   const timeout = options.voicesTimeoutMs ?? 1000;
@@ -47,40 +63,57 @@ export function createSpeechAudioSource(options: Options = {}): AudioSource {
     async canPlay() {
       const synth = getSynth();
       if (!synth) return false;
-      return pickVoice(await loadVoices(synth), "us") !== null;
+      return hasEnglish(await loadVoices(synth));
     },
 
-    async play(text: string, opts: PlayOptions = {}) {
+    // Not `async`: `speak` must run synchronously inside the tap (mobile browsers drop it otherwise).
+    play(text: string, opts: PlayOptions = {}): Promise<void> {
       const synth = getSynth();
       const Utterance = options.Utterance ?? (typeof SpeechSynthesisUtterance === "undefined" ? undefined : SpeechSynthesisUtterance);
-      if (!synth || !Utterance) throw new AudioUnavailableError("speechSynthesis is not available");
+      if (!synth || !Utterance) return Promise.reject(new AudioUnavailableError("speechSynthesis is not available"));
+      if (opts.signal?.aborted) return Promise.resolve();
       const accent = opts.accent ?? "us";
-      const voice = pickVoice(await loadVoices(synth), accent);
-      if (!voice) throw new AudioUnavailableError("no English voice");
-      if (opts.signal?.aborted) return;
+      const known = synth.getVoices();
+      // Voices known and none is English: unavailable. Voices not loaded yet: speak with `lang` only.
+      if (known.length > 0 && !hasEnglish(known)) return Promise.reject(new AudioUnavailableError("no English voice"));
+      const voice = pickVoice(known, accent);
 
-      synth.cancel(); // never overlap two utterances
       const utterance = new Utterance(text);
-      utterance.voice = voice;
-      utterance.lang = voice.lang;
+      if (voice) utterance.voice = voice;
+      utterance.lang = voice ? voice.lang.replace("_", "-") : LANG[accent];
       utterance.rate = opts.rate ?? 1;
       return new Promise<void>((resolve, reject) => {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const settle = () => {
+          clearTimeout(timer);
+          opts.signal?.removeEventListener("abort", onAbort);
+          if (currentUtterance === utterance) currentUtterance = null;
+        };
         const onAbort = () => {
+          settle();
           synth.cancel();
           resolve();
         };
-        const settle = () => opts.signal?.removeEventListener("abort", onAbort);
         utterance.onend = () => {
           settle();
           resolve();
         };
         utterance.onerror = (e) => {
           settle();
-          // cancel() (stop, abort or a newer utterance) is not a failure
-          if (e.error === "canceled" || e.error === "interrupted") resolve();
-          else reject(new AudioUnavailableError(`speech failed: ${e.error}`));
+          if (e.error === "canceled" || e.error === "interrupted") resolve(); // cancel() is not a failure
+          else if (e.error === "language-unavailable" || e.error === "voice-unavailable") reject(new AudioUnavailableError(`speech: ${e.error}`));
+          else reject(new AudioPlaybackError(`speech failed: ${e.error}`));
         };
+        // Safety net: some engines never fire end/error. Always settle, generously longer than the speech.
+        timer = setTimeout(() => {
+          settle();
+          synth.cancel();
+          resolve();
+        }, 5000 + (text.length * 200) / (opts.rate ?? 1));
         opts.signal?.addEventListener("abort", onAbort, { once: true });
+        currentUtterance = utterance;
+        synth.cancel(); // never overlap two utterances
+        synth.resume(); // Chrome can stay paused after a cancel
         synth.speak(utterance);
       });
     },
