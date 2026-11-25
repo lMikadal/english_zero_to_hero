@@ -53,10 +53,13 @@ function namedVocabIds(ex: Exercise): string[] {
 /** Sorted, de-duplicated `phoneme:<p>` and `vocab:<id>` tags (docs/PROGRESS.md section 1). */
 export function deriveTags(lesson: Lesson, ex: Exercise, section: Section, vocabWords: ReadonlyMap<string, string>): string[] {
   const tags = new Set<string>();
-  if (section.skill === "pronunciation" || ex.type === "minimal_pair" || ex.type === "phoneme_intro") {
+  // A miss in a sound exercise is a pronunciation miss, not a vocabulary one: no implicit vocab tags there.
+  const soundExercise = section.skill === "pronunciation" || ex.type === "minimal_pair" || ex.type === "phoneme_intro";
+  if (soundExercise) {
     for (const s of lesson.sections) for (const e of s.exercises) if (e.type === "phoneme_intro") tags.add(`phoneme:${e.phoneme}`);
   }
   for (const id of namedVocabIds(ex)) tags.add(`vocab:${id}`);
+  if (soundExercise) return [...tags].sort();
   const haystack = exerciseEnglishText(ex).map((t) => ` ${normalizeAnswer(t)} `);
   for (const id of lesson.vocab) {
     const word = vocabWords.get(id);

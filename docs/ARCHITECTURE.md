@@ -294,4 +294,6 @@ Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", s
 
 #### `tags`
 
-`phoneme:<p>` ใส่ให้ section ที่เป็น pronunciation และ exercise ชนิด `minimal_pair` / `phoneme_intro` ตาม `phoneme_intro` ทุกข้อของบทนั้น (วันทบทวนที่ไม่มี `phoneme_intro` จึงไม่มี tag นี้); `vocab:<id>` ใส่ให้ทุก `vocabId` ที่ exercise ระบุ และทุกคำใน `lesson.vocab` ที่ปรากฏเป็นคำเต็ม (ไม่สนตัวพิมพ์และเครื่องหมายวรรคตอน) ในข้อความอังกฤษของ exercise
+`phoneme:<p>` ใส่ให้ section ที่เป็น pronunciation และ exercise ชนิด `minimal_pair` / `phoneme_intro` ตาม `phoneme_intro` ทุกข้อของบทนั้น (วันทบทวนที่ไม่มี `phoneme_intro` จึงไม่มี tag นี้); `vocab:<id>` ใส่ให้ทุก `vocabId` ที่ exercise ระบุ (กฎ explicit ใช้เสมอ) และทุกคำใน `lesson.vocab` ที่ปรากฏเป็นคำเต็ม (ไม่สนตัวพิมพ์และเครื่องหมายวรรคตอน) ในข้อความอังกฤษของ exercise (กฎ implicit) **ยกเว้น**ใน section pronunciation และ exercise ชนิด `minimal_pair` / `phoneme_intro` ที่ไม่ใส่ `vocab:` แบบ implicit เพราะการตอบผิดในข้อฝึกเสียงไม่ได้แปลว่าไม่รู้คำศัพท์
+
+tag ที่ขึ้นต้นด้วย `weakness:` สงวนไว้สำหรับ attempt ของ drill/retest (ตั้งโดย drill player ในอนาคต) `deriveTags` ไม่สร้าง tag นี้เด็ดขาด
