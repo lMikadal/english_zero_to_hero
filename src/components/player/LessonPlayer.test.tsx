@@ -56,6 +56,21 @@ describe("LessonPlayer", () => {
     expect(screen.getByRole("button", { name: "ถัดไป" })).toBeEnabled();
   });
 
+  it("has one always-mounted live region whose text changes", async () => {
+    setup(["d001-listen-01", "d001-listen-02"]);
+    const region = screen.getByRole("status");
+    expect(region).toHaveTextContent("");
+    await answerListen01(false);
+    expect(screen.getByRole("status")).toBe(region);
+    expect(region).toHaveTextContent("Sam");
+  });
+
+  it("marks the correct-answer lines lang=en", async () => {
+    setup(["d001-listen-01", "d001-listen-02"]);
+    await answerListen01(false);
+    expect(within(screen.getByRole("status")).getByText("Sam")).toHaveAttribute("lang", "en");
+  });
+
   it("shows ถูกต้อง for a right answer", async () => {
     setup(["d001-listen-01", "d001-listen-02"]);
     await answerListen01(true);
@@ -92,6 +107,36 @@ describe("LessonPlayer", () => {
     t = 4200;
     await answerListen01(true);
     expect(sent[0].durationMs).toBe(3200);
+  });
+
+  it("measures durationMs on later steps and in the retry round too", async () => {
+    let t = 0;
+    const { sent } = setup(["d001-listen-01", "d001-listen-02"], undefined, { clock: () => t });
+    t = 1000;
+    await answerListen01(false);
+    t = 1500;
+    await next(); // second step shown at 1500
+    t = 4000;
+    await answerDictation("Nice to meet you.");
+    expect(sent[1].durationMs).toBe(2500);
+    t = 5000;
+    await next(); // retry round starts at 5000
+    t = 5700;
+    await answerListen01(true);
+    expect(sent[2]).toMatchObject({ attemptNo: 2, durationMs: 700 });
+  });
+
+  it("moves focus to the step heading and scrolls to the top on every step change", async () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    setup(["d001-listen-01", "d001-listen-02"]);
+    scrollTo.mockClear();
+    await answerListen01(true);
+    await next();
+    expect(scrollTo).toHaveBeenCalled();
+    const heading = screen.getByRole("heading", { level: 2 });
+    expect(heading).toHaveTextContent("ข้อ 2 / 2");
+    expect(heading).toHaveFocus();
+    scrollTo.mockRestore();
   });
 
   it("sends nothing for phoneme_intro and advances", async () => {
@@ -160,6 +205,26 @@ describe("LessonPlayer", () => {
     expect(screen.getByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/2");
   });
 
+  it("after day 365 there is no next-day link, only home", async () => {
+    const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 365 } });
+    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"], 1)} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    await screen.findByText(/สตรีค/);
+    // day 1 replayed with currentDay 365: a link to 365 is fine; the cap case is lesson.day === currentDay
+    expect(screen.getByRole("link", { name: "กลับหน้าแรก" })).toHaveAttribute("href", "/");
+  });
+
+  it("when the finished day is the current day cap (365) it does not link to /day/365 again", async () => {
+    const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 365 } });
+    const lesson = { ...lessonOf(["d001-listen-01"]), day: 365 };
+    renderWithAudio(<LessonPlayer lesson={lesson} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    await screen.findByText(/สตรีค/);
+    expect(screen.queryByRole("link", { name: /บทถัดไป/ })).not.toBeInTheDocument();
+  });
+
   it("completion queued: says it will be saved when online", async () => {
     setup(["d001-listen-01"], { status: "queued" });
     await answerListen01(true);
@@ -179,6 +244,38 @@ describe("LessonPlayer", () => {
     await answerListen01(true);
     await next();
     expect(await screen.findByRole("alert")).toHaveTextContent("บันทึกไม่สำเร็จ");
+  });
+
+  it("a rejected completeLesson shows an error and ลองอีกครั้ง retries with the same sessionId", async () => {
+    const { sink } = fakeSink();
+    sink.completeLesson.mockRejectedValueOnce(new Error("boom")).mockResolvedValueOnce(DONE);
+    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    expect(await screen.findByRole("alert")).toHaveTextContent("บันทึกไม่สำเร็จ");
+    await userEvent.click(screen.getByRole("button", { name: "ลองอีกครั้ง" }));
+    expect(await screen.findByText(/สตรีค 3 วัน/)).toBeInTheDocument();
+    expect(sink.completeLesson).toHaveBeenCalledTimes(2);
+    const [a, b] = sink.completeLesson.mock.calls as unknown as [[{ sessionId: string }], [{ sessionId: string }]];
+    expect(a[0].sessionId).toBe(b[0].sessionId);
+  });
+
+  it("a synchronously throwing completeLesson does not crash the tree", async () => {
+    const { sink } = fakeSink();
+    sink.completeLesson.mockImplementationOnce(() => { throw new Error("sync boom"); });
+    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    expect(await screen.findByRole("alert")).toHaveTextContent("บันทึกไม่สำเร็จ");
+    expect(screen.getByRole("button", { name: "ลองอีกครั้ง" })).toBeInTheDocument();
+  });
+
+  it("a 409 keeps its lock message and offers no retry", async () => {
+    setup(["d001-listen-01"], { status: "rejected", code: 409 });
+    await answerListen01(true);
+    await next();
+    expect(await screen.findByRole("alert")).toHaveTextContent("ล็อก");
+    expect(screen.queryByRole("button", { name: "ลองอีกครั้ง" })).not.toBeInTheDocument();
   });
 
   it("shows a pending message while completeLesson is in flight", async () => {
