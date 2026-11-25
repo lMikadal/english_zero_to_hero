@@ -48,15 +48,15 @@
 - [x] ตั้ง CI ให้รัน lint, typecheck, test, ตรวจ content, ตรวจ migration และ E2E ทุก PR (`.github/workflows/ci.yml`)
 
 ### Milestone 1: MVP (เรียนได้จริง 30 วันแรก)
-- [ ] Lesson Player ครอบคลุม exercise ทุกประเภทของเฟส 1
+- [x] Lesson Player ครอบคลุม exercise 13 ประเภทที่ใช้ในสัปดาห์แรก (วันที่ 1–7 เล่นได้ครบทุกข้อ, ล็อกบทตามลำดับ, รอบทวนข้อที่ตอบผิดท้ายบท) ยังไม่ครอบคลุม `roleplay`, `use_in_sentence`, `spell_word` (ไม่มีในวันที่ 1–7 รอ AI tutor/TTS) และยังไม่ได้ลองเล่นในเบราว์เซอร์จริง (ดูหมายเหตุใน PR: เสียงพูด, layout 360px, การโต้ตอบฝั่ง client ตรวจโดย E2E บน CI เท่านั้น)
 - [ ] เนื้อหาวันที่ 1–30
 - [ ] สคริปต์สร้างเสียง TTS (`pnpm audio:generate`)
 - [ ] อัดเสียงด้วย MediaRecorder แล้วฟังเทียบกับต้นฉบับ
 - [ ] Vocabulary SRS (FSRS)
 - [ ] คลังคำศัพท์ Oxford 3000 ระดับ A1 พร้อมคำแปลไทย ตัวอย่างประโยค และเสียง
 - [ ] หน้า Word Bank + หน้ารายละเอียดคำ
-- [ ] เก็บความคืบหน้า, attempts, SRS และ streak ลง PostgreSQL (ฝั่ง server ของ attempts, progress และ streak เสร็จแล้ว: `POST /api/attempts`, `POST /api/lessons/complete` ยังไม่ได้ต่อกับ UI และยังไม่มี SRS จึงยังไม่ติ๊ก)
-- [ ] เก็บข้อมูลดิบสำหรับคำนวณพัฒนาการตั้งแต่บทแรก: `attempts` ครบทุกช่องรวม `tags` และ `attempt_no` (ฝั่ง server เสร็จแล้ว รอต่อ UI), ประวัติการทบทวนใน `srs_reviews` (ยังไม่ทำ) (ดู [PROGRESS.md](PROGRESS.md) หัวข้อ 1)
+- [ ] เก็บความคืบหน้า, attempts, SRS และ streak ลง PostgreSQL (attempts, progress, streak และการล็อกบทต่อกับ UI แล้ว: player ส่งผ่านคิว HTTP ไป `POST /api/attempts` และ `/api/lessons/complete`, หน้าแรกอ่าน `current_day`/streak จาก DB; **ยังขาด:** SRS/`srs_cards` และการนับ streak จากการทบทวนคำ, คิว IndexedDB ออฟไลน์ (ตอนนี้คิวอยู่ในหน่วยความจำ), จึงยังไม่ติ๊ก)
+- [ ] เก็บข้อมูลดิบสำหรับคำนวณพัฒนาการตั้งแต่บทแรก: `attempts` ครบทุกช่องรวม `tags` และ `attempt_no` (ต่อกับ UI แล้ว), ประวัติการทบทวนใน `srs_reviews` (ยังไม่ทำ) (ดู [PROGRESS.md](PROGRESS.md) หัวข้อ 1)
 - [x] สูตรคำนวณพัฒนาการใน `src/lib/progress/` (คำที่รู้จริง, จุดอ่อน, ระดับ CEFR, ตามแผน 365 วัน) พร้อมเทสต์
 - [ ] หน้าสรุปสั้นหลังจบบท: คำใหม่วันนี้, คำที่รู้จริงสะสม, ทันแผนหรือไม่
 - [ ] เก็บไฟล์เสียงที่อัดลง `data/recordings/`

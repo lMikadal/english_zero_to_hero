@@ -88,5 +88,6 @@ Milestone 2 เป็นต้นไปจะวางแผน PR เมื่�
 - **งานที่ทำพร้อมกันได้:** โค้ดกับเนื้อหา (`src/` กับ `content/`), frontend กับ backend ที่ตกลงรูปแบบข้อมูลกันแล้ว (type ใน `src/lib/`)
 - **งานที่ต้องทำทีละอัน:** PR ที่แก้ `package.json` / `pnpm-lock.yaml`, PR ที่แก้ `src/db/schema.ts` และ migration, PR ที่แก้ `docker-compose.yml` / `Dockerfile` / `Makefile`
 - **Docker:** งานที่ต้องรัน container ให้ทำในโฟลเดอร์หลัก (ใช้ volume `node_modules` ที่ติดตั้งไว้แล้ว) ส่วน worktree เหมาะกับงานที่ไม่ต้องรัน container เช่น เนื้อหาและเอกสาร ถ้าจำเป็นต้องรัน container ใน worktree จะได้ compose project และ volume ชุดใหม่ ซึ่งต้องติดตั้งแพ็กเกจใหม่ทั้งหมด
+- **ใน worktree ให้ agent รัน `make worktree-check` เท่านั้น** (lint + typecheck + unit test ใน container ชั่วคราวที่ตรึงชื่อ compose project และใช้ volume `.next` แบบ anonymous) ห้ามรัน `make check` และห้ามรัน integration test เพราะ (1) volume `next_cache` (`/app/.next`) ใช้ร่วมกันทุก checkout ในโปรเจกต์เดียวกัน type ที่ Next สร้างจาก checkout อื่นทำให้ `tsc` ใน worktree พัง และ (2) integration test ใช้ฐานข้อมูลเทสต์ตัวเดียวกัน รันซ้อนกันแล้วล้างข้อมูลทับกัน (ดู `docs/TESTING.md`) integration test และ `make check` เต็มรอบรันได้จาก checkout หลักทีละคนเท่านั้น
 - เมื่อ PR หนึ่ง merge แล้ว branch อื่นที่ยังเปิดอยู่ต้อง rebase กับ `main` และรัน `make check` ใหม่ก่อน merge
 

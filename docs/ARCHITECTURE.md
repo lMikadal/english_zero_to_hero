@@ -221,10 +221,13 @@ reminder_settings   user_id PK, enabled bool, remind_at time, types text[], upda
 
 ## 5. Flow ของ Lesson Player
 
-1. `loader.ts` อ่าน `content/lessons/day-XXX.json` แล้วตรวจกับ schema
-2. หน้า `/day/[day]` render ทีละ section ทีละ exercise
-3. แต่ละ exercise ส่งผลลัพธ์ไปที่ `attempts`
-4. เมื่อจบบท จะอัปเดต `progress` และ `streaks` แล้วเพิ่มคำศัพท์ของบทเข้า `srs_cards`
+สถานะปัจจุบัน (Milestone 1, ผู้ใช้คนเดียว id `local`):
+
+1. หน้าแรก `/` (server, `force-dynamic`) อ่าน `getLearnerHome(db, userId)` (`src/db/queries/home.ts`): วันปัจจุบัน, streak, วันนี้เรียนแล้วหรือยัง แล้วแสดงปุ่ม "เริ่มบทเรียนวันที่ N" ไป `/day/N` (`/today` redirect ไป `/day/<current_day>`) ถ้าเชื่อมต่อฐานข้อมูลไม่ได้จะแสดงหน้า error ภาษาไทยแทนที่จะพัง
+2. หน้า `/day/[day]` (server, `force-dynamic`) ตรวจรูปแบบวัน (ต้องเป็น 1–365 แบบ canonical) แล้วถาม `getCurrentDay()` (`src/app/(learn)/access.ts`, อ่าน `profiles.current_day` ของ `getCurrentUserId()`) ถ้า `day > current_day` แสดงหน้า "ยังไม่ปลดล็อก" ไม่เช่นนั้นอ่านบทจากดิสก์ (`src/lib/content/repo.ts`) พร้อมคำศัพท์ที่ใช้ แล้วส่งให้ client `DayPlayer` layout `(learn)` ส่ง accent จาก `profiles.accent` ให้ตัวเล่นเสียง
+3. `LessonPlayer` เล่นทีละ exercise ผ่าน `registry.tsx` (13 ประเภท) component ตอบกลับด้วย `onAnswer`; player ตรวจด้วย `gradeExercise` (ฟังก์ชันล้วนเดียวกับ server) แสดงผลทันที แล้วส่ง attempt เข้าคิว (`getSyncSink()` = `http-sink`, id ฝั่ง client กันบันทึกซ้ำ) ข้อที่ตอบผิดและตรวจอัตโนมัติได้จะกลับมาอีกครั้งในรอบทวนท้ายบท (`attemptNo = 2`)
+4. จบบท: `completeLesson` ส่งต่อจาก attempts ทั้งหมดตามลำดับ server (`POST /api/lessons/complete`) ตัดสินใน transaction เดียว: คิดคะแนนจาก attempt แรก, ปิด `progress`, `touchStreak`, เลื่อน `current_day` หน้าจบบทแสดงผลจริงจาก server (`done`: streak + คะแนน และลิงก์ "ไปบทถัดไป" ไปที่ `currentDay` ของ server; `queued`: จะบันทึกเมื่อออนไลน์; `rejected`: บทถูกล็อก/ไม่ถูกต้อง)
+5. ยังไม่ทำ: เพิ่มคำศัพท์เข้า `srs_cards` (รอ SRS), ไฟล์เสียงจริง (ตอนนี้ใช้ `speechSynthesis` ของอุปกรณ์), การอัดเสียง, หน้าสรุปหลังบท, คิว IndexedDB/service worker (PWA)
 
 ### 5.1 API contract (Milestone 1)
 
