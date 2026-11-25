@@ -278,7 +278,7 @@ describe("createHttpSink: completeLesson", () => {
     await settle();
     expect(t.live()).toHaveLength(1);
     // attempt 1 is still pending, completion makes one flush attempt: attempts first (500 again) then queued
-    t.fetch.mockImplementationOnce(async () => ({ status: 500, ok: false, json: async () => ({}) }));
+    t.fetch.mockImplementationOnce(async () => ({ status: 500, ok: false, headers: { get: () => null }, json: async () => ({}) }));
     expect(await t.sink.completeLesson(completion)).toEqual({ status: "queued" });
     expect(t.live()).toHaveLength(1);
   });
@@ -400,10 +400,10 @@ describe("createHttpSink: status rules (S3)", () => {
 
   it("413 halves the batch for the retry, and drops a single item that is still too large", async () => {
     const err = vi.spyOn(console, "error").mockImplementation(() => {});
-    const t = setup([{ status: 413 }, { status: 413 }, { status: 413 }, okFor(2), okFor(3, 4)]);
+    const t = setup([{ status: 413 }, { status: 413 }, { status: 413 }, okFor(2), okFor(3), okFor(4)]);
     [1, 2, 3, 4].forEach((n) => t.sink.sendAttempt(attempt(n)));
     await settle();
-    expect(t.calls.map((c) => ids(c).length)).toEqual([4, 2, 1, 1, 2]);
+    expect(t.calls.map((c) => ids(c).length)).toEqual([4, 2, 1, 1, 1, 1]); // the smaller size sticks
     expect(t.calls.map(ids)[3]).toEqual([uuid(2)]);
     expect(err).toHaveBeenCalledTimes(1); // item 1 dropped
     expect(t.sink.pendingCount()).toBe(0);
