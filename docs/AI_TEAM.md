@@ -34,18 +34,20 @@
 1. orchestrator  เลือกงานถัดไปจาก docs/PLAN.md แล้วถามผู้ใช้ถ้ามีเรื่องไม่แน่ใจ
 2. architect     วางแผนงาน (เฉพาะงานที่ซับซ้อน)
 3. dev / writer  ลงมือทำใน branch ของงานนั้นแบบ TDD: เขียนเทสต์ก่อน แล้วค่อยเขียนโค้ด
-                 (ทำพร้อมกันหลายตัวได้ถ้างานไม่ทับกัน)
-4. qa-tester     รันเทสต์ใน Docker, เพิ่มเคสที่ขาด, เขียน E2E
-5. reviewer      code-reviewer หรือ content-reviewer ตรวจ
+                 (ทำพร้อมกัน 2–3 ตัวใน worktree แยกกัน ถ้างานไม่แก้ไฟล์เดียวกัน)
+4. qa-tester     รันเทสต์ใน Docker, เพิ่มเคสที่ขาด, เขียน E2E   ┐ ข้อ 4 และ 5
+5. reviewer      code-reviewer หรือ content-reviewer ตรวจ       ┘ ทำพร้อมกัน
 6. dev / writer  แก้ตามที่ถูกตรวจพบ แล้ววนข้อ 4–5 จนผ่าน
-7. orchestrator  สรุปให้ผู้ใช้ แล้ว commit, push, เปิด PR
-8. ผู้ใช้         อ่านสรุปแล้วตอบตกลง
-9. orchestrator  merge PR แบบ squash แล้วเริ่มงานถัดไป
+7. orchestrator  ตรวจผลจริงด้วยตัวเอง แล้ว push และเปิด PR
+8. orchestrator  merge PR แบบ squash เมื่อเทสต์และการตรวจผ่าน แล้วสรุปให้ผู้ใช้
+9. orchestrator  เริ่มงานถัดไป
 ```
 
 ## 4. กติกาของทีม
 
-- ลูกทีมห้าม commit ลง `main`, ห้าม push, ห้ามเปิดหรือ merge PR (orchestrator ทำหลังผู้ใช้อนุมัติ)
+- ลูกทีมห้าม commit ลง `main`, ห้าม push, ห้ามเปิดหรือ merge PR (orchestrator เป็นคนทำ ตาม [GIT_WORKFLOW.md](GIT_WORKFLOW.md))
+- งานเล็ก เช่น แก้เอกสาร หรือแก้ตามที่ reviewer ชี้ไม่กี่บรรทัด orchestrator ทำเองได้โดยไม่ต้องส่งลูกทีม
+- PR เอกสารสั้นๆ ไม่ต้องผ่าน qa-tester และ reviewer ส่วน PR โค้ดและ PR เนื้อหาต้องผ่านเสมอ
 - ลูกทีมแก้ไฟล์ได้เฉพาะในขอบเขตของตัวเอง
 - **ถ้าไม่แน่ใจต้องหยุดถาม ห้ามเดา:** ลูกทีมถาม orchestrator และ orchestrator ถามผู้ใช้
 - ทุกคำสั่งของแอปรันใน Docker เท่านั้น
