@@ -19,8 +19,9 @@ function lessonOf(ids: string[]): Lesson {
   return { ...readLesson(1), sections: [{ skill: "listening", title: { en: "A", th: "ก" }, exercises: exercises.slice(0, 2) }, ...(exercises.length > 2 ? [{ skill: "speaking" as const, title: { en: "B", th: "ข" }, exercises: exercises.slice(2) }] : [])] };
 }
 const start = (ids: string[], now = 1000) => createPlayerState({ lesson: lessonOf(ids), sessionId: SESSION, now, isSupported });
-const answer = (s: PlayerState, grade: Grade, now = 2000) => playerReducer(s, { type: "answer", answer: ANSWER, grade, now });
-const next = (s: PlayerState, now = 3000) => playerReducer(s, { type: "next", now });
+const answer = (s: PlayerState, grade: Grade, now = 2000) => playerReducer(s, { type: "answer", key: currentItem(s).key, answer: ANSWER, grade, now });
+const next = (s: PlayerState, now = 3000) => playerReducer(s, { type: "next", key: currentItem(s).key, now });
+const skip = (s: PlayerState, now = 3000) => playerReducer(s, { type: "skip", key: currentItem(s).key, now });
 
 describe("buildSteps", () => {
   it("flattens sections in order and keeps the section title", () => {
@@ -110,11 +111,46 @@ describe("playerReducer", () => {
     for (let guard = 0; s.phase === "playing" && guard < 100; guard++) {
       const item = currentItem(s);
       if (!item.step.supported) expect(canAdvance(s)).toBe(false);
-      s = item.step.exercise.type === "phoneme_intro" ? next(s) : playerReducer(s, { type: "skip", now: guard });
+      s = item.step.exercise.type === "phoneme_intro" ? next(s) : skip(s, guard);
     }
     expect(s.phase).toBe("complete"); // skipped exercises are not wrong, so there is no retry round
     expect(s.items.every((i) => i.attemptNo === 1)).toBe(true);
     expect(Object.keys(s.answers)).toEqual([]);
+  });
+
+  it("ignores an action that names a step other than the current one (double tap, stale closure)", () => {
+    let s = start(["d001-listen-01", "d001-listen-02", "d001-listen-02"].slice(0, 2));
+    const first = currentItem(s).key;
+    s = answer(s, RIGHT);
+    const advanced = playerReducer(s, { type: "next", key: first, now: 1 });
+    expect(currentItem(advanced).step.exercise.id).toBe("d001-listen-02");
+    // the same action again (a double tap) must not move past the second step
+    expect(playerReducer(advanced, { type: "next", key: first, now: 2 })).toBe(advanced);
+    expect(playerReducer(advanced, { type: "skip", key: first, now: 2 })).toBe(advanced);
+    expect(playerReducer(advanced, { type: "answer", key: first, answer: ANSWER, grade: WRONG, now: 2 })).toBe(advanced);
+  });
+
+  it("skip during the retry round advances without recording and does not add another round", () => {
+    let s = start(["d001-listen-01", "d001-listen-02"]);
+    s = next(answer(s, WRONG));
+    s = next(answer(s, WRONG));
+    expect(currentItem(s).attemptNo).toBe(2);
+    s = skip(s);
+    expect(currentItem(s).attemptNo).toBe(2);
+    expect(currentItem(s).step.exercise.id).toBe("d001-listen-02");
+    s = skip(s);
+    expect(s.phase).toBe("complete");
+    expect(Object.keys(s.answers)).toEqual(["d001-listen-01-1", "d001-listen-02-1"]);
+  });
+
+  it("a step marked broken (grading error) behaves as unsupported: skippable, nothing recorded, never retried", () => {
+    let s = start(["d001-listen-01"]);
+    s = playerReducer(s, { type: "broken", key: currentItem(s).key });
+    expect(currentItem(s).step.supported).toBe(false);
+    expect(canAdvance(s)).toBe(false);
+    expect(answer(s, WRONG)).toBe(s);
+    s = skip(s);
+    expect(s.phase).toBe("complete");
   });
 
   it("marks types missing from the registry as unsupported", () => {
