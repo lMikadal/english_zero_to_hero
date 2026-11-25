@@ -31,10 +31,13 @@ export type PlayerState = {
   retryBuilt: boolean;
 };
 
+/** Every action names the step it was meant for (`PlayItem.key`); one for any other step is ignored. */
 export type PlayerAction =
-  | { type: "answer"; answer: AttemptAnswer; grade: Grade; now: number }
-  | { type: "next"; now: number }
-  | { type: "skip"; now: number };
+  | { type: "answer"; key: string; answer: AttemptAnswer; grade: Grade; now: number }
+  | { type: "next"; key: string; now: number }
+  | { type: "skip"; key: string; now: number }
+  /** The answer could not be graded (a contract mismatch): treat the exercise as unsupported so the learner can skip. */
+  | { type: "broken"; key: string };
 
 const isUngraded = (type: string) => (UNGRADED_TYPES as readonly string[]).includes(type);
 const item = (step: Step, attemptNo: 1 | 2): PlayItem => ({ step, attemptNo, key: `${step.exercise.id}-${attemptNo}` });
@@ -102,6 +105,7 @@ function advance(state: PlayerState, now: number): PlayerState {
 export function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
   if (state.phase !== "playing") return state;
   const it = currentItem(state);
+  if (action.key !== it.key) return state; // stale closure or double tap
   switch (action.type) {
     case "answer":
       if (!recordsAttempt(it) || it.key in state.answers) return state;
@@ -110,5 +114,9 @@ export function playerReducer(state: PlayerState, action: PlayerAction): PlayerS
       return canAdvance(state) ? advance(state, action.now) : state;
     case "skip":
       return advance(state, action.now); // records nothing; a skipped exercise is not "wrong", so it is not retried
+    case "broken": {
+      const id = it.step.exercise.id;
+      return { ...state, items: state.items.map((i) => (i.step.exercise.id === id ? { ...i, step: { ...i.step, supported: false } } : i)) };
+    }
   }
 }
