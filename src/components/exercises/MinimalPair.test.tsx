@@ -75,9 +75,9 @@ describe("MinimalPair", () => {
       <MinimalPair exercise={exercise} vocab={{}} onAnswer={() => {}} onContinue={() => {}} result={{ correct: false, score: 2 / 3, items: [false, true, true] }} />,
     );
     expect(pair(0)).toHaveAttribute("data-state", "wrong");
-    expect(pair(1)).toHaveAttribute("data-state", "correct");
-    expect(pair(2)).toHaveAttribute("data-state", "correct");
-    expect(within(pair(0)).getByRole("radio", { name: /bad/ })).toHaveAttribute("data-state", "correct"); // the right word is shown
+    expect(pair(1)).toHaveAttribute("data-state", "right");
+    expect(pair(2)).toHaveAttribute("data-state", "right");
+    expect(within(pair(0)).getByRole("radio", { name: /bad/ })).toHaveAttribute("data-state", "right"); // the right word is shown
     expect(within(pair(0)).getByRole("radio", { name: /bed/ })).toBeDisabled();
     expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).not.toBeInTheDocument();
   });

@@ -220,6 +220,14 @@ describe("LessonPlayer", () => {
     expect(await screen.findByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/5");
   });
 
+  it("free_write shows บันทึกแล้ว exactly once after submitting", async () => {
+    setup(["d007-write-01"]);
+    const text = Array.from({ length: 60 }, () => "word").join(" ");
+    await userEvent.type(screen.getByRole("textbox"), text);
+    await check();
+    expect(screen.getAllByText("บันทึกแล้ว")).toHaveLength(1);
+  });
+
   it("when the finished day is the current day cap (365) it does not link to /day/365 again", async () => {
     const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 365 } });
     const lesson = { ...lessonOf(["d001-listen-01"]), day: 365 };

@@ -75,4 +75,25 @@ describe("ReadPassage", () => {
       expect(within(qs[1]).queryByText("ผิด")).toBeNull();
     }
   });
+
+  describe("single-choice radio pattern (shared with listen_choose and minimal_pair)", () => {
+    it("only the first radio of a question is in the tab order until one is chosen", () => {
+      renderWithAudio(<ReadPassage {...baseProps()} exercise={ex} />);
+      const group = screen.getAllByRole("radiogroup")[0];
+      const radios = within(group).getAllByRole("radio");
+      expect(radios.map((r) => r.getAttribute("tabindex"))).toEqual(radios.map((_, i) => (i === 0 ? "0" : "-1")));
+    });
+
+    it("arrow keys move to the next radio and select it", () => {
+      renderWithAudio(<ReadPassage {...baseProps()} exercise={ex} />);
+      const group = screen.getAllByRole("radiogroup")[0];
+      const radios = within(group).getAllByRole("radio");
+      radios[0].focus();
+      fireEvent.keyDown(radios[0], { key: "ArrowDown" });
+      expect(radios[1]).toHaveAttribute("aria-checked", "true");
+      expect(radios[1]).toHaveFocus();
+      expect(radios[1]).toHaveAttribute("tabindex", "0");
+      expect(radios[0]).toHaveAttribute("tabindex", "-1");
+    });
+  });
 });

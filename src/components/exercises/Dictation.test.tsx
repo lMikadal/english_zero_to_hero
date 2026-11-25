@@ -55,7 +55,7 @@ describe("Dictation", () => {
     expect(screen.getByRole("textbox")).toHaveAttribute("data-state", "wrong");
     expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).not.toBeInTheDocument();
     rerender(<Dictation exercise={exercise} vocab={{}} onAnswer={() => {}} onContinue={() => {}} result={{ correct: true, score: 1 }} />);
-    expect(screen.getByRole("textbox")).toHaveAttribute("data-state", "correct");
+    expect(screen.getByRole("textbox")).toHaveAttribute("data-state", "right");
   });
 
   it("without audio: a note and skip through onContinue only; the transcript is never shown", async () => {

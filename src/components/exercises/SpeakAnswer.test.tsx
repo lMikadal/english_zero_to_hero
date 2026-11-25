@@ -37,11 +37,18 @@ describe("SpeakAnswer", () => {
     expect(screen.queryByRole("button", { name: /ฟัง/ })).toBeNull();
   });
 
+  it("uses the shared play buttons: normal and 0.75x, disabled until canPlay answers", async () => {
+    renderWithAudio(<SpeakAnswer {...baseProps()} exercise={ex} />, fakeAudio(true));
+    expect(screen.getByRole("button", { name: "ฟัง" })).toBeDisabled();
+    await waitFor(() => expect(screen.getByRole("button", { name: "ฟัง" })).toBeEnabled());
+  });
+
   it("plays the prompt when audio is available", async () => {
     const audio = fakeAudio(true);
     renderWithAudio(<SpeakAnswer {...baseProps()} exercise={ex} />, audio);
-    const play = await screen.findByRole("button", { name: /ฟัง/ });
-    fireEvent.click(play);
+    fireEvent.click(await screen.findByRole("button", { name: "ฟัง" }));
     await waitFor(() => expect(audio.played).toEqual([ex.prompt]));
+    fireEvent.click(screen.getByRole("button", { name: /ฟังช้า/ }));
+    await waitFor(() => expect(audio.play).toHaveBeenLastCalledWith(ex.prompt, expect.objectContaining({ rate: 0.75 })));
   });
 });
