@@ -10,8 +10,8 @@
   },
   "objectives": [
     {
-      "en": "Tell the five short vowels apart",
-      "th": "แยกเสียงสระสั้นทั้งห้าเสียงได้"
+      "en": "Tell this week's five vowel sounds apart",
+      "th": "แยกเสียงสระทั้งห้าเสียงของสัปดาห์นี้ได้"
     },
     {
       "en": "Say the whole alphabet A–Z",
@@ -75,7 +75,7 @@
           "id": "d006-pron-02",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตามตัวอักษรให้ครบ A–Z ระวัง G/J, V/W และ Z"
+            "th": "ฟังแล้วพูดตามตัวอักษรให้ครบ A–Z ระวัง G/J, V/W และ Z (US 'zee' / UK 'zed')"
           },
           "text": "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z",
           "ipa": "/eɪ biː siː diː iː ef dʒiː eɪtʃ aɪ dʒeɪ keɪ el em en oʊ piː kjuː ɑːr es tiː juː viː ˈdʌbəljuː eks waɪ ziː/"
@@ -84,10 +84,10 @@
           "id": "d006-pron-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม เสียงสระสั้นทั้งห้า: /æ/ /e/ /ɪ/ /ɑː/ /ʌ/"
+            "th": "ฟังแล้วพูดตาม เสียงสระทั้งห้าของสัปดาห์นี้: /æ/ /e/ /ɪ/ /ɑː/ /ʌ/"
           },
-          "text": "A cat, a pen, a fish, a dog, a bus.",
-          "ipa": "/ə kæt ə pen ə fɪʃ ə dɔːɡ ə bʌs/"
+          "text": "A cat, a pen, a fish, a box, a bus.",
+          "ipa": "/ə kæt ə pen ə fɪʃ ə bɑːks ə bʌs/"
         }
       ]
     },
@@ -127,7 +127,9 @@
             "Good morning. How are you?",
             "Good morning. How are you",
             "Good morning, how are you?",
-            "Good morning, how are you"
+            "Good morning, how are you",
+            "Good morning! How are you?",
+            "Good morning! How are you"
           ]
         },
         {
@@ -284,7 +286,13 @@
             "My name is Ann. I am from Thailand.",
             "My name is Ann. I am from Thailand",
             "My name is Ann, I'm from Thailand.",
-            "My name is Ann, I'm from Thailand"
+            "My name is Ann, I'm from Thailand",
+            "I'm Ann. I'm from Thailand.",
+            "I'm Ann. I'm from Thailand",
+            "I am Ann. I am from Thailand.",
+            "I am Ann. I am from Thailand",
+            "I'm Ann. I am from Thailand",
+            "I am Ann. I'm from Thailand"
           ]
         }
       ]

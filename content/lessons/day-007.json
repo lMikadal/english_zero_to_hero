@@ -48,7 +48,7 @@
             "th": "ฟังแล้วพูดตาม ระวังเสียง /ɪ/ ใน big และ city"
           },
           "text": "I'm from Chiang Mai. It is a big city.",
-          "ipa": "/aɪm frʌm ˌtʃjæŋ ˈmaɪ ɪt ɪz ə bɪɡ ˈsɪti/"
+          "ipa": "/aɪm frəm ˌtʃjæŋ ˈmaɪ ɪt ɪz ə bɪɡ ˈsɪti/"
         }
       ]
     },
@@ -65,7 +65,7 @@
           "instruction": {
             "th": "ฟังบทสนทนาแล้วตอบคำถาม"
           },
-          "audioText": "Sam: Good morning! I'm Sam. Mai: Hi, Sam. My name is Mai. Nice to meet you. Sam: Nice to meet you, too. How are you? Mai: I'm fine, thank you. And you? Sam: I'm good, thank you. Where are you from, Mai? Mai: I'm from Thailand. I'm from Chiang Mai.",
+          "audioText": "Good morning! I'm Sam. Hi, Sam. My name is Mai. Nice to meet you. Nice to meet you, too. How are you? I'm fine, thank you. And you? I'm good, thank you. Where are you from, Mai? I'm from Thailand. I'm from Chiang Mai.",
           "question": {
             "en": "Where is Mai from?",
             "th": "ไหมมาจากที่ไหน"
@@ -83,7 +83,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าไหมสะกดชื่อของเธออย่างไร"
           },
-          "audioText": "Sam: How do you spell Mai? Mai: M, A, I. Please sit and meet my friend, Ben.",
+          "audioText": "How do you spell Mai? M, A, I. This is my friend, Ben.",
           "question": {
             "en": "How does Mai spell her name?",
             "th": "ไหมสะกดชื่อของเธออย่างไร"
@@ -108,7 +108,11 @@
             "My name is Mai. MAI",
             "My name is Mai. M A I",
             "My name is Mai, M, A, I.",
-            "My name is Mai, M, A, I"
+            "My name is Mai, M, A, I",
+            "My name is Mai. M-A-I",
+            "My name is Mai. M A I.",
+            "My name is Mai. MAI.",
+            "My name is Mai. M-A-I."
           ]
         }
       ]
@@ -134,9 +138,9 @@
             "I'm good, thank you. Where are you from, Mai?",
             "I'm from Thailand. I'm from Chiang Mai. It is a big city.",
             "How do you spell Mai?",
-            "M, A, I. Please sit and meet my friend, Ben.",
-            "Hello, Ben!",
-            "Hello, Sam. Goodbye, Mai. See you!"
+            "M, A, I. This is my friend, Ben.",
+            "Hello, Ben! Nice to meet you.",
+            "Nice to meet you, too. Goodbye, Mai. See you!"
           ]
         },
         {
@@ -168,7 +172,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Sam: Good morning! I'm Sam.\nMai: Hi, Sam. My name is Mai. Nice to meet you.\nSam: Nice to meet you, too. How are you?\nMai: I'm fine, thank you. And you?\nSam: I'm good, thank you. Where are you from, Mai?\nMai: I'm from Thailand. I'm from Chiang Mai. It is a big city.\nSam: How do you spell Mai?\nMai: M, A, I. Please sit and meet my friend, Ben.\nSam: Hello, Ben!\nBen: Hello, Sam. Goodbye, Mai. See you!",
+          "text": "Sam: Good morning! I'm Sam.\nMai: Hi, Sam. My name is Mai. Nice to meet you.\nSam: Nice to meet you, too. How are you?\nMai: I'm fine, thank you. And you?\nSam: I'm good, thank you. Where are you from, Mai?\nMai: I'm from Thailand. I'm from Chiang Mai. It is a big city.\nSam: How do you spell Mai?\nMai: M, A, I. This is my friend, Ben.\nSam: Hello, Ben! Nice to meet you.\nBen: Nice to meet you, too. Goodbye, Mai. See you!",
           "glossary": {
             "too": "ด้วยเช่นกัน"
           },
@@ -224,7 +228,7 @@
             "th": "เขียนแนะนำตัวเอง 4–5 ประโยค: ชื่อ มาจากที่ไหน สบายดีไหม และสะกดชื่อของคุณ"
           },
           "prompt": "Write 4–5 sentences about you. Say your name, where you are from, how you are, and how to spell your name.",
-          "minWords": 20
+          "minWords": 15
         }
       ]
     }

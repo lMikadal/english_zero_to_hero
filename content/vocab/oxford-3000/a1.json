@@ -65,7 +65,7 @@
     "ipa": {"us": "/haʊ/", "uk": "/haʊ/"},
     "th": "อย่างไร, (ใช้ถามสภาพ) เป็นอย่างไรบ้าง",
     "topics": ["greetings", "communication"],
-    "examples": [{"en": "How are you today?", "th": "วันนี้เป็นยังไงบ้าง"}, {"en": "How do you spell it?", "th": "สะกดยังไงคะ"}],
+    "examples": [{"en": "How are you today?", "th": "วันนี้เป็นยังไงบ้าง"}, {"en": "How do you spell it?", "th": "สะกดยังไง"}],
     "collocations": ["how are you", "how old"]
   },
   {
@@ -88,7 +88,7 @@
     "ipa": {"us": "/θæŋk/", "uk": "/θæŋk/"},
     "th": "ขอบคุณ",
     "topics": ["greetings", "communication"],
-    "examples": [{"en": "Thank you, Ann.", "th": "ขอบคุณนะ แอน"}, {"en": "I thank my friend.", "th": "ฉันขอบคุณเพื่อนของฉัน"}],
+    "examples": [{"en": "Thank you, Ann.", "th": "ขอบคุณนะ แอน"}, {"en": "Thank you, Sam!", "th": "ขอบคุณนะแซม"}],
     "collocations": ["thank you"],
     "forms": {"past": "thanked", "pastParticiple": "thanked"}
   },
@@ -194,7 +194,7 @@
     "ipa": {"us": "/sɪt/", "uk": "/sɪt/"},
     "th": "นั่ง",
     "topics": ["daily_routine", "home"],
-    "examples": [{"en": "Please sit and meet my friend.", "th": "เชิญนั่งก่อน แล้วมาทำความรู้จักเพื่อนฉัน"}],
+    "examples": [{"en": "Please sit down.", "th": "เชิญนั่งก่อน"}],
     "collocations": ["sit down"],
     "forms": {"past": "sat", "pastParticiple": "sat"}
   },
@@ -229,7 +229,7 @@
     "ipa": {"us": "/fɪʃ/", "uk": "/fɪʃ/"},
     "th": "ปลา",
     "topics": ["food_drink", "weather_nature"],
-    "examples": [{"en": "A big fish.", "th": "ปลาตัวใหญ่"}],
+    "examples": [{"en": "This is a big fish.", "th": "นี่คือปลาตัวใหญ่"}],
     "collocations": ["a big fish"],
     "forms": {"plural": "fish"}
   },
@@ -239,7 +239,7 @@
     "pos": "exclamation",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/ˌɡʊdˈbaɪ/", "uk": "/ˌɡʊdˈbaɪ/"},
-    "th": "ลาก่อน, ลาก่อนนะ",
+    "th": "ลาก่อน, บ๊ายบาย",
     "topics": ["greetings"],
     "examples": [{"en": "Goodbye, Ann!", "th": "ลาก่อนนะ แอน"}],
     "collocations": ["say goodbye"]
@@ -274,9 +274,9 @@
     "pos": "noun",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/ˌæftərˈnuːn/", "uk": "/ˌɑːftəˈnuːn/"},
-    "th": "ตอนบาย",
+    "th": "ตอนบ่าย",
     "topics": ["time_dates", "greetings"],
-    "examples": [{"en": "Good afternoon, Ann.", "th": "สวัสดีตอนบายนะแอน"}],
+    "examples": [{"en": "Good afternoon, Ann.", "th": "สวัสดีตอนบ่ายนะแอน"}],
     "collocations": ["good afternoon"],
     "forms": {"plural": "afternoons"}
   },
@@ -323,7 +323,7 @@
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/dɔːɡ/", "uk": "/dɒɡ/"},
     "th": "หมา, สุนัข",
-    "topics": ["home", "weather_nature"],
+    "topics": ["home"],
     "examples": [{"en": "This is my dog.", "th": "นี่คือหมาของฉัน"}],
     "collocations": ["a big dog"],
     "forms": {"plural": "dogs"}
@@ -346,16 +346,16 @@
     "pos": "noun",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/ˈletər/", "uk": "/ˈletə/"},
-    "th": "ตัวอักษร",
+    "th": "ตัวอักษร, จดหมาย",
     "topics": ["communication", "work_study"],
     "examples": [{"en": "A is the first letter.", "th": "A เป็นตัวอักษรตัวแรก"}],
-    "collocations": ["a big letter"],
+    "collocations": ["capital letter", "the letter A"],
     "forms": {"plural": "letters"}
   },
   {
     "id": "v-do",
     "word": "do",
-    "pos": "verb",
+    "pos": "auxiliary verb",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/duː/", "uk": "/duː/"},
     "th": "ทำ (และใช้ช่วยตั้งคำถาม)",
@@ -397,8 +397,7 @@
     "th": "ดวงอาทิตย์, แดด",
     "topics": ["weather_nature"],
     "examples": [{"en": "The sun is hot.", "th": "แดดร้อน"}],
-    "collocations": ["the hot sun"],
-    "forms": {"plural": "suns"}
+    "collocations": ["the hot sun"]
   },
   {
     "id": "v-come",
@@ -418,9 +417,9 @@
     "pos": "exclamation",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/pliːz/", "uk": "/pliːz/"},
-    "th": "กรุณา, ได้โปรด",
+    "th": "กรุณา, ได้โปรด, (ใช้ขอร้องอย่างสุภาพ เช่น ช่วย...หน่อย)",
     "topics": ["greetings", "communication"],
-    "examples": [{"en": "Please sit.", "th": "เชิญนั่ง"}],
+    "examples": [{"en": "Please sit down.", "th": "เชิญนั่งก่อน"}],
     "collocations": ["yes, please"]
   }
 ]

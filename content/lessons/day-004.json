@@ -5,8 +5,8 @@
   "type": "lesson",
   "cefr": "preA1",
   "title": {
-    "en": "Hello and goodbye! Short vowel /ɑː/ (US) /ɒ/ (UK)",
-    "th": "ทักทายและลา และเสียงสระสั้น /ɑː/ (US) /ɒ/ (UK)"
+    "en": "Hello and goodbye! The 'short o' sound /ɑː/ (US) · /ɒ/ (UK)",
+    "th": "ทักทายและลา และเสียง 'short o' /ɑː/ (US) · /ɒ/ (UK)"
   },
   "objectives": [
     {
@@ -14,8 +14,8 @@
       "th": "ทักทายและกล่าวลาตามช่วงเวลาของวันได้"
     },
     {
-      "en": "Hear and say the vowel in hot and dog",
-      "th": "ฟังและออกเสียงสระในคำว่า hot และ dog ได้"
+      "en": "Hear and say the vowel in hot and box",
+      "th": "ฟังและออกเสียงสระในคำว่า hot และ box ได้"
     },
     {
       "en": "Say the letter names O to U",
@@ -37,8 +37,8 @@
     {
       "skill": "pronunciation",
       "title": {
-        "en": "The hot/dog vowel and letters O–U",
-        "th": "เสียงสระใน hot/dog และตัวอักษร O–U"
+        "en": "The hot/box vowel and letters O–U",
+        "th": "เสียงสระใน hot/box และตัวอักษร O–U"
       },
       "exercises": [
         {
@@ -47,14 +47,14 @@
           "instruction": {
             "th": "ฟังและสังเกตรูปปาก"
           },
-          "phoneme": "o",
-          "ipa": "/ɑː/ (US) · /ɒ/ (UK)",
-          "tipTh": "เสียงนี้ต่างกันระหว่างสำเนียง อเมริกัน hot = 'ฮาท' ปากอ้า ส่วนอังกฤษ hot = 'ฮอท' สั้น ปากกลมเล็กน้อย ให้เลือกสำเนียงเดียวแล้วฝึกให้สม่ำเสมอ ห้ามออกเป็น 'ฮ็อต' แบบสระโอะของไทย และอย่าลืมปิดเสียง t, g ท้ายคำ",
+          "phoneme": "aa",
+          "ipa": "/ɑː/",
+          "tipTh": "เสียงนี้ต่างกันตามสำเนียง: อเมริกัน hot ออกคล้าย 'ฮาท' (อ้าปากกว้าง ลิ้นต่ำ ไม่ห่อปาก) ส่วนอังกฤษ hot ออกคล้าย 'ฮ็อท' (สระเอาะสั้น ห่อปากเล็กน้อย) เลือกสำเนียงเดียวแล้วฝึกให้สม่ำเสมอ อย่าห่อปากจนเป็น 'โฮท' และอย่าให้กลายเป็น 'ฮัท' (hut) และอย่าลืมปิดเสียง t, p ท้ายคำ",
           "examples": [
             "hot",
-            "dog",
             "box",
-            "stop"
+            "stop",
+            "not"
           ]
         },
         {
@@ -70,8 +70,8 @@
               "answer": "a"
             },
             {
-              "a": "dog",
-              "b": "dig",
+              "a": "not",
+              "b": "nut",
               "answer": "b"
             },
             {
@@ -85,7 +85,7 @@
           "id": "d004-pron-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตามชื่อตัวอักษร ระวัง Q ออกเสียง 'คิว' และ R มีเสียงม้วนลิ้นเบา ๆ (US)"
+            "th": "ฟังแล้วพูดตามชื่อตัวอักษร ระวัง Q ออกเสียง 'คิว' และ R มีเสียงม้วนลิ้นเบา ๆ (US) (UK: R = 'อา' ไม่ม้วนลิ้น)"
           },
           "text": "O, P, Q, R, S, T, U",
           "ipa": "/oʊ piː kjuː ɑːr es tiː juː/"
@@ -147,7 +147,10 @@
             "Good night. See you",
             "Good night, see you",
             "Good night, see you!",
-            "Good night see you"
+            "Good night see you",
+            "Goodnight. See you!",
+            "Goodnight. See you",
+            "Good night. See you."
           ]
         }
       ]
@@ -163,7 +166,7 @@
           "id": "d004-speak-01",
           "type": "shadowing",
           "instruction": {
-            "th": "พูดตามทันทีทีละประโยค"
+            "th": "พูดตามทันทีทีละประโยค (Good morning/afternoon/evening ใช้ทักทายได้ แต่ Good night ใช้ตอนลาหรือก่อนนอนเท่านั้น)"
           },
           "lines": [
             "Good morning!",
@@ -190,10 +193,10 @@
           "id": "d004-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ระวังเสียงสระใน dog และ hot"
+            "th": "ฟังแล้วพูดตาม ระวังเสียงสระใน box และ hot"
           },
-          "text": "The dog is hot.",
-          "ipa": "/ðə dɔːɡ ɪz hɑːt/"
+          "text": "The box is hot.",
+          "ipa": "/ðə bɑːks ɪz hɑːt/"
         }
       ]
     },
@@ -212,7 +215,7 @@
           },
           "text": "Ann: Good morning, Sam! How are you?\nSam: I'm fine, thank you. It is hot! This is my dog, Max.\nAnn: Hello, Max! You are big.\nSam: Goodbye, Ann. See you!\nAnn: See you!",
           "glossary": {
-            "You are big": "นายตัวใหญ่จังเลย"
+            "You are big": "แกตัวใหญ่จังเลยนะ"
           },
           "questions": [
             {
@@ -271,7 +274,9 @@
           "th": "สวัสดีตอนเช้า",
           "accept": [
             "Good morning",
-            "Good morning."
+            "Good morning.",
+            "Morning",
+            "Morning."
           ]
         },
         {
@@ -283,7 +288,9 @@
           "th": "ราตรีสวัสดิ์",
           "accept": [
             "Good night",
-            "Good night."
+            "Good night.",
+            "Goodnight",
+            "Goodnight."
           ]
         }
       ]

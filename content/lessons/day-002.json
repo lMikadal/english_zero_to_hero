@@ -46,9 +46,9 @@
           "instruction": {
             "th": "ฟังและสังเกตรูปปาก"
           },
-          "phoneme": "e",
+          "phoneme": "eh",
           "ipa": "/e/",
-          "tipTh": "เสียงใกล้ 'เอะ' ของไทย ปากเปิดครึ่งหนึ่ง ลิ้นสูงกว่า /æ/ คนไทยมักเปลี่ยน bed เป็น 'แบด' จนฟังเหมือน bad ให้ยิ้มเล็กน้อยแล้วพูด 'เบด' สั้น ๆ และอย่าลืมปิดเสียง d ท้ายคำ",
+          "tipTh": "เสียงใกล้ 'เอะ' ของไทย ปากเปิดครึ่งหนึ่ง ลิ้นสูงกว่า /æ/ คนไทยมักเปลี่ยน bed เป็น 'แบด' จนฟังเหมือน bad ให้ยิ้มเล็กน้อยแล้วพูด 'เบ็ด' สั้น ๆ และอย่าลืมปิดเสียง d ท้ายคำ",
           "examples": [
             "bed",
             "pen",
@@ -74,8 +74,8 @@
               "answer": "a"
             },
             {
-              "a": "man",
-              "b": "men",
+              "a": "sat",
+              "b": "set",
               "answer": "b"
             }
           ]
@@ -129,7 +129,7 @@
           },
           "choices": [
             "G, E, B",
-            "J, E, B",
+            "G, E, D",
             "G, A, B"
           ],
           "answer": 0
@@ -147,7 +147,9 @@
             "I am fine, thank you",
             "I am fine, thank you.",
             "I'm fine thank you",
-            "I'm fine thank you."
+            "I'm fine thank you.",
+            "I am fine thank you",
+            "I am fine thank you."
           ]
         }
       ]
@@ -189,7 +191,7 @@
           "id": "d002-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ระวังเสียง /e/ ในคำว่า friend และ pen"
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /e/ ในคำว่า friend และ Ben"
           },
           "text": "This is my friend, Ben.",
           "ipa": "/ðɪs ɪz maɪ frend ben/"
@@ -289,7 +291,13 @@
             "I am fine, thank you.",
             "I'm fine thank you",
             "I'm good, thank you",
-            "I'm good, thank you."
+            "I'm good, thank you.",
+            "I'm fine thank you.",
+            "I am good, thank you",
+            "I am good, thank you.",
+            "I'm good thank you",
+            "Fine, thank you",
+            "Fine, thank you."
           ]
         }
       ]

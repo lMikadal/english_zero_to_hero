@@ -49,7 +49,7 @@
           },
           "phoneme": "ih",
           "ipa": "/ɪ/",
-          "tipTh": "เสียงสั้นและผ่อนคลาย ปากไม่ยิ้มกว้าง ถ้ายืดและยิ้มจะกลายเป็น /iː/ (อี) แล้วความหมายเปลี่ยน เช่น sit (นั่ง) กับ seat (ที่นั่ง) พูดให้สั้นกว่า 'อิ' ภาษาไทยเล็กน้อย และปิดเสียง t, g ท้ายคำ",
+          "tipTh": "เสียงสั้นและผ่อนคลาย ปากไม่ยิ้มกว้าง ถ้ายืดและยิ้มจะกลายเป็น /iː/ (อี) แล้วความหมายเปลี่ยน เช่น sit (นั่ง) กับ seat (ที่นั่ง) ลิ้นต่ำกว่า 'อิ' ของไทยเล็กน้อย เสียงอยู่ระหว่าง 'อิ' กับ 'เอะ' และปิดเสียง t, g ท้ายคำ",
           "examples": [
             "sit",
             "big",
@@ -85,7 +85,7 @@
           "id": "d003-pron-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตามชื่อตัวอักษร ระวัง J ออกเสียง 'เจ' ต่างจาก G ที่เป็น 'จี' และ I ออกเสียง 'ไอ' ส่วน L, M, N ต้องปิดเสียงท้าย"
+            "th": "ฟังแล้วพูดตามชื่อตัวอักษร ระวัง J ออกเสียง 'เจ' ต่างจาก G ที่เป็น 'จี' และ I ออกเสียง 'ไอ' L ปลายลิ้นแตะหลังฟันบน (ไม่ใช่ 'เอว' หรือ 'เอน') และ M, N ต้องปิดเสียงท้ายให้ชัด"
           },
           "text": "H, I, J, K, L, M, N",
           "ipa": "/eɪtʃ aɪ dʒeɪ keɪ el em en/"
@@ -200,7 +200,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hi! My name is Mai. I'm from Chiang Mai. It is a big city. Thailand is my country.\nThis is my friend, Tom. Tom is from England.",
+          "text": "Hi! My name is Nok. I'm from Chiang Mai. It is a big city. Thailand is my country.\nThis is my friend, Tom. Tom is from England.",
           "glossary": {
             "England": "ประเทศอังกฤษ"
           },
@@ -275,6 +275,33 @@
           "text": "Where are you ___?",
           "answer": [
             "from"
+          ]
+        },
+        {
+          "id": "d003-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-where"
+            },
+            {
+              "vocabId": "v-country"
+            },
+            {
+              "vocabId": "v-city"
+            },
+            {
+              "vocabId": "v-sit"
+            },
+            {
+              "vocabId": "v-big"
+            },
+            {
+              "vocabId": "v-fish"
+            }
           ]
         }
       ]
