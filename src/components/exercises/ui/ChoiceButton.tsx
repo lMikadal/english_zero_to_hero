@@ -8,7 +8,7 @@ import { toneClass, type Tone } from "./tone";
  * (true = right, false = wrong, undefined = none). `index` / `selectedIndex` give the roving tabindex.
  */
 export function ChoiceButton({
-  children, index, selectedIndex, selected, tone, mark, disabled, onClick,
+  children, index, selectedIndex, selected, tone, mark, disabled, onClick, center = false,
 }: {
   children: ReactNode;
   index: number;
@@ -18,6 +18,8 @@ export function ChoiceButton({
   mark?: boolean;
   disabled: boolean;
   onClick(): void;
+  /** Centre the label (short two-up options such as minimal pairs). */
+  center?: boolean;
 }) {
   return (
     <button
@@ -29,7 +31,7 @@ export function ChoiceButton({
       data-state={tone}
       disabled={disabled}
       onClick={onClick}
-      className={`min-h-11 w-full rounded-xl border-2 px-3 py-2 text-left text-base ${toneClass(tone)}`}
+      className={`min-h-11 w-full rounded-xl border-2 px-3 py-2 ${center ? "text-center" : "text-left"} text-base ${toneClass(tone)}`}
     >
       {children}
       {mark !== undefined ? <span className="ml-2"><Mark ok={mark} /></span> : null}

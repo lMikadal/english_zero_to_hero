@@ -19,15 +19,17 @@ export type LearnerHome = {
 export async function getLearnerHome(db: DbOrTx, userId: string, now: Date = new Date()): Promise<LearnerHome> {
   const profile = await getProfile(db, userId);
   const today = localDate(now, resolveTimeZone(profile.timezone));
-  const [streakRow] = await db.select().from(streaks).where(eq(streaks.userId, userId));
-  const [active] = await db
-    .select({ d: activityDays.localDate })
-    .from(activityDays)
-    .where(and(eq(activityDays.userId, userId), eq(activityDays.localDate, today)));
-  const [last] = await db
-    .select({ status: progress.status })
-    .from(progress)
-    .where(and(eq(progress.userId, userId), eq(progress.day, COURSE_DAYS)));
+  const [[streakRow], [active], [last]] = await Promise.all([
+    db.select().from(streaks).where(eq(streaks.userId, userId)),
+    db
+      .select({ d: activityDays.localDate })
+      .from(activityDays)
+      .where(and(eq(activityDays.userId, userId), eq(activityDays.localDate, today))),
+    db
+      .select({ status: progress.status })
+      .from(progress)
+      .where(and(eq(progress.userId, userId), eq(progress.day, COURSE_DAYS))),
+  ]);
 
   const lastActive = streakRow?.lastActiveDate;
   const alive = lastActive != null && daysBetween(lastActive, today) <= 1;

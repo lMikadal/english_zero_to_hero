@@ -45,7 +45,7 @@ export function MinimalPair({ exercise, onAnswer, onContinue, result }: Exercise
                 const tone: Tone = shown ? (side === pair.answer ? "right" : picks[i] === side ? "wrong" : "idle") : picks[i] === side ? "selected" : "idle";
                 const mark = shown ? (side === pair.answer ? true : picks[i] === side ? false : undefined) : undefined;
                 return (
-                  <ChoiceButton key={side} index={si} selectedIndex={pickIndex} selected={picks[i] === side} tone={tone} mark={mark} disabled={locked} onClick={() => choose(i, side)}>
+                  <ChoiceButton key={side} index={si} selectedIndex={pickIndex} selected={picks[i] === side} tone={tone} mark={mark} center disabled={locked} onClick={() => choose(i, side)}>
                     {pair[side]}
                   </ChoiceButton>
                 );
