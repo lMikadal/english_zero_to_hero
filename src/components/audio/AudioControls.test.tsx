@@ -29,7 +29,7 @@ describe("PlayButtons", () => {
   it("shows the fallback when playing fails with AudioUnavailableError", async () => {
     const source = fakeAudio();
     source.play.mockRejectedValueOnce(new AudioUnavailableError());
-    renderWithAudio(<Harness />, source);
+    renderWithAudio(<Harness onSkip={() => {}} />, source);
     await userEvent.click(screen.getByRole("button", { name: "ฟัง" }));
     expect(await screen.findByRole("button", { name: "ข้าม" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "ฟัง" })).not.toBeInTheDocument();

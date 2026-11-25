@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { CHOICE, CheckButton, Instruction } from "./sound-ui";
+import { CHOICE, CheckButton, Instruction, Mark, radioKeys, radioTabIndex } from "./sound-ui";
 
 export function ListenChoose({ exercise, onAnswer, onContinue, result }: ExerciseProps<"listen_choose">) {
   const audio = useExerciseAudio(exercise.audioText);
@@ -22,19 +23,19 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
     <section className="flex flex-col gap-4">
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <PlayButtons audio={audio} text={exercise.audioText} />
-      <AudioFallback audio={audio} onSkip={onContinue}>
-        <p>{exercise.audioText}</p>
-      </AudioFallback>
+      <AudioFallback audio={audio} onSkip={onContinue} note={GRADED_NO_AUDIO_NOTE} />
       <div>
-        <p className="text-base font-medium">{exercise.question.en}</p>
+        <p lang="en" className="text-base font-medium">{exercise.question.en}</p>
         <p className="text-sm text-zinc-600">{exercise.question.th}</p>
       </div>
-      <div role="radiogroup" aria-label={exercise.question.en} className="flex flex-col gap-2">
+      <div role="radiogroup" aria-label={exercise.question.en} onKeyDown={(e) => { if (!locked) radioKeys(e, exercise.choices.length, selected, setSelected); }} className="flex flex-col gap-2">
         {exercise.choices.map((choice, i) => (
           <button
             key={i}
             type="button"
             role="radio"
+            lang="en"
+            tabIndex={radioTabIndex(selected, i)}
             aria-checked={selected === i}
             data-state={stateOf(i)}
             disabled={locked}
@@ -42,6 +43,7 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
             className={CHOICE}
           >
             {choice}
+            <Mark state={stateOf(i)} />
           </button>
         ))}
       </div>

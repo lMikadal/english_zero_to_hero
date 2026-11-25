@@ -11,11 +11,11 @@ export function PhonemeIntro({ exercise, onContinue }: ExerciseProps<"phoneme_in
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <p className="text-center text-5xl font-bold">{exercise.ipa}</p>
       <p className="rounded-lg bg-amber-50 p-3 text-base">{exercise.tipTh}</p>
-      <AudioFallback audio={audio} onSkip={onContinue} revealable={false} />
+      <AudioFallback audio={audio} />
       <ul className="flex flex-col gap-3">
         {exercise.examples.map((word) => (
           <li key={word} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-zinc-50 p-3">
-            <span className="text-xl font-semibold">{word}</span>
+            <span lang="en" className="text-xl font-semibold">{word}</span>
             <PlayButtons audio={audio} text={word} />
           </li>
         ))}

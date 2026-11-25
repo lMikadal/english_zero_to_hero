@@ -19,11 +19,11 @@ export function RepeatAfterMe({ exercise, onAnswer, onContinue, result }: Exerci
     <section className="flex flex-col gap-4">
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <div className="rounded-lg bg-zinc-50 p-4">
-        <p className="text-xl font-semibold">{exercise.text}</p>
+        <p lang="en" className="text-xl font-semibold">{exercise.text}</p>
         {exercise.ipa && <p className="mt-1 text-base text-zinc-600">{exercise.ipa}</p>}
       </div>
       <PlayButtons audio={audio} text={exercise.text} />
-      <AudioFallback audio={audio} onSkip={onContinue} revealable={false} />
+      <AudioFallback audio={audio} onSkip={onContinue} />
       <SelfRating chosen={chosen} locked={locked} onRate={rate} />
     </section>
   );

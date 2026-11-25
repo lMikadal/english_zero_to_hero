@@ -18,11 +18,11 @@ export function Shadowing({ exercise, onAnswer, onContinue, result }: ExercisePr
   return (
     <section className="flex flex-col gap-4">
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <AudioFallback audio={audio} onSkip={onContinue} revealable={false} />
+      <AudioFallback audio={audio} onSkip={onContinue} />
       <ol className="flex flex-col gap-3">
         {exercise.lines.map((line, i) => (
           <li key={i} className="flex flex-col gap-2 rounded-lg bg-zinc-50 p-3">
-            <p className="text-lg font-medium">{line}</p>
+            <p lang="en" className="text-lg font-medium">{line}</p>
             <PlayButtons audio={audio} text={line} />
           </li>
         ))}
