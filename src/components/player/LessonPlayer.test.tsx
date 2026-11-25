@@ -151,7 +151,12 @@ describe("LessonPlayer", () => {
   });
 
   it("shows ยังไม่รองรับ for a type without a component, lets the learner skip, and records nothing", async () => {
-    const { sent, sink } = setup(["d003-write-04", "d001-listen-01"]);
+    // no week-1 exercise is unsupported any more, so make one: a roleplay (no component, M2)
+    const roleplay = { ...get("d001-listen-01"), id: "d001-rp-01", type: "roleplay" } as unknown as Exercise;
+    const base = lessonOf(["d001-listen-01"]);
+    const lesson: Lesson = { ...base, sections: [{ ...base.sections[0], exercises: [roleplay, get("d001-listen-01")] }] };
+    const { sink, sent } = fakeSink();
+    renderWithAudio(<LessonPlayer lesson={lesson} vocab={{}} sink={sink} />, fakeAudio());
     expect(screen.getByText("ยังไม่รองรับ")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "ข้าม" }));
     expect(screen.getByText("ข้อ 2 / 2")).toBeInTheDocument();
