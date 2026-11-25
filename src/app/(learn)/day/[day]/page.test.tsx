@@ -68,6 +68,20 @@ describe("day page robustness", () => {
     getLessonMock.fail = false;
   });
 
+  it("shows the Thai database-error screen, not a crash, when the current day cannot be read", async () => {
+    getCurrentDay.mockRejectedValue(new Error("connect ECONNREFUSED"));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    render(await DayPage({ params: params("1") }));
+    expect(screen.getByText("เชื่อมต่อฐานข้อมูลไม่ได้ ลองใหม่อีกครั้ง")).toBeInTheDocument();
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
+  });
+
+  it("still answers 404 for a malformed day when the database is down", async () => {
+    getCurrentDay.mockRejectedValue(new Error("down"));
+    await expect(DayPage({ params: params("007") })).rejects.toMatchObject({ digest: expect.stringContaining("404") });
+  });
+
   it("is always rendered dynamically (the lock must never be cached)", async () => {
     const mod = await import("./page");
     expect(mod.dynamic).toBe("force-dynamic");
