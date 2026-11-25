@@ -271,7 +271,33 @@ def settings(x, c, label, selected):
     text(foot, "ธีมจำไว้ในอุปกรณ์นี้ แต่ละเครื่องตั้งต่างกันได้", 12, c["faint"], TH, "Regular", textAlign="center", sizingH="fill")
     return s
 
+NAVSTYLE = ["tabs"]
+
+def nav_float(parent, c, active):
+    """Floating capsule (A) with a large raised circle for the current menu (C)."""
+    wrap = col(parent, "Floating nav wrap", pad=[0, 20, 16, 20])
+    inner = frame(wrap, "Floating nav", layout="horizontal", sizingH="fill", sizingV="hug", crossAlign="max",
+                  mainAlign="spaceBetween", padding=[0, 14, 9, 14], fill="none")
+    frame(inner, "Capsule", w=320, h=64, x=0, y=22, absolute=True, cornerRadius=32, fill=c["surface2"],
+          stroke=c["border"], strokeWeight=1)
+    for icon, lab in [("⌂", "วันนี้"), ("↻", "ฝึกเพิ่ม"), ("◔", "พัฒนาการ"), ("⚙", "ตั้งค่า")]:
+        on = lab == active
+        if on:
+            t = col(inner, f"Item / {lab} (current)", gap=3, sizingH="hug", crossAlign="center")
+            circ = frame(t, "Current", layout="horizontal", mainAlign="center", crossAlign="center", w=58, h=58,
+                         sizingH="fixed", sizingV="fixed", cornerRadius=29, fill=c["accent"], stroke=c["bg"], strokeWeight=4,
+                         strokeAlign="outside")
+            text(circ, icon, 22, c["accentText"], IPA, "Regular")
+            text(t, lab, 11, c["accent"], TH, "Bold")
+        else:
+            t = col(inner, f"Item / {lab}", gap=3, pad=[0, 6, 3, 6], sizingH="hug", crossAlign="center")
+            text(t, icon, 18, c["muted"], IPA, "Regular")
+            text(t, lab, 11, c["muted"], TH, "Medium")
+    return wrap
+
 def navbar(parent, c, active):
+    if NAVSTYLE[0] == "float":
+        return nav_float(parent, c, active)
     bar = row(parent, "Tab bar", gap=0, pad=[8, 12, 20, 12], fill=c["surface"], stroke=c["border"], strokeWeight=1,
               strokeSides=[True, False, False, False])
     for icon, lab in [("⌂", "วันนี้"), ("↻", "ฝึกเพิ่ม"), ("◔", "พัฒนาการ")]:
@@ -300,7 +326,7 @@ def practice(x, c, label):
     head = col(top, "Header", gap=4, pad=[24, 20, 8, 20])
     text(head, "ฝึกเพิ่ม", 22, c["text"], TH, "Bold")
     text(head, "ฝึกได้ไม่จำกัด ไม่กระทบคะแนนบทเรียนประจำวัน", 13, c["muted"], TH, "Regular")
-    body = col(top, "Body", gap=18, pad=[10, 20, 0, 20])
+    body = col(top, "Body", gap=14, pad=[6, 20, 0, 20])
     due = row(body, "Vocab review", gap=12, pad=14, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, mainAlign="spaceBetween")
     dl = col(due, "Text", gap=2)
     text(dl, "ทวนคำศัพท์", 15, c["text"], TH, "Bold")
@@ -319,10 +345,10 @@ def practice(x, c, label):
     sec2 = col(body, "Pick your own", gap=8)
     section_title(sec2, c, "เลือกฝึกเอง")
     w1 = frame(sec2, "Skill chips", layout="horizontal", wrap=True, gap=8, crossGap=8, sizingH="fill", sizingV="hug", fill="none")
-    for i, lab in enumerate(["ออกเสียง", "ฟัง", "พูด", "อ่าน", "เขียน", "คำศัพท์"]):
+    for i, lab in enumerate(["ออกเสียง", "ฟัง", "พูด", "อ่าน", "เขียน"]):
         chip(w1, c, lab, on=(i == 1))
     w2 = frame(sec2, "Topic chips", layout="horizontal", wrap=True, gap=8, crossGap=8, sizingH="fill", sizingV="hug", fill="none")
-    for i, lab in enumerate(["ทักทาย", "ตัวอักษร A–Z", "เสียง /e/", "เสียง /ɪ/", "ประเทศและเมือง"]):
+    for i, lab in enumerate(["ทักทาย", "ตัวอักษร A–Z", "เสียง /e/"]):
         chip(w2, c, lab, on=(i == 0))
     r = row(sec2, "Start custom", gap=10, mainAlign="spaceBetween")
     text(r, "ฟัง · ทักทาย · 10 ข้อ", 13, c["muted"], TH, "Regular")
@@ -468,7 +494,7 @@ def home_nav_variant(x, c, label, kind):
             st = col(stats, f"Stat / {small}", gap=4, pad=14, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1)
             text(st, big, 18, c["text"], TH, "Bold")
             text(st, small, 11, c["muted"], TH, "Regular", sizingH="fill", textAutoResize="height")
-        (nav_pill if kind == "pill" else nav_center)(s, c, "วันนี้")
+        {"pill": nav_pill, "center": nav_center, "float": nav_float}[kind](s, c, "วันนี้")
     return s
 
 GAP = 420
@@ -486,6 +512,11 @@ progress_screen(10 * GAP + 180, DARK, "11 · พัฒนาการ")
 home_nav_variant(11 * GAP + 300, DARK, "เมนูแบบ A · แถบลอยทรงแคปซูล (4 ปุ่ม รวมตั้งค่า)", "pill")
 home_nav_variant(12 * GAP + 300, DARK, "เมนูแบบ B · ไม่มีแถบล่าง ใช้หน้าแรกเป็นศูนย์กลาง", "hub")
 home_nav_variant(13 * GAP + 300, DARK, "เมนูแบบ C · ปุ่มเรียนต่ออยู่กลางแถบ", "center")
+NAVSTYLE[0] = "float"
+home_nav_variant(14 * GAP + 420, DARK, "เมนูแบบ D · ลอยแบบ A + เน้นเมนูปัจจุบันแบบ C · วันนี้", "float")
+practice(15 * GAP + 420, DARK, "เมนูแบบ D · อยู่ที่ ฝึกเพิ่ม")
+progress_screen(16 * GAP + 420, DARK, "เมนูแบบ D · อยู่ที่ พัฒนาการ")
+home_nav_variant(17 * GAP + 420, LIGHT, "เมนูแบบ D · โหมดสว่าง", "float")
 
 json.dump(steps, open(sys.argv[1], "w"), ensure_ascii=False, indent=0)
 print(len(steps), "steps")
