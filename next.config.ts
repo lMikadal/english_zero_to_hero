@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   // the e2e container reaches the dev server as http://app:3000
-  allowedDevOrigins: ["app"],
+  allowedDevOrigins: ["app", "e2e-target"],
 };
 
 export default nextConfig;

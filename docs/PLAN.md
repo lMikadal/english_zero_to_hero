@@ -39,13 +39,13 @@
 - [x] นิยามทีม AI (`.claude/agents/`), แผน branch/PR และแนวทาง TDD
 - [x] Dockerfile + compose + Makefile ให้ทุกอย่างรันใน Docker
 - [x] Scaffold โปรเจกต์ Next.js + TypeScript + Tailwind + Vitest
-- [ ] Playwright E2E รันผ่านจริงใน Docker (ตั้งค่าและเขียนเทสต์แรกแล้ว แต่ยังไม่เคยรัน เพราะดาวน์โหลด image ของ Playwright ไม่สำเร็จ)
+- [x] Playwright E2E รันผ่านจริงใน Docker บน CI (ครั้งแรก 2026-11-25) บนเครื่อง dev ยังรัน `make e2e` ไม่ได้ เพราะดาวน์โหลด image ของ Playwright ไม่สำเร็จบนเครือข่ายนี้
 - [ ] ลอง build image ชุด prod (เขียน stage ไว้แล้ว ยังไม่เคย build)
 - [x] Zod schema สำหรับตรวจไฟล์บทเรียนและคลังคำศัพท์ + สคริปต์ `pnpm content:validate`
 - [ ] สคริปต์ `pnpm vocab:import` นำเข้ารายการ Oxford 3000/5000 (headword, pos, level) แล้วสร้างโครงคำใน `content/vocab/`
 - [ ] จัดคำ Oxford 3000 ทุกคำเข้าหมวด (topic) และวางแผนว่าคำไหนสอนวันที่เท่าไร
 - [x] `docker-compose.yml` (PostgreSQL 17), `.env.example`, Drizzle config + migration แรก (schema, `make db-*`, integration test กับ Postgres จริง)
-- [ ] ตั้ง CI ให้รัน lint, typecheck, test, ตรวจ content และรัน migration กับ Postgres ใน CI
+- [x] ตั้ง CI ให้รัน lint, typecheck, test, ตรวจ content, ตรวจ migration และ E2E ทุก PR (`.github/workflows/ci.yml`)
 
 ### Milestone 1: MVP (เรียนได้จริง 30 วันแรก)
 - [ ] Lesson Player ครอบคลุม exercise ทุกประเภทของเฟส 1
