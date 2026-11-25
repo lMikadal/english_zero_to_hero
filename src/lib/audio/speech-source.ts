@@ -83,7 +83,6 @@ export function createSpeechAudioSource(options: Options = {}): AudioSource {
       utterance.lang = voice ? voice.lang.replace("_", "-") : LANG[accent];
       utterance.rate = opts.rate ?? 1;
       return new Promise<void>((resolve, reject) => {
-        let timer: ReturnType<typeof setTimeout> | undefined;
         const settle = () => {
           clearTimeout(timer);
           opts.signal?.removeEventListener("abort", onAbort);
@@ -105,7 +104,7 @@ export function createSpeechAudioSource(options: Options = {}): AudioSource {
           else reject(new AudioPlaybackError(`speech failed: ${e.error}`));
         };
         // Safety net: some engines never fire end/error. Always settle, generously longer than the speech.
-        timer = setTimeout(() => {
+        const timer = setTimeout(() => {
           settle();
           synth.cancel();
           resolve();

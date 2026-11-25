@@ -1,12 +1,13 @@
 "use client";
-import { useEffect, useReducer, useRef, useState } from "react";
-import { correctAnswerText, gradeExercise, isRetryable } from "@/lib/answers/grade";
+import type { ReactNode } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { correctAnswerText, gradeExercise, isRetryable, type Grade } from "@/lib/answers/grade";
 import { newId, type AttemptAnswer } from "@/lib/attempts/contract";
 import type { ExerciseType, Lesson } from "@/lib/content/schema";
-import type { CompleteResult, SyncSink } from "@/lib/offline/sink";
+import type { SyncSink } from "@/lib/offline/sink";
 import { isRegistered, renderExercise } from "@/components/exercises/registry";
 import type { VocabLookup } from "@/components/exercises/types";
-import { CompletionScreen } from "./CompletionScreen";
+import { CompletionScreen, type Completion } from "./CompletionScreen";
 import {
   createPlayerState, currentItem, elapsedMs, canAdvance, firstAttemptScore, isRetryRound, playerReducer, recordsAttempt,
 } from "./player-state";
@@ -25,19 +26,42 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   const [state, dispatch] = useReducer(playerReducer, undefined, () =>
     createPlayerState({ lesson, sessionId: newId(), now: clock(), isSupported: isRegistered }),
   );
-  const [completion, setCompletion] = useState<CompleteResult | null>(null);
+  const [completion, setCompletion] = useState<Completion | null>(null);
+  const [answered] = useState(() => new Set<string>()); // step keys already sent: one attempt per presentation
   const completing = useRef(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const shownKey = useRef<string | null>(null);
+
+  const { sessionId } = state;
+  const complete = useCallback(() => {
+    setCompletion(null);
+    const fail = () => setCompletion({ status: "error" });
+    try {
+      sink.completeLesson({ day: lesson.day, sessionId, completedAt: new Date().toISOString() }).then(setCompletion, fail);
+    } catch {
+      fail();
+    }
+  }, [sink, lesson.day, sessionId]);
 
   useEffect(() => {
     if (state.phase !== "complete" || completing.current) return;
     completing.current = true;
-    sink
-      .completeLesson({ day: lesson.day, sessionId: state.sessionId, completedAt: new Date().toISOString() })
-      .then(setCompletion, () => setCompletion({ status: "rejected", code: 400 }));
-  }, [state.phase, state.sessionId, sink, lesson.day]);
+    complete();
+  }, [state.phase, complete]);
+
+  const stepKey = state.phase === "playing" ? currentItem(state).key : null;
+  useEffect(() => {
+    // New step: show it from the top and announce it. Not on the first render (do not steal focus on load).
+    if (stepKey === null) return;
+    if (shownKey.current !== null && shownKey.current !== stepKey) {
+      window.scrollTo(0, 0);
+      heading.current?.focus();
+    }
+    shownKey.current = stepKey;
+  }, [stepKey]);
 
   if (state.phase === "complete") {
-    return <CompletionScreen result={completion} localScore={firstAttemptScore(state)} />;
+    return <CompletionScreen day={lesson.day} result={completion} localScore={firstAttemptScore(state)} onRetry={complete} />;
   }
 
   const item = currentItem(state);
@@ -46,9 +70,15 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   const graded = recordsAttempt(item);
 
   const onAnswer = (answer: AttemptAnswer) => {
-    if (!graded || record) return; // one attempt per exercise per round
+    if (!graded || record || answered.has(item.key)) return; // one attempt per exercise per round
     const grade = gradeExercise(exercise, answer);
-    if ("error" in grade) return;
+    if ("error" in grade) {
+      // a component produced an answer the contract rejects: never strand the learner on it
+      console.error(`Cannot grade ${exercise.id}: ${grade.error}`);
+      dispatch({ type: "broken", key: item.key });
+      return;
+    }
+    answered.add(item.key);
     const now = clock();
     sink.sendAttempt({
       id: newId(),
@@ -60,10 +90,10 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
       durationMs: elapsedMs(state, now),
       createdAt: new Date().toISOString(),
     });
-    dispatch({ type: "answer", answer, grade, now });
+    dispatch({ type: "answer", key: item.key, answer, grade, now });
   };
-  const goNext = () => dispatch({ type: "next", now: clock() });
-  const skip = () => dispatch({ type: "skip", now: clock() });
+  const goNext = () => dispatch({ type: "next", key: item.key, now: clock() });
+  const skip = () => dispatch({ type: "skip", key: item.key, now: clock() });
 
   const position = state.items.filter((i) => i.attemptNo === item.attemptNo);
   const x = position.indexOf(item) + 1;
@@ -72,10 +102,10 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-4 p-4">
       <header className="flex flex-col gap-1">
-        <div className="flex items-center justify-between text-sm text-zinc-600">
+        <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-sm font-normal text-zinc-600 outline-none">
           <span>{item.step.sectionTitle.th}</span>
           <span>ข้อ {x} / {total}</span>
-        </div>
+        </h2>
         <div className="h-2 rounded-full bg-zinc-200" aria-hidden>
           <div className="h-2 rounded-full bg-sky-600" style={{ width: `${(x / total) * 100}%` }} />
         </div>
@@ -94,7 +124,7 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
         </div>
       )}
 
-      {record && <Feedback type={exercise.type} correct={record.grade.correct} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />}
+      <Feedback type={exercise.type} grade={record?.grade} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />
 
       {graded && (
         <button type="button" disabled={!canAdvance(state)} onClick={goNext} className={`${BTN} bg-sky-600 text-white disabled:bg-zinc-300 disabled:text-zinc-600`}>
@@ -105,21 +135,29 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   );
 }
 
-function Feedback({ type, correct, lines }: { type: ExerciseType; correct: boolean; lines: string[] }) {
-  if (!isRetryable(type)) {
-    return <p role="status" className="rounded-lg bg-zinc-100 p-3">บันทึกแล้ว</p>;
+/** One live region, always mounted, so screen readers announce the text when it changes. */
+function Feedback({ type, grade, lines }: { type: ExerciseType; grade: Grade | undefined; lines: string[] }) {
+  let body: ReactNode = null;
+  let tone = "";
+  if (grade && !isRetryable(type)) {
+    body = "บันทึกแล้ว";
+    tone = "bg-zinc-100";
+  } else if (grade?.correct) {
+    body = <span className="font-semibold">✓ ถูกต้อง</span>;
+    tone = "bg-green-100 text-green-900";
+  } else if (grade) {
+    body = (
+      <>
+        <span className="block font-semibold">✗ ยังไม่ถูก</span>
+        {lines.length > 0 && (
+          <>
+            <span className="block text-sm">คำตอบที่ถูกต้อง</span>
+            {lines.map((l, i) => <span key={i} lang="en" className="block font-medium">{l}</span>)}
+          </>
+        )}
+      </>
+    );
+    tone = "bg-red-100 text-red-900";
   }
-  return correct ? (
-    <p role="status" className="rounded-lg bg-green-100 p-3 font-semibold text-green-900">ถูกต้อง</p>
-  ) : (
-    <div role="status" className="rounded-lg bg-red-100 p-3 text-red-900">
-      <p className="font-semibold">ยังไม่ถูก</p>
-      {lines.length > 0 && (
-        <>
-          <p className="text-sm">คำตอบที่ถูกต้อง</p>
-          <ul>{lines.map((l, i) => <li key={i} className="font-medium">{l}</li>)}</ul>
-        </>
-      )}
-    </div>
-  );
+  return <div role="status" className={body ? `rounded-lg p-3 ${tone}` : ""}>{body}</div>;
 }

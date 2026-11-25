@@ -24,6 +24,8 @@ vi.mock("@/components/exercises/registry", async () => {
   };
 });
 
+vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+
 function setup(ids: string[]) {
   const sent: AttemptInput[] = [];
   const sink = {

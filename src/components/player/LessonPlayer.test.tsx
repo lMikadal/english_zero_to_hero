@@ -41,6 +41,8 @@ const DONE: CompleteResult = {
   response: { progress: { day: 1, status: "done", score: 0.8, completedAt: "2026-11-25T10:00:00.000Z" }, streak: { current: 3, longest: 5 }, currentDay: 2 } satisfies CompleteLessonResponse,
 };
 
+vi.spyOn(window, "scrollTo").mockImplementation(() => {}); // jsdom has no layout
+
 describe("LessonPlayer", () => {
   it("shows the step counter, the section title and the first exercise", () => {
     setup(["d001-listen-01", "d001-listen-02"]);
@@ -203,16 +205,6 @@ describe("LessonPlayer", () => {
     expect(await screen.findByText(/สตรีค 3 วัน/)).toBeInTheDocument();
     expect(screen.getByText(/80%/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/2");
-  });
-
-  it("after day 365 there is no next-day link, only home", async () => {
-    const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 365 } });
-    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"], 1)} vocab={{}} sink={sink} />, fakeAudio());
-    await answerListen01(true);
-    await next();
-    await screen.findByText(/สตรีค/);
-    // day 1 replayed with currentDay 365: a link to 365 is fine; the cap case is lesson.day === currentDay
-    expect(screen.getByRole("link", { name: "กลับหน้าแรก" })).toHaveAttribute("href", "/");
   });
 
   it("when the finished day is the current day cap (365) it does not link to /day/365 again", async () => {
