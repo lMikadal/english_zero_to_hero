@@ -5,7 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { VocabLookup } from "@/components/exercises/types";
-import { ContentError, loadLesson } from "./loader";
+import { loadLesson } from "./loader";
 import { vocabItemSchema, type Lesson, type VocabItem } from "./schema";
 
 const defaultRoot = () => path.resolve(process.cwd(), "content");
@@ -19,14 +19,8 @@ export function getLesson(day: number, root = defaultRoot()): Lesson | null {
   if (!Number.isInteger(day) || day < 1 || day > 365) return null;
   const key = `${root}\0${day}`;
   if (cached() && lessons.has(key)) return lessons.get(key)!;
-  let lesson: Lesson | null;
-  try {
-    lesson = loadLesson(day, root);
-  } catch (e) {
-    const missing = e instanceof ContentError && e.problems.length === 1 && e.problems[0].message === "file not found";
-    if (!missing) throw e;
-    lesson = null;
-  }
+  const file = path.join(root, "lessons", `day-${String(day).padStart(3, "0")}.json`);
+  const lesson = fs.existsSync(file) ? loadLesson(day, root) : null; // an invalid file throws; a missing one is null
   if (cached()) lessons.set(key, lesson);
   return lesson;
 }
@@ -57,17 +51,51 @@ function readVocabIndex(root: string): Map<string, VocabItem> {
   return index;
 }
 
-/** word, Thai meaning and IPA for the given vocab ids. Unknown ids are left out. */
-export function getVocabLookup(ids: readonly string[], root = defaultRoot()): VocabLookup {
+function vocabIndex(root: string): Map<string, VocabItem> {
   let index = cached() ? vocabIndexes.get(root) : undefined;
   if (!index) {
     index = readVocabIndex(root);
     if (cached()) vocabIndexes.set(root, index);
   }
+  return index;
+}
+
+/** word, Thai meaning and IPA for the given vocab ids. Unknown ids are left out. */
+export function getVocabLookup(ids: readonly string[], root = defaultRoot()): VocabLookup {
+  const index = vocabIndex(root);
   const out: VocabLookup = {};
   for (const id of ids) {
     const v = index.get(id);
     if (v) out[id] = { word: v.word, th: v.th, ipa: { us: v.ipa.us, uk: v.ipa.uk } };
   }
+  return out;
+}
+
+const taught = new Map<string, ReadonlyMap<string, string>>();
+
+/**
+ * Every word taught on or before `day` (vocab id -> word): what deriveTags needs, so review days that teach
+ * nothing still get vocab tags. A lesson file that is broken is skipped (its words are simply not tagged)
+ * rather than failing every attempt; `content:validate` is where broken files are reported.
+ */
+export function getTaughtWords(day: number, root = defaultRoot()): ReadonlyMap<string, string> {
+  const last = Math.min(Math.max(Math.trunc(day), 0), 365);
+  const key = `${root}\0${last}`;
+  if (cached() && taught.has(key)) return taught.get(key)!;
+  const index = vocabIndex(root);
+  const out = new Map<string, string>();
+  for (let d = 1; d <= last; d++) {
+    let lesson: Lesson | null = null;
+    try {
+      lesson = getLesson(d, root);
+    } catch {
+      continue;
+    }
+    for (const id of lesson?.vocab ?? []) {
+      const v = index.get(id);
+      if (v) out.set(id, v.word);
+    }
+  }
+  if (cached()) taught.set(key, out);
   return out;
 }
