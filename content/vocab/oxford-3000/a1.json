@@ -419,7 +419,7 @@
     "ipa": {"us": "/pliːz/", "uk": "/pliːz/"},
     "th": "กรุณา, ได้โปรด, (ใช้ขอร้องอย่างสุภาพ เช่น ช่วย...หน่อย)",
     "topics": ["greetings", "communication"],
-    "examples": [{"en": "Please sit down.", "th": "เชิญนั่งก่อน"}],
+    "examples": [{"en": "Yes, please.", "th": "ขอด้วยค่ะ/ครับ"}],
     "collocations": ["yes, please"]
   }
 ]
