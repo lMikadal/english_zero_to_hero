@@ -1,7 +1,7 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ReadPassage } from "./ReadPassage";
-import { baseProps, exercise, renderWithAudio } from "./text-test-helpers";
+import { baseProps, exercise, renderWithAudio } from "./test-helpers";
 
 const ex = exercise("d001-read-01", "read_passage");
 const check = () => screen.getByRole("button", { name: "ตรวจคำตอบ" });

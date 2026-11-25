@@ -2,7 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { gradeExercise } from "@/lib/answers/grade";
 import { ArrangeWords } from "./ArrangeWords";
-import { baseProps, exercise, renderWithAudio } from "./text-test-helpers";
+import { baseProps, exercise, renderWithAudio } from "./test-helpers";
 
 const ex = exercise("d001-write-01", "arrange_words");
 const placed = () => within(screen.getByRole("list", { name: "คำตอบของคุณ" }));

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AudioUnavailableError } from "@/lib/audio/source";
 import { AudioPlaybackError } from "@/lib/audio/speech-source";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "./AudioControls";
-import { fakeAudio, renderWithAudio } from "./audio-test-utils";
+import { fakeAudio, renderWithAudio } from "@/components/exercises/test-helpers";
 
 function Harness({ onSkip, note }: { onSkip?: () => void; note?: string }) {
   const audio = useExerciseAudio("Hello there");

@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { SpeakAnswer } from "./SpeakAnswer";
-import { baseProps, exercise, fakeAudio, renderWithAudio } from "./text-test-helpers";
+import { baseProps, exercise, fakeAudio, renderWithAudio } from "./test-helpers";
 
 const ex = exercise("d001-speak-02", "speak_answer");
 
