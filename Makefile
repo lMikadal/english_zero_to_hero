@@ -39,7 +39,10 @@ test: postgres-up ## Unit + component + integration tests (Vitest, real Postgres
 test-unit: ## Unit + component tests only (no database needed)
 	$(RUN) pnpm test:unit
 
-e2e: ## Playwright E2E at 360px (starts app if needed)
+# The dev database must exist and be migrated before the app is used, so `e2e` migrates it first (db-migrate
+# creates it when missing). The lesson test expects a CLEAN learner (day 1, streak 0): CI is always fresh; locally run
+# `make db-reset CONFIRM=english_zero_to_hero_dev` first.
+e2e: db-migrate ## Playwright E2E at 360px (migrates the dev DB; needs a clean learner, see db-reset)
 	$(COMPOSE) --profile e2e run --rm --build e2e
 
 lint: ## ESLint
@@ -49,6 +52,11 @@ typecheck: ## tsc --noEmit
 	$(RUN) pnpm typecheck
 
 check: lint typecheck test validate ## lint + typecheck + test + content validation
+
+# For agents working in a git worktree: same compose project (so same postgres/volumes) but a throwaway container with
+# its own anonymous /app/.next volume, so generated types from another checkout cannot break tsc. No database needed.
+worktree-check: ## lint + typecheck + unit tests in a one-off container (use this in git worktrees, not `check`)
+	$(COMPOSE) -p english_zero_to_hero run --rm --no-deps -T -v /app/.next app sh -c "pnpm lint && pnpm typecheck && pnpm test:unit"
 
 validate: ## Validate everything under content/ (schema + cross-file rules)
 	$(RUN) pnpm content:validate
