@@ -245,6 +245,69 @@ describe("LessonPlayer", () => {
     expect(await screen.findByText("จะบันทึกเมื่อออนไลน์")).toBeInTheDocument();
   });
 
+  it("queued becomes done: when the sink has nothing pending the player asks again with the same day and sessionId", async () => {
+    let pending = 1;
+    const listeners = new Set<() => void>();
+    const answers: CompleteResult[] = [{ status: "queued" }, DONE];
+    const sink = {
+      sendAttempt: vi.fn(),
+      completeLesson: vi.fn(async () => answers.shift() ?? DONE),
+      pendingCount: () => pending,
+      subscribe: (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb); }; },
+    } satisfies SyncSink;
+    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    expect(await screen.findByText("จะบันทึกเมื่อออนไลน์")).toBeInTheDocument();
+    expect(sink.completeLesson).toHaveBeenCalledTimes(1);
+
+    listeners.forEach((cb) => cb()); // still pending: nothing to do
+    expect(sink.completeLesson).toHaveBeenCalledTimes(1);
+
+    pending = 0;
+    await act(async () => listeners.forEach((cb) => cb()));
+    await waitFor(() => expect(screen.getByText(/สตรีค 3 วัน/)).toBeInTheDocument());
+    expect(screen.queryByText("จะบันทึกเมื่อออนไลน์")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/2");
+    const [first, second] = sink.completeLesson.mock.calls as unknown as [[{ day: number; sessionId: string }], [{ day: number; sessionId: string }]];
+    expect(second[0]).toMatchObject({ day: first[0].day, sessionId: first[0].sessionId });
+  });
+
+  it("stops listening to the sink when it unmounts while queued", async () => {
+    const listeners = new Set<() => void>();
+    const sink = {
+      sendAttempt: vi.fn(),
+      completeLesson: vi.fn(async () => ({ status: "queued" }) as CompleteResult),
+      pendingCount: () => 1,
+      subscribe: (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb); }; },
+    } satisfies SyncSink;
+    const view = renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    await screen.findByText("จะบันทึกเมื่อออนไลน์");
+    expect(listeners.size).toBe(1);
+    view.unmount();
+    expect(listeners.size).toBe(0);
+  });
+
+  it("calls onDone once, and only for a done result", async () => {
+    const onDone = vi.fn();
+    setup(["d001-listen-01"], DONE, { onDone });
+    await answerListen01(true);
+    await next();
+    await screen.findByText(/สตรีค 3 วัน/);
+    expect(onDone).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onDone when the result is queued", async () => {
+    const onDone = vi.fn();
+    setup(["d001-listen-01"], { status: "queued" }, { onDone });
+    await answerListen01(true);
+    await next();
+    await screen.findByText("จะบันทึกเมื่อออนไลน์");
+    expect(onDone).not.toHaveBeenCalled();
+  });
+
   it("completion rejected: shows a clear Thai error", async () => {
     setup(["d001-listen-01"], { status: "rejected", code: 409 });
     await answerListen01(true);
@@ -301,6 +364,44 @@ describe("LessonPlayer", () => {
     expect(await screen.findByText("กำลังบันทึก…")).toBeInTheDocument();
     await act(async () => resolve(DONE));
     await waitFor(() => expect(screen.getByText(/สตรีค 3 วัน/)).toBeInTheDocument());
+  });
+});
+
+describe("LessonPlayer action bar", () => {
+  const bar = () => screen.getByTestId("action-bar");
+
+  it("keeps the single live region in a sticky bottom bar, mounted before any answer", () => {
+    setup(["d001-listen-01"]);
+    expect(bar()).toContainElement(screen.getByRole("status"));
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect(bar().className).toMatch(/\bsticky\b/);
+    expect(bar().className).toMatch(/\bbottom-0\b/);
+    expect(bar().className).toMatch(/\bborder-t\b/);
+    expect(bar().className).toMatch(/\bbg-white\b/); // opaque, so content scrolls under it
+    expect(bar().className).toMatch(/safe-area-inset-bottom/);
+  });
+
+  it("holds the feedback and ถัดไป together, and the component's ตรวจคำตอบ stays in the content", async () => {
+    setup(["d001-listen-01"]);
+    await choose("Sam");
+    expect(bar()).not.toContainElement(screen.getByRole("button", { name: "ตรวจคำตอบ" }));
+    await check();
+    expect(bar()).toContainElement(screen.getByRole("button", { name: "ถัดไป" }));
+    expect(bar()).toHaveTextContent("ถูกต้อง");
+  });
+
+  it("lets a long correct-answer list scroll inside the bar instead of pushing the button away", async () => {
+    setup(["d001-listen-01"]);
+    await answerListen01(false);
+    expect(bar()).toHaveTextContent("คำตอบที่ถูกต้อง");
+    expect(screen.getByRole("status").className).toMatch(/overflow-y-auto/);
+    expect(screen.getByRole("status").className).toMatch(/max-h-/);
+  });
+
+  it("has no bar chrome for an exercise with nothing to confirm (phoneme_intro)", () => {
+    setup(["d001-pron-01"]);
+    expect(bar()).toContainElement(screen.getByRole("status"));
+    expect(bar().className).not.toMatch(/\bborder-t\b/);
   });
 });
 

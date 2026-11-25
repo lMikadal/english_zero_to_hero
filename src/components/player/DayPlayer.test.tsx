@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { readLesson } from "@/lib/answers/test-content";
 import type { CompleteLessonResponse } from "@/lib/attempts/contract";
 import type { AttemptInput } from "@/lib/attempts/contract";
-import type { SyncSink } from "@/lib/offline/sink";
+import type { HttpSink } from "@/lib/offline/http-sink";
 import { DayPlayer } from "./DayPlayer";
 
 const sent: AttemptInput[] = [];
@@ -13,7 +13,9 @@ const response: CompleteLessonResponse = {
   streak: { current: 1, longest: 1 },
   currentDay: 2,
 };
-const shared = vi.hoisted(() => ({ sink: null as unknown as SyncSink }));
+const shared = vi.hoisted(() => ({ sink: null as unknown as HttpSink }));
+const refresh = vi.hoisted(() => vi.fn());
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
 vi.mock("@/lib/offline/http-sink", () => ({ getSyncSink: () => shared.sink }));
 
 vi.spyOn(window, "scrollTo").mockImplementation(() => {});
@@ -25,6 +27,8 @@ describe("DayPlayer", () => {
       completeLesson: vi.fn(async () => ({ status: "done" as const, response })),
       pendingCount: () => 0,
       subscribe: () => () => {},
+      getState: () => ({ pending: 0, pendingAttempts: 0, status: "idle" as const }),
+      dispose: () => {},
     };
     const day1 = readLesson(1);
     // one phoneme_intro only: no answer needed, just "ถัดไป"
@@ -35,5 +39,7 @@ describe("DayPlayer", () => {
     expect(await screen.findByText(/สตรีค 1 วัน/)).toBeInTheDocument();
     expect(shared.sink.completeLesson).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/2");
+    // cached pages (home, day pages) must not be stale when the learner comes back with the Back button
+    expect(refresh).toHaveBeenCalledTimes(1);
   });
 });
