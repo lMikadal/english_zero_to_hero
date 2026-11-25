@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { AttemptAnswer } from "@/lib/attempts/contract";
 import type { Exercise, ExerciseType } from "@/lib/content/schema";
 import {
-  correctAnswerText, countWords, gradeExercise, isRetryable, RETRYABLE_TYPES, SUPPORTED_TYPES, UNGRADED_TYPES,
+  correctAnswerText, countWords, gradeExercise, isAttemptNoAllowed, isRetryable, RETRYABLE_TYPES, SUPPORTED_TYPES, UNGRADED_TYPES,
 } from "./grade";
 import { allExercises, get } from "./test-content";
 
@@ -71,8 +71,8 @@ describe("gradeExercise on real days 1-7 content", () => {
     const ex = get(c.id);
     expect(ex.type).toBe(type);
     const right = gradeExercise(ex, c.right);
-    expect(right).toEqual(c.rightGrade ?? { correct: true, score: type === "free_write" || c.right.kind === "self" ? null : 1 });
-    expect(gradeExercise(ex, c.wrong)).toEqual(c.wrongGrade);
+    expect(right).toMatchObject(c.rightGrade ?? { correct: true, score: type === "free_write" || c.right.kind === "self" ? null : 1 });
+    expect(gradeExercise(ex, c.wrong)).toMatchObject(c.wrongGrade);
     expect(gradeExercise(ex, c.otherKind)).toEqual({ error: "kind_mismatch" });
   });
 
@@ -118,26 +118,109 @@ describe("free_write", () => {
   });
 });
 
-describe("fractional scores (0..1) for multi-item exercises", () => {
-  it("minimal_pair: 2 of 3 right is 2/3 and not fully correct", () => {
-    expect(gradeExercise(get("d001-pron-02"), { kind: "pairs", selected: ["a", "b", "b"] })).toEqual({ correct: false, score: 2 / 3 });
+describe("fractional scores (0..1) and per-item feedback for multi-item exercises", () => {
+  it("minimal_pair: 2 of 3 right is 2/3, not fully correct, items in pair order", () => {
+    expect(gradeExercise(get("d001-pron-02"), { kind: "pairs", selected: ["a", "b", "b"] })).toEqual({ correct: false, score: 2 / 3, items: [true, true, false] });
   });
   it("read_passage with several questions", () => {
     const multi = allExercises().find((e) => e.exercise.type === "read_passage" && e.exercise.questions.length > 1);
     if (!multi || multi.exercise.type !== "read_passage") throw new Error("expected a multi-question read_passage in days 1-7");
     const q = multi.exercise.questions;
     const sel = q.map((x, i) => (i === 0 ? x.answer : (x.answer + 1) % x.choices.length));
-    expect(gradeExercise(multi.exercise, { kind: "choices", selected: sel })).toEqual({ correct: false, score: 1 / q.length });
+    expect(gradeExercise(multi.exercise, { kind: "choices", selected: sel })).toEqual({
+      correct: false, score: 1 / q.length, items: q.map((_, i) => i === 0),
+    });
   });
-  it("vocab_match: 3 of 6 right is 0.5; missing keys count as wrong", () => {
-    const ex = get("d003-write-04");
-    const pairs = { "v-where": "v-where", "v-country": "v-country", "v-city": "v-city" };
-    expect(gradeExercise(ex, { kind: "match", pairs })).toEqual({ correct: false, score: 0.5 });
+  it("fill_blank carries items too", () => {
+    expect(gradeExercise(get("d003-write-03"), { kind: "texts", texts: ["from"] })).toEqual({ correct: true, score: 1, items: [true] });
+    expect(gradeExercise(get("d003-write-03"), { kind: "texts", texts: ["to"] })).toEqual({ correct: false, score: 0, items: [false] });
   });
-  it("vocab_match ignores keys that are not in the exercise", () => {
+  const six = ["v-where", "v-country", "v-city", "v-sit", "v-big", "v-fish"];
+  it("vocab_match: 3 of 6 right is 0.5, items in pair order", () => {
+    const pairs = { "v-where": "v-where", "v-country": "v-country", "v-city": "v-city", "v-sit": "v-big", "v-big": "v-fish", "v-fish": "v-sit" };
+    expect(gradeExercise(get("d003-write-04"), { kind: "match", pairs })).toEqual({ correct: false, score: 0.5, items: [true, true, true, false, false, false] });
+  });
+  it("vocab_match: an incomplete or oversized key set is kind_mismatch (the UI only submits complete answers)", () => {
     const ex = get("d003-write-04");
-    const all = Object.fromEntries(["v-where", "v-country", "v-city", "v-sit", "v-big", "v-fish"].map((v) => [v, v]));
-    expect(gradeExercise(ex, { kind: "match", pairs: { ...all, "v-cat": "v-cat" } })).toEqual({ correct: true, score: 1 });
+    const all = Object.fromEntries(six.map((v) => [v, v]));
+    expect(gradeExercise(ex, { kind: "match", pairs: { "v-where": "v-where" } })).toEqual({ error: "kind_mismatch" });
+    expect(gradeExercise(ex, { kind: "match", pairs: { ...all, "v-cat": "v-cat" } })).toEqual({ error: "kind_mismatch" });
+    expect(gradeExercise(ex, { kind: "match", pairs: { ...Object.fromEntries(six.slice(1).map((v) => [v, v])), "v-cat": "v-cat" } })).toEqual({ error: "kind_mismatch" });
+    expect(gradeExercise(ex, { kind: "match", pairs: all })).toEqual({ correct: true, score: 1, items: [true, true, true, true, true, true] });
+  });
+  it("single-item types return no items", () => {
+    expect(gradeExercise(get("d001-listen-01"), { kind: "choice", selected: 0 })).toEqual({ correct: true, score: 1 });
+  });
+});
+
+describe("listen_choose index range", () => {
+  it("an out-of-range or choice index is kind_mismatch", () => {
+    expect(gradeExercise(get("d001-listen-01"), { kind: "choice", selected: 3 })).toEqual({ error: "kind_mismatch" });
+    expect(gradeExercise(get("d001-listen-01"), { kind: "choice", selected: 999 })).toEqual({ error: "kind_mismatch" });
+  });
+});
+
+describe("arrange_words accept", () => {
+  it.each([
+    ["d001-write-01", "Sam is my name"],
+    ["d002-write-02", "Is this my pen"],
+    ["d004-write-01", "Is this my dog"],
+  ])("%s also accepts %s", (id, alt) => {
+    expect(gradeExercise(get(id), { kind: "text", text: alt })).toEqual({ correct: true, score: 1 });
+    // what the tile UI submits: tiles joined with spaces, in the learner's order
+    const tiles = (get(id) as { words: string[] }).words;
+    expect(gradeExercise(get(id), { kind: "text", text: [...tiles].reverse().join(" ") })).toMatchObject({ correct: false });
+  });
+  it("still accepts the answer and rejects a different sentence", () => {
+    expect(gradeExercise(get("d001-write-01"), { kind: "text", text: "My name is Sam" })).toEqual({ correct: true, score: 1 });
+    expect(gradeExercise(get("d001-write-01"), { kind: "text", text: "Sam my is name" })).toEqual({ correct: false, score: 0 });
+  });
+});
+
+describe("translate_th_en accepted alternatives added after review (S4)", () => {
+  it.each([
+    ["d002-write-03", ["I'm fine, thanks", "Fine, thanks"]],
+    ["d001-write-02", ["Pleased to meet you", "Glad to meet you"]],
+    ["d003-write-02", ["I come from Thailand"]],
+    ["d005-write-03", ["Can you spell your name", "Could you spell your name, please"]],
+    ["d006-write-03", ["My name's Ann. I'm from Thailand", "My name is Ann and I'm from Thailand", "My name's Ann and I'm from Thailand", "I'm Ann and I'm from Thailand"]],
+  ])("%s", (id, alts) => {
+    for (const a of alts) expect(gradeExercise(get(id), { kind: "text", text: a }), a).toEqual({ correct: true, score: 1 });
+  });
+});
+
+describe("real-content sweep", () => {
+  it("every dictation audioText and accept entry grades correct", () => {
+    for (const { exercise: ex } of allExercises()) {
+      if (ex.type !== "dictation") continue;
+      for (const t of [ex.audioText, ...(ex.accept ?? [])]) expect(gradeExercise(ex, { kind: "text", text: t }), `${ex.id}: ${t}`).toEqual({ correct: true, score: 1 });
+    }
+  });
+  it("every translate_th_en accept entry grades correct", () => {
+    for (const { exercise: ex } of allExercises()) {
+      if (ex.type !== "translate_th_en") continue;
+      for (const t of ex.accept) expect(gradeExercise(ex, { kind: "text", text: t }), `${ex.id}: ${t}`).toEqual({ correct: true, score: 1 });
+    }
+  });
+  it("every arrange_words tile set can produce its answer and each accept", () => {
+    const toks = (s: string) => s.split(/\s+/).filter(Boolean).map((w) => w.toLowerCase()).sort().join("|");
+    for (const { exercise: ex } of allExercises()) {
+      if (ex.type !== "arrange_words") continue;
+      const tiles = toks(ex.words.join(" "));
+      for (const t of [ex.answer, ...(ex.accept ?? [])]) {
+        expect(toks(t), `${ex.id}: ${t}`).toBe(tiles);
+        expect(gradeExercise(ex, { kind: "text", text: t }), `${ex.id}: ${t}`).toEqual({ correct: true, score: 1 });
+      }
+    }
+  });
+});
+
+describe("isAttemptNoAllowed", () => {
+  it("attemptNo 1 is always allowed; attemptNo 2 only for retryable types", () => {
+    expect(isAttemptNoAllowed("phoneme_intro", 1)).toBe(true);
+    expect(isAttemptNoAllowed("repeat_after_me", 1)).toBe(true);
+    expect(isAttemptNoAllowed("dictation", 2)).toBe(true);
+    for (const t of ["repeat_after_me", "shadowing", "speak_answer", "free_write", "phoneme_intro"] as const) expect(isAttemptNoAllowed(t, 2)).toBe(false);
   });
 });
 
@@ -191,19 +274,24 @@ describe("isRetryable (end-of-lesson retry round)", () => {
   });
 });
 
-describe("correctAnswerText", () => {
+describe("correctAnswerText: one entry per item", () => {
   it.each([
-    ["d001-listen-01", "Sam"],
-    ["d001-read-01", "Ann"],
-    ["d001-pron-02", "bad, men, cat"],
-    ["d001-listen-02", "Nice to meet you."],
-    ["d001-write-02", "Nice to meet you"],
-    ["d001-write-01", "My name is Sam"],
-    ["d003-write-03", "from"],
-  ])("%s -> %s", (id, text) => expect(correctAnswerText(get(id))).toBe(text));
-  it("is null for types with nothing to reveal", () => {
+    ["d001-listen-01", ["Sam"]],
+    ["d001-read-01", ["Ann"]],
+    ["d001-pron-02", ["bad", "men", "cat"]],
+    ["d001-listen-02", ["Nice to meet you."]],
+    ["d001-write-02", ["Nice to meet you"]],
+    ["d001-write-01", ["My name is Sam"]],
+    ["d003-write-03", ["from"]],
+  ])("%s -> %j", (id, text) => expect(correctAnswerText(get(id))).toEqual(text));
+  it("keeps choices that contain commas whole", () => {
+    const f = allExercises().find((e) => e.exercise.type === "listen_choose" && e.exercise.choices[e.exercise.answer].includes(","));
+    if (!f || f.exercise.type !== "listen_choose") throw new Error("expected a listen_choose whose correct choice has a comma in days 1-7");
+    expect(correctAnswerText(f.exercise)).toEqual([f.exercise.choices[f.exercise.answer]]);
+  });
+  it("is empty for types with nothing to reveal", () => {
     for (const id of ["d001-pron-01", "d001-pron-03", "d001-speak-01", "d001-speak-02", "d007-write-01", "d003-write-04"]) {
-      expect(correctAnswerText(get(id))).toBeNull();
+      expect(correctAnswerText(get(id))).toEqual([]);
     }
   });
 });
