@@ -117,7 +117,7 @@ describe("checkContent", () => {
   });
 
   describe("CEFR level rule", () => {
-    const b = [vocabOf([word("v-a1", "A1"), word("v-a2", "A2"), word("v-b1", "B1")])];
+    const b = [vocabOf([word("v-a1", "A1"), word("v-a2", "A2"), word("v-b1", "B1")], "content/vocab/test/words.json")];
     it("flags a word whose Oxford level is above the lesson cefr", () => {
       const out = text([lessonOf(1, { cefr: "A1", vocab: ["v-a2"] })], b);
       expect(out).toHaveLength(1);
@@ -262,7 +262,7 @@ describe("checkContent: introduction order and limits (S5, S11, S8, N4)", () => 
   it("flags new vocab on non-lesson days", () => {
     const out = text([lessonOf(5, { type: "review", vocab: ["v-hello"] })], bank);
     expect(out).toHaveLength(1);
-    expect(out[0]).toMatch(/only "lesson" days/);
+    expect(out[0]).toMatch(/allowed only on "lesson" days/);
   });
   it("flags more than 12 new words in one lesson", () => {
     const items = Array.from({ length: 13 }, (_, i) => word(`v-w${i}`));

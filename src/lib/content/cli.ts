@@ -1,4 +1,10 @@
+import path from "node:path";
 import { formatProblem, formatSummary, validateContentDir } from "./validate";
+
+/** Content root from the CLI args (`pnpm content:validate [dir]`); defaults to ./content. */
+export function contentRootFromArgs(args: string[], cwd: string): string {
+  return path.resolve(cwd, args[0] ?? "content");
+}
 
 /** Validates `root`, prints a summary and one line per problem. Returns the process exit code. */
 export function runValidate(root: string, log: (line: string) => void): number {

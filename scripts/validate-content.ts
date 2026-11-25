@@ -1,5 +1,4 @@
-// Thin CLI wrapper: `pnpm content:validate` (inside the container). Logic lives in src/lib/content/.
-import path from "node:path";
-import { runValidate } from "../src/lib/content/cli";
+// Thin CLI wrapper: `pnpm content:validate [dir]` (inside the container). Logic lives in src/lib/content/.
+import { contentRootFromArgs, runValidate } from "../src/lib/content/cli";
 
-process.exitCode = runValidate(path.resolve(process.cwd(), "content"), (l) => console.log(l));
+process.exitCode = runValidate(contentRootFromArgs(process.argv.slice(2), process.cwd()), (l) => console.log(l));

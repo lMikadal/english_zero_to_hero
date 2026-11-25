@@ -14,20 +14,21 @@ export const TOPICS = [
   "weather_nature", "hobbies_sport", "technology", "feelings", "communication", "function_words",
 ] as const;
 
-const text = z.string().min(1);
-const bilingual = z.strictObject({ en: text, th: text });
+const text = z.string().refine((s) => s.length > 0 && s.trim() === s, "must not be empty or have leading/trailing whitespace");
+const thai = text.refine((s) => /[\u0E00-\u0E7F]/.test(s), "must contain Thai characters");
+const bilingual = z.strictObject({ en: text, th: thai });
 const vocabId = z.string().regex(/^v-[a-z0-9]+(-[a-z0-9]+)*$/, "vocab id must look like v-word or v-word-pos");
-const exerciseId = z.string().regex(/^d\d{3}-[a-z]+-\d{2}$/, "exercise id must look like dXXX-<skill>-NN");
+const exerciseId = z.string().regex(/^d\d{3}-(pron|listen|speak|read|write|vocab)-\d{2}$/, "exercise id must look like dXXX-<skill>-NN, skill = pron|listen|speak|read|write|vocab");
 const choiceIndex = z.number().int().nonnegative();
 
 const base = {
   id: exerciseId,
-  instruction: z.strictObject({ th: text, en: text.optional() }),
+  instruction: z.strictObject({ th: thai, en: text.optional() }),
 };
 
 export const phonemeIntroSchema = z.strictObject({
   ...base, type: z.literal("phoneme_intro"),
-  phoneme: text, ipa: text, tipTh: text, examples: z.array(text).min(1),
+  phoneme: text, ipa: text, tipTh: thai, examples: z.array(text).min(1),
 });
 export const minimalPairSchema = z.strictObject({
   ...base, type: z.literal("minimal_pair"),
@@ -56,7 +57,7 @@ export const roleplaySchema = z.strictObject({
 });
 export const readPassageSchema = z.strictObject({
   ...base, type: z.literal("read_passage"),
-  text, glossary: z.record(z.string(), text).optional(),
+  text, glossary: z.record(z.string(), thai).optional(),
   questions: z.array(z.strictObject({ question: bilingual, choices: z.array(text).min(2), answer: choiceIndex })).min(1),
 });
 export const arrangeWordsSchema = z.strictObject({
@@ -66,7 +67,7 @@ export const fillBlankSchema = z.strictObject({
   ...base, type: z.literal("fill_blank"), text, answer: z.array(text).min(1),
 });
 export const translateThEnSchema = z.strictObject({
-  ...base, type: z.literal("translate_th_en"), th: text, accept: z.array(text).min(1),
+  ...base, type: z.literal("translate_th_en"), th: thai, accept: z.array(text).min(1),
 });
 export const freeWriteSchema = z.strictObject({
   ...base, type: z.literal("free_write"),
@@ -112,10 +113,17 @@ export const vocabItemSchema = z.strictObject({
   id: vocabId,
   word: text,
   pos: text,
-  oxford: z.strictObject({ list: z.enum(["3000", "5000"]), level: z.enum(VOCAB_LEVELS) }),
+  oxford: z
+    .strictObject({ list: z.enum(["3000", "5000"]), level: z.enum(VOCAB_LEVELS) })
+    .refine((o) => (o.list === "3000" ? o.level !== "C1" : o.level === "B2" || o.level === "C1"), {
+      message: "Oxford 3000 covers A1-B2 and Oxford 5000 covers B2-C1",
+      path: ["level"],
+    }),
   ipa: z.strictObject({ us: text, uk: text }),
-  th: text,
-  topics: z.array(text).min(1),
+  th: thai,
+  topics: z.array(
+    z.enum(TOPICS, { error: (iss) => `unknown topic "${String(iss.input)}" (see docs/VOCABULARY.md section 3)` }),
+  ).min(1),
   examples: z.array(bilingual).min(1),
   collocations: z.array(text).optional(),
   forms: z.record(z.string(), text).optional(),

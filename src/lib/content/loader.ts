@@ -2,12 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ZodType } from "zod";
-import { lessonSchema, vocabFileSchema, type Lesson, type VocabItem } from "./schema";
+import { lessonSchema, vocabItemSchema, type Lesson, type VocabItem } from "./schema";
 
 export type Problem = { file: string; id?: string; message: string };
 export type LoadedLesson = { file: string; lesson: Lesson };
 export type LoadedVocab = { file: string; items: VocabItem[] };
-export type ContentData = { lessons: LoadedLesson[]; vocab: LoadedVocab[] };
+export type ContentData = { lessons: LoadedLesson[]; vocab: LoadedVocab[]; failedVocabIds?: string[] };
 
 export class ContentError extends Error {
   constructor(readonly problems: Problem[]) {
@@ -45,52 +45,103 @@ function idAlong(data: unknown, segments: readonly PropertyKey[]): string | unde
   return found;
 }
 
-function parseFile<T>(abs: string, display: string, schema: ZodType<T>): { data?: T; problems: Problem[] } {
-  let raw: unknown;
+function readJson(abs: string, display: string): { raw?: unknown; problem?: Problem } {
   try {
-    raw = JSON.parse(fs.readFileSync(abs, "utf8"));
+    return { raw: JSON.parse(fs.readFileSync(abs, "utf8").replace(/^\uFEFF/, "")) };
   } catch (e) {
-    return { problems: [{ file: display, message: `cannot read as JSON: ${(e as Error).message}` }] };
+    return { problem: { file: display, message: `cannot read as JSON: ${(e as Error).message}` } };
   }
+}
+
+function issueProblems(display: string, raw: unknown, issues: readonly { path: readonly PropertyKey[]; message: string }[], prefix: PropertyKey[] = []): Problem[] {
+  return issues.map((i) => {
+    const full = [...prefix, ...i.path];
+    return { file: display, id: idAlong(raw, full), message: `${formatPath(full) || "(root)"}: ${i.message}` };
+  });
+}
+
+function parseFile<T>(abs: string, display: string, schema: ZodType<T>): { data?: T; problems: Problem[] } {
+  const { raw, problem } = readJson(abs, display);
+  if (problem) return { problems: [problem] };
   const r = schema.safeParse(raw);
   if (r.success) return { data: r.data, problems: [] };
-  return {
-    problems: r.error.issues.map((i) => ({
-      file: display,
-      id: idAlong(raw, i.path),
-      message: `${formatPath(i.path) || "(root)"}: ${i.message}`,
-    })),
-  };
+  return { problems: issueProblems(display, raw, r.error.issues) };
+}
+
+/** Vocab files are validated entry by entry so one bad word does not drop the rest. */
+function parseVocabFile(abs: string, display: string): { items: VocabItem[]; failedIds: string[]; problems: Problem[] } {
+  const { raw, problem } = readJson(abs, display);
+  if (problem) return { items: [], failedIds: [], problems: [problem] };
+  if (!Array.isArray(raw)) return { items: [], failedIds: [], problems: [{ file: display, message: "(root): vocab file must be a JSON array of words" }] };
+  const items: VocabItem[] = [];
+  const failedIds: string[] = [];
+  const problems: Problem[] = [];
+  raw.forEach((entry, i) => {
+    const r = vocabItemSchema.safeParse(entry);
+    if (r.success) return items.push(r.data);
+    const id = (entry as { id?: unknown } | null)?.id;
+    if (typeof id === "string") failedIds.push(id);
+    problems.push(...issueProblems(display, raw, r.error.issues, [i]));
+  });
+  return { items, failedIds, problems };
 }
 
 const displayName = (root: string, abs: string) =>
   path.posix.join(path.basename(root), path.relative(root, abs).split(path.sep).join("/"));
 
-function jsonFiles(dir: string, recursive: boolean): string[] {
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir, { recursive, withFileTypes: true })
-    .filter((d) => d.isFile() && d.name.endsWith(".json"))
-    .map((d) => path.join(d.parentPath, d.name))
-    .sort();
-}
+const isDir = (p: string) => fs.existsSync(p) && fs.statSync(p).isDirectory();
 
 /** Loads every lesson and vocab file under `root`, collecting problems instead of throwing. */
 export function readContent(root: string): ContentData & { problems: Problem[] } {
   const problems: Problem[] = [];
   const lessons: LoadedLesson[] = [];
   const vocab: LoadedVocab[] = [];
-  for (const abs of jsonFiles(path.join(root, "lessons"), false)) {
-    const r = parseFile(abs, displayName(root, abs), lessonSchema);
-    problems.push(...r.problems);
-    if (r.data) lessons.push({ file: displayName(root, abs), lesson: r.data });
+  const failedVocabIds: string[] = [];
+  const dirs = { lessons: path.join(root, "lessons"), vocab: path.join(root, "vocab") };
+  if (!isDir(root)) {
+    return { lessons, vocab, problems: [{ file: path.basename(root), message: "content directory not found" }] };
   }
-  for (const abs of jsonFiles(path.join(root, "vocab"), true)) {
-    const r = parseFile(abs, displayName(root, abs), vocabFileSchema);
-    problems.push(...r.problems);
-    if (r.data) vocab.push({ file: displayName(root, abs), items: r.data });
+  for (const dir of Object.values(dirs)) {
+    if (!isDir(dir)) problems.push({ file: displayName(root, dir), message: "directory not found" });
   }
-  return { lessons, vocab, problems };
+
+  if (isDir(dirs.lessons)) {
+    const entries = fs.readdirSync(dirs.lessons, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
+    for (const e of entries) {
+      const abs = path.join(dirs.lessons, e.name);
+      const display = displayName(root, abs);
+      if (!e.isFile() || !/^day-\d{3}\.json$/.test(e.name)) {
+        problems.push({ file: display, message: "unexpected entry in lessons/ (only regular files named day-XXX.json are allowed)" });
+        continue;
+      }
+      const r = parseFile(abs, display, lessonSchema);
+      problems.push(...r.problems);
+      if (r.data) lessons.push({ file: display, lesson: r.data });
+    }
+    if (entries.length === 0) problems.push({ file: displayName(root, dirs.lessons), message: "no lesson files found" });
+  }
+
+  if (isDir(dirs.vocab)) {
+    const walk = (dir: string) => {
+      for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        const abs = path.join(dir, e.name);
+        if (e.isDirectory()) walk(abs);
+        else if (!e.isFile() || !e.name.endsWith(".json")) {
+          problems.push({ file: displayName(root, abs), message: "unexpected file in vocab/ (only .json files are allowed)" });
+        } else {
+          const r = parseVocabFile(abs, displayName(root, abs));
+          problems.push(...r.problems);
+          failedVocabIds.push(...r.failedIds);
+          vocab.push({ file: displayName(root, abs), items: r.items });
+        }
+      }
+    };
+    walk(dirs.vocab);
+    if (!vocab.some((v) => v.items.length > 0) && failedVocabIds.length === 0) {
+      problems.push({ file: displayName(root, dirs.vocab), message: "no vocab words found" });
+    }
+  }
+  return { lessons, vocab, failedVocabIds, problems };
 }
 
 const defaultRoot = () => path.resolve(process.cwd(), "content");
