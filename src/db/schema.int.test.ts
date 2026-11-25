@@ -157,6 +157,16 @@ describe("attempts", () => {
     expect(row.score).toBe(0.75);
   });
 
+  it("defaults attempt_no to 1 and only allows 1 or 2", async () => {
+    const id = await newUser();
+    const [row] = await db.insert(attempts).values(attemptRow(id)).returning();
+    expect(row.attemptNo).toBe(1);
+    const [second] = await db.insert(attempts).values(attemptRow(id, { attemptNo: 2 })).returning();
+    expect(second.attemptNo).toBe(2);
+    expect(await pgErrorCode(db.insert(attempts).values(attemptRow(id, { attemptNo: 0 })))).toBe(CHECK);
+    expect(await pgErrorCode(db.insert(attempts).values(attemptRow(id, { attemptNo: 3 })))).toBe(CHECK);
+  });
+
   it("rejects day out of range, unknown skill or source, negative duration", async () => {
     const id = await newUser();
     expect(await pgErrorCode(db.insert(attempts).values(attemptRow(id, { day: 0 })))).toBe(CHECK);
