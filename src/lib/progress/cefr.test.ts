@@ -41,8 +41,15 @@ describe("estimateCefr", () => {
     expect(estimateCefr(1199, p).level).toBe("A1");
     const all = upTo(360, [[60, 0.9], [150, 0.9], [270, 0.9], [360, 0.7]]);
     expect(estimateCefr(2400, all)).toMatchObject({ level: "B2", next: null, percentToNext: null });
-    expect(estimateCefr(1849, upTo(270, [[60, 1], [150, 1], [270, 1]])).level).toBe("A2");
-    expect(estimateCefr(1850, upTo(270, [[60, 1], [150, 1], [270, 1]])).level).toBe("B1");
+    expect(estimateCefr(1839, upTo(270, [[60, 1], [150, 1], [270, 1]])).level).toBe("A2");
+    expect(estimateCefr(1840, upTo(270, [[60, 1], [150, 1], [270, 1]])).level).toBe("B1");
+  });
+
+  it("treats the checkpoint score with a small epsilon and ignores non-finite scores", () => {
+    expect(estimateCefr(400, upTo(60, [[60, 0.7 - 1e-10]])).level).toBe("A1");
+    expect(estimateCefr(400, upTo(60, [[60, 0.699]])).level).toBe("preA1");
+    expect(estimateCefr(400, upTo(60, [[60, Number.NaN]])).level).toBe("preA1");
+    expect(estimateCefr(400, upTo(60, [[60, Number.POSITIVE_INFINITY]])).level).toBe("preA1");
   });
 
   it("can reach a high level even if an earlier checkpoint row is missing", () => {
