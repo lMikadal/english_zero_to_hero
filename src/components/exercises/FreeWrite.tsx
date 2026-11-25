@@ -5,7 +5,7 @@ import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction, Prompt } from "./ui/Instruction";
 
-// No AI grading yet: after answering the learner sees a neutral "saved" note, never right/wrong styling.
+// No AI grading yet: never styled right/wrong. The player shows the "saved" status for non-retryable exercises.
 export function FreeWrite({ exercise, onAnswer, result }: ExerciseProps<"free_write">) {
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -31,19 +31,15 @@ export function FreeWrite({ exercise, onAnswer, result }: ExerciseProps<"free_wr
         autoCorrect="off"
         spellCheck={false}
         value={text}
-        disabled={locked}
+        readOnly={locked}
+        aria-readonly={locked || undefined}
         onChange={(e) => setText(e.target.value)}
-        className="w-full rounded-xl border-2 border-slate-300 bg-white p-3 text-lg text-slate-900 disabled:bg-slate-100"
+        className="w-full rounded-xl border-2 border-slate-300 bg-white p-3 text-lg text-slate-900 read-only:bg-slate-100"
       />
       <p data-testid="word-count" className={`mt-1 text-sm ${enough ? "text-green-700" : "text-slate-600"}`}>
         {words} / {exercise.minWords} คำ
       </p>
-      {locked ? (
-        <p role="status" className="mt-3 rounded-xl bg-slate-100 p-3 text-slate-800">
-          บันทึกแล้ว
-        </p>
-      ) : null}
-      <CheckButton disabled={locked || !enough} onClick={check} />
+      <CheckButton hidden={result !== undefined} disabled={locked || !enough} onClick={check} />
     </section>
   );
 }

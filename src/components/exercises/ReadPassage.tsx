@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
+import { Mark } from "./ui/Mark";
 import { rightWrong, toneClass, type Tone } from "./ui/tone";
 
 export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_passage">) {
@@ -38,7 +39,7 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
       ) : null}
 
       {exercise.questions.map((q, qi) => (
-        <div key={qi} role="group" aria-label={`คำถามที่ ${qi + 1}`} data-state={questionTone(qi)} className="mt-5">
+        <div key={qi} role="radiogroup" aria-label={`คำถามที่ ${qi + 1}`} data-state={questionTone(qi)} className="mt-5">
           <p className="font-semibold text-slate-900">{q.question.th}</p>
           <p lang="en" className="mb-2 text-sm text-slate-600">{q.question.en}</p>
           <div className="flex flex-col gap-2">
@@ -50,20 +51,23 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
                 <button
                   key={ci}
                   type="button"
+                  role="radio"
                   lang="en"
-                  aria-pressed={chosen}
+                  aria-checked={chosen}
                   disabled={locked}
                   onClick={() => setSelected(selected.map((s, i) => (i === qi ? ci : s)))}
-                  className={`min-h-11 w-full rounded-xl border-2 px-3 py-2 text-left text-base disabled:opacity-90 ${toneClass(tone)}`}
+                  className={`min-h-11 w-full rounded-xl border-2 px-3 py-2 text-left text-base ${toneClass(tone)}`}
                 >
                   {choice}
+                  {result && ci === q.answer ? <span className="ml-2"><Mark ok /></span> : null}
+                  {result && chosen && ci !== q.answer ? <span className="ml-2"><Mark ok={false} /></span> : null}
                 </button>
               );
             })}
           </div>
         </div>
       ))}
-      <CheckButton disabled={locked || !complete} onClick={check} />
+      <CheckButton hidden={result !== undefined} disabled={locked || !complete} onClick={check} />
     </section>
   );
 }

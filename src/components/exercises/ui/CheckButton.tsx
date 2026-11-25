@@ -1,5 +1,16 @@
-/** The "ตรวจคำตอบ" button every exercise owns. */
-export function CheckButton({ disabled, onClick, type = "button" }: { disabled: boolean; onClick?: () => void; type?: "button" | "submit" }) {
+/** The "ตรวจคำตอบ" button every exercise owns. `hidden` renders nothing (after a result the player shows feedback). */
+export function CheckButton({
+  disabled,
+  onClick,
+  type = "button",
+  hidden = false,
+}: {
+  disabled: boolean;
+  onClick?: () => void;
+  type?: "button" | "submit";
+  hidden?: boolean;
+}) {
+  if (hidden) return null;
   return (
     <button
       type={type}

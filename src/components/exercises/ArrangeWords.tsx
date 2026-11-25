@@ -5,9 +5,10 @@ import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
 import { shuffleSeeded } from "./ui/shuffle";
+import { Mark } from "./ui/Mark";
 import { rightWrong, toneClass } from "./ui/tone";
 
-const TILE = "min-h-11 rounded-lg border px-3 py-2 text-base font-medium disabled:opacity-60";
+const TILE = "min-h-11 rounded-lg border px-3 py-2 text-base font-medium disabled:cursor-default";
 
 export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arrange_words">) {
   const [placed, setPlaced] = useState<number[]>([]); // indexes into exercise.words, in tap order
@@ -48,6 +49,11 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
           </li>
         ))}
       </ul>
+      {result ? (
+        <p className={`mt-1 text-sm font-semibold ${answerTone === "right" ? "text-green-800" : "text-red-800"}`}>
+          <Mark ok={result.correct} />
+        </p>
+      ) : null}
       {placed.length === 0 ? <p className="mt-1 text-sm text-slate-500">แตะคำด้านล่างเพื่อเรียงประโยค</p> : null}
       <ul aria-label="คำที่เหลือ" lang="en" className="mt-4 flex min-h-12 flex-wrap gap-2">
         {remaining.map((i) => (
@@ -58,7 +64,7 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
           </li>
         ))}
       </ul>
-      <CheckButton disabled={locked || !complete} onClick={check} />
+      <CheckButton hidden={result !== undefined} disabled={locked || !complete} onClick={check} />
     </section>
   );
 }

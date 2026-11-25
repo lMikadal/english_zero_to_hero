@@ -35,12 +35,15 @@ export function TranslateThEn({ exercise, onAnswer, result }: ExerciseProps<"tra
         autoComplete="off"
         spellCheck={false}
         value={text}
-        disabled={locked}
+        readOnly={locked}
+        aria-readonly={locked || undefined}
+        aria-invalid={tone === "wrong" || undefined}
+        enterKeyHint="done"
         data-state={tone}
         onChange={(e) => setText(e.target.value)}
         className={`min-h-12 w-full rounded-xl border-2 px-3 text-lg ${toneClass(tone)}`}
       />
-      <CheckButton type="submit" disabled={locked || text.trim() === ""} />
+      <CheckButton type="submit" hidden={result !== undefined} disabled={locked || text.trim() === ""} />
     </form>
   );
 }
