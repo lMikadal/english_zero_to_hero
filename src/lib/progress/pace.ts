@@ -1,7 +1,7 @@
 // docs/PROGRESS.md section 5: progress against the 365-day plan. All dates are calendar dates in the
 // user's time zone.
 import { COURSE_DAYS, DEFAULT_TIME_ZONE, PACE_WINDOW_DAYS, SLIGHTLY_BEHIND_MAX_DAYS } from "./config";
-import { addDays, daysBetween, localDate } from "./dates";
+import { addDays, daysBetween, isValidDate, localDate, resolveTimeZone } from "./dates";
 import type { ProgressLike } from "./types";
 
 export type PaceStatus = "on_track" | "slightly_behind" | "behind";
@@ -14,7 +14,7 @@ export type PaceResult = {
   reachedDay: number;
   /** expectedDay - reachedDay - 1; zero or negative means on track */
   daysBehind: number;
-  /** lessons finished in the last 14 local days (today included) / 14 */
+  /** lessons finished in the last 14 local days (today included) / min(14, days since start) */
   pace: number;
   projectedFinish: ProjectedFinish;
   status: PaceStatus;
@@ -27,15 +27,20 @@ export function estimatePace(input: {
   timeZone?: string;
   progress: readonly ProgressLike[];
 }): PaceResult {
-  const timeZone = input.timeZone ?? DEFAULT_TIME_ZONE;
+  if (!isValidDate(input.startDate)) {
+    throw new Error(`Invalid startDate "${input.startDate}": expected a real date as YYYY-MM-DD`);
+  }
+  const timeZone = resolveTimeZone(input.timeZone ?? DEFAULT_TIME_ZONE);
   const today = localDate(input.now, timeZone);
   const expectedDay = Math.min(COURSE_DAYS, Math.max(1, daysBetween(input.startDate, today) + 1));
+  // new learners: divide by the days they have had, up to 14 (6 lessons in 10 days is 0.6, not 0.43)
+  const windowDays = Math.min(PACE_WINDOW_DAYS, expectedDay);
 
   const done = input.progress.filter((p) => p.status === "done");
   const reachedDay = done.length;
   const daysBehind = expectedDay - reachedDay - 1;
 
-  const windowStart = addDays(today, -(PACE_WINDOW_DAYS - 1));
+  const windowStart = addDays(today, -(windowDays - 1));
   const recent = done.filter((p) => {
     if (!p.completedAt) return false;
     const d = localDate(p.completedAt, timeZone);
@@ -46,10 +51,10 @@ export function estimatePace(input: {
   let projectedFinish: ProjectedFinish;
   if (remaining === 0) projectedFinish = { kind: "date", date: today };
   else if (recent === 0) projectedFinish = { kind: "cannot_project" };
-  else projectedFinish = { kind: "date", date: addDays(today, Math.ceil((remaining * PACE_WINDOW_DAYS) / recent)) };
+  else projectedFinish = { kind: "date", date: addDays(today, Math.ceil((remaining * windowDays) / recent)) };
 
   const status: PaceStatus =
     daysBehind <= 0 ? "on_track" : daysBehind <= SLIGHTLY_BEHIND_MAX_DAYS ? "slightly_behind" : "behind";
 
-  return { expectedDay, reachedDay, daysBehind, pace: recent / PACE_WINDOW_DAYS, projectedFinish, status };
+  return { expectedDay, reachedDay, daysBehind, pace: recent / windowDays, projectedFinish, status };
 }

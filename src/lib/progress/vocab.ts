@@ -19,12 +19,21 @@ const emptyCounts = (): StatusCounts => ({ not_started: 0, learning: 0, remember
 /** A review counts as recalled when the rating is Hard, Good or Easy; Again is a miss. */
 export const isRecalled = (r: Pick<SrsReviewLike, "rating">) => r.rating >= MIN_CORRECT_RATING;
 
+/** Latest review of a direction was recalled. Reviews sharing the latest timestamp all have to be recalled (a tie that includes a miss is a miss). */
 function lastReviewRecalled(reviews: readonly SrsReviewLike[], direction: SrsDirectionLike): boolean {
-  let latest: SrsReviewLike | undefined;
+  let latestTime = -Infinity;
+  let allRecalled = false;
   for (const r of reviews) {
-    if (r.direction === direction && (!latest || r.reviewedAt.getTime() > latest.reviewedAt.getTime())) latest = r;
+    if (r.direction !== direction) continue;
+    const t = r.reviewedAt.getTime();
+    if (t > latestTime) {
+      latestTime = t;
+      allRecalled = isRecalled(r);
+    } else if (t === latestTime) {
+      allRecalled = allRecalled && isRecalled(r);
+    }
   }
-  return latest !== undefined && isRecalled(latest);
+  return allRecalled;
 }
 
 /** Status of one word. `cards` are that word's cards; `reviews` may hold any words (matched by vocabId). */

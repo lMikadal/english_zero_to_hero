@@ -49,3 +49,9 @@ export function daysBetween(from: string, to: string): number {
 export function addDays(date: string, days: number): string {
   return new Date(toUtcMs(date) + days * 86_400_000).toISOString().slice(0, 10);
 }
+
+/** True for a real calendar date written as YYYY-MM-DD. */
+export function isValidDate(date: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+  return addDays(date, 0) === date;
+}
