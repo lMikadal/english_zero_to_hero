@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import {
+  EXERCISE_ID_PATTERN,
   EXERCISE_TYPES,
   TOPICS,
   exerciseSchema,
@@ -45,6 +46,28 @@ describe("exerciseSchema", () => {
   it.each(Object.entries(valid))("rejects an unknown key on %s", (_type, ex) => {
     const r = exerciseSchema.safeParse({ ...(ex as object), anserr: 1 });
     expect(r.success).toBe(false);
+  });
+
+  it.each(Object.entries(valid))("accepts an optional phonemes list on %s", (_type, ex) => {
+    expect(exerciseSchema.safeParse({ ...(ex as object), phonemes: ["ae", "eh"] }).success).toBe(true);
+  });
+
+  it("rejects an empty or blank phonemes list", () => {
+    const ex = valid.dictation as object;
+    expect(exerciseSchema.safeParse({ ...ex, phonemes: [] }).success).toBe(false);
+    expect(exerciseSchema.safeParse({ ...ex, phonemes: [" ae"] }).success).toBe(false);
+  });
+
+  it("arrange_words takes an optional accept list of alternative sentences", () => {
+    const ex = valid.arrange_words as object;
+    expect(exerciseSchema.safeParse({ ...ex, accept: ["Sam is my name"] }).success).toBe(true);
+    expect(exerciseSchema.safeParse({ ...ex, accept: [] }).success).toBe(false);
+  });
+
+  it("exports the exercise id pattern", () => {
+    expect(EXERCISE_ID_PATTERN.test("d001-pron-01")).toBe(true);
+    expect(EXERCISE_ID_PATTERN.test("d001-foo-01")).toBe(false);
+    expect(EXERCISE_ID_PATTERN.test("d1-pron-01")).toBe(false);
   });
 
   it("rejects an unknown type", () => {

@@ -62,6 +62,7 @@
 - [ ] เก็บไฟล์เสียงที่อัดลง `data/recordings/`
 - [ ] PWA พื้นฐาน: manifest, ไอคอน, service worker (precache app shell + cache เสียง), ติดตั้งได้, ออกแบบ UI แบบ mobile-first
 - [ ] Deploy บนเครื่องตัวเอง: Dockerfile + service `app` ใน compose (profile `prod`), เปิด HTTPS ผ่าน Tailscale, backup `pg_dump` รายวัน (ดู [DEPLOYMENT.md](DEPLOYMENT.md))
+  - [ ] prod image ต้อง `COPY` โฟลเดอร์ `content/` เข้าไปด้วย (API ตรวจคำตอบและหน้า `/day/[day]` อ่านบทเรียนจากดิสก์ตอนรัน ที่ `process.cwd()/content`)
   - [ ] เส้นทาง migrate ของ prod: คัดลอก migration เข้า prod image แล้วรันโดยไม่ใช้ tsx (`MIGRATIONS_DIR`, `runMigrations` ใน `src/db/migrate.ts`)
 
 ### Milestone 2: บัญชีผู้ใช้และ AI

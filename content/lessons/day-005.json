@@ -285,7 +285,7 @@
             "Spell your name, please.",
             "Spell your name please",
             "Spell your name please."
-          ]
+          , "Can you spell your name", "Can you spell your name, please", "Could you spell your name", "Could you spell your name, please"]
         },
         {
           "id": "d005-write-04",

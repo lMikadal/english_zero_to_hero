@@ -83,11 +83,12 @@
         { "id": "d001-write-01", "type": "arrange_words",
           "instruction": { "th": "เรียงคำให้เป็นประโยค" },
           "words": ["name", "My", "Sam", "is"],
-          "answer": "My name is Sam" },
+          "answer": "My name is Sam",
+          "accept": ["Sam is my name"] },
         { "id": "d001-write-02", "type": "translate_th_en",
           "instruction": { "th": "แปลเป็นภาษาอังกฤษ" },
           "th": "ยินดีที่ได้รู้จัก",
-          "accept": ["Nice to meet you", "Nice to meet you."] }
+          "accept": ["Nice to meet you", "Nice to meet you.", "Pleased to meet you", "Glad to meet you"] }
       ]
     }
   ]

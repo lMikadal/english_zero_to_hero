@@ -33,10 +33,33 @@
 - `free_write`: `prompt` เป็น string, `minWords` เป็นจำนวนเต็มบวก, `rubric` เป็น `string[]` (เกณฑ์ให้ AI ตรวจ) ใส่หรือไม่ก็ได้
 - `read_passage.glossary` เป็น `{ [word]: คำแปลไทย }`
 - `vocab_match.pairs` ต้องมีอย่างน้อย 2 คู่; `vocabId` ทุกที่ต้องตรง `^v-[a-z0-9]+(-[a-z0-9]+)*$`
-- `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string)
+- `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string); `accept` (ไม่บังคับ) เป็น `string[]` อย่างน้อย 1 รายการ
 - `fill_blank.answer` เป็น array ของคำตอบ **หนึ่งตัวต่อหนึ่ง `___`** ตามลำดับ
 - ใน VocabItem `forms` เป็น `{ [ชื่อรูปผัน]: string }` ชื่อใดก็ได้ (ไม่จำกัดแค่ตัวอย่าง) และ `topics` ต้องเป็น slug ในรายการของ VOCABULARY.md หัวข้อ 3 เท่านั้น ห้ามซ้ำ
 - `oxford`: list `"3000"` ใช้ระดับ A1–B2, list `"5000"` ใช้ระดับ B2–C1
+
+## การเทียบคำตอบ (`src/lib/answers/normalize.ts`)
+
+คำตอบที่พิมพ์ (`dictation`, `translate_th_en`, `arrange_words`, `fill_blank`) ถูก normalise ทั้งสองฝั่งก่อนเทียบ ด้วยกติกาเดียวกันเป๊ะ:
+
+1. ตัดอักขระความกว้างศูนย์ (U+200B–U+200D, U+FEFF)
+2. เปลี่ยน apostrophe ที่หน้าตาคล้ายกัน `’` `‘` `ʼ` `´` `` ` `` เป็น `'` (แป้นพิมพ์ iPhone พิมพ์ "I’m")
+3. Unicode NFKC (แปลง `？！，` เต็มความกว้างเป็น `?!,` และตัว `…` เป็น `...`)
+4. แปลงเป็นตัวพิมพ์เล็ก
+5. ลบ `.` `!` `?` `,` ทุกตำแหน่ง (แทนด้วยช่องว่าง)
+6. ยุบช่องว่างซ้ำและตัดหัวท้าย
+
+ตัวอย่าง: `"B, U, S"` กับ `"b u s"` ตรงกัน, `"Nice to meet you…"` ตรงกับ `"Nice to meet you."` แต่ `"B-U-S"` ไม่ตรงกับ `"B U S"` (ขีดกลางไม่ถูกลบ) และ `"I am"` ไม่ตรงกับ `"I'm"`
+
+**แนวทางเขียน `accept`**
+- ไม่ต้องใส่รูปที่ต่างกันแค่ตัวพิมพ์ใหญ่เล็ก หรือเครื่องหมาย `. ! ? ,` (`"Nice to meet you"` ครอบคลุม `"nice to meet you!"`)
+- ต้องใส่รูปที่ต่างจริง: คำย่อกับคำเต็ม (`"I'm from Bangkok"` และ `"I am from Bangkok"`) คำพ้อง (`"Pleased to meet you"`) และขีดกลาง (`"b-u-s"`)
+- `dictation`: `audioText` ถือเป็นคำตอบที่รับเสมอ จึงไม่ต้องซ้ำใน `accept` และถ้าไม่มี `accept` จะใช้ `audioText` อย่างเดียว
+- `arrange_words`: ถ้าแผ่นป้ายต่อเป็นประโยคถูกต้องได้มากกว่าหนึ่งแบบ ให้ใส่แบบอื่นใน `accept` (เช่น `answer: "My name is Sam"`, `accept: ["Sam is my name"]`) validator ตรวจว่าทุกรายการใช้แผ่นป้ายครบพอดี เทียบตัวพิมพ์เล็กใหญ่แบบไม่สนใจ เพราะตัวพิมพ์ของแผ่นป้ายตามประโยคใน `answer` (เช่น ป้าย `This` กับคำตอบ `Is this my pen`) และต้องเว้นวรรคเดียวระหว่างคำ
+- `fill_blank`: ช่องหนึ่งรับคำตอบที่ถูกได้หนึ่งสตริง (ข้อจำกัดที่ทราบแล้ว)
+- ข้อความว่าง (หลัง normalise) ไม่ถือว่าตรงกับอะไรเลย
+
+**`phonemes` (ไม่บังคับ ทุกชนิด)** `phonemes: string[]` รหัสเสียง (ชุดเดียวกับ `phoneme_intro.phoneme` เช่น `"ae"`) ที่ exercise นี้ฝึก ถ้ามีจะกำหนด tag `phoneme:<p>` ของ attempt ตรงๆ ถ้าไม่มี ระบบใช้กฎเดิม (รหัสของ `phoneme_intro` ในบทเดียวกัน สำหรับ section pronunciation และ `minimal_pair`/`phoneme_intro`) ใช้กับวันทบทวนที่ไม่มี `phoneme_intro` ยังไม่ได้ใส่ใน content ปัจจุบัน
 
 ## กฎที่ `content:validate` ตรวจเพิ่ม
 
@@ -104,7 +127,7 @@
 | `speak_answer` | `prompt`, `sampleAnswer`, `keywords[]?` | ตอบคำถามด้วยเสียง |
 | `roleplay` | `scenario`, `aiRole`, `goals[]` | คุยกับ AI |
 | `read_passage` | `text`, `glossary?`, `questions[]` | อ่านแล้วตอบคำถาม |
-| `arrange_words` | `words[]`, `answer` | เรียงคำให้เป็นประโยค |
+| `arrange_words` | `words[]`, `answer`, `accept[]?` | เรียงคำให้เป็นประโยค (`accept` = ประโยคอื่นที่ถูก) |
 | `fill_blank` | `text` (ใช้ `___`), `answer[]` | เติมคำ |
 | `translate_th_en` | `th`, `accept[]` | แปลไทยเป็นอังกฤษ |
 | `free_write` | `prompt`, `minWords`, `rubric?` | เขียนอิสระ (AI ตรวจ) |
