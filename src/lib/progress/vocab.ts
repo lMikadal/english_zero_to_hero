@@ -27,7 +27,7 @@ function lastReviewRecalled(reviews: readonly SrsReviewLike[], direction: SrsDir
   return latest !== undefined && isRecalled(latest);
 }
 
-/** Status of one word from its own cards and reviews (pass only this word's rows, or rows of any words: others are ignored by vocabId of the first card). */
+/** Status of one word. `cards` are that word's cards; `reviews` may hold any words (matched by vocabId). */
 export function wordStatus(cards: readonly SrsCardLike[], reviews: readonly SrsReviewLike[]): WordStatus {
   if (cards.length === 0) return "not_started";
   const id = cards[0].vocabId;
