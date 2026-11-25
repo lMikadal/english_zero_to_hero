@@ -27,6 +27,8 @@ export const DETECTION_SOURCES = ["lesson", "checkpoint"] as const;
 export const RETEST_PASS_RATE = 0.8;
 export const RETEST_PASSES_TO_FIX = 2;
 export const MAX_DRILLS_PER_DAY = 2;
+/** A retest session needs at least this many graded (score not null) attempts to be able to pass. */
+export const MIN_RETEST_GRADED_ATTEMPTS = 5;
 
 // 4. CEFR
 export const CHECKPOINT_PASS_SCORE = 0.7;
