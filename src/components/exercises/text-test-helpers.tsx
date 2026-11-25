@@ -33,5 +33,8 @@ export function baseProps() {
 }
 
 export function renderWithAudio(ui: ReactElement, source: AudioSource = createSilentAudioSource()) {
-  return render(<AudioProvider source={source}>{ui}</AudioProvider>);
+  const wrap = (el: ReactElement) => <AudioProvider source={source}>{el}</AudioProvider>;
+  const out = render(wrap(ui));
+  // rerender through the same provider so component state survives (a bare rerender would remount)
+  return { ...out, rerender: (el: ReactElement) => out.rerender(wrap(el)) };
 }
