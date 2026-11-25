@@ -1,0 +1,292 @@
+{
+  "day": 4,
+  "phase": 1,
+  "week": 1,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Hello and goodbye! Short vowel /ɑː/ (US) /ɒ/ (UK)",
+    "th": "ทักทายและลา และเสียงสระสั้น /ɑː/ (US) /ɒ/ (UK)"
+  },
+  "objectives": [
+    {
+      "en": "Say hello and goodbye at different times of day",
+      "th": "ทักทายและกล่าวลาตามช่วงเวลาของวันได้"
+    },
+    {
+      "en": "Hear and say the vowel in hot and dog",
+      "th": "ฟังและออกเสียงสระในคำว่า hot และ dog ได้"
+    },
+    {
+      "en": "Say the letter names O to U",
+      "th": "บอกชื่อตัวอักษร O ถึง U ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-goodbye",
+    "v-see",
+    "v-morning",
+    "v-afternoon",
+    "v-evening",
+    "v-night",
+    "v-hot",
+    "v-dog"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The hot/dog vowel and letters O–U",
+        "th": "เสียงสระใน hot/dog และตัวอักษร O–U"
+      },
+      "exercises": [
+        {
+          "id": "d004-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "o",
+          "ipa": "/ɑː/ (US) · /ɒ/ (UK)",
+          "tipTh": "เสียงนี้ต่างกันระหว่างสำเนียง อเมริกัน hot = 'ฮาท' ปากอ้า ส่วนอังกฤษ hot = 'ฮอท' สั้น ปากกลมเล็กน้อย ให้เลือกสำเนียงเดียวแล้วฝึกให้สม่ำเสมอ ห้ามออกเป็น 'ฮ็อต' แบบสระโอะของไทย และอย่าลืมปิดเสียง t, g ท้ายคำ",
+          "examples": [
+            "hot",
+            "dog",
+            "box",
+            "stop"
+          ]
+        },
+        {
+          "id": "d004-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "hot",
+              "b": "hat",
+              "answer": "a"
+            },
+            {
+              "a": "dog",
+              "b": "dig",
+              "answer": "b"
+            },
+            {
+              "a": "hot",
+              "b": "hut",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d004-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตามชื่อตัวอักษร ระวัง Q ออกเสียง 'คิว' และ R มีเสียงม้วนลิ้นเบา ๆ (US)"
+          },
+          "text": "O, P, Q, R, S, T, U",
+          "ipa": "/oʊ piː kjuː ɑːr es tiː juː/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Greetings all day",
+        "th": "ทักทายตลอดวัน"
+      },
+      "exercises": [
+        {
+          "id": "d004-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำทักทายที่ได้ยิน"
+          },
+          "audioText": "Good afternoon, Ann! How are you?",
+          "question": {
+            "en": "Which greeting do you hear?",
+            "th": "ได้ยินคำทักทายอะไร"
+          },
+          "choices": [
+            "Good morning",
+            "Good afternoon",
+            "Good evening"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d004-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าผู้พูดบอกอะไร"
+          },
+          "audioText": "Goodbye, Sam. See you!",
+          "question": {
+            "en": "What does the speaker say?",
+            "th": "ผู้พูดพูดว่าอะไร"
+          },
+          "choices": [
+            "Hello, Sam!",
+            "Thank you, Sam!",
+            "Goodbye, Sam!"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "d004-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Good night. See you!",
+          "accept": [
+            "Good night. See you!",
+            "Good night. See you",
+            "Good night, see you",
+            "Good night, see you!",
+            "Good night see you"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say hello and goodbye",
+        "th": "ทักทายและลา"
+      },
+      "exercises": [
+        {
+          "id": "d004-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Good morning!",
+            "Good afternoon!",
+            "Good evening!",
+            "Good night!",
+            "Goodbye. See you!"
+          ]
+        },
+        {
+          "id": "d004-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำทักทายด้วยเสียง"
+          },
+          "prompt": "Good evening! How are you?",
+          "sampleAnswer": "Good evening. I'm fine, thank you. And you?",
+          "keywords": [
+            "fine",
+            "thank"
+          ]
+        },
+        {
+          "id": "d004-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียงสระใน dog และ hot"
+          },
+          "text": "The dog is hot.",
+          "ipa": "/ðə dɔːɡ ɪz hɑːt/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Good morning, Max!",
+        "th": "อรุณสวัสดิ์ แม็กซ์"
+      },
+      "exercises": [
+        {
+          "id": "d004-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Ann: Good morning, Sam! How are you?\nSam: I'm fine, thank you. It is hot! This is my dog, Max.\nAnn: Hello, Max! You are big.\nSam: Goodbye, Ann. See you!\nAnn: See you!",
+          "glossary": {
+            "You are big": "นายตัวใหญ่จังเลย"
+          },
+          "questions": [
+            {
+              "question": {
+                "en": "What is the dog's name?",
+                "th": "หมาชื่ออะไร"
+              },
+              "choices": [
+                "Max",
+                "Sam"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is the dog big?",
+                "th": "หมาตัวใหญ่ไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write greetings",
+        "th": "เขียนคำทักทาย"
+      },
+      "exercises": [
+        {
+          "id": "d004-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "dog",
+            "This",
+            "my"
+          ],
+          "answer": "This is my dog"
+        },
+        {
+          "id": "d004-write-02",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "สวัสดีตอนเช้า",
+          "accept": [
+            "Good morning",
+            "Good morning."
+          ]
+        },
+        {
+          "id": "d004-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ราตรีสวัสดิ์",
+          "accept": [
+            "Good night",
+            "Good night."
+          ]
+        }
+      ]
+    }
+  ]
+}
