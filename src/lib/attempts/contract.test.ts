@@ -240,3 +240,38 @@ describe("newId", () => {
     expect(newId()).not.toBe(a);
   });
 });
+
+describe("strings Postgres jsonb cannot store are invalid", () => {
+  const bad = ["a\u0000b", "x\ud800y", "\udc00", "end\ud83d"];
+  it.each(bad)("rejects %j in text, texts, match keys and match values", (s) => {
+    expect(attemptAnswerSchema.safeParse({ kind: "text", text: s }).success).toBe(false);
+    expect(attemptAnswerSchema.safeParse({ kind: "texts", texts: ["ok", s] }).success).toBe(false);
+    expect(attemptAnswerSchema.safeParse({ kind: "match", pairs: { [s]: "v-a" } }).success).toBe(false);
+    expect(attemptAnswerSchema.safeParse({ kind: "match", pairs: { "v-a": s } }).success).toBe(false);
+  });
+  it("still accepts Thai text, emoji (a valid surrogate pair) and ordinary control characters", () => {
+    for (const text of ["สวัสดี", "hi 😀", "tab\there\nnewline"]) {
+      expect(attemptAnswerSchema.safeParse({ kind: "text", text }).success).toBe(true);
+    }
+  });
+  it("turns such an item into { ok: false } without rejecting the batch", () => {
+    const r = parseAttemptBatch({ attempts: [{ ...valid, answer: { kind: "text", text: "a\u0000" } }, valid] });
+    expect(r).toMatchObject({ ok: true, items: [{ ok: false, id: uuid }, { ok: true }] });
+  });
+});
+
+describe("timestamps", () => {
+  const items = (createdAt: string) => attemptInputSchema.safeParse({ ...valid, createdAt }).success;
+  const completes = (completedAt: string) => completeLessonRequestSchema.safeParse({ day: 1, sessionId: uuid, completedAt }).success;
+  it.each(["2026-11-25T10:00:00Z", "2026-11-25T10:00:00.123Z", "2026-11-25T17:00:00+07:00", "2026-11-25T17:00:00.5-00:00"])("accepts %s", (t) => {
+    expect(items(t)).toBe(true);
+    expect(completes(t)).toBe(true);
+  });
+  it.each(["0000-01-01T00:00:00Z", "0001-01-01T00:00:00Z", "1899-12-31T23:59:59Z", "2101-01-01T00:00:00Z", "9999-12-31T23:59:59Z", "2026-13-01T00:00:00Z", "2026-11-25"])("rejects %s", (t) => {
+    expect(items(t)).toBe(false);
+    expect(completes(t)).toBe(false);
+  });
+  it("accepts the epoch, 1900 and 2100 (they are clamped by the server, not rejected)", () => {
+    for (const t of ["1970-01-01T00:00:00Z", "1900-01-01T00:00:00Z", "2100-12-31T00:00:00Z"]) expect(items(t)).toBe(true);
+  });
+});
