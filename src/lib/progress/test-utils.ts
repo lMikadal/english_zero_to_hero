@@ -6,16 +6,19 @@ export const NOW = new Date("2026-06-15T05:00:00Z"); // 12:00 in Bangkok
 export const daysAgo = (n: number, from: Date = NOW) => new Date(from.getTime() - n * DAY);
 
 export function attempt(over: Partial<AttemptLike> = {}): AttemptLike {
+  const correct = over.correct ?? true;
   return {
+    score: correct ? 1 : 0,
+    attemptNo: 1,
     day: 10,
     skill: "reading",
     exerciseType: "multiple_choice",
-    correct: true,
     tags: [],
     source: "lesson",
     sessionId: null,
     createdAt: NOW,
     ...over,
+    correct,
   };
 }
 

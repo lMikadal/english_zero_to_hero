@@ -11,6 +11,10 @@ export type AttemptLike = {
   skill: string;
   exerciseType: string;
   correct: boolean;
+  /** fraction 0..1; null for ungraded attempts (self-rated speaking, free_write) */
+  score: number | null;
+  /** 1 = first try, 2 = the end-of-lesson retry */
+  attemptNo: number;
   tags: readonly string[];
   source: AttemptSourceLike;
   sessionId: string | null;

@@ -124,3 +124,68 @@ describe("detectWeaknesses", () => {
     expect(detectWeaknesses(a, NOW).skill.map((s) => s.key)).toEqual(["listening"]);
   });
 });
+
+describe("first attempt only", () => {
+  it("ignores retries (attemptNo 2) entirely", () => {
+    const first = batch("a", 5, 5); // 5 first tries, all wrong
+    const retries = batch("a", 20, 0, { attemptNo: 2 }); // all right on retry
+    const s = stat([...first, ...retries], "exerciseType", "a");
+    expect(s?.attempts).toBe(5);
+    expect(s?.errorRate).toBe(1);
+    expect(stat(batch("a", 20, 20, { attemptNo: 2 }), "exerciseType", "a")).toBeUndefined();
+  });
+});
+
+describe("ungraded attempts (score null)", () => {
+  const ungraded = (n: number, over = {}) => batch("speak_answer", n, 0, { score: null, skill: "speaking", ...over });
+
+  it("never make a group weak or recovered, even with many attempts that are all wrong", () => {
+    const a = batch("speak_answer", 10, 10, { score: null, skill: "speaking" });
+    expect(groupStats(a, NOW)).toEqual([]);
+    expect(detectWeaknesses(a, NOW).skill).toEqual([]);
+  });
+
+  it("do not count towards the 5-attempt minimum", () => {
+    // 3 graded wrong + 10 ungraded in the same skill: only 3 count
+    const a = [...batch("x", 3, 3, { skill: "speaking" }), ...ungraded(10, { correct: false })];
+    const s = stat(a, "skill", "speaking");
+    expect(s?.attempts).toBe(3);
+    expect(s?.weak).toBe(false);
+  });
+
+  it("neither raise nor lower another group's rate", () => {
+    const graded = batch("x", 10, 3, { skill: "speaking" }); // 30%
+    const withWrong = [...graded, ...batch("y", 20, 20, { score: null, skill: "speaking" })];
+    const withRight = [...graded, ...ungraded(20)];
+    expect(stat(withWrong, "skill", "speaking")?.errorRate).toBeCloseTo(0.3, 10);
+    expect(stat(withRight, "skill", "speaking")?.errorRate).toBeCloseTo(0.3, 10);
+    expect(stat(withRight, "skill", "speaking")?.attempts).toBe(10);
+  });
+
+  it("also skip tags of ungraded attempts for the phoneme and vocab angles", () => {
+    const a = batch("x", 5, 5, { score: null, tags: ["phoneme:ae", "vocab:v-cat"] });
+    expect(groupStats(a, NOW)).toEqual([]);
+  });
+});
+
+describe("partial scores", () => {
+  it("weights the error as 1 - score, not the all-or-nothing correct flag", () => {
+    // 10 attempts each scoring 0.7 (not fully correct): error 0.3 -> weak
+    const a = batch("a", 10, 10, { score: 0.7 });
+    expect(stat(a, "exerciseType", "a")?.errorRate).toBeCloseTo(0.3, 10);
+    expect(stat(a, "exerciseType", "a")?.weak).toBe(true);
+    // 0.71 -> 0.29 -> not weak
+    expect(stat(batch("a", 10, 10, { score: 0.71 }), "exerciseType", "a")?.weak).toBe(false);
+  });
+
+  it("ignores the correct flag when a score exists", () => {
+    const a = batch("a", 10, 0, { score: 0.5 }); // correct = true but half the points
+    expect(stat(a, "exerciseType", "a")?.errorRate).toBeCloseTo(0.5, 10);
+  });
+
+  it("averages 1 - score with the half-life weights", () => {
+    // 5 now at score 1, 5 seven days ago at score 0.5: (5*0.5*0.5) / 7.5
+    const a = [...batch("a", 5, 0), ...batch("a", 5, 0, { score: 0.5, createdAt: daysAgo(7) })];
+    expect(stat(a, "exerciseType", "a")?.errorRate).toBeCloseTo(1.25 / 7.5, 10);
+  });
+});
