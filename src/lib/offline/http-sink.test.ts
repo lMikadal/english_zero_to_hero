@@ -200,7 +200,7 @@ describe("createHttpSink: completeLesson", () => {
   });
 
   it("resolves queued when offline, keeps it pending, and sends it later after the attempts", async () => {
-    const t = setup([new TypeError("offline"), new TypeError("offline"), okFor(1), { status: 200, body: completeResponse }]);
+    const t = setup([new TypeError("offline"), okFor(1), { status: 200, body: completeResponse }]);
     t.sink.sendAttempt(attempt(1));
     const result = await t.sink.completeLesson(completion);
     expect(result).toEqual({ status: "queued" });
@@ -279,6 +279,7 @@ describe("createHttpSink: subscribe", () => {
   });
 
   it("survives a throwing subscriber", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
     const t = setup([okFor(1)]);
     t.sink.subscribe(() => {
       throw new Error("boom");
