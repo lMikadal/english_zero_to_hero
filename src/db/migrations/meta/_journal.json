@@ -15,6 +15,13 @@
       "when": 1795619588082,
       "tag": "0001_thin_iron_monger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795620642854,
+      "tag": "0002_shiny_captain_flint",
+      "breakpoints": true
     }
   ]
 }
