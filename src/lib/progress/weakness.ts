@@ -119,6 +119,31 @@ export function groupStats(attempts: readonly AttemptLike[], now: Date): GroupSt
   });
 }
 
+export type PoolStat = Pick<GroupStat, "attempts" | "errorRate" | "weak" | "recovered">;
+
+/**
+ * Weighted error rate of ONE group's attempts as of `at` (ms), over the 14-day window ending at `at`.
+ * The attempts must already be qualifying (graded first tries from lessons/checkpoints) and belong to the
+ * group. Same formula as `groupStats`, without grouping, so it is cheap to call per evaluation point.
+ */
+export function poolStat(pool: readonly AttemptLike[], at: number): PoolStat {
+  const from = at - WEAKNESS_WINDOW_DAYS * DAY_MS;
+  let attempts = 0;
+  let wrong = 0;
+  let total = 0;
+  for (const a of pool) {
+    const t = a.createdAt.getTime();
+    if (t < from || t > at) continue;
+    const weight = 0.5 ** ((at - t) / DAY_MS / WEIGHT_HALF_LIFE_DAYS);
+    attempts += 1;
+    total += weight;
+    wrong += weight * (1 - (gradedScore(a) ?? 1));
+  }
+  const errorRate = attempts === 0 ? 0 : wrong / total;
+  const enough = attempts >= MIN_ATTEMPTS;
+  return { attempts, errorRate, weak: enough && isWeak(errorRate), recovered: enough && isRecovered(errorRate) };
+}
+
 /** Highest error rate first; rates within a tiny epsilon are ties, broken by key. */
 export const compareRates = (a: { errorRate: number; key: string }, b: { errorRate: number; key: string }) =>
   Math.abs(b.errorRate - a.errorRate) > EPSILON ? b.errorRate - a.errorRate : compareStrings(a.key, b.key);

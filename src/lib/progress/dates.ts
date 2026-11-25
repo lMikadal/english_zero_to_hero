@@ -3,16 +3,21 @@
 import { DEFAULT_TIME_ZONE } from "./config";
 
 const formatters = new Map<string, Intl.DateTimeFormat>();
+const validity = new Map<string, boolean>();
 
 /** True when `timeZone` is an IANA zone this runtime knows (use it to validate settings on save). */
 export function isValidTimeZone(timeZone: string): boolean {
   if (!timeZone) return false;
+  const cached = validity.get(timeZone);
+  if (cached !== undefined) return cached;
+  let ok = true;
   try {
     new Intl.DateTimeFormat("en-CA", { timeZone });
-    return true;
   } catch {
-    return false;
+    ok = false;
   }
+  validity.set(timeZone, ok);
+  return ok;
 }
 
 /** The zone itself when valid, otherwise Asia/Bangkok, so a bad profile value never throws. */

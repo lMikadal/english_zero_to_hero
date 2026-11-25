@@ -1,6 +1,6 @@
 // docs/PROGRESS.md section 3.1: status of weaknesses from their drill and retest attempts, and the
 // single list of weak points the UI shows.
-import { MAX_DRILLS_PER_DAY, MIN_RETEST_GRADED_ATTEMPTS, RETEST_PASS_RATE, RETEST_PASSES_TO_FIX, TOP_WEAKNESSES_PER_ANGLE } from "./config";
+import { DAY_MS, MAX_DRILLS_PER_DAY, MIN_RETEST_GRADED_ATTEMPTS, RETEST_PASS_RATE, RETEST_PASSES_TO_FIX, TOP_WEAKNESSES_PER_ANGLE, WEAKNESS_WINDOW_DAYS } from "./config";
 import { localDate, resolveTimeZone } from "./dates";
 import {
   ANGLES,
@@ -9,8 +9,9 @@ import {
   groupKeys,
   groupStats,
   parseWeaknessTag,
+  poolStat,
+  type PoolStat,
   weaknessTag,
-  type GroupStat,
   type Weakness,
 } from "./weakness";
 import type { AttemptLike } from "./types";
@@ -70,7 +71,7 @@ export function sessionResults(attempts: readonly AttemptLike[], w: Weakness, ti
         passed: s.graded >= MIN_RETEST_GRADED_ATTEMPTS && s.sum >= s.graded * RETEST_PASS_RATE - 1e-9,
       };
     })
-    .sort((a, b) => a.completedAt.localeCompare(b.completedAt) || (a.sessionId < b.sessionId ? -1 : 1));
+    .sort((a, b) => (a.completedAt < b.completedAt ? -1 : a.completedAt > b.completedAt ? 1 : 0) || (a.sessionId < b.sessionId ? -1 : 1));
 }
 
 /** Time the weakness became fixed: the second passed retest, on a different local day, after `after`. */
@@ -123,22 +124,52 @@ export function evaluateWeakness(
   const drills = own.filter(isDrillSource);
   const sessions = sessionResults(own, w, tz);
 
-  const statAt = (pool: readonly AttemptLike[], at: number): GroupStat | undefined =>
-    groupStats(pool.filter((a) => a.createdAt.getTime() <= at), new Date(at)).find(
-      (s) => s.angle === w.angle && s.key === w.key,
-    );
+  /**
+   * First time t (ms) after `after` and before `before` at which `test` holds for the window ending at t.
+   * `pool` is sorted by time. Candidate times are the pool's attempt times plus `extra`. Two pointers keep
+   * the window at its 14-day slice, so the work is (points x window size), not (points x pool size).
+   */
+  const firstTime = (
+    pool: readonly AttemptLike[],
+    after: number,
+    before: number,
+    extra: number[],
+    test: (s: PoolStat, t: number) => boolean,
+  ): number | null => {
+    const times = [...new Set([...pool.map((a) => a.createdAt.getTime()), ...extra])]
+      .filter((t) => t > after && t < before)
+      .sort((x, y) => x - y);
+    let lo = 0;
+    let hi = 0;
+    for (const t of times) {
+      while (hi < pool.length && pool[hi].createdAt.getTime() <= t) hi += 1;
+      while (lo < hi && pool[lo].createdAt.getTime() < t - WEAKNESS_WINDOW_DAYS * DAY_MS) lo += 1;
+      if (test(poolStat(pool.slice(lo, hi), t), t)) return t;
+    }
+    return null;
+  };
+  const firstDrillAfter = (t0: number) =>
+    drills.reduce((m, a) => (a.createdAt.getTime() > t0 ? Math.min(m, a.createdAt.getTime()) : m), Infinity);
 
   let cycleStart = -Infinity;
   let baseStart = -Infinity;
   let fixed = false;
   for (;;) {
     const f = fixedAt(sessions, cycleStart);
+    // Natural recovery closes an open cycle: the first moment (a lesson attempt, or now) with drill
+    // activity in the cycle at which the rate is < 15% over >= 5 attempts. Older sessions then no longer count.
+    const activityFrom = firstDrillAfter(cycleStart);
+    const base = lessons.filter((a) => a.createdAt.getTime() > baseStart);
+    const recoveredAt = firstTime(base, Math.max(cycleStart, activityFrom - 1), f ?? Infinity, [nowMs], (s) => s.recovered);
+    if (recoveredAt !== null) {
+      cycleStart = recoveredAt;
+      continue;
+    }
     if (f === null) break;
     baseStart = f;
     const post = lessons.filter((a) => a.createdAt.getTime() > f);
-    const times = [...new Set(post.map((a) => a.createdAt.getTime()))];
-    const reopenAt = times.find((t) => statAt(post, t)?.weak);
-    if (reopenAt === undefined) {
+    const reopenAt = firstTime(post, f, Infinity, [], (s) => s.weak);
+    if (reopenAt === null) {
       fixed = true;
       break;
     }
@@ -146,11 +177,11 @@ export function evaluateWeakness(
   }
 
   const base = lessons.filter((a) => a.createdAt.getTime() > baseStart);
-  const stat = statAt(base, nowMs);
-  const errorRate = stat?.errorRate ?? 0;
-  const count = stat?.attempts ?? 0;
-  const weak = stat?.weak ?? false;
-  const recovered = stat?.recovered ?? false;
+  const stat = poolStat(base, nowMs);
+  const errorRate = stat.errorRate;
+  const count = stat.attempts;
+  const weak = stat.weak;
+  const recovered = stat.recovered;
 
   const cycleSessions = sessions.filter((r) => Date.parse(r.completedAt) > cycleStart);
   const passed = cycleSessions.filter((r) => r.passed);
@@ -160,7 +191,6 @@ export function evaluateWeakness(
   else if (passed.length > 0) status = "awaiting_retest";
   else if (active) status = "in_progress";
   else status = "not_started";
-  if ((status === "in_progress" || status === "awaiting_retest") && recovered) status = "not_started";
 
   return {
     status,
