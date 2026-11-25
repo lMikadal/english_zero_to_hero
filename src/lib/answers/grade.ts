@@ -5,7 +5,11 @@ import type { AttemptAnswer } from "@/lib/attempts/contract";
 import type { Exercise, ExerciseType } from "@/lib/content/schema";
 import { matchesAny } from "./normalize";
 
-export type Grade = { correct: boolean; score: number | null };
+/**
+ * `items` is set for multi-item types (minimal_pair, read_passage, fill_blank, vocab_match), one boolean per item
+ * in exercise order, so components can highlight which item was wrong.
+ */
+export type Grade = { correct: boolean; score: number | null; items?: boolean[] };
 export type GradeError = { error: "kind_mismatch" | "unsupported" };
 
 /** Shown to the learner but never stored as an attempt. */
@@ -33,36 +37,37 @@ export function countWords(s: string): number {
 const MISMATCH: GradeError = { error: "kind_mismatch" };
 
 /** Fully right is `correct`; the score is the fraction of right items. */
-function fraction(right: number, total: number): Grade {
-  return { correct: right === total, score: total === 0 ? 0 : right / total };
+function fraction(items: boolean[]): Grade {
+  const right = items.filter(Boolean).length;
+  return { correct: right === items.length, score: items.length === 0 ? 0 : right / items.length, items };
 }
 const exact = (ok: boolean): Grade => ({ correct: ok, score: ok ? 1 : 0 });
 
 export function gradeExercise(ex: Exercise, answer: AttemptAnswer): Grade | GradeError {
   switch (ex.type) {
     case "listen_choose":
-      return answer.kind === "choice" ? exact(answer.selected === ex.answer) : MISMATCH;
-    case "read_passage": {
+      if (answer.kind !== "choice" || answer.selected >= ex.choices.length) return MISMATCH;
+      return exact(answer.selected === ex.answer);
+    case "read_passage":
       if (answer.kind !== "choices" || answer.selected.length !== ex.questions.length) return MISMATCH;
-      return fraction(ex.questions.filter((q, i) => answer.selected[i] === q.answer).length, ex.questions.length);
-    }
-    case "minimal_pair": {
+      return fraction(ex.questions.map((q, i) => answer.selected[i] === q.answer));
+    case "minimal_pair":
       if (answer.kind !== "pairs" || answer.selected.length !== ex.pairs.length) return MISMATCH;
-      return fraction(ex.pairs.filter((p, i) => answer.selected[i] === p.answer).length, ex.pairs.length);
-    }
+      return fraction(ex.pairs.map((p, i) => answer.selected[i] === p.answer));
     case "dictation":
       return answer.kind === "text" ? exact(matchesAny(answer.text, [...(ex.accept ?? []), ex.audioText])) : MISMATCH;
     case "translate_th_en":
       return answer.kind === "text" ? exact(matchesAny(answer.text, ex.accept)) : MISMATCH;
     case "arrange_words":
-      return answer.kind === "text" ? exact(matchesAny(answer.text, [ex.answer])) : MISMATCH;
-    case "fill_blank": {
+      return answer.kind === "text" ? exact(matchesAny(answer.text, [ex.answer, ...(ex.accept ?? [])])) : MISMATCH;
+    case "fill_blank":
       if (answer.kind !== "texts" || answer.texts.length !== ex.answer.length) return MISMATCH;
-      return fraction(ex.answer.filter((a, i) => matchesAny(answer.texts[i], [a])).length, ex.answer.length);
-    }
+      return fraction(ex.answer.map((a, i) => matchesAny(answer.texts[i], [a])));
     case "vocab_match": {
       if (answer.kind !== "match") return MISMATCH;
-      return fraction(ex.pairs.filter((p) => answer.pairs[p.vocabId] === p.vocabId).length, ex.pairs.length);
+      const keys = Object.keys(answer.pairs);
+      if (keys.length !== ex.pairs.length || !ex.pairs.every((p) => Object.hasOwn(answer.pairs, p.vocabId))) return MISMATCH;
+      return fraction(ex.pairs.map((p) => answer.pairs[p.vocabId] === p.vocabId));
     }
     case "repeat_after_me":
     case "shadowing":
@@ -75,17 +80,24 @@ export function gradeExercise(ex: Exercise, answer: AttemptAnswer): Grade | Grad
   }
 }
 
-/** What the feedback bar shows after a wrong answer; null when there is nothing to reveal. */
-export function correctAnswerText(ex: Exercise): string | null {
-  switch (ex.type) {
-    case "listen_choose": return ex.choices[ex.answer];
-    case "read_passage": return ex.questions.map((q) => q.choices[q.answer]).join(", ");
-    case "minimal_pair": return ex.pairs.map((p) => p[p.answer]).join(", ");
-    case "dictation": return ex.audioText;
-    case "translate_th_en": return ex.accept[0];
-    case "arrange_words": return ex.answer;
-    case "fill_blank": return ex.answer.join(", ");
-    default: return null;
-  }
+/** attemptNo 2 (the end-of-lesson retry round) only exists for retryable types; the API rejects the rest as `invalid`. */
+export function isAttemptNoAllowed(type: ExerciseType, attemptNo: 1 | 2): boolean {
+  return attemptNo === 1 || isRetryable(type);
 }
 
+/**
+ * What the feedback bar shows after a wrong answer: one entry per item (choices may contain commas, so
+ * the entries are never joined). Empty when there is nothing to reveal.
+ */
+export function correctAnswerText(ex: Exercise): string[] {
+  switch (ex.type) {
+    case "listen_choose": return [ex.choices[ex.answer]];
+    case "read_passage": return ex.questions.map((q) => q.choices[q.answer]);
+    case "minimal_pair": return ex.pairs.map((p) => p[p.answer]);
+    case "dictation": return [ex.audioText];
+    case "translate_th_en": return [ex.accept[0]];
+    case "arrange_words": return [ex.answer];
+    case "fill_blank": return [...ex.answer];
+    default: return [];
+  }
+}
