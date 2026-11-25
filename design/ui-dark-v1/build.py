@@ -95,7 +95,11 @@ def home(x, c, label):
     s = screen("Home", x, c, label)
     body = col(s, "Body", gap=24, pad=[56, 20, 20, 20])
     head = col(body, "Title", gap=6)
-    text(head, "English Zero to Hero", 24, c["text"], EN, "Bold", letterSpacing=-0.3)
+    hr0 = row(head, "Title row", mainAlign="spaceBetween")
+    text(hr0, "English Zero to Hero", 24, c["text"], EN, "Bold", letterSpacing=-0.3)
+    gear = frame(hr0, "Settings button", layout="horizontal", mainAlign="center", crossAlign="center", w=36, h=36,
+                 sizingH="fixed", sizingV="fixed", cornerRadius=18, fill=c["surface"], stroke=c["border"], strokeWeight=1)
+    text(gear, "⚙", 16, c["muted"], IPA, "Regular")
     text(head, "ฝึกภาษาอังกฤษวันละบท 365 วัน", 14, c["muted"])
     card = col(body, "Today card", gap=16, pad=20, fill=c["surface"], cornerRadius=16, stroke=c["border"], strokeWeight=1)
     r = row(card, "Day row", mainAlign="spaceBetween", crossAlign="max")
@@ -238,6 +242,36 @@ def completion(x, c, label):
     button(bottom, "กลับหน้าแรก", c, "secondary")
     return s
 
+def settings(x, c, label, selected):
+    s = screen("Settings / Theme", x, c, label)
+    top = col(s, "Top", gap=0)
+    head = row(top, "Header", gap=12, pad=[20, 20, 12, 20])
+    text(head, "←", 18, c["muted"], EN, "Regular")
+    text(head, "ตั้งค่า", 20, c["text"], TH, "Bold")
+    body = col(top, "Body", gap=22, pad=[8, 20, 0, 20])
+    sec = col(body, "Theme section", gap=10)
+    text(sec, "ธีม", 13, c["muted"], TH, "Medium")
+    seg = row(sec, "Segmented", gap=4, pad=4, fill=c["surface2"], cornerRadius=12, stroke=c["border"], strokeWeight=1)
+    for lab in ["สว่าง", "มืด", "ตามเครื่อง"]:
+        on = lab == selected
+        b = frame(seg, f"Segment / {lab}", layout="horizontal", mainAlign="center", crossAlign="center",
+                  padding=[10, 8, 10, 8], sizingH="fill", sizingV="hug", cornerRadius=9,
+                  fill=c["accent"] if on else "none")
+        text(b, lab, 14, c["accentText"] if on else c["text"], TH, "Medium")
+    text(sec, "ตามเครื่อง: เปลี่ยนสว่างหรือมืดตามการตั้งค่าของมือถือหรือคอมโดยอัตโนมัติ", 12, c["faint"], TH, "Regular",
+         sizingH="fill", textAutoResize="height", lineHeight="150%")
+    lst = col(body, "Other settings", gap=0, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, clip=True)
+    rows = [("สำเนียงเสียงอ่าน", "อเมริกัน"), ("ความเร็วเสียงเริ่มต้น", "ปกติ"), ("เตือนให้ฝึก", "20:00")]
+    for i, (k, v) in enumerate(rows):
+        r = row(lst, f"Row / {k}", pad=[14, 16, 14, 16], mainAlign="spaceBetween")
+        text(r, k, 14, c["text"], TH, "Regular")
+        text(r, v + "  ›", 14, c["muted"], TH, "Regular")
+        if i < len(rows) - 1:
+            frame(lst, "Divider", h=1, sizingH="fill", sizingV="fixed", fill=c["border"], layout="horizontal")
+    foot = col(s, "Footer", pad=[0, 20, 24, 20])
+    text(foot, "ธีมจำไว้ในอุปกรณ์นี้ แต่ละเครื่องตั้งต่างกันได้", 12, c["faint"], TH, "Regular", textAlign="center", sizingH="fill")
+    return s
+
 GAP = 420
 home(0 * GAP, DARK, "1 · หน้าแรก (มืด)")
 phoneme(1 * GAP, DARK, "2 · แนะนำเสียง")
@@ -246,6 +280,8 @@ translate(3 * GAP, DARK, "4 · แปลประโยค กำลังพิ
 completion(4 * GAP, DARK, "5 · จบบทเรียน")
 home(5 * GAP + 60, LIGHT, "6 · หน้าแรก (สว่าง) สำหรับเทียบ")
 minimal_pair(6 * GAP + 60, LIGHT, "7 · ฟังแยกเสียง (สว่าง)")
+settings(7 * GAP + 120, DARK, "8 · ตั้งค่าธีม (เลือกมืด)", "มืด")
+settings(8 * GAP + 120, LIGHT, "9 · ตั้งค่าธีม (เลือกสว่าง)", "สว่าง")
 
 json.dump(steps, open(sys.argv[1], "w"), ensure_ascii=False, indent=0)
 print(len(steps), "steps")
