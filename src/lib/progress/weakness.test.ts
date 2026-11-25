@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { detectWeaknesses, groupStats, isRecovered, isWeak } from "./weakness";
+import { compareStats, detectWeaknesses, groupStats, isRecovered, isWeak, parseWeaknessTag, weaknessTag } from "./weakness";
 import { attempt, daysAgo, NOW } from "./test-utils";
 
 /** n attempts of the same exercise type, `wrong` of them incorrect, all at the same time. */
@@ -187,5 +187,55 @@ describe("partial scores", () => {
     // 5 now at score 1, 5 seven days ago at score 0.5: (5*0.5*0.5) / 7.5
     const a = [...batch("a", 5, 0), ...batch("a", 5, 0, { score: 0.5, createdAt: daysAgo(7) })];
     expect(stat(a, "exerciseType", "a")?.errorRate).toBeCloseTo(1.25 / 7.5, 10);
+  });
+});
+
+describe("weakness tags", () => {
+  it("builds the tag a drill or retest attempt carries", () => {
+    expect(weaknessTag({ angle: "phoneme", key: "phoneme:ae" })).toBe("weakness:phoneme:ae");
+    expect(weaknessTag({ angle: "vocab", key: "vocab:v-cat" })).toBe("weakness:vocab:v-cat");
+    expect(weaknessTag({ angle: "skill", key: "listening" })).toBe("weakness:skill:listening");
+    expect(weaknessTag({ angle: "exerciseType", key: "dictation" })).toBe("weakness:exerciseType:dictation");
+  });
+
+  it("parses it back, and rejects other tags", () => {
+    for (const w of [
+      { angle: "phoneme", key: "phoneme:ae" },
+      { angle: "vocab", key: "vocab:v-cat" },
+      { angle: "skill", key: "listening" },
+      { angle: "exerciseType", key: "dictation" },
+    ] as const) {
+      expect(parseWeaknessTag(weaknessTag(w))).toEqual(w);
+    }
+    expect(parseWeaknessTag("phoneme:ae")).toBeNull();
+    expect(parseWeaknessTag("weakness:unknown:x")).toBeNull();
+    expect(parseWeaknessTag("weakness:skill:")).toBeNull();
+  });
+
+  it("are never treated as phoneme or vocab groups by detection", () => {
+    const a = batch("a", 5, 5, { tags: ["weakness:phoneme:ae", "weakness:vocab:v-cat"] });
+    expect(groupStats(a, NOW).filter((s) => s.angle === "phoneme" || s.angle === "vocab")).toEqual([]);
+  });
+});
+
+describe("score hygiene", () => {
+  it("clamps scores to 0..1", () => {
+    expect(stat(batch("a", 5, 0, { score: 7 }), "exerciseType", "a")?.errorRate).toBe(0);
+    expect(stat(batch("a", 5, 5, { score: -3 }), "exerciseType", "a")?.errorRate).toBe(1);
+  });
+
+  it("treats non-finite scores as ungraded", () => {
+    expect(groupStats(batch("a", 6, 6, { score: Number.NaN }), NOW)).toEqual([]);
+    expect(groupStats(batch("a", 6, 6, { score: Number.POSITIVE_INFINITY }), NOW)).toEqual([]);
+  });
+});
+
+describe("compareStats", () => {
+  const s = (key: string, errorRate: number) => ({ angle: "skill" as const, key, attempts: 5, errorRate, weak: true, recovered: false });
+
+  it("treats error rates within a tiny epsilon as equal and falls back to the key", () => {
+    expect([s("b", 0.5), s("a", 0.5 + 1e-12)].sort(compareStats).map((x) => x.key)).toEqual(["a", "b"]);
+    expect([s("a", 0.5), s("b", 0.5 + 1e-12)].sort(compareStats).map((x) => x.key)).toEqual(["a", "b"]);
+    expect([s("a", 0.5), s("b", 0.51)].sort(compareStats).map((x) => x.key)).toEqual(["b", "a"]);
   });
 });

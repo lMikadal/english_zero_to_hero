@@ -1,69 +1,123 @@
 import { describe, expect, it } from "vitest";
-import { matchesWeakness, recommendDrills, sessionResults, weaknessStatus } from "./drills";
+import { matchesWeakness, recommendDrills, sessionResults, weakPoints, weaknessStatus, type WeakPoint } from "./drills";
 import { attempt, daysAgo, NOW } from "./test-utils";
+import { weaknessTag } from "./weakness";
 import type { AttemptLike } from "./types";
 
 const TZ = "Asia/Bangkok";
 const W = { angle: "phoneme", key: "phoneme:ae" } as const;
+const TAG = weaknessTag(W);
 
-/** A session of `total` attempts tagged phoneme:ae with `right` correct, finishing at `at`. */
-function session(id: string, source: "drill" | "retest", right: number, total: number, at: Date): AttemptLike[] {
+/** A drill/retest session of `total` graded attempts, `right` correct, finishing at `at`, tagged for `w`. */
+function session(id: string, source: "drill" | "retest", right: number, total: number, at: Date, tag = TAG): AttemptLike[] {
   return Array.from({ length: total }, (_, i) =>
     attempt({
       source,
       sessionId: id,
-      tags: ["phoneme:ae"],
+      tags: [tag, "phoneme:ae"],
       correct: i < right,
       createdAt: new Date(at.getTime() - (total - 1 - i) * 1000),
     }),
   );
 }
 
-const status = (attempts: AttemptLike[], now = NOW) => weaknessStatus(attempts, W, now, TZ).status;
+/** Lesson attempts on phoneme:ae, the last `wrong` of `total` wrong, one second apart, ending at `at`. */
+const lesson = (wrong: number, total: number, at: Date, over: Partial<AttemptLike> = {}): AttemptLike[] =>
+  Array.from({ length: total }, (_, i) =>
+    attempt({ tags: ["phoneme:ae"], correct: i < total - wrong, createdAt: new Date(at.getTime() - (total - 1 - i) * 1000), ...over }),
+  );
+
+const status = (attempts: AttemptLike[], w = W, now = NOW) => weaknessStatus(attempts, w, now, TZ).status;
 
 describe("matchesWeakness", () => {
-  it("matches by tag, exercise type or skill", () => {
+  it("matches lesson and checkpoint attempts by phoneme/vocab tag, exercise type or skill", () => {
     expect(matchesWeakness(attempt({ tags: ["phoneme:ae"] }), W)).toBe(true);
     expect(matchesWeakness(attempt({ tags: ["phoneme:th"] }), W)).toBe(false);
+    expect(matchesWeakness(attempt({ source: "checkpoint", tags: ["phoneme:ae"] }), W)).toBe(true);
     expect(matchesWeakness(attempt({ exerciseType: "dictation" }), { angle: "exerciseType", key: "dictation" })).toBe(true);
     expect(matchesWeakness(attempt({ skill: "writing" }), { angle: "skill", key: "writing" })).toBe(true);
     expect(matchesWeakness(attempt({ skill: "writing" }), { angle: "skill", key: "reading" })).toBe(false);
   });
+
+  it("matches drill and retest attempts ONLY by the weakness tag", () => {
+    const listening = { angle: "skill", key: "listening" } as const;
+    const ae = attempt({ source: "retest", skill: "listening", tags: [TAG, "phoneme:ae"] });
+    expect(matchesWeakness(ae, W)).toBe(true);
+    expect(matchesWeakness(ae, listening)).toBe(false); // same skill, but it targets another weakness
+    expect(matchesWeakness(attempt({ source: "drill", skill: "listening", tags: ["phoneme:ae"] }), W)).toBe(false);
+    expect(matchesWeakness(attempt({ source: "drill", tags: [weaknessTag(listening)] }), listening)).toBe(true);
+  });
 });
 
 describe("sessionResults", () => {
-  it("groups retest attempts by session and applies the 80% rule exactly", () => {
+  it("passes at a mean score of exactly 0.8 and not below, with 5 or more graded attempts", () => {
     const a = [
-      ...session("s-80", "retest", 4, 5, daysAgo(3)),
+      ...session("s-4of5", "retest", 4, 5, daysAgo(3)),
       ...session("s-79", "retest", 79, 100, daysAgo(3)),
-      ...session("s-78", "retest", 7, 9, daysAgo(3)), // 77.8%
+      ...session("s-80", "retest", 80, 100, daysAgo(3)),
+      ...session("s-7of9", "retest", 7, 9, daysAgo(3)), // 77.8%
       ...session("s-7of8", "retest", 7, 8, daysAgo(3)),
       ...session("s-6of8", "retest", 6, 8, daysAgo(3)),
     ];
     const byId = Object.fromEntries(sessionResults(a, W, TZ).map((r) => [r.sessionId, r.passed]));
-    expect(byId).toEqual({ "s-80": true, "s-79": false, "s-78": false, "s-7of8": true, "s-6of8": false });
+    expect(byId).toEqual({ "s-4of5": true, "s-79": false, "s-80": true, "s-7of9": false, "s-7of8": true, "s-6of8": false });
+  });
+
+  it("uses partial credit: the session score is the mean of scores", () => {
+    const eight = (score: number) =>
+      Array.from({ length: 8 }, () => attempt({ source: "retest", sessionId: "p", tags: [TAG], score, correct: score === 1 }));
+    expect(sessionResults(eight(0.8), W, TZ)[0]).toMatchObject({ passed: true, score: 0.8 }); // 6.4 of 8
+    expect(sessionResults(eight(0.79), W, TZ)[0].passed).toBe(false);
+  });
+
+  it("cannot be passed with fewer than 5 graded attempts", () => {
+    const [r] = sessionResults(session("s", "retest", 4, 4, daysAgo(2)), W, TZ);
+    expect(r).toMatchObject({ passed: false, graded: 4, score: 1 });
+  });
+
+  it("ignores ungraded attempts when scoring and counting", () => {
+    const ungraded = Array.from({ length: 10 }, () =>
+      attempt({ source: "retest", sessionId: "s", tags: [TAG], correct: true, score: null, createdAt: daysAgo(2) }),
+    );
+    // only 4 graded perfect answers + 10 self-rated: cannot pass
+    expect(sessionResults([...session("s", "retest", 4, 4, daysAgo(2)), ...ungraded], W, TZ)[0].passed).toBe(false);
+    // 5 graded perfect + 10 self-rated wrong: score only from graded
+    const wrong = ungraded.map((a) => ({ ...a, correct: false }));
+    expect(sessionResults([...session("s", "retest", 5, 5, daysAgo(2)), ...wrong], W, TZ)[0]).toMatchObject({ passed: true, score: 1, graded: 5 });
   });
 
   it("ignores drill attempts, attempts without a session, and other weaknesses", () => {
     const a = [
       ...session("d1", "drill", 8, 8, daysAgo(1)),
-      attempt({ source: "retest", sessionId: null, tags: ["phoneme:ae"] }),
-      attempt({ source: "retest", sessionId: "other", tags: ["phoneme:th"] }),
+      attempt({ source: "retest", sessionId: null, tags: [TAG] }),
+      ...session("other", "retest", 8, 8, daysAgo(1), weaknessTag({ angle: "phoneme", key: "phoneme:th" })),
     ];
     expect(sessionResults(a, W, TZ)).toEqual([]);
   });
 
-  it("dates a session by its last attempt in the user's time zone", () => {
-    // 16:59:59Z is 23:59:59 on 14 Jun in Bangkok; 17:00:00Z is already 15 Jun
+  it("returns ISO strings and dates a session by its last attempt in the user's zone", () => {
     const [r] = sessionResults(session("s", "retest", 8, 8, new Date("2026-06-14T17:00:00Z")), W, TZ);
+    expect(r.completedAt).toBe("2026-06-14T17:00:00.000Z");
     expect(r.localDate).toBe("2026-06-15");
+  });
+
+  it("dates a session that spans local midnight by its last attempt", () => {
+    const first = Array.from({ length: 4 }, (_, i) =>
+      attempt({ source: "retest", sessionId: "m", tags: [TAG], createdAt: new Date(Date.parse("2026-06-14T16:59:00Z") + i * 1000) }),
+    );
+    const last = Array.from({ length: 4 }, (_, i) =>
+      attempt({ source: "retest", sessionId: "m", tags: [TAG], createdAt: new Date(Date.parse("2026-06-14T17:01:00Z") + i * 1000) }),
+    );
+    const [r] = sessionResults([...first, ...last], W, TZ);
+    expect(r.localDate).toBe("2026-06-15");
+    expect(r.graded).toBe(8);
   });
 });
 
 describe("weaknessStatus", () => {
   it("is not_started with no drill or retest attempts", () => {
     expect(status([])).toBe("not_started");
-    expect(status([attempt({ tags: ["phoneme:ae"], source: "lesson" })])).toBe("not_started");
+    expect(status(lesson(5, 5, daysAgo(1)))).toBe("not_started");
   });
 
   it("is in_progress after a drill, or after only failed retests", () => {
@@ -89,10 +143,9 @@ describe("weaknessStatus", () => {
   });
 
   it("uses the user's time zone for 'different days'", () => {
-    // 23:30 on 14 Jun and 00:30 on 15 Jun in Bangkok, one hour apart but the same UTC day
     const a = [
-      ...session("r1", "retest", 8, 8, new Date("2026-06-14T16:30:00Z")),
-      ...session("r2", "retest", 8, 8, new Date("2026-06-14T17:30:00Z")),
+      ...session("r1", "retest", 8, 8, new Date("2026-06-14T16:30:00Z")), // 23:30 on 14 Jun in Bangkok
+      ...session("r2", "retest", 8, 8, new Date("2026-06-14T17:30:00Z")), // 00:30 on 15 Jun
     ];
     expect(weaknessStatus(a, W, NOW, "Asia/Bangkok").status).toBe("fixed");
     expect(weaknessStatus(a, W, NOW, "UTC").status).toBe("awaiting_retest");
@@ -103,56 +156,185 @@ describe("weaknessStatus", () => {
     expect(status(a)).toBe("awaiting_retest");
   });
 
-  it("reopens (new cycle, not_started) when later lesson error rate is back at 30%", () => {
-    const fixed = [...session("r1", "retest", 8, 8, daysAgo(6)), ...session("r2", "retest", 8, 8, daysAgo(5))];
-    const lesson = (wrong: number, total: number) =>
-      Array.from({ length: total }, (_, i) =>
-        attempt({ tags: ["phoneme:ae"], correct: i >= wrong, createdAt: daysAgo(1) }),
-      );
-    expect(status([...fixed, ...lesson(3, 10)])).toBe("not_started"); // exactly 30%
-    expect(status([...fixed, ...lesson(2, 10)])).toBe("fixed"); // 20%
-    expect(status([...fixed, ...lesson(4, 4)])).toBe("fixed"); // under 5 attempts: not enough evidence
+  it("is not advanced by retests that target a different weakness (same skill)", () => {
+    const listening = { angle: "skill", key: "listening" } as const;
+    const aeRetests = [
+      ...session("r1", "retest", 8, 8, daysAgo(3)).map((a) => ({ ...a, skill: "listening" })),
+      ...session("r2", "retest", 8, 8, daysAgo(2)).map((a) => ({ ...a, skill: "listening" })),
+    ];
+    expect(status(aeRetests, listening)).toBe("not_started");
+    expect(status(aeRetests, W)).toBe("fixed");
   });
 
-  it("ignores lesson errors from before the fix and from drills when checking for reopening", () => {
-    const old = Array.from({ length: 10 }, () =>
-      attempt({ tags: ["phoneme:ae"], correct: false, createdAt: daysAgo(10) }),
-    );
+  it("reopens (new cycle, not_started) when later lesson error rate is back at 30%", () => {
     const fixed = [...session("r1", "retest", 8, 8, daysAgo(6)), ...session("r2", "retest", 8, 8, daysAgo(5))];
-    expect(status([...old, ...fixed])).toBe("fixed");
+    expect(status([...fixed, ...lesson(3, 10, daysAgo(1))])).toBe("not_started"); // exactly 30%
+    expect(status([...fixed, ...lesson(2, 10, daysAgo(1))])).toBe("fixed"); // 20%
+    expect(status([...fixed, ...lesson(4, 4, daysAgo(1))])).toBe("fixed"); // under 5 attempts
+  });
+
+  it("ignores lesson errors from before the fix", () => {
+    const fixed = [...session("r1", "retest", 8, 8, daysAgo(6)), ...session("r2", "retest", 8, 8, daysAgo(5))];
+    expect(status([...lesson(10, 10, daysAgo(10)), ...fixed])).toBe("fixed");
   });
 
   it("restarts the cycle after reopening: old passes do not count, new activity does", () => {
     const fixed = [...session("r1", "retest", 8, 8, daysAgo(6)), ...session("r2", "retest", 8, 8, daysAgo(5))];
-    const bad = Array.from({ length: 5 }, () => attempt({ tags: ["phoneme:ae"], correct: false, createdAt: daysAgo(3) }));
+    const bad = lesson(5, 5, daysAgo(3));
     expect(status([...fixed, ...bad, ...session("d", "drill", 8, 8, daysAgo(1))])).toBe("in_progress");
     const again = [...session("r3", "retest", 8, 8, daysAgo(2)), ...session("r4", "retest", 8, 8, daysAgo(1))];
     expect(status([...fixed, ...bad, ...again])).toBe("fixed");
   });
+
+  it("remembers a reopening that is older than the 14-day window", () => {
+    const a = [
+      ...session("r1", "retest", 8, 8, daysAgo(40)),
+      ...session("r2", "retest", 8, 8, daysAgo(39)),
+      ...lesson(5, 5, daysAgo(30)), // reopens
+      ...session("d", "drill", 8, 8, daysAgo(20)),
+      ...session("r3", "retest", 8, 8, daysAgo(18)),
+    ];
+    expect(status(a)).toBe("awaiting_retest");
+  });
+
+  it("evaluates the reopen rule as of each attempt's time (window ending at that attempt)", () => {
+    // 5 wrong lessons 30 days ago, then 30 right ones yesterday: weak at the time, fine now
+    const a = [
+      ...session("r1", "retest", 8, 8, daysAgo(40)),
+      ...session("r2", "retest", 8, 8, daysAgo(39)),
+      ...lesson(5, 5, daysAgo(30)),
+      ...lesson(0, 30, daysAgo(1)),
+    ];
+    expect(status(a)).toBe("not_started");
+  });
+
+  it("closes an open cycle when the lesson error rate recovers on its own", () => {
+    const a = [...session("d", "drill", 8, 8, daysAgo(3)), ...lesson(1, 20, daysAgo(1))]; // 5%
+    expect(status(a)).toBe("not_started");
+  });
+
+  it("reports the error rate from lesson attempts after the fix only", () => {
+    const fixed = [...session("r1", "retest", 8, 8, daysAgo(6)), ...session("r2", "retest", 8, 8, daysAgo(5))];
+    const ev = weaknessStatus([...lesson(5, 10, daysAgo(10)), ...fixed, ...lesson(1, 10, daysAgo(1))], W, NOW, TZ);
+    expect(ev).toMatchObject({ status: "fixed", attempts: 10 });
+    expect(ev.errorRate).toBeCloseTo(0.1, 10);
+  });
+
+  it("falls back to Asia/Bangkok for a bad time zone instead of throwing", () => {
+    expect(weaknessStatus(session("d", "drill", 8, 8, daysAgo(1)), W, NOW, "Asia/Bankok").status).toBe("in_progress");
+  });
+});
+
+describe("weakPoints", () => {
+  const fixedFor = (...ds: [number, number]) => [
+    ...session("r1", "retest", 8, 8, daysAgo(ds[0])),
+    ...session("r2", "retest", 8, 8, daysAgo(ds[1])),
+  ];
+  const run = (a: AttemptLike[]) => weakPoints(a, NOW, TZ);
+
+  it("is empty for no attempts", () => {
+    expect(run([])).toEqual([]);
+  });
+
+  it("lists weak groups with status not_started, ordered by angle then error rate", () => {
+    const a = [
+      ...lesson(5, 10, daysAgo(1), { exerciseType: "x", skill: "reading" }),
+      ...Array.from({ length: 10 }, (_, i) => attempt({ exerciseType: "y", skill: "writing", correct: i >= 7 })),
+    ];
+    const r = run(a);
+    expect(r.map((p) => `${p.angle}:${p.key}`)).toEqual([
+      "phoneme:phoneme:ae",
+      "exerciseType:x",
+      "exerciseType:y",
+      "skill:reading",
+      "skill:writing",
+    ]);
+    expect(r.every((p) => p.status === "not_started")).toBe(true);
+  });
+
+  it("keeps at most 5 per angle", () => {
+    const a = Array.from({ length: 7 }, (_, i) => lesson(5, 10, daysAgo(1), { tags: [`phoneme:p${i}`] })).flat();
+    expect(run(a).filter((p) => p.angle === "phoneme")).toHaveLength(5);
+  });
+
+  it("does not list a fixed weakness even though the 14-day rate is still high", () => {
+    const a = [...lesson(5, 10, daysAgo(10)), ...fixedFor(6, 5)];
+    expect(run(a)).toEqual([]);
+  });
+
+  it("lists a reopened weakness again", () => {
+    const a = [...fixedFor(6, 5), ...lesson(5, 10, daysAgo(1))];
+    expect(run(a)).toMatchObject([{ key: "phoneme:ae", status: "not_started" }]);
+  });
+
+  it("lists an in-progress weakness in the 15-30% band, which plain detection would hide", () => {
+    const withDrill = [...lesson(2, 10, daysAgo(1)), ...session("d", "drill", 8, 8, daysAgo(2))];
+    expect(run(withDrill)).toMatchObject([{ key: "phoneme:ae", status: "in_progress", attempts: 10 }]);
+    expect(run(lesson(2, 10, daysAgo(1)))).toEqual([]); // no drill cycle: not weak, not listed
+  });
+
+  it("lists an awaiting-retest weakness with too few new attempts to judge", () => {
+    const a = [...lesson(1, 3, daysAgo(1)), ...session("r1", "retest", 8, 8, daysAgo(1))];
+    expect(run(a)).toMatchObject([{ status: "awaiting_retest", attempts: 3 }]);
+  });
+
+  it("lists a weakness that only has drill attempts and no lessons in the window", () => {
+    expect(run(session("d", "drill", 8, 8, daysAgo(2)))).toMatchObject([{ key: "phoneme:ae", status: "in_progress", attempts: 0, errorRate: 0 }]);
+  });
+
+  it("stops listing a weakness that recovered naturally (< 15% with 5+ attempts)", () => {
+    expect(run([...session("d", "drill", 8, 8, daysAgo(3)), ...lesson(1, 20, daysAgo(1))])).toEqual([]);
+  });
+
+  it("reports the retest pass date so the recommendation can skip it today", () => {
+    const a = [...lesson(5, 10, daysAgo(1)), ...session("r1", "retest", 8, 8, NOW)];
+    expect(run(a)[0]).toMatchObject({ status: "awaiting_retest", passedOn: "2026-06-15" });
+  });
+
+  it("is not confused by retests of another weakness with the same skill", () => {
+    const a = [
+      ...lesson(5, 10, daysAgo(1), { skill: "listening", tags: [] }),
+      ...fixedFor(3, 2), // retests for phoneme:ae (skill reading by default)
+    ];
+    const listening = run(a).find((p) => p.key === "listening");
+    expect(listening).toMatchObject({ status: "not_started" });
+  });
 });
 
 describe("recommendDrills", () => {
-  const c = (key: string, st: "not_started" | "in_progress" | "awaiting_retest" | "fixed", errorRate: number) => ({
-    angle: "exerciseType" as const,
+  const p = (key: string, st: WeakPoint["status"], errorRate: number, over: Partial<WeakPoint> = {}): WeakPoint => ({
+    angle: "exerciseType",
     key,
     status: st,
     errorRate,
+    attempts: 10,
+    passedOn: null,
+    ...over,
   });
+  const TODAY = "2026-06-15";
 
   it("is empty for no candidates", () => {
-    expect(recommendDrills([])).toEqual([]);
+    expect(recommendDrills([], TODAY)).toEqual([]);
   });
 
   it("picks at most 2, worst error rate first, skipping fixed ones", () => {
-    const r = recommendDrills([c("a", "not_started", 0.4), c("b", "fixed", 0.9), c("c", "in_progress", 0.6), c("d", "awaiting_retest", 0.5)]);
+    const r = recommendDrills([p("a", "not_started", 0.4), p("b", "fixed", 0.9), p("c", "in_progress", 0.6), p("d", "awaiting_retest", 0.5)], TODAY);
     expect(r.map((x) => x.key)).toEqual(["c", "d"]);
   });
 
-  it("breaks ties by angle order then key, independent of input order", () => {
-    const x = { angle: "phoneme" as const, key: "z", status: "not_started" as const, errorRate: 0.5 };
-    const y = c("a", "not_started", 0.5);
-    const z = c("b", "not_started", 0.5);
-    expect(recommendDrills([z, y, x]).map((r) => r.key)).toEqual(["z", "a"]);
-    expect(recommendDrills([x, y, z]).map((r) => r.key)).toEqual(["z", "a"]);
+  it("skips an awaiting-retest weakness that already passed a retest today, but not one that passed yesterday", () => {
+    const r = recommendDrills(
+      [p("a", "awaiting_retest", 0.9, { passedOn: TODAY }), p("b", "awaiting_retest", 0.8, { passedOn: "2026-06-14" }), p("c", "not_started", 0.3)],
+      TODAY,
+    );
+    expect(r.map((x) => x.key)).toEqual(["b", "c"]);
+  });
+
+  it("breaks ties (within an epsilon) by angle order then key, independent of input order", () => {
+    const x: WeakPoint = { ...p("z", "not_started", 0.5), angle: "phoneme" };
+    const y = p("a", "not_started", 0.5 + 1e-12);
+    const z = p("b", "not_started", 0.5);
+    expect(recommendDrills([z, y, x], TODAY).map((r) => r.key)).toEqual(["z", "a"]);
+    expect(recommendDrills([x, y, z], TODAY).map((r) => r.key)).toEqual(["z", "a"]);
   });
 });
