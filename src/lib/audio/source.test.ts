@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { AudioUnavailableError, type Accent, type AudioSource, type PlayOptions } from "./source";
+import { AudioUnavailableError, createSilentAudioSource, type Accent, type AudioSource, type PlayOptions } from "./source";
 
 describe("AudioUnavailableError", () => {
   it("is an Error that callers can tell apart from other failures", () => {
@@ -31,5 +31,15 @@ describe("AudioSource contract", () => {
     expectTypeOf<Accent>().toEqualTypeOf<"us" | "uk">();
     expectTypeOf<PlayOptions["rate"]>().toEqualTypeOf<0.75 | 1 | undefined>();
     expectTypeOf<AudioSource["kind"]>().toEqualTypeOf<"file" | "speech" | "none">();
+  });
+});
+
+describe("createSilentAudioSource", () => {
+  it("is a source of kind none that cannot play and rejects with AudioUnavailableError", async () => {
+    const a = createSilentAudioSource();
+    expect(a.kind).toBe("none");
+    expect(await a.canPlay("hello")).toBe(false);
+    await expect(a.play("hello")).rejects.toBeInstanceOf(AudioUnavailableError);
+    expect(() => a.stop()).not.toThrow();
   });
 });

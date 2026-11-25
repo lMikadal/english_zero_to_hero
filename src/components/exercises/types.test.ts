@@ -27,6 +27,8 @@ it("ExerciseProps carries the exercise, the vocab lookup, onAnswer and an option
   expectTypeOf<ExerciseProps<"dictation">["exercise"]>().toEqualTypeOf<ExerciseOf<"dictation">>();
   expectTypeOf<ExerciseProps<"dictation">["vocab"]>().toEqualTypeOf<VocabLookup>();
   expectTypeOf<ExerciseProps<"dictation">["onAnswer"]>().toEqualTypeOf<(answer: Kind<"text">) => void>();
+  expectTypeOf<ExerciseProps<"dictation">["onContinue"]>().toEqualTypeOf<() => void>();
+  expectTypeOf<ExerciseProps<"phoneme_intro">["onContinue"]>().toEqualTypeOf<() => void>();
   expectTypeOf<ExerciseProps<"dictation">["result"]>().toEqualTypeOf<Grade | undefined>();
   expectTypeOf<VocabLookup[string]>().toEqualTypeOf<{ word: string; th: string; ipa: { us: string; uk: string } }>();
   expectTypeOf<ExerciseType>().not.toBeNever();

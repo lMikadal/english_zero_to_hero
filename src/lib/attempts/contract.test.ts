@@ -5,10 +5,13 @@ import {
   ATTEMPT_SOURCES,
   attemptAnswerSchema,
   attemptInputSchema,
+  attemptBatchEnvelopeSchema,
+  clampDurationMs,
   completeLessonRequestSchema,
   newId,
-  postAttemptsRequestSchema,
+  parseAttemptBatch,
   type AttemptInput,
+  type AttemptResult,
   type CompleteLessonResponse,
   type PostAttemptsResponse,
 } from "./contract";
@@ -94,15 +97,68 @@ describe("attemptInputSchema", () => {
   });
 });
 
-describe("postAttemptsRequestSchema", () => {
-  it("accepts 1 to 50 items", () => {
-    expect(postAttemptsRequestSchema.safeParse({ attempts: [valid] }).success).toBe(true);
-    expect(postAttemptsRequestSchema.safeParse({ attempts: Array(50).fill(valid) }).success).toBe(true);
+describe("attemptBatchEnvelopeSchema", () => {
+  it("accepts 1 to 50 items of any shape (items are validated one by one)", () => {
+    expect(attemptBatchEnvelopeSchema.safeParse({ attempts: [valid] }).success).toBe(true);
+    expect(attemptBatchEnvelopeSchema.safeParse({ attempts: [null, 1, "x"] }).success).toBe(true);
+    expect(attemptBatchEnvelopeSchema.safeParse({ attempts: Array(50).fill(valid) }).success).toBe(true);
   });
-  it("rejects 0 items, more than 50 items and extra keys", () => {
-    expect(postAttemptsRequestSchema.safeParse({ attempts: [] }).success).toBe(false);
-    expect(postAttemptsRequestSchema.safeParse({ attempts: Array(51).fill(valid) }).success).toBe(false);
-    expect(postAttemptsRequestSchema.safeParse({ attempts: [valid], userId: "x" }).success).toBe(false);
+  it("rejects 0 items, more than 50 items and a non-array", () => {
+    expect(attemptBatchEnvelopeSchema.safeParse({ attempts: [] }).success).toBe(false);
+    expect(attemptBatchEnvelopeSchema.safeParse({ attempts: Array(51).fill(valid) }).success).toBe(false);
+    expect(attemptBatchEnvelopeSchema.safeParse({ attempts: valid }).success).toBe(false);
+    expect(attemptBatchEnvelopeSchema.safeParse({}).success).toBe(false);
+  });
+});
+
+describe("parseAttemptBatch: one bad item must not reject the whole batch", () => {
+  const id2 = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+  it("a bad envelope is not ok (the API answers 400)", () => {
+    for (const body of [null, "x", 5, [], {}, { attempts: [] }, { attempts: "x" }, { attempts: Array(51).fill(valid) }]) {
+      expect(parseAttemptBatch(body)).toEqual({ ok: false });
+    }
+  });
+  it("returns one entry per item, in order, parsed with defaults", () => {
+    const r = parseAttemptBatch({ attempts: [valid, { ...valid, id: id2, attemptNo: 2 }] });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.items).toHaveLength(2);
+    expect(r.items[0]).toMatchObject({ ok: true, id: uuid, attempt: { id: uuid, source: "lesson", attemptNo: 1 } });
+    expect(r.items[1]).toMatchObject({ ok: true, id: id2, attempt: { attemptNo: 2 } });
+  });
+  it.each([
+    ["a 2 hour duration", { durationMs: 7_200_000 }],
+    ["a negative duration", { durationMs: -5 }],
+    ["a 6000 character paste", { answer: { kind: "text", text: "x".repeat(6000) } }],
+    ["an unknown answer kind from an older build", { answer: { kind: "old-kind" } }],
+    ["an extra key", { correct: true }],
+  ])("%s rejects only that item and keeps its id", (_name, patch) => {
+    const r = parseAttemptBatch({ attempts: [valid, { ...valid, id: id2, ...patch }, { ...valid, id: "cccccccc-bbbb-4ccc-8ddd-eeeeeeeeeeee" }] });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.items.map((i) => i.ok)).toEqual([true, false, true]);
+    expect(r.items[1]).toEqual({ ok: false, id: id2 });
+  });
+  it("an item whose id is unreadable is invalid with id null", () => {
+    const r = parseAttemptBatch({ attempts: [{ ...valid, id: "nope" }, null, 7, { ...valid, id: undefined }] });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.items).toEqual([{ ok: false, id: null }, { ok: false, id: null }, { ok: false, id: null }, { ok: false, id: null }]);
+  });
+  it("a valid id is kept even when the rest of the item is garbage", () => {
+    const r = parseAttemptBatch({ attempts: [{ id: uuid, answer: 5 }] });
+    expect(r).toEqual({ ok: true, items: [{ ok: false, id: uuid }] });
+  });
+});
+
+describe("clampDurationMs", () => {
+  it("clamps to 0..3_600_000, rounds and treats non-finite values as 0", () => {
+    expect(clampDurationMs(1234.6)).toBe(1235);
+    expect(clampDurationMs(-50)).toBe(0);
+    expect(clampDurationMs(7_200_000)).toBe(3_600_000);
+    expect(clampDurationMs(Number.NaN)).toBe(0);
+    expect(clampDurationMs(Number.POSITIVE_INFINITY)).toBe(0);
+    expect(attemptInputSchema.safeParse({ ...valid, durationMs: clampDurationMs(99_999_999) }).success).toBe(true);
   });
 });
 
@@ -128,9 +184,22 @@ describe("response types", () => {
         { id: uuid, status: "rejected", reason: "unknown_exercise" },
         { id: uuid, status: "rejected", reason: "kind_mismatch" },
         { id: uuid, status: "rejected", reason: "unsupported" },
+        { id: uuid, status: "rejected", reason: "invalid" },
+        { id: null, status: "rejected", reason: "invalid" },
       ],
     };
-    expect(r.results).toHaveLength(6);
+    expect(r.results).toHaveLength(8);
+    // created always carries the grade; duplicate may; rejected carries a reason
+    // @ts-expect-error created without a grade
+    const noGrade: AttemptResult = { id: uuid, status: "created" };
+    void noGrade;
+    const dup: AttemptResult = { id: uuid, status: "duplicate" };
+    void dup;
+    // @ts-expect-error rejected without a reason
+    const noReason: AttemptResult = { id: uuid, status: "rejected" };
+    void noReason;
+    const g: AttemptResult = { id: uuid, status: "created", correct: false, score: 0.5, items: [true, false] };
+    void g;
     const c: CompleteLessonResponse = {
       progress: { day: 1, status: "done", score: null, completedAt: "2026-11-25T10:00:00.000Z" },
       streak: { current: 1, longest: 1 },
