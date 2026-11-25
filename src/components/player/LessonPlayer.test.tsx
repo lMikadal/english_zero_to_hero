@@ -212,6 +212,14 @@ describe("LessonPlayer", () => {
     expect(screen.getByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/2");
   });
 
+  it("the next-lesson link uses the server's currentDay, not day + 1", async () => {
+    const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 5 } });
+    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    expect(await screen.findByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/5");
+  });
+
   it("when the finished day is the current day cap (365) it does not link to /day/365 again", async () => {
     const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 365 } });
     const lesson = { ...lessonOf(["d001-listen-01"]), day: 365 };
