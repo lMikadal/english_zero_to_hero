@@ -55,15 +55,26 @@ describe("attemptSkill", () => {
 });
 
 describe("deriveTags", () => {
-  it("d001-pron-02: phoneme tag from the lesson's phoneme_intro, plus the vocab word it uses", () => {
-    // the plan lists only [phoneme:ae]; rule 3 also tags v-cat because "cat" is a minimal-pair word and a lesson word
-    expect(tagsOf("d001-pron-02")).toEqual(["phoneme:ae", "vocab:v-cat"]);
+  it("d001-pron-02: only the phoneme tag (a sound-discrimination miss is not a vocabulary miss)", () => {
+    expect(tagsOf("d001-pron-02")).toEqual(["phoneme:ae"]);
   });
-  it("d001-pron-03 (repeat_after_me in a pronunciation section) gets the phoneme tag and the words it contains", () => {
-    expect(tagsOf("d001-pron-03")).toEqual(["phoneme:ae", "vocab:v-cat", "vocab:v-hello", "vocab:v-nice"]);
+  it("d001-pron-03 (repeat_after_me in a pronunciation section) gets only the phoneme tag", () => {
+    expect(tagsOf("d001-pron-03")).toEqual(["phoneme:ae"]);
   });
-  it("d001-pron-01 (phoneme_intro)", () => {
-    expect(tagsOf("d001-pron-01")).toEqual(["phoneme:ae", "vocab:v-cat"]);
+  it("d001-pron-01 (phoneme_intro) gets only the phoneme tag", () => {
+    expect(tagsOf("d001-pron-01")).toEqual(["phoneme:ae"]);
+  });
+  it("no implicit vocab tags in pronunciation sections, minimal_pair or phoneme_intro, anywhere in days 1-7", () => {
+    for (const { section, exercise } of allExercises()) {
+      if (section.skill !== "pronunciation" && exercise.type !== "minimal_pair" && exercise.type !== "phoneme_intro") continue;
+      expect(tagsOf(exercise.id).filter((t) => t.startsWith("vocab:")), exercise.id).toEqual([]);
+    }
+  });
+  it("explicit vocabId references still tag inside a pronunciation section", () => {
+    const f = allExercises().find((e) => e.exercise.id === "d001-pron-02")!;
+    const section: Section = { ...f.section, exercises: [] };
+    const ex = { id: "d001-pron-09", type: "spell_word", instruction: { th: "ก" }, vocabId: "v-cat" } as const;
+    expect(deriveTags(f.lesson, ex, section, words)).toEqual(["phoneme:ae", "vocab:v-cat"]);
   });
   it("d003-write-04 (vocab_match) has its six vocab tags and no phoneme tag", () => {
     expect(tagsOf("d003-write-04")).toEqual(
