@@ -7,3 +7,5 @@ export * from "./drills";
 export * from "./cefr";
 export * from "./pace";
 export * from "./score";
+export * from "./streak";
+export * from "./lesson-score";
