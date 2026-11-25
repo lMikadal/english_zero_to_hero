@@ -16,7 +16,7 @@ describe("ArrangeWords", () => {
   it("shows the Thai instruction and every tile, not in the correct order", () => {
     renderWithAudio(<ArrangeWords {...baseProps()} exercise={ex} />);
     expect(screen.getByText("เรียงคำให้เป็นประโยค")).toBeInTheDocument();
-    expect([...poolWords()].sort()).toEqual([...ex.words].sort());
+    expect([...poolWords()].sort()).toEqual(["Sam", "is", "my", "name"]);
     expect(poolWords().join(" ")).not.toBe(ex.answer);
     expect(poolWords().join(" ")).not.toBe(ex.accept![0]);
   });
@@ -32,14 +32,14 @@ describe("ArrangeWords", () => {
   it("locks check until every tile is used; tap to add and tap a placed tile to remove", () => {
     renderWithAudio(<ArrangeWords {...baseProps()} exercise={ex} />);
     expect(check()).toBeDisabled();
-    tap("My");
+    tap("my");
     tap("name");
     expect(placed().getAllByRole("button").map((b) => b.textContent)).toEqual(["My", "name"]);
-    expect(poolWords()).not.toContain("My");
+    expect(poolWords()).not.toContain("my");
     fireEvent.click(placed().getByRole("button", { name: "My" }));
     expect(placed().getAllByRole("button").map((b) => b.textContent)).toEqual(["name"]);
-    expect(poolWords()).toContain("My");
-    tap("My");
+    expect(poolWords()).toContain("my");
+    tap("my");
     tap("is");
     tap("Sam");
     expect(check()).toBeEnabled();
@@ -48,7 +48,7 @@ describe("ArrangeWords", () => {
   it("answers once with the tiles joined by single spaces (correct)", () => {
     const props = baseProps();
     renderWithAudio(<ArrangeWords {...props} exercise={ex} />);
-    for (const w of ["My", "name", "is", "Sam"]) tap(w);
+    for (const w of ["my", "name", "is", "Sam"]) tap(w);
     fireEvent.click(check());
     fireEvent.click(check());
     expect(props.onAnswer).toHaveBeenCalledTimes(1);
@@ -58,7 +58,7 @@ describe("ArrangeWords", () => {
   it("can produce the accept alternative and a wrong order", () => {
     const a = baseProps();
     const r = renderWithAudio(<ArrangeWords {...a} exercise={ex} />);
-    for (const w of ["Sam", "is", "My", "name"]) tap(w);
+    for (const w of ["Sam", "is", "my", "name"]) tap(w);
     fireEvent.click(check());
     const [alt] = a.onAnswer.mock.calls[0];
     expect(alt).toEqual({ kind: "text", text: "Sam is My name" });
@@ -67,9 +67,36 @@ describe("ArrangeWords", () => {
 
     const b = baseProps();
     renderWithAudio(<ArrangeWords {...b} exercise={ex} />);
-    for (const w of ["is", "Sam", "My", "name"]) tap(w);
+    for (const w of ["is", "Sam", "my", "name"]) tap(w);
     fireEvent.click(check());
     expect(gradeExercise(ex, b.onAnswer.mock.calls[0][0])).toMatchObject({ correct: false });
+  });
+
+  describe("tile display (display only: the submitted text and grading are unchanged)", () => {
+    it("day 1: lower-cases tiles, keeps the proper noun Sam", () => {
+      renderWithAudio(<ArrangeWords {...baseProps()} exercise={ex} />);
+      expect([...poolWords()].sort()).toEqual(["Sam", "is", "my", "name"]); // no capital on "my" gives away the first word
+    });
+
+    it("day 2: This / Is style tiles are lower-case too", () => {
+      renderWithAudio(<ArrangeWords {...baseProps()} exercise={exercise("d002-write-02", "arrange_words")} />);
+      expect([...poolWords()].sort()).toEqual(["is", "my", "pen", "this"]);
+    });
+
+    it("keeps the pronoun I and I'm capitalised", () => {
+      const e = { ...ex, words: ["I", "am", "I'm", "Ann"], answer: "I am I'm Ann", accept: undefined };
+      renderWithAudio(<ArrangeWords {...baseProps()} exercise={e} />);
+      expect([...poolWords()].sort()).toEqual(["Ann", "I", "I'm", "am"]);
+    });
+
+    it("capitalises only the first tile of the answer row; the learner's text keeps the original words", () => {
+      const props = baseProps();
+      renderWithAudio(<ArrangeWords {...props} exercise={ex} />);
+      for (const w of ["is", "Sam", "my", "name"]) tap(w);
+      expect(placed().getAllByRole("button").map((b) => b.textContent)).toEqual(["Is", "Sam", "my", "name"]);
+      fireEvent.click(check());
+      expect(props.onAnswer).toHaveBeenCalledWith({ kind: "text", text: "is Sam my name" });
+    });
   });
 
   it("handles repeated words as separate tiles", () => {
@@ -84,7 +111,7 @@ describe("ArrangeWords", () => {
   it("locks the tiles and marks the answer after a result", () => {
     const props = baseProps();
     const { rerender } = renderWithAudio(<ArrangeWords {...props} exercise={ex} />);
-    for (const w of ["is", "Sam", "My", "name"]) tap(w);
+    for (const w of ["is", "Sam", "my", "name"]) tap(w);
     fireEvent.click(check());
     rerender(<ArrangeWords {...props} exercise={ex} result={{ correct: false, score: 0 }} />);
     for (const b of placed().getAllByRole("button")) expect(b).toBeDisabled();
