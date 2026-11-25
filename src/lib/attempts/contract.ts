@@ -3,13 +3,14 @@
 // docs/ARCHITECTURE.md section 5.1.
 import { z } from "zod";
 import type { Grade } from "@/lib/answers/grade";
+import { EXERCISE_ID_PATTERN } from "@/lib/content/schema";
 
 /** Kept equal to `AttemptSource` in src/db/schema.ts by a type test (contract.test.ts). */
 export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint"] as const;
 
 export const API = { attempts: "/api/attempts", completeLesson: "/api/lessons/complete" } as const;
 
-const exerciseId = z.string().regex(/^d\d{3}-(pron|listen|speak|read|write|vocab)-\d{2}$/);
+const exerciseId = z.string().regex(EXERCISE_ID_PATTERN);
 const index = z.number().int().min(0).max(1000);
 
 export const attemptAnswerSchema = z.discriminatedUnion("kind", [
@@ -37,15 +38,55 @@ export const attemptInputSchema = z.strictObject({
 /** An item as sent: defaults are filled in. */
 export type AttemptInput = z.infer<typeof attemptInputSchema>;
 
-export const postAttemptsRequestSchema = z.strictObject({
-  attempts: z.array(attemptInputSchema).min(1).max(50),
-});
-export type PostAttemptsRequest = z.infer<typeof postAttemptsRequestSchema>;
+/** What a client sends. Build items with `source` and `attemptNo` set explicitly (AttemptInput is the parsed type). */
+export type PostAttemptsRequest = { attempts: AttemptInput[] };
 
-export type RejectedReason = "unknown_exercise" | "kind_mismatch" | "unsupported" | "locked_day";
+/** Longest `durationMs` the contract accepts; clients clamp to this before sending. */
+export const MAX_DURATION_MS = 3_600_000;
+
+/**
+ * Clients measure duration with a monotonic clock (performance.now()) and clamp it with this before sending, so a
+ * phone left overnight or a clock change never makes an item invalid.
+ */
+export function clampDurationMs(ms: number): number {
+  if (!Number.isFinite(ms)) return 0;
+  return Math.min(MAX_DURATION_MS, Math.max(0, Math.round(ms)));
+}
+
+/** Only the envelope is checked as a whole (400 if it fails); every item is validated separately. */
+export const attemptBatchEnvelopeSchema = z.object({ attempts: z.array(z.unknown()).min(1).max(50) });
+
+export type ParsedAttemptItem =
+  | { ok: true; id: string; attempt: AttemptInput }
+  /** `id` is the item's id when it is a readable uuid, else null. */
+  | { ok: false; id: string | null };
+export type ParsedAttemptBatch = { ok: true; items: ParsedAttemptItem[] } | { ok: false };
+
+/**
+ * Splits a request body into one entry per item, in order. One bad item (a 2 hour duration, a long paste, a shape
+ * from an older build) becomes `{ ok: false }` and is answered `rejected` / `invalid`; it never rejects the batch.
+ * `{ ok: false }` for the whole body means 400 (bad envelope; unparseable JSON is also a 400, decided by the caller).
+ */
+export function parseAttemptBatch(body: unknown): ParsedAttemptBatch {
+  const env = attemptBatchEnvelopeSchema.safeParse(body);
+  if (!env.success) return { ok: false };
+  const idOf = z.uuid();
+  return {
+    ok: true,
+    items: env.data.attempts.map((raw): ParsedAttemptItem => {
+      const r = attemptInputSchema.safeParse(raw);
+      if (r.success) return { ok: true, id: r.data.id, attempt: r.data };
+      const id = raw && typeof raw === "object" ? idOf.safeParse((raw as { id?: unknown }).id) : undefined;
+      return { ok: false, id: id?.success ? id.data : null };
+    }),
+  };
+}
+
+export type RejectedReason = "unknown_exercise" | "kind_mismatch" | "unsupported" | "locked_day" | "invalid";
 export type AttemptResult =
-  | ({ id: string; status: "created" | "duplicate" } & Partial<Grade>)
-  | { id: string; status: "rejected"; reason: RejectedReason };
+  | ({ id: string; status: "created" } & Grade)
+  | ({ id: string; status: "duplicate" } & Partial<Grade>)
+  | { id: string | null; status: "rejected"; reason: RejectedReason };
 export type PostAttemptsResponse = { results: AttemptResult[] };
 
 export const completeLessonRequestSchema = z.strictObject({

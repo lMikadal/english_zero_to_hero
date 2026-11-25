@@ -17,3 +17,15 @@ export interface AudioSource {
   play(text: string, opts?: PlayOptions): Promise<void>;
   stop(): void;
 }
+
+/** The default source (and the one tests use): silent, `canPlay` is always false. */
+export function createSilentAudioSource(): AudioSource {
+  return {
+    kind: "none",
+    canPlay: async () => false,
+    play: async () => {
+      throw new AudioUnavailableError();
+    },
+    stop: () => {},
+  };
+}

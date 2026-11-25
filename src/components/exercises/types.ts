@@ -26,10 +26,21 @@ type AnswerByType = {
 /** The answer kind a type produces; `never` for types that have no attempt (phoneme_intro, unsupported types). */
 export type AnswerFor<T extends ExerciseType> = T extends keyof AnswerByType ? AnswerByType[T] : never;
 
+/**
+ * Rules for components:
+ * - Call `onAnswer` once per exercise, with a complete answer.
+ * - Types with no attempt (`phoneme_intro`) and "skip" when audio is unavailable call `onContinue`, never `onAnswer`.
+ * - Get audio from `useAudio()` (src/lib/audio/context.tsx), not from props.
+ * - `result` is set after answering: lock the inputs, highlight right and wrong, and use `result.items` (one
+ *   boolean per item in exercise order, for multi-item types) to show which item was wrong.
+ * - In the end-of-lesson retry round the player remounts the component with
+ *   `key={`${exercise.id}-${attemptNo}`}` and `result` undefined. Hold no state outside React state (no module
+ *   variables, no refs that outlive the mount) so a remount starts clean.
+ */
 export type ExerciseProps<T extends ExerciseType> = {
   exercise: ExerciseOf<T>;
   vocab: VocabLookup;
   onAnswer(answer: AnswerFor<T>): void;
-  /** Set after answering: lock the inputs and highlight right and wrong. */
+  onContinue(): void;
   result?: Grade;
 };
