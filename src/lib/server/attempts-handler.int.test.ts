@@ -138,7 +138,9 @@ describe("created attempts", () => {
   });
 
   it("applies defaults for source and attemptNo when the client omits them", async () => {
-    const { source: _s, attemptNo: _a, ...bare } = attemptItem("d001-listen-01", ANSWERS.listenChooseRight);
+    const bare: Record<string, unknown> = { ...attemptItem("d001-listen-01", ANSWERS.listenChooseRight) };
+    delete bare.source;
+    delete bare.attemptNo;
     await post({ attempts: [bare] });
     expect((await rows())[0]).toMatchObject({ source: "lesson", attemptNo: 1 });
   });
