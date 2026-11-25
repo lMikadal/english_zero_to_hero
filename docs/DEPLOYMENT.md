@@ -37,7 +37,8 @@ sudo tailscale up
 
 # 2. ตั้งค่า env
 cp .env.example .env   # กรอก secret และ API key
-#    DATABASE_URL ใช้ host `postgres` (ชื่อ service ใน Docker)
+#    DATABASE_URL ใช้ host `postgres` (ชื่อ service ใน Docker) และฐานข้อมูล `english_zero_to_hero`
+#    (ฐานข้อมูลจริง; dev ใช้ `english_zero_to_hero_dev` ใน Postgres ตัวเดียวกัน และ `make db-reset` แตะได้เฉพาะชื่อที่ลงท้าย `_dev`)
 #    BETTER_AUTH_URL=https://<เครื่อง>.<tailnet>.ts.net
 
 # 3. รันแอป
