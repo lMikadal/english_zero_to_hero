@@ -16,6 +16,10 @@
     "test:unit": "vitest run --project unit",
     "test:watch": "vitest",
     "e2e": "playwright test",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/db-migrate.ts",
+    "db:reset": "tsx scripts/db-reset.ts",
+    "db:studio": "drizzle-kit studio --host 0.0.0.0",
     "content:validate": "tsx scripts/validate-content.ts"
   },
   "dependencies": {
