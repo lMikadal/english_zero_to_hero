@@ -1,15 +1,21 @@
-// Streak rule (docs/PROGRESS.md section 5): a calendar day counts once; consecutive days add one; a gap resets to 1.
+// Streak rule (docs/PROGRESS.md section 5): derived from the set of active calendar days, so the result never
+// depends on the order in which days arrive (an offline device may sync a past day late).
 import { daysBetween } from "./dates";
 
 export type StreakState = { current: number; longest: number; lastActiveDate: string | null };
 
-/** Streak after activity on `localDate` (YYYY-MM-DD in the user's zone). An older date (late offline replay) changes nothing. */
-export function nextStreak(prev: StreakState, localDate: string): StreakState {
-  if (prev.lastActiveDate !== null) {
-    const gap = daysBetween(prev.lastActiveDate, localDate);
-    if (gap <= 0) return prev;
-    const current = gap === 1 ? prev.current + 1 : 1;
-    return { current, longest: Math.max(prev.longest, current), lastActiveDate: localDate };
+/**
+ * `dates` are YYYY-MM-DD local dates with activity, in any order, duplicates allowed. `current` is the run of
+ * consecutive days that ends at the latest active day (whether it is still alive today is a display concern).
+ */
+export function computeStreak(dates: readonly string[]): StreakState {
+  const days = [...new Set(dates)].sort();
+  if (days.length === 0) return { current: 0, longest: 0, lastActiveDate: null };
+  let run = 1;
+  let longest = 1;
+  for (let i = 1; i < days.length; i++) {
+    run = daysBetween(days[i - 1], days[i]) === 1 ? run + 1 : 1;
+    longest = Math.max(longest, run);
   }
-  return { current: 1, longest: Math.max(prev.longest, 1), lastActiveDate: localDate };
+  return { current: run, longest, lastActiveDate: days[days.length - 1] };
 }

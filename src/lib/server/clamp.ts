@@ -1,8 +1,16 @@
-/** Client clocks may run ahead: a client timestamp is trusted only up to this far past the server's `now`. */
-export const MAX_FUTURE_SKEW_MS = 5 * 60_000;
+import { localMidnight, resolveTimeZone } from "@/lib/progress/dates";
 
-export function clampToNow(clientIso: string, now: Date): Date {
-  const t = new Date(clientIso);
-  const limit = new Date(now.getTime() + MAX_FUTURE_SKEW_MS);
-  return t > limit ? limit : t;
+/** Client timestamps older than this are raised to it (or to the profile start, whichever is later). */
+export const MAX_PAST_MS = 30 * 86_400_000;
+
+/** The earliest instant a client timestamp may carry: max(now - 30 days, profile start date at local midnight). */
+export function timestampFloor(now: Date, startDate: string, timeZone: string): Date {
+  const start = localMidnight(startDate, resolveTimeZone(timeZone));
+  return new Date(Math.max(now.getTime() - MAX_PAST_MS, start.getTime()));
+}
+
+/** A client clock is trusted only inside [floor, now]: nothing from the future, nothing absurdly old. */
+export function clampTimestamp(clientIso: string, now: Date, floor: Date): Date {
+  const t = new Date(clientIso).getTime();
+  return new Date(Math.min(now.getTime(), Math.max(floor.getTime(), t)));
 }
