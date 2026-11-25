@@ -42,7 +42,9 @@ fix(srs): use user timezone for due date    ← เทสต์ผ่าน (gre
 2. `qa-tester` และ reviewer (`code-reviewer` หรือ `content-reviewer`) ตรวจผ่านแล้ว
 3. orchestrator push branch และเปิด PR ตาม `.github/pull_request_template.md`
 4. CI บน GitHub ต้องผ่าน
-5. orchestrator สรุป PR ให้ผู้ใช้ในแชต **เมื่อผู้ใช้ตอบตกลง orchestrator จึง merge** แบบ **squash** ด้วย `gh pr merge --squash --delete-branch` (1 PR = 1 commit บน `main`) ห้าม merge ก่อนผู้ใช้ตอบตกลง
+5. **orchestrator merge เองได้ทุก PR** เมื่อข้อ 1–4 ผ่านครบ โดย merge แบบ **squash** ด้วย `gh pr merge --squash --delete-branch` (1 PR = 1 commit บน `main`) แล้วสรุปให้ผู้ใช้ในแชตหลัง merge (ผู้ใช้อนุญาตไว้เมื่อ 2026-11-24)
+   - ถ้ามีสิ่งที่ยังไม่ได้ทดสอบหรือยังไม่เสร็จ ต้องเขียนไว้ใน PR และ `docs/PLAN.md` ให้ชัดก่อน merge ห้ามอ้างว่าเสร็จ
+   - ถ้ามีเรื่องที่ผู้ใช้ต้องเป็นคนตัดสินใจ ให้หยุดถามก่อน merge
 6. ติ๊ก checkbox ของงานนั้นใน `docs/PLAN.md` ภายใน PR เดียวกัน
 
 ## 4. แผน PR
@@ -58,7 +60,7 @@ fix(srs): use user timezone for due date    ← เทสต์ผ่าน (gre
 | 4 | `feat/m0-vocab-import` | สคริปต์ `vocab:import` สำหรับรายการ Oxford 3000/5000 | backend-dev, data-clerk |
 | 5 | `chore/m0-ci` | GitHub Actions: lint, typecheck, test, validate, migrate | devops |
 
-PR 2, 3 ทำพร้อมกันได้หลัง PR 1 merge แล้ว
+PR 2 กับ PR เนื้อหาทำพร้อมกันได้หลัง PR 1 merge แล้ว ส่วน PR 2, 3, 4 ทำทีละอัน เพราะทุกอันเพิ่มแพ็กเกจใน `package.json` และ `pnpm-lock.yaml` (ดูหัวข้อ 5)
 
 ### Milestone 1: MVP
 
@@ -77,3 +79,14 @@ PR 2, 3 ทำพร้อมกันได้หลัง PR 1 merge แล้
 PR เนื้อหา (C1–C5) ทำคู่ขนานกับ PR โค้ดได้ตลอด เพราะแก้คนละโฟลเดอร์
 
 Milestone 2 เป็นต้นไปจะวางแผน PR เมื่อ Milestone 1 ใกล้เสร็จ
+
+## 5. ทำงานคู่ขนาน
+
+ลูกทีมทำงานพร้อมกันได้ 2–3 ตัว เมื่องานไม่แก้ไฟล์เดียวกัน
+
+- **แต่ละตัวมีโฟลเดอร์งานของตัวเอง** ด้วย `git worktree` (1 worktree = 1 branch) ผู้ใช้ไม่ต้องเปิดโฟลเดอร์เพิ่มเอง orchestrator สร้างและลบให้
+- **งานที่ทำพร้อมกันได้:** โค้ดกับเนื้อหา (`src/` กับ `content/`), frontend กับ backend ที่ตกลงรูปแบบข้อมูลกันแล้ว (type ใน `src/lib/`)
+- **งานที่ต้องทำทีละอัน:** PR ที่แก้ `package.json` / `pnpm-lock.yaml`, PR ที่แก้ `src/db/schema.ts` และ migration, PR ที่แก้ `docker-compose.yml` / `Dockerfile` / `Makefile`
+- **Docker:** งานที่ต้องรัน container ให้ทำในโฟลเดอร์หลัก (ใช้ volume `node_modules` ที่ติดตั้งไว้แล้ว) ส่วน worktree เหมาะกับงานที่ไม่ต้องรัน container เช่น เนื้อหาและเอกสาร ถ้าจำเป็นต้องรัน container ใน worktree จะได้ compose project และ volume ชุดใหม่ ซึ่งต้องติดตั้งแพ็กเกจใหม่ทั้งหมด
+- เมื่อ PR หนึ่ง merge แล้ว branch อื่นที่ยังเปิดอยู่ต้อง rebase กับ `main` และรัน `make check` ใหม่ก่อน merge
+
