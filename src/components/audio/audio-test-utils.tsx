@@ -16,5 +16,8 @@ export function fakeAudio(available = true) {
 }
 
 export function renderWithAudio(ui: ReactElement, source: AudioSource = fakeAudio(), accent: Accent = "us") {
-  return render(<AudioProvider source={source} accent={accent}>{ui}</AudioProvider>);
+  const wrap = (el: ReactElement) => <AudioProvider source={source} accent={accent}>{el}</AudioProvider>;
+  const view = render(wrap(ui));
+  // rerender keeps the provider, so the component under test is updated rather than remounted
+  return { ...view, rerender: (next: ReactElement) => view.rerender(wrap(next)) };
 }

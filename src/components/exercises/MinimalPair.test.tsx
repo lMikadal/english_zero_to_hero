@@ -17,6 +17,7 @@ function setup(props: Partial<React.ComponentProps<typeof MinimalPair>> = {}, av
   return { onAnswer, onContinue, source, ...view };
 }
 const pair = (i: number) => screen.getAllByRole("radiogroup")[i];
+const card = (i: number) => screen.getAllByRole("group")[i];
 const pick = (i: number, word: string) => userEvent.click(within(pair(i)).getByRole("radio", { name: word }));
 
 describe("MinimalPair", () => {
@@ -29,9 +30,9 @@ describe("MinimalPair", () => {
 
   it("plays the word that is the answer of each pair", async () => {
     const { source } = setup();
-    await userEvent.click(within(pair(1)).getByRole("button", { name: "ฟัง" }));
+    await userEvent.click(within(card(1)).getByRole("button", { name: "ฟัง" }));
     expect(source.play).toHaveBeenLastCalledWith("men", expect.objectContaining({ rate: 1 }));
-    await userEvent.click(within(pair(2)).getByRole("button", { name: /ฟังช้า/ }));
+    await userEvent.click(within(card(2)).getByRole("button", { name: /ฟังช้า/ }));
     expect(source.play).toHaveBeenLastCalledWith("cat", expect.objectContaining({ rate: 0.75 }));
   });
 
