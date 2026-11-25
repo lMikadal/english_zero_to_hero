@@ -5,6 +5,7 @@ import { attempts, profiles, progress, streaks } from "@/db/schema";
 import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import type { CompleteLessonResponse } from "@/lib/attempts/contract";
 import { handlePostAttempts } from "./attempts-handler";
+import { touchStreak } from "@/db/queries/progress";
 import { handleCompleteLesson } from "./complete-handler";
 import { ANSWERS, attemptItem, NOW, seedLocal, SESSION } from "./test-helpers";
 
@@ -33,7 +34,7 @@ afterAll(async () => {
 
 describe("request checks", () => {
   it("400 for a malformed body", async () => {
-    for (const bad of [null, {}, req(0), req(366), { ...req(1), extra: 1 }, { ...req(1), sessionId: "x" }, { ...req(1), completedAt: "yesterday" }]) {
+    for (const bad of [null, {}, req(0), req(366), req(1, "0000-01-01T00:00:00Z"), req(1, "9999-01-01T00:00:00Z"), { ...req(1), extra: 1 }, { ...req(1), sessionId: "x" }, { ...req(1), completedAt: "yesterday" }]) {
       expect((await complete(bad)).status).toBe(400);
     }
     expect(await db.select().from(progress)).toHaveLength(0);
@@ -45,6 +46,19 @@ describe("request checks", () => {
     expect(await db.select().from(progress)).toHaveLength(0);
     expect(await streak()).toBeUndefined();
     expect((await profile()).currentDay).toBe(1);
+  });
+});
+
+describe("a lesson that does not exist cannot be completed", () => {
+  it("409 for day 8 even when current_day allows it (no lesson file), and nothing changes", async () => {
+    await seedLocal(db, 8);
+    expect((await complete(req(8))).status).toBe(409);
+    expect(await db.select().from(progress)).toHaveLength(0);
+    expect(await streak()).toBeUndefined();
+    expect((await profile()).currentDay).toBe(8);
+  });
+  it("does NOT require stored attempts: completing day 1 with none is fine", async () => {
+    expect((await complete(req(1))).status).toBe(200);
   });
 });
 
@@ -95,18 +109,70 @@ describe("completing a lesson", () => {
   });
 
   it("a second completion changes nothing and returns the same shape", async () => {
+    await send(attemptItem("d001-listen-01", ANSWERS.listenChooseRight));
     const first = ok(await complete(req(1)));
     const rowsBefore = { p: await progressRow(1), s: await streak(), pr: await profile() };
-    await send(attemptItem("d001-listen-01", ANSWERS.listenChooseWrong)); // late attempt must not change the score
     const later = new Date(NOW.getTime() + 86_400_000 * 3);
     const second = ok(await complete(req(1, later.toISOString()), later));
     expect(second).toEqual(first);
     expect({ p: await progressRow(1), s: await streak(), pr: await profile() }).toEqual(rowsBefore);
   });
 
-  it("clamps completedAt to now + 5 minutes", async () => {
-    const body = ok(await complete(req(1, "2031-01-01T00:00:00.000Z")));
-    expect(body.progress.completedAt).toBe(new Date(NOW.getTime() + 5 * 60_000).toISOString());
+  it("an attempt that was created before the completion but syncs after it fixes the lesson score", async () => {
+    // two devices / a retried batch: the completion wins the race against its own attempts
+    ok(await complete(req(1, new Date(NOW.getTime() - 30_000).toISOString())));
+    expect((await progressRow(1)).score).toBeNull();
+    await send(attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: new Date(NOW.getTime() - 60_000).toISOString() }));
+    expect((await progressRow(1))).toMatchObject({ status: "done", score: 1 });
+    await send(attemptItem("d001-write-01", { kind: "text", text: "wrong" }, { createdAt: new Date(NOW.getTime() - 50_000).toISOString() }));
+    expect((await progressRow(1)).score).toBeCloseTo(0.5);
+    // a second completion still reports the corrected score
+    expect(ok(await complete(req(1))).progress.score).toBeCloseTo(0.5);
+  });
+
+  it("replaying a finished lesson later (attempts created after completed_at) does not rewrite its score", async () => {
+    await send(attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: new Date(NOW.getTime() - 120_000).toISOString() }));
+    ok(await complete(req(1, new Date(NOW.getTime() - 60_000).toISOString())));
+    const before = await progressRow(1);
+    const later = new Date(NOW.getTime() + 3_600_000);
+    await handlePostAttempts(
+      { attempts: [attemptItem("d001-write-01", { kind: "text", text: "wrong" }, { createdAt: later.toISOString() })] },
+      { db, userId, now: later },
+    );
+    expect(await progressRow(1)).toEqual(before);
+  });
+
+  it("recomputing for a done day ignores attempt_no 2, null scores and other sources", async () => {
+    ok(await complete(req(1)));
+    await send(
+      attemptItem("d001-listen-01", ANSWERS.listenChooseWrong),
+      attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { attemptNo: 2 }),
+      attemptItem("d001-speak-01", ANSWERS.selfOk),
+    );
+    expect((await progressRow(1)).score).toBe(0);
+  });
+
+  it("clamps completedAt to [floor, now]: the future becomes now, the epoch becomes the start of the profile", async () => {
+    expect(ok(await complete(req(1, "2031-01-01T00:00:00.000Z"))).progress.completedAt).toBe(NOW.toISOString());
+    await db.delete(progress);
+    await seedLocal(db, 1);
+    expect(ok(await complete(req(1, "1970-01-01T00:00:00.000Z"))).progress.completedAt).toBe("2026-11-24T17:00:00.000Z");
+    await db.delete(progress);
+    await seedLocal(db, 1);
+    expect(ok(await complete(req(1, "1900-01-01T00:00:00.000Z"))).progress.completedAt).toBe("2026-11-24T17:00:00.000Z");
+  });
+
+  it("accepts a numeric offset", async () => {
+    expect(ok(await complete(req(1, "2026-11-25T16:00:00+07:00"))).progress.completedAt).toBe("2026-11-25T09:00:00.000Z");
+  });
+
+  it("started_at is never after completed_at, even when the completion is dated before the first attempt", async () => {
+    const attemptAt = new Date(NOW.getTime() - 60_000).toISOString();
+    await send(attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: attemptAt }));
+    const body = ok(await complete(req(1, new Date(NOW.getTime() - 3_600_000).toISOString())));
+    const row = await progressRow(1);
+    expect(row.startedAt!.getTime()).toBeLessThanOrEqual(row.completedAt!.getTime());
+    expect(body.progress.completedAt).toBe(attemptAt);
   });
 
   it("completing day 1 unlocks day 2", async () => {
@@ -118,12 +184,10 @@ describe("completing a lesson", () => {
     expect((after.body as { results: { status: string }[] }).results[0].status).toBe("created");
   });
 
-  it("current_day never moves back (replay) and is capped at 365", async () => {
+  it("current_day never moves back when an earlier day is replayed", async () => {
     await seedLocal(db, 5);
     expect(ok(await complete(req(1))).currentDay).toBe(5);
-    await seedLocal(db, 365);
-    expect(ok(await complete(req(365))).currentDay).toBe(365);
-    expect((await profile()).currentDay).toBe(365);
+    expect((await profile()).currentDay).toBe(5);
   });
 
   it("two concurrent completions of the same day count once", async () => {
@@ -162,12 +226,42 @@ describe("streak", () => {
     expect(ok(await complete(req(3, day(4).toISOString()), day(4))).streak).toEqual({ current: 1, longest: 2 });
   });
 
-  it("a late replay of an older local day leaves the streak unchanged", async () => {
+  it("does not depend on arrival order: a past day that syncs late joins the run", async () => {
+    await seedLocal(db, 3);
+    const mon = new Date("2026-11-23T05:00:00Z");
+    const tue = new Date("2026-11-24T05:00:00Z");
+    const wed = new Date("2026-11-25T05:00:00Z");
+    await sql`UPDATE profiles SET start_date = '2026-11-20'`;
+    expect(ok(await complete(req(1, tue.toISOString()), wed)).streak).toEqual({ current: 1, longest: 1 }); // Tuesday arrives first
+    expect(ok(await complete(req(2, mon.toISOString()), wed)).streak).toEqual({ current: 2, longest: 2 }); // Monday syncs on Wednesday
+    expect(ok(await complete(req(3, wed.toISOString()), wed)).streak).toEqual({ current: 3, longest: 3 });
+    expect((await sql`SELECT local_date::text FROM activity_days ORDER BY 1`).map((r) => r.local_date)).toEqual(["2026-11-23", "2026-11-24", "2026-11-25"]);
+  });
+
+  it("a completion dated 1970 does not reset the streak (it is clamped into the window)", async () => {
     await seedLocal(db, 2);
-    const later = new Date(NOW.getTime() + 86_400_000);
-    await complete(req(1, later.toISOString()), later);
-    const r = ok(await complete(req(2, NOW.toISOString()), later));
-    expect(r.streak).toEqual({ current: 1, longest: 1 });
+    await sql`UPDATE profiles SET start_date = '2026-11-20'`;
+    const day1 = new Date("2026-11-25T05:00:00Z");
+    ok(await complete(req(1, day1.toISOString()), day1));
+    const r = ok(await complete(req(2, "1970-01-01T00:00:00Z"), day1));
+    expect(r.streak.current).toBe(1); // day 2 was clamped to the profile start (Nov 20), not adjacent to Nov 25
+    expect(r.streak.longest).toBe(1);
+    const again = ok(await complete(req(2, "1970-01-01T00:00:00Z"), day1));
+    expect(again.streak).toEqual(r.streak);
+  });
+});
+
+describe("touchStreak", () => {
+  it("is order independent and idempotent", async () => {
+    for (const d of ["2026-11-26", "2026-11-24", "2026-11-25", "2026-11-26"]) {
+      await db.transaction((tx) => touchStreak(tx, userId, d));
+    }
+    expect(await db.transaction((tx) => touchStreak(tx, userId, "2026-11-24"))).toEqual({ current: 3, longest: 3 });
+    expect(await streak()).toMatchObject({ current: 3, longest: 3, lastActiveDate: "2026-11-26" });
+  });
+  it("a gap keeps longest and starts a new run", async () => {
+    for (const d of ["2026-11-01", "2026-11-02", "2026-11-03", "2026-11-10"]) await db.transaction((tx) => touchStreak(tx, userId, d));
+    expect(await streak()).toMatchObject({ current: 1, longest: 3, lastActiveDate: "2026-11-10" });
   });
 });
 

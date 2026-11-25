@@ -145,13 +145,28 @@ describe("created attempts", () => {
     expect((await rows())[0]).toMatchObject({ source: "lesson", attemptNo: 1 });
   });
 
-  it("clamps created_at to at most now + 5 minutes", async () => {
-    const future = attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: "2030-01-01T00:00:00.000Z" });
-    const edge = attemptItem("d001-write-01", ANSWERS.arrangeRight, { createdAt: new Date(NOW.getTime() + 60_000).toISOString() });
-    await post(batch(future, edge));
-    const byId = new Map((await rows()).map((r) => [r.id, r]));
-    expect(byId.get(future.id)!.createdAt.toISOString()).toBe(new Date(NOW.getTime() + 5 * 60_000).toISOString());
-    expect(byId.get(edge.id)!.createdAt.toISOString()).toBe(edge.createdAt);
+  it("clamps created_at to [max(now - 30 days, profile start), now]", async () => {
+    const at = (iso: string) => attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: iso });
+    const future = at("2030-01-01T00:00:00.000Z");
+    const justAhead = attemptItem("d001-write-01", ANSWERS.arrangeRight, { createdAt: new Date(NOW.getTime() + 60_000).toISOString() });
+    const epoch = attemptItem("d001-listen-02", ANSWERS.dictationRight, { createdAt: "1970-01-01T00:00:00.000Z" });
+    const y1900 = attemptItem("d001-speak-01", ANSWERS.selfOk, { createdAt: "1900-01-01T00:00:00.000Z" });
+    const offset = attemptItem("d001-pron-02", ANSWERS.minimalPairRight, { createdAt: "2026-11-25T16:00:00+07:00" }); // 09:00Z, in range
+    await post(batch(future, justAhead, epoch, y1900, offset));
+    const byId = new Map((await rows()).map((r) => [r.id, r.createdAt.toISOString()]));
+    const startOfProfile = "2026-11-24T17:00:00.000Z"; // 2026-11-25 at Bangkok midnight (profile created "today")
+    expect(byId.get(future.id)).toBe(NOW.toISOString());
+    expect(byId.get(justAhead.id)).toBe(NOW.toISOString());
+    expect(byId.get(epoch.id)).toBe(startOfProfile);
+    expect(byId.get(y1900.id)).toBe(startOfProfile);
+    expect(byId.get(offset.id)).toBe("2026-11-25T09:00:00.000Z");
+  });
+
+  it("with an old profile the floor is 30 days before now", async () => {
+    await sql`UPDATE profiles SET start_date = '2026-01-01'`;
+    const item = attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: "1970-01-01T00:00:00.000Z" });
+    await post(batch(item));
+    expect((await rows())[0].createdAt.toISOString()).toBe("2026-10-26T10:00:00.000Z");
   });
 });
 
@@ -204,6 +219,53 @@ describe("idempotence", () => {
   });
 });
 
+describe("concurrency", () => {
+  it("opposite-order batches with the same ids all succeed and leave exactly one row per id", async () => {
+    const ids = Array.from({ length: 12 }, (_, i) => `00000000-0000-4000-8000-${String(i + 1).padStart(12, "0")}`);
+    const exercises = ["d001-listen-01", "d001-write-01", "d001-listen-02", "d001-speak-01"];
+    const make = (reverse: boolean) => {
+      const items = ids.map((id, i) => attemptItem(exercises[i % 4], [ANSWERS.listenChooseRight, ANSWERS.arrangeRight, ANSWERS.dictationRight, ANSWERS.selfOk][i % 4], { id }));
+      return batch(...(reverse ? items.reverse() : items));
+    };
+    const responses = await Promise.all(Array.from({ length: 16 }, (_, i) => post(make(i % 2 === 1))));
+    expect(responses.map((r) => r.status)).toEqual(Array(16).fill(200));
+    const all = await rows();
+    expect(all).toHaveLength(12);
+    expect(new Set(all.map((r) => r.id)).size).toBe(12);
+    const statuses = responses.flatMap((r) => (r.body as { results: { status: string }[] }).results.map((x) => x.status));
+    expect(statuses.filter((x) => x === "created")).toHaveLength(12);
+    expect(statuses.filter((x) => x === "duplicate")).toHaveLength(16 * 12 - 12);
+  });
+
+  it("results stay in request order whatever order the rows are written in", async () => {
+    const items = ["00000000-0000-4000-8000-00000000000c", "00000000-0000-4000-8000-000000000001", "00000000-0000-4000-8000-000000000007"].map((id) =>
+      attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { id }),
+    );
+    const res = await post(batch(...items));
+    expect((res.body as { results: { id: string }[] }).results.map((r) => r.id)).toEqual(items.map((i) => i.id));
+  });
+
+  it("an attempt waits for a completion that is committing, then sees the unlocked day (no false locked_day)", async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    const holder = sql.begin(async (q) => {
+      await q`SELECT 1 FROM profiles WHERE user_id = ${userId} FOR UPDATE`;
+      await gate;
+      await q`UPDATE profiles SET current_day = 2 WHERE user_id = ${userId}`;
+    });
+    await new Promise((r) => setTimeout(r, 200));
+    const day2 = attemptItem("d002-listen-01", { kind: "choice", selected: 1 });
+    let settled = false;
+    const pending = post(batch(day2)).then((r) => ((settled = true), r));
+    await new Promise((r) => setTimeout(r, 300));
+    expect(settled).toBe(false);
+    release();
+    await holder;
+    const res = await pending;
+    expect((res.body as { results: { status: string }[] }).results[0].status).toBe("created");
+  });
+});
+
 describe("locked days", () => {
   it("rejects an attempt for a day after current_day", async () => {
     const day3 = attemptItem("d003-write-03", { kind: "texts", texts: ["from"] });
@@ -241,5 +303,13 @@ describe("progress", () => {
     const [after] = await db.select().from(progress).where(eq(progress.day, 1));
     expect(after).toMatchObject({ status: "done", score: 0.9 });
     expect(after.startedAt).toEqual(first.startedAt);
+  });
+
+  it("an earlier attempt that syncs late moves started_at back; a done day is not touched", async () => {
+    const late = attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: new Date(NOW.getTime() - 60_000).toISOString() });
+    await post(batch(late));
+    const early = attemptItem("d001-write-01", ANSWERS.arrangeRight, { createdAt: new Date(NOW.getTime() - 3_600_000).toISOString() });
+    await post(batch(early));
+    expect((await db.select().from(progress))[0].startedAt?.toISOString()).toBe(early.createdAt);
   });
 });
