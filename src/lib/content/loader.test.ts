@@ -42,10 +42,12 @@ describe("loader", () => {
   it("loads all lessons sorted by day", () => {
     write("lessons/day-002.json", lesson(2));
     write("lessons/day-001.json", lesson(1));
+    write("vocab/oxford-3000/a1.json", [word]);
     expect(loadAllLessons(root).map((l) => l.day)).toEqual([1, 2]);
   });
 
   it("loads the whole vocab bank from every file under vocab/**", () => {
+    write("lessons/day-001.json", lesson(1));
     write("vocab/oxford-3000/a1.json", [word]);
     write("vocab/oxford-5000/b2-c1.json", [{ ...word, id: "v-x", oxford: { list: "5000", level: "C1" } }]);
     expect(loadVocabBank(root).map((v) => v.id).sort()).toEqual(["v-hello", "v-x"]);
@@ -78,10 +80,77 @@ describe("loader", () => {
     write("lessons/day-001.json", { ...lesson(1), phase: 9 });
     write("lessons/day-002.json", "oops");
     write("vocab/oxford-3000/a1.json", [{ ...word, topics: [] }]);
+    write("vocab/oxford-3000/a2.json", [{ ...word, id: "v-b", oxford: { list: "3000", level: "A2" } }]);
     const r = readContent(root);
-    expect(r.problems.map((p) => p.file).sort()).toEqual([
+    expect([...new Set(r.problems.map((p) => p.file))].sort()).toEqual([
       "content/lessons/day-001.json", "content/lessons/day-002.json", "content/vocab/oxford-3000/a1.json",
     ]);
+  });
+});
+
+describe("tree structure (S1) and BOM (N3)", () => {
+  const files = () => readContent(root).problems.map((p) => p.file + ": " + p.message).join("\n");
+  it("fails when root, lessons/ or vocab/ is missing", () => {
+    expect(files()).toMatch(/not found/);
+    fs.mkdirSync(path.join(root, "vocab"), { recursive: true });
+    expect(files()).toMatch(/lessons.*not found/);
+    fs.rmSync(path.join(root, "vocab"), { recursive: true });
+    fs.mkdirSync(path.join(root, "lessons"), { recursive: true });
+    expect(files()).toMatch(/vocab.*not found/);
+  });
+  it("fails on zero lessons or zero vocab words", () => {
+    fs.mkdirSync(path.join(root, "lessons"), { recursive: true });
+    fs.mkdirSync(path.join(root, "vocab"), { recursive: true });
+    expect(files()).toMatch(/no lesson files/);
+    expect(files()).toMatch(/no vocab words/);
+  });
+  it.each(["day-1.json", "Day-001.json", "day-001.JSON", "day-001.json.bak", "notes.txt", "day-001.jsonc"])(
+    "reports stray lessons/ entry %s", (name) => {
+      write("lessons/day-001.json", lesson(1));
+      write("vocab/oxford-3000/a1.json", [word]);
+      write(`lessons/${name}`, "x");
+      expect(files()).toContain(`lessons/${name}`);
+    });
+  it("reports a subdirectory or a directory named like a lesson file in lessons/", () => {
+    write("lessons/day-001.json", lesson(1));
+    write("vocab/oxford-3000/a1.json", [word]);
+    fs.mkdirSync(path.join(root, "lessons", "old"));
+    fs.mkdirSync(path.join(root, "lessons", "day-002.json"));
+    expect(files()).toContain("lessons/old");
+    expect(files()).toContain("lessons/day-002.json");
+  });
+  it("reports non-json files under vocab/", () => {
+    write("lessons/day-001.json", lesson(1));
+    write("vocab/oxford-3000/a1.json", [word]);
+    write("vocab/oxford-3000/a1.json.bak", "x");
+    write("vocab/README.md", "x");
+    expect(files()).toContain("a1.json.bak");
+    expect(files()).toContain("README.md");
+  });
+  it("reads files that start with a UTF-8 BOM", () => {
+    write("lessons/day-001.json", "\uFEFF" + JSON.stringify(lesson(1)));
+    expect(loadLesson(1, root).day).toBe(1);
+  });
+});
+
+describe("vocab entries validated one by one (S9)", () => {
+  it("keeps valid entries, reports the bad one with file, index and id", () => {
+    write("vocab/oxford-3000/a1.json", [word, { ...word, id: "v-bad", topics: ["nope"] }, { ...word, id: "v-ok2" }]);
+    const r = readContent(root);
+    expect(r.vocab[0].items.map((i) => i.id)).toEqual(["v-hello", "v-ok2"]);
+    const p = r.problems.find((x) => x.id === "v-bad");
+    expect(p?.file).toBe("content/vocab/oxford-3000/a1.json");
+    expect(p?.message).toContain("[1].topics[0]");
+  });
+  it("does not report 'not in the vocab bank' for an id whose own entry failed", () => {
+    write("lessons/day-001.json", lesson(1)); // vocab: v-hello
+    write("vocab/oxford-3000/a1.json", [{ ...word, th: "no thai" }]);
+    const msgs = validateContentDir(root).problems.map((p) => p.message).join("\n");
+    expect(msgs).not.toContain("not in the vocab bank");
+  });
+  it("reports a vocab file that is not an array", () => {
+    write("vocab/oxford-3000/a1.json", { id: "x" });
+    expect(readContent(root).problems.map((p) => p.message).join()).toMatch(/array/);
   });
 });
 

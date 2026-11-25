@@ -1,12 +1,12 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import type { Exercise, Lesson, VocabItem } from "./schema";
+import type { Exercise, Lesson, Topic, VocabItem } from "./schema";
 import { checkContent, formatProblem, summarize, type LoadedLesson, type LoadedVocab } from "./validate";
 
 const bi = { en: "Hello", th: "สวัสดี" };
 const instruction = { th: "ทำตามคำสั่ง" };
 
-function word(id: string, level: VocabItem["oxford"]["level"] = "A1", topics: string[] = ["greetings"]): VocabItem {
+function word(id: string, level: VocabItem["oxford"]["level"] = "A1", topics: Topic[] = ["greetings"]): VocabItem {
   return {
     id, word: id.slice(2), pos: "noun",
     oxford: { list: "3000", level },
@@ -18,7 +18,7 @@ function word(id: string, level: VocabItem["oxford"]["level"] = "A1", topics: st
 function lessonOf(day: number, over: Partial<Lesson> = {}, exercises: Exercise[] = []): LoadedLesson {
   const dd = String(day).padStart(3, "0");
   const lesson: Lesson = {
-    day, phase: 1, week: 1, type: "lesson", cefr: "A1",
+    day, phase: day <= 60 ? 1 : day <= 150 ? 2 : day <= 270 ? 3 : 4, week: Math.ceil(day / 7), type: "lesson", cefr: "A1",
     title: bi, objectives: [bi], estimatedMinutes: 20, vocab: [],
     sections: [{
       skill: "listening", title: bi,
@@ -99,7 +99,7 @@ describe("checkContent", () => {
     ["use_in_sentence", { type: "use_in_sentence", vocabId: "v-ghost", prompt: "x" }],
   ])("flags an unknown vocab id referenced from %s", (_t, body) => {
     const ex = { id: "d001-vocab-01", instruction, ...body } as Exercise;
-    const out = text([lessonOf(1, {}, [ex])], bank);
+    const out = text([lessonOf(1, { vocab: ["v-hello"] }, [ex])], bank);
     expect(out).toHaveLength(1);
     expect(out[0]).toContain("[d001-vocab-01]");
     expect(out[0]).toContain("v-ghost");
@@ -113,7 +113,7 @@ describe("checkContent", () => {
   });
 
   it("flags a word listed twice in the same lesson", () => {
-    expect(text([lessonOf(1, { vocab: ["v-hello", "v-hello"] })], bank).join("\n")).toMatch(/already introduced/);
+    expect(text([lessonOf(1, { vocab: ["v-hello", "v-hello"] })], bank).join("\n")).toMatch(/listed twice in vocab/);
   });
 
   describe("CEFR level rule", () => {
@@ -134,11 +134,11 @@ describe("checkContent", () => {
     });
   });
 
-  it("flags vocab topics that are not in VOCABULARY.md", () => {
-    const out = text([], [vocabOf([word("v-x", "A1", ["greetings", "wibble"])])]);
+  it("flags duplicate entries in a word's topics", () => {
+    const out = text([], [vocabOf([word("v-x", "A1", ["greetings", "greetings"])])]);
     expect(out).toHaveLength(1);
-    expect(out[0]).toContain("v-x");
-    expect(out[0]).toContain("wibble");
+    expect(out[0]).toContain("[v-x]");
+    expect(out[0]).toContain("greetings");
   });
 
   describe("answer keys", () => {
@@ -197,5 +197,142 @@ describe("summarize", () => {
     const bank = [vocabOf([word("v-hello"), word("v-name"), word("v-cat")])];
     const s = summarize({ lessons: [lessonOf(1, { vocab: ["v-hello", "v-name"] })], vocab: bank });
     expect(s).toEqual({ lessons: 1, words: 3, introduced: 2, notIntroduced: 1 });
+  });
+});
+
+describe("checkContent: bank consistency (M1)", () => {
+  const w = (id: string, wordText: string, pos = "noun"): VocabItem => ({ ...word(id), word: wordText, pos });
+  const bankOf = (...items: VocabItem[]) => [vocabOf(items)];
+
+  it("flags two entries with the same (word, pos) under different ids", () => {
+    const out = text([], bankOf(w("v-book", "book"), w("v-book-2", "Book")));
+    expect(out.join("\n")).toMatch(/same word and pos as v-book/);
+  });
+  it("accepts the same word with a different pos", () => {
+    expect(text([], bankOf(w("v-book", "book"), w("v-book-verb", "book", "verb")))).toEqual([]);
+  });
+  it("flags an id that does not match the word", () => {
+    const out = text([], bankOf(w("v-apple", "banana")));
+    expect(out).toHaveLength(1);
+    expect(out[0]).toContain("[v-apple]");
+    expect(out[0]).toContain("v-banana");
+  });
+  it.each([
+    ["v-wake-up", "wake up", "verb"], ["v-o-clock", "o'clock", "adverb"],
+    ["v-do", "do", "auxiliary verb"], ["v-do-auxiliary-verb", "do", "auxiliary verb"], ["v-do-verb", "do", "verb"],
+  ])("accepts id %s for word %s (%s)", (id, wd, pos) => {
+    expect(text([], bankOf(w(id, wd, pos)))).toEqual([]);
+  });
+  it("does not accept a pos suffix that differs from the pos", () => {
+    expect(text([], bankOf(w("v-do-noun", "do", "verb")))).toHaveLength(1);
+  });
+});
+
+describe("checkContent: files and levels (S4)", () => {
+  const at = (file: string, item: VocabItem) => text([], [vocabOf([item], file)]);
+  it("flags an entry whose level does not match its oxford-3000 file", () => {
+    const out = at("content/vocab/oxford-3000/a2.json", word("v-x", "A1"));
+    expect(out).toHaveLength(1);
+    expect(out[0]).toContain("a2.json");
+  });
+  it("flags list 3000 in the oxford-5000 file and list 5000 in oxford-3000", () => {
+    expect(at("content/vocab/oxford-5000/b2-c1.json", word("v-x", "B2"))).toHaveLength(1);
+    const five: VocabItem = { ...word("v-x", "C1"), oxford: { list: "5000", level: "C1" } };
+    expect(at("content/vocab/oxford-3000/b2.json", five).length).toBeGreaterThan(0);
+    expect(at("content/vocab/oxford-5000/b2-c1.json", five)).toEqual([]);
+  });
+});
+
+describe("checkContent: introduction order and limits (S5, S11, S8, N4)", () => {
+  const bank = [vocabOf([word("v-hello"), word("v-name")])];
+  const spell = (n: number): Exercise => ({ id: `d${String(n).padStart(3, "0")}-vocab-01`, type: "spell_word", instruction, vocabId: "v-name" });
+
+  it("flags an exercise using a word that is introduced only in a later day", () => {
+    const out = text([lessonOf(1, { vocab: ["v-hello"] }, [spell(1)]), lessonOf(2, { vocab: ["v-name"] })], bank);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toContain("[d001-vocab-01]");
+    expect(out[0]).toContain("not introduced");
+  });
+  it("accepts same-day and earlier introductions, whatever the input order", () => {
+    const l1 = lessonOf(1, { vocab: ["v-hello"] });
+    const l2 = lessonOf(2, { vocab: ["v-name"] }, [spell(2)]);
+    const l3 = lessonOf(3, { type: "review" }, [spell(3)]);
+    expect(text([l3, l2, l1], bank)).toEqual([]);
+  });
+  it("flags new vocab on non-lesson days", () => {
+    const out = text([lessonOf(5, { type: "review", vocab: ["v-hello"] })], bank);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatch(/only "lesson" days/);
+  });
+  it("flags more than 12 new words in one lesson", () => {
+    const items = Array.from({ length: 13 }, (_, i) => word(`v-w${i}`));
+    const out = text([lessonOf(1, { vocab: items.map((i) => i.id) })], [vocabOf(items)]);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toContain("13");
+  });
+  it("accepts exactly 12", () => {
+    const items = Array.from({ length: 12 }, (_, i) => word(`v-w${i}`));
+    expect(text([lessonOf(1, { vocab: items.map((i) => i.id) })], [vocabOf(items)])).toEqual([]);
+  });
+  it.each([
+    ["week", { week: 3 }], ["phase", { phase: 2 }],
+  ])("flags a wrong %s for the day", (_n, over) => {
+    const out = text([lessonOf(1, over)], bank);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toContain(_n);
+  });
+  it.each([[60, 1], [61, 2], [150, 2], [151, 3], [270, 3], [271, 4], [365, 4]])("day %i is phase %i", (d, ph) => {
+    expect(text([lessonOf(d, { phase: ph as 1 | 2 | 3 | 4 })], bank).filter((l) => l.includes("phase"))).toEqual([]);
+  });
+  it("allows checkpoint only on days divisible by 30", () => {
+    expect(text([lessonOf(30, { type: "checkpoint" })], bank)).toEqual([]);
+    const out = text([lessonOf(7, { type: "checkpoint" })], bank);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toContain("checkpoint");
+  });
+  it("reports a day/filename mismatch once, not once per exercise", () => {
+    const l = lessonOf(1);
+    l.file = "content/lessons/day-002.json";
+    l.lesson.sections[0].exercises = [
+      { id: "d002-listen-01", type: "dictation", instruction, audioText: "a" },
+      { id: "d002-listen-02", type: "dictation", instruction, audioText: "b" },
+    ];
+    expect(text([l], bank)).toHaveLength(1);
+  });
+  it("includes the vocab[i] path in lesson-level vocab problems", () => {
+    expect(text([lessonOf(1, { vocab: ["v-hello", "v-ghost"] })], bank).join("\n")).toContain("vocab[1]");
+  });
+});
+
+describe("checkContent: stricter answer rules (S3, S6, S10)", () => {
+  const bank = [vocabOf([word("v-hello"), word("v-name")])];
+  const check = (ex: Record<string, unknown>, vocab: string[] = ["v-hello", "v-name"]) =>
+    text([lessonOf(1, { vocab }, [{ id: "d001-listen-01", instruction, ...ex } as Exercise])], bank);
+
+  it("fill_blank: a blank is exactly three underscores", () => {
+    expect(check({ type: "fill_blank", text: "My __ is Sam.", answer: ["name"] }).join("\n")).toContain("underscore");
+    expect(check({ type: "fill_blank", text: "My ____ is Sam.", answer: ["name"] }).join("\n")).toContain("underscore");
+    expect(check({ type: "fill_blank", text: "My ___ is Sam.", answer: ["name"] })).toEqual([]);
+  });
+  it("rejects duplicate choices (trimmed, case-insensitive)", () => {
+    const base = { type: "listen_choose", audioText: "x", question: bi, answer: 0 };
+    expect(check({ ...base, choices: ["Sam", "sam "] }).join("\n")).toContain("duplicate choice");
+    const rp = { type: "read_passage", text: "t", questions: [{ question: bi, choices: ["a", "A"], answer: 0 }] };
+    expect(check(rp).join("\n")).toContain("questions[0]");
+  });
+  it("rejects minimal_pair with a equal to b", () => {
+    expect(check({ type: "minimal_pair", pairs: [{ a: "bad", b: "Bad", answer: "a" }] }).join("\n")).toContain("pairs[0]");
+  });
+  it("rejects duplicate vocabId in one vocab_match", () => {
+    const out = check({ type: "vocab_match", pairs: [{ vocabId: "v-hello" }, { vocabId: "v-hello" }] });
+    expect(out.join("\n")).toContain("duplicate");
+  });
+  it("arrange_words: multi-word tiles are split into tokens", () => {
+    const base = { type: "arrange_words", words: ["I", "live", "in", "New York"] };
+    expect(check({ ...base, answer: "I live in New York" })).toEqual([]);
+  });
+  it("arrange_words: answer must be single-spaced", () => {
+    const out = check({ type: "arrange_words", words: ["My", "name"], answer: "My  name" });
+    expect(out.join("\n")).toContain("single");
   });
 });

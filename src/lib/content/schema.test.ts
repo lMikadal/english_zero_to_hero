@@ -62,7 +62,7 @@ describe("exerciseSchema", () => {
     expect(exerciseSchema.safeParse({ ...(valid.dictation as object), instruction: { th: "ก", en: "a" } }).success).toBe(true);
   });
 
-  it.each(["x001-pron-01", "d1-pron-01", "d001-pron-1", "d001-Pron-01", "d001_pron_01", "d001-pron-01-b"])(
+  it.each(["x001-pron-01", "d1-pron-01", "d001-pron-1", "d001-Pron-01", "d001_pron_01", "d001-pron-01-b", "d001-foo-01"])(
     "rejects malformed exercise id %s",
     (id) => {
       expect(exerciseSchema.safeParse({ ...(valid.dictation as object), id }).success).toBe(false);
@@ -111,6 +111,40 @@ describe("exerciseSchema", () => {
     const { accept: _a, ...d } = valid.dictation as Record<string, unknown>;
     void _a;
     expect(exerciseSchema.safeParse(d).success).toBe(true);
+  });
+});
+
+describe("string rules (S2)", () => {
+  const dict = valid.dictation as Record<string, unknown>;
+  it.each(["   ", " hello", "hello ", "\thello"])("rejects whitespace-padded or blank string %j", (v) => {
+    expect(exerciseSchema.safeParse({ ...dict, audioText: v }).success).toBe(false);
+    expect(exerciseSchema.safeParse({ ...dict, accept: [v] }).success).toBe(false);
+  });
+  it("requires Thai characters in every th field", () => {
+    expect(exerciseSchema.safeParse({ ...dict, instruction: { th: "do it" } }).success).toBe(false);
+    expect(exerciseSchema.safeParse({ ...(valid.listen_choose as object), question: { en: "x", th: "x" } }).success).toBe(false);
+    expect(exerciseSchema.safeParse({ ...(valid.phoneme_intro as object), tipTh: "open wide" }).success).toBe(false);
+    expect(exerciseSchema.safeParse({ ...(valid.translate_th_en as object), th: "hello" }).success).toBe(false);
+    expect(exerciseSchema.safeParse({ ...(valid.read_passage as object), glossary: { too: "also" } }).success).toBe(false);
+    expect(lessonSchema.safeParse({ ...lesson, title: { en: "x", th: "x" } }).success).toBe(false);
+  });
+  it("requires Thai in vocab th and example th", () => {
+    expect(vocabItemSchema.safeParse({ ...word, th: "meet" }).success).toBe(false);
+    expect(vocabItemSchema.safeParse({ ...word, examples: [{ en: "x", th: "x" }] }).success).toBe(false);
+  });
+});
+
+describe("oxford list/level (S4) and topics (S13)", () => {
+  it.each([["3000", "C1"], ["5000", "A1"], ["5000", "A2"], ["5000", "B1"]])("rejects list %s with level %s", (list, level) => {
+    expect(vocabItemSchema.safeParse({ ...word, oxford: { list, level } }).success).toBe(false);
+  });
+  it.each([["3000", "B2"], ["5000", "B2"], ["5000", "C1"]])("accepts list %s with level %s", (list, level) => {
+    expect(vocabItemSchema.safeParse({ ...word, oxford: { list, level } }).success).toBe(true);
+  });
+  it("names the bad topic slug in the error", () => {
+    const r = vocabItemSchema.safeParse({ ...word, topics: ["greetings", "wibble"] });
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.error?.issues)).toContain("wibble");
   });
 });
 
