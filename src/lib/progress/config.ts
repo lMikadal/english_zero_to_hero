@@ -33,7 +33,7 @@ export const CHECKPOINT_PASS_SCORE = 0.7;
 export const CEFR_REQUIREMENTS = [
   { level: "A1", checkpointDay: 60, minKnownWords: 400 },
   { level: "A2", checkpointDay: 150, minKnownWords: 1200 },
-  { level: "B1", checkpointDay: 270, minKnownWords: 1850 },
+  { level: "B1", checkpointDay: 270, minKnownWords: 1840 },
   { level: "B2", checkpointDay: 360, minKnownWords: 2400 },
 ] as const;
 

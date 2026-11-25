@@ -1,8 +1,26 @@
 // Calendar-date maths in an IANA time zone, using only built-in Intl. Dates are "YYYY-MM-DD" strings.
 
+import { DEFAULT_TIME_ZONE } from "./config";
+
 const formatters = new Map<string, Intl.DateTimeFormat>();
 
-function formatterFor(timeZone: string): Intl.DateTimeFormat {
+/** True when `timeZone` is an IANA zone this runtime knows (use it to validate settings on save). */
+export function isValidTimeZone(timeZone: string): boolean {
+  if (!timeZone) return false;
+  try {
+    new Intl.DateTimeFormat("en-CA", { timeZone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** The zone itself when valid, otherwise Asia/Bangkok, so a bad profile value never throws. */
+export const resolveTimeZone = (timeZone: string | null | undefined): string =>
+  timeZone && isValidTimeZone(timeZone) ? timeZone : DEFAULT_TIME_ZONE;
+
+function formatterFor(requested: string): Intl.DateTimeFormat {
+  const timeZone = resolveTimeZone(requested);
   let f = formatters.get(timeZone);
   if (!f) {
     f = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" });

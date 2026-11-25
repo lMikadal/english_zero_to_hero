@@ -1,5 +1,6 @@
 // docs/PROGRESS.md section 4: estimated CEFR level.
 import { CEFR_REQUIREMENTS, CHECKPOINT_PASS_SCORE } from "./config";
+import { normalizeScore } from "./score";
 import type { ProgressLike } from "./types";
 
 export type EstimatedLevel = "preA1" | (typeof CEFR_REQUIREMENTS)[number]["level"];
@@ -22,7 +23,8 @@ export function estimateCefr(knownWords: number, progress: readonly ProgressLike
   const done = new Map<number, ProgressLike>();
   for (const p of progress) if (p.status === "done") done.set(p.day, p);
 
-  const passed = (day: number) => (done.get(day)?.score ?? -1) >= CHECKPOINT_PASS_SCORE;
+  // epsilon: 0.7 computed as 7/10 or summed floats must still pass
+  const passed = (day: number) => (normalizeScore(done.get(day)?.score) ?? -1) >= CHECKPOINT_PASS_SCORE - 1e-9;
 
   let reached = -1;
   CEFR_REQUIREMENTS.forEach((r, i) => {
