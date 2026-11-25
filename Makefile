@@ -2,13 +2,17 @@
 COMPOSE := docker compose
 # Reuse the running app container when there is one, otherwise start a throwaway one.
 # Both paths go through dev-entrypoint.sh, so node_modules is re-synced if the lockfile changed.
-# TODO(PR 3): integration tests need postgres; drop --no-deps for `test` then.
+# Targets that need the database (`test`, `db-*`) depend on `postgres-up`, which starts postgres
+# and waits until it is healthy, so neither path needs `make up` first.
 RUN = $(if $(shell $(COMPOSE) ps --status running -q app 2>/dev/null),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
 
-.PHONY: help up down logs sh test e2e lint typecheck check validate db-generate db-migrate db-studio db-reset audio prod
+.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset audio prod
 
 help: ## List targets
-	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
+	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
+
+postgres-up:
+	$(COMPOSE) up -d --wait postgres
 
 up: ## Start app (dev, hot reload) + postgres at http://localhost:3000
 	$(COMPOSE) up -d --build --wait app
@@ -22,8 +26,11 @@ logs: ## Follow app logs
 sh: ## Shell inside the app container
 	$(COMPOSE) run --rm app sh
 
-test: ## Unit + component tests (Vitest)
+test: postgres-up ## Unit + component + integration tests (Vitest, real Postgres)
 	$(RUN) pnpm test
+
+test-unit: ## Unit + component tests only (no database needed)
+	$(RUN) pnpm test:unit
 
 e2e: ## Playwright E2E at 360px (starts app if needed)
 	$(COMPOSE) --profile e2e run --rm --build e2e
@@ -39,10 +46,21 @@ check: lint typecheck test validate ## lint + typecheck + test + content validat
 validate: ## Validate everything under content/ (schema + cross-file rules)
 	$(RUN) pnpm content:validate
 
+db-generate: ## Generate a SQL migration from src/db/schema.ts
+	$(RUN) pnpm db:generate
+
+db-migrate: postgres-up ## Apply pending migrations to the dev database
+	$(RUN) pnpm db:migrate
+
+db-studio: postgres-up ## Drizzle Studio at https://local.drizzle.studio (port 4983, localhost only)
+	$(COMPOSE) run --rm --no-deps -p 127.0.0.1:4983:4983 app dev-entrypoint.sh pnpm db:studio
+
+db-reset: postgres-up ## DEV ONLY: drop + recreate the dev database, then migrate
+ifeq ($(NODE_ENV),production)
+	$(error db-reset is dev only and refuses to run with NODE_ENV=production)
+endif
+	$(RUN) pnpm db:reset
+
 # Not implemented yet: fail loudly instead of faking success.
-db-generate: ; @echo "make $@: not implemented yet (PR 3: db schema)" >&2; exit 1
-db-migrate:  ; @echo "make $@: not implemented yet (PR 3: db schema)" >&2; exit 1
-db-studio:   ; @echo "make $@: not implemented yet (PR 3: db schema)" >&2; exit 1
-db-reset:    ; @echo "make $@: not implemented yet (PR 3: db schema)" >&2; exit 1
 audio:       ; @echo "make $@: not implemented yet (PR 7: audio-tts)" >&2; exit 1
 prod:        ; @echo "make $@: not implemented yet (PR 13: selfhost-deploy)" >&2; exit 1
