@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 // The app is started by docker compose (service `app`); the e2e service
-// reaches it at BASE_URL=http://app:3000.
+// reaches it at BASE_URL=http://e2e-target:3000.
 export default defineConfig({
   testDir: "./e2e",
   outputDir: "./test-results",
