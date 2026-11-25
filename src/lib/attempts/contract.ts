@@ -19,7 +19,10 @@ export const attemptAnswerSchema = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("pairs"), selected: z.array(z.enum(["a", "b"])).max(100) }),
   z.strictObject({ kind: z.literal("text"), text: z.string().max(5000) }),
   z.strictObject({ kind: z.literal("texts"), texts: z.array(z.string().max(1000)).max(100) }),
-  z.strictObject({ kind: z.literal("match"), pairs: z.record(z.string().max(100), z.string().max(100)) }),
+  z.strictObject({
+    kind: z.literal("match"),
+    pairs: z.record(z.string().max(100), z.string().max(100)).refine((o) => Object.keys(o).length <= 20, "too many pairs"),
+  }),
   z.strictObject({ kind: z.literal("self"), rating: z.enum(["ok", "unsure"]), recordingId: z.uuid().optional() }),
 ]);
 export type AttemptAnswer = z.infer<typeof attemptAnswerSchema>;

@@ -230,7 +230,7 @@ reminder_settings   user_id PK, enabled bool, remind_at time, types text[], upda
 
 #### `POST /api/attempts`
 
-Request (`postAttemptsRequestSchema`): `{ attempts: AttemptInput[] }` 1–50 รายการ
+Request: `{ attempts: AttemptInput[] }` 1–50 รายการ (`PostAttemptsRequest`) `AttemptInput` คือชนิดที่ parse แล้ว ผู้เรียกต้องใส่ `source` และ `attemptNo` เองให้ครบ (default มีไว้ให้ฝั่ง server ตอน parse เท่านั้น)
 
 | ฟิลด์ | ชนิด | หมายเหตุ |
 |---|---|---|
@@ -240,23 +240,26 @@ Request (`postAttemptsRequestSchema`): `{ attempts: AttemptInput[] }` 1–50 ร
 | `source` | `lesson\|drill\|retest\|checkpoint` | default `lesson` (ต้องตรง `AttemptSource` ใน `src/db/schema.ts`) |
 | `attemptNo` | `1 \| 2` | default 1; 2 = รอบทวนท้ายบท |
 | `answer` | union ตาม `kind` | `choice{selected}`, `choices{selected[]}`, `pairs{selected[]: a\|b}`, `text{text}`, `texts{texts[]}`, `match{pairs: {vocabId: vocabId}}`, `self{rating: ok\|unsure, recordingId?}` |
-| `durationMs` | int 0..3 600 000 | ไม่บังคับ |
-| `createdAt` | ISO datetime | เวลาฝั่ง client |
+| `durationMs` | int 0..3 600 000 | ไม่บังคับ client วัดด้วยนาฬิกา monotonic (`performance.now()`) แล้วครอบด้วย `clampDurationMs()` ก่อนส่งเสมอ (ปล่อยเครื่องข้ามคืนหรือปรับนาฬิกาแล้วค่าจึงไม่หลุดช่วง) |
+| `createdAt` | ISO datetime | เวลาฝั่ง client server ตัดให้ไม่เกิน `now + 5 นาที` (ทำใน PR `feat/m1-attempts-api`) |
 
-Response `200` สำหรับ batch ที่รูปแบบถูกต้อง: `{ results: [...] }` หนึ่งรายการต่อหนึ่ง attempt ตามลำดับ
+**แต่ละรายการถูกตรวจแยกกัน** รายการเสียหนึ่งรายการ (เช่น `durationMs` 2 ชั่วโมง, ค่าติดลบ, วางข้อความเกิน 5000 ตัวอักษร, รูปแบบจาก build เก่า) ไม่ทำให้ทั้ง batch ถูกปฏิเสธ (ไม่งั้นคิว offline จะทิ้ง attempt ดีๆ สูงสุด 50 รายการ) server ต้องใช้ `parseAttemptBatch(body)` จาก `src/lib/attempts/contract.ts` เสมอ: ตรวจเฉพาะ envelope `{ attempts: unknown[] }` 1–50 รายการ แล้วคืนผลต่อรายการ (`ok` พร้อม `attempt` หรือ `ok: false` พร้อม `id` ถ้าอ่านได้ ไม่งั้น `null`)
+
+Response `200` สำหรับ batch ที่ envelope ถูกต้อง: `{ results: AttemptResult[] }` หนึ่งรายการต่อหนึ่ง attempt ตามลำดับ:
+`created` ต้องมี `correct`, `score` (และ `items` ถ้ามี) เสมอ; `duplicate` มีหรือไม่มีก็ได้ (`Partial<Grade>`); `rejected` ต้องมี `reason`
 
 | `status` | ความหมาย | ฟิลด์เพิ่ม |
 |---|---|---|
 | `created` | บันทึกแล้ว | `correct`, `score` |
 | `duplicate` | `id` นี้เคยบันทึกแล้ว ไม่ทำอะไรซ้ำ | `correct`, `score` (ถ้ามี) |
-| `rejected` | ไม่บันทึก | `reason`: `unknown_exercise` (ไม่มี exercise นี้ใน content), `kind_mismatch` (ชนิดหรือจำนวนของ `answer` ไม่ตรงกับ exercise), `unsupported` (ชนิดที่ไม่มี attempt เช่น `phoneme_intro`, `roleplay`), `locked_day` (วันของ exercise มากกว่า `profiles.current_day`) |
+| `rejected` | ไม่บันทึก (`id` เป็น `null` ได้เมื่ออ่าน id ไม่ออก) | `reason`: `unknown_exercise` (ไม่มี exercise นี้ใน content), `kind_mismatch` (ชนิด จำนวน หรือชุด key ของ `answer` ไม่ตรงกับ exercise), `unsupported` (ชนิดที่ไม่มี attempt เช่น `phoneme_intro`, `roleplay`), `locked_day` (วันของ exercise มากกว่า `profiles.current_day`), `invalid` (รายการนี้ไม่ผ่าน schema หรือ `attemptNo: 2` กับชนิดที่ทวนไม่ได้ ดู `isAttemptNoAllowed`) |
 
-- `400`: body ทั้งก้อนผิดรูปแบบ (JSON เสีย, ไม่ผ่าน schema, เกิน 50 รายการ) ไม่มีรายการใดถูกบันทึก
+- `400`: ทั้ง body ใช้ไม่ได้: JSON อ่านไม่ออก หรือ envelope ผิด (ไม่มี `attempts`, ว่าง, เกิน 50 รายการ) ไม่มีรายการใดถูกบันทึก
 - `5xx`: server ล้มเหลว ไม่มีอะไรรับประกันว่าบันทึกแล้ว ส่งซ้ำได้อย่างปลอดภัยเพราะ `id` กันซ้ำ
 
 #### `POST /api/lessons/complete`
 
-Request (`completeLessonRequestSchema`): `{ day: 1..365, sessionId: uuid, completedAt: ISO datetime }`
+Request (`completeLessonRequestSchema`): `{ day: 1..365, sessionId: uuid, completedAt: ISO datetime }` server ตัด `completedAt` ให้ไม่เกิน `now + 5 นาที` เช่นเดียวกับ `createdAt`
 Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", score, completedAt }, streak: { current, longest }, currentDay }` เรียกซ้ำได้โดยผลไม่เปลี่ยน
 - `409`: วันนั้นยังล็อกอยู่ (`day > profiles.current_day`) ไม่ควรส่งซ้ำ
 - `400`: body ผิดรูปแบบ
@@ -267,10 +270,28 @@ Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", s
 
 #### กติกาของคิว offline
 
-- ส่งตามลำดับเข้าก่อนออกก่อน และ `completeLesson` ส่งหลัง attempt ก่อนหน้าทั้งหมด
-- **ทิ้งจากคิว:** รายการที่ได้ `created`, `duplicate` หรือ `rejected` (ส่งซ้ำก็ได้ผลเดิม); คำขอที่ได้ `400` หรือ `409` (ส่งซ้ำก็ผิดเหมือนเดิม)
+- เข้าก่อนออกก่อนอย่างเคร่งครัด `completeLesson` ส่งหลัง attempt ก่อนหน้าทั้งหมด และ batch ไม่ข้ามหลัง `completeLesson` (attempt ที่เข้าคิวหลังการจบบทจะไม่ถูกส่งก่อนมัน)
+- **ทิ้งจากคิว:** รายการที่ได้ `created`, `duplicate` หรือ `rejected` (ส่งซ้ำก็ได้ผลเดิม); `completeLesson` ที่ได้ `400` หรือ `409`; คำขอ `/api/attempts` ที่ได้ `400` (envelope ผิด ส่งซ้ำก็ผิดเหมือนเดิม)
 - **เก็บไว้ส่งใหม่:** network error, timeout และ `5xx` เท่านั้น
 - `attempts` เป็นแบบ append-only ไม่แก้ไขภายหลัง
+
+`SyncSink.completeLesson(c)` คืน `Promise<CompleteResult>` (`src/lib/offline/sink.ts`):
+- `{ status: "done", response }` เมื่อ server ตอบ 200
+- `{ status: "queued" }` เมื่อส่งตอนนี้ไม่ได้ (offline, `5xx`, หรือยังมี attempt ก่อนหน้าค้างอยู่หลังพยายามส่งคิวหนึ่งรอบ) แล้วจะส่งภายหลังตามลำดับ
+- `{ status: "rejected", code: 400 | 409 }` ถูกทิ้งจากคิว (409 = วันนั้นล็อก)
+
+#### Component ของ exercise
+
+`ExerciseProps<T>` (`src/components/exercises/types.ts`): `exercise`, `vocab`, `onAnswer`, `onContinue`, `result?`
+- เรียก `onAnswer` ครั้งเดียวต่อ exercise ด้วยคำตอบที่ครบ; ชนิดที่ไม่มี attempt (`phoneme_intro`) และปุ่ม "ข้าม" เมื่อไม่มีเสียงเรียก `onContinue` เท่านั้น ไม่เรียก `onAnswer`
+- เสียงมาจาก `useAudio()` ใน `src/lib/audio/context.tsx` (`AudioProvider` ครอบ player; ไม่มี provider จะได้ `createSilentAudioSource()` และ accent `us`) test ครอบด้วย provider จำลอง
+- `result` ถูกตั้งหลังตอบ: ล็อก input แล้วไฮไลต์ถูก/ผิด; `result.items` (ชนิดหลายรายการ: `minimal_pair`, `read_passage`, `fill_blank`, `vocab_match` เรียงตามลำดับในข้อ) บอกว่ารายการไหนผิด API ส่ง `items` กลับด้วย
+- รอบทวนท้ายบท player mount component ใหม่ด้วย `key={`${exercise.id}-${attemptNo}`}` และ `result` เป็น undefined component จึงต้องไม่เก็บ state นอก React state
+
+#### ข้อควรระวังฝั่ง server และหน้า day
+
+- หน้า `/day/[day]` ต้องดึง vocab ของ `vocab_match` (id ใน `pairs`) มาด้วย ไม่ใช่แค่ `lesson.vocab` (`getVocabLookup`)
+- `fill_blank` รับคำตอบที่ถูกได้หนึ่งสตริงต่อช่อง (ข้อจำกัดที่ทราบแล้ว)
 
 #### กติกาการตรวจ (`gradeExercise`)
 
@@ -278,22 +299,28 @@ Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", s
 
 | type | `answer.kind` | `correct` / `score` |
 |---|---|---|
-| `listen_choose` | `choice` | ตรง `answer` / 1 หรือ 0 |
-| `read_passage` | `choices` (หนึ่งต่อคำถาม) | ถูกครบ / สัดส่วนที่ถูก |
-| `minimal_pair` | `pairs` (หนึ่งต่อคู่) | ถูกครบ / สัดส่วนที่ถูก |
+| `listen_choose` | `choice` (index ต้องอยู่ใน `choices`) | ตรง `answer` / 1 หรือ 0 |
+| `read_passage` | `choices` (หนึ่งต่อคำถาม ต้องครบทุกคำถาม) | ถูกครบ / สัดส่วนที่ถูก (+ `items`) |
+| `minimal_pair` | `pairs` (หนึ่งต่อคู่ ต้องครบทุกคู่) | ถูกครบ / สัดส่วนที่ถูก (+ `items`) |
 | `dictation` | `text` | ตรงกับ `accept` หรือ `audioText` หลัง normalise / 1 หรือ 0 |
 | `translate_th_en` | `text` | ตรงกับ `accept` หลัง normalise / 1 หรือ 0 |
-| `arrange_words` | `text` (แผ่นป้ายที่ต่อกัน) | ตรง `answer` หลัง normalise / 1 หรือ 0 |
-| `fill_blank` | `texts` (หนึ่งต่อ `___`) | ถูกครบ / สัดส่วนที่ถูก |
-| `vocab_match` | `match` | จับคู่ถูกครบ / สัดส่วนที่ถูก |
+| `arrange_words` | `text` (แผ่นป้ายที่ต่อกัน) | ตรง `answer` หรือรายการใน `accept` หลัง normalise / 1 หรือ 0 |
+| `fill_blank` | `texts` (หนึ่งต่อ `___`) | ถูกครบ / สัดส่วนที่ถูก (+ `items`) |
+| `vocab_match` | `match` (ชุด key ต้องเท่ากับ vocabId ของ `pairs` พอดี) | จับคู่ถูกครบ / สัดส่วนที่ถูก (+ `items`) |
 | `repeat_after_me`, `shadowing`, `speak_answer` | `self` | `rating === "ok"` / `null` |
 | `free_write` | `text` | จำนวนคำ `>= minWords` / `null` |
 | `phoneme_intro`, `roleplay`, `spell_word`, `use_in_sentence` | - | ไม่มี attempt (`unsupported`) |
+
+ความยาว/ชุด key ของ `selected`/`texts`/`pairs` ที่ไม่ตรงกับ exercise (ทุกชนิดหลายรายการรวม `vocab_match`) และ index นอกช่วงของ `listen_choose` เป็น `kind_mismatch` (UI ส่งเฉพาะคำตอบที่ครบ) `correctAnswerText(ex)` คืน `string[]` หนึ่งรายการต่อข้อ (ไม่รวมด้วย `,` เพราะตัวเลือกมีจุลภาคเอง เช่น "M, A, I") และคืน `[]` เมื่อไม่มีอะไรให้เฉลย
 
 รอบทวนท้ายบทใช้ได้เฉพาะชนิดที่ตรวจอัตโนมัติ (`isRetryable(type)` ใน `src/lib/answers/grade.ts`): ไม่รวม `phoneme_intro`, ข้อพูดที่ประเมินตัวเอง และ `free_write`
 
 #### `tags`
 
-`phoneme:<p>` ใส่ให้ section ที่เป็น pronunciation และ exercise ชนิด `minimal_pair` / `phoneme_intro` ตาม `phoneme_intro` ทุกข้อของบทนั้น (วันทบทวนที่ไม่มี `phoneme_intro` จึงไม่มี tag นี้); `vocab:<id>` ใส่ให้ทุก `vocabId` ที่ exercise ระบุ (กฎ explicit ใช้เสมอ) และทุกคำใน `lesson.vocab` ที่ปรากฏเป็นคำเต็ม (ไม่สนตัวพิมพ์และเครื่องหมายวรรคตอน) ในข้อความอังกฤษของ exercise (กฎ implicit) **ยกเว้น**ใน section pronunciation และ exercise ชนิด `minimal_pair` / `phoneme_intro` ที่ไม่ใส่ `vocab:` แบบ implicit เพราะการตอบผิดในข้อฝึกเสียงไม่ได้แปลว่าไม่รู้คำศัพท์
+- `phoneme:<p>`: ถ้า exercise มีฟิลด์ `phonemes` ใช้ค่านั้นตรงๆ (ทุกชนิด) ไม่งั้นใส่ให้ section pronunciation และ `minimal_pair` / `phoneme_intro` ตามรหัสของ `phoneme_intro` ทุกข้อในบทนั้น (วันทบทวนที่ไม่มีทั้งสองอย่างจึงไม่มี tag นี้ จนกว่าจะเติม `phonemes` ใน content)
+- `vocab:<id>` (explicit): ทุก `vocabId` ที่ exercise ระบุ ใช้เสมอ
+- `vocab:<id>` (implicit): ทุกคำที่**สอนแล้วถึงวันของบทนี้** (ไม่ใช่แค่ `lesson.vocab` วันทบทวนจึงได้ tag) ที่ปรากฏเป็นคำเต็มในข้อความอังกฤษของ exercise แยกคำด้วยตัวที่ไม่ใช่ตัวอักษร/ตัวเลข/apostrophe (`"Sam:"` และ `"(pen)"` ตรง `cat` ไม่ตรงใน `category`) server ส่งแผนที่คำที่สอนแล้วจาก `getTaughtWords(day)` (`src/lib/content/repo.ts` cache ใน production) เข้า `deriveTags`
+  - `listen_choose` อ่านเฉพาะ `audioText` กับตัวเลือกที่ถูก (ไม่รวมตัวเลือกผิดหรือคำถาม) `read_passage` อ่านเฉพาะบทอ่านกับตัวเลือกที่ถูก
+  - **ยกเว้น**ใน section pronunciation และ exercise ชนิด `minimal_pair` / `phoneme_intro` ไม่ใส่ `vocab:` แบบ implicit เพราะการตอบผิดในข้อฝึกเสียงไม่ได้แปลว่าไม่รู้คำศัพท์
 
 tag ที่ขึ้นต้นด้วย `weakness:` สงวนไว้สำหรับ attempt ของ drill/retest (ตั้งโดย drill player ในอนาคต) `deriveTags` ไม่สร้าง tag นี้เด็ดขาด
