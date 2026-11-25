@@ -298,11 +298,12 @@ describe("progress", () => {
   it("keeps the first started_at and never downgrades a done day", async () => {
     await post(batch(attemptItem("d001-listen-01", ANSWERS.listenChooseRight)));
     const [first] = await db.select().from(progress);
-    await sql`UPDATE progress SET status = 'done', completed_at = ${NOW.toISOString()}, score = 0.9`;
-    await post(batch(attemptItem("d001-write-01", ANSWERS.arrangeRight, { attemptNo: 2 })));
+    await sql`UPDATE progress SET status = 'done', completed_at = ${NOW.toISOString()}`;
+    await post(batch(attemptItem("d001-write-01", ANSWERS.arrangeRight, { attemptNo: 2, createdAt: new Date(NOW.getTime() - 3_600_000).toISOString() })));
     const [after] = await db.select().from(progress).where(eq(progress.day, 1));
-    expect(after).toMatchObject({ status: "done", score: 0.9 });
-    expect(after.startedAt).toEqual(first.startedAt);
+    expect(after).toMatchObject({ status: "done" });
+    expect(after.startedAt).toEqual(first.startedAt); // an earlier attempt does not move started_at of a done day
+    expect(after.completedAt).toEqual(NOW);
   });
 
   it("an earlier attempt that syncs late moves started_at back; a done day is not touched", async () => {
