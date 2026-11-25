@@ -6,3 +6,4 @@ export * from "./weakness";
 export * from "./drills";
 export * from "./cefr";
 export * from "./pace";
+export * from "./score";
