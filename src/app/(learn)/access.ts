@@ -1,6 +1,10 @@
-// Server-only seam: what the current learner may open. The day page reads the learner's current day here.
-// TODO(wiring PR): replace this stub with the DB-backed lookup (profiles.current_day for getCurrentUserId()).
-// Until then every day is unlocked.
+// Server-only seam: what the current learner may open. The day page reads the learner's current day here
+// (profiles.current_day of whoever getCurrentUserId() says is signed in).
+import { getDb } from "@/db/client";
+import { getProfile } from "@/db/queries/progress";
+import { getCurrentUserId } from "@/lib/server/current-user";
+
 export async function getCurrentDay(): Promise<number> {
-  return 365;
+  const userId = await getCurrentUserId();
+  return (await getProfile(getDb(), userId)).currentDay;
 }
