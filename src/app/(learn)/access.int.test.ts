@@ -2,7 +2,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { closeDb } from "@/db/client";
 import { cleanDatabase, connectTestDb, testDatabaseUrl } from "@/db/test-utils";
-import { getCurrentDay } from "./access";
+import { getAccent, getCurrentDay } from "./access";
 
 const { sql } = connectTestDb();
 
@@ -26,5 +26,17 @@ describe("getCurrentDay", () => {
     await getCurrentDay();
     await sql`UPDATE profiles SET current_day = 4`;
     expect(await getCurrentDay()).toBe(4);
+  });
+});
+
+describe("getAccent", () => {
+  it("defaults to us", async () => {
+    expect(await getAccent()).toBe("us");
+  });
+
+  it("returns profiles.accent", async () => {
+    await getCurrentDay();
+    await sql`UPDATE profiles SET accent = 'uk'`;
+    expect(await getAccent()).toBe("uk");
   });
 });
