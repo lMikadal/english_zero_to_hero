@@ -383,6 +383,94 @@ def progress_screen(x, c, label):
     navbar(s, c, "พัฒนาการ")
     return s
 
+def home_body(s, c, with_gear, top_pad=56):
+    body = col(s, "Body", gap=20, pad=[top_pad, 20, 20, 20])
+    head = col(body, "Title", gap=6)
+    hr0 = row(head, "Title row", mainAlign="spaceBetween")
+    text(hr0, "English Zero to Hero", 22, c["text"], EN, "Bold", letterSpacing=-0.3)
+    if with_gear:
+        gear = frame(hr0, "Settings button", layout="horizontal", mainAlign="center", crossAlign="center", gap=6,
+                     padding=[8, 12, 8, 12], sizingH="hug", sizingV="hug", cornerRadius=999, fill=c["surface"],
+                     stroke=c["border"], strokeWeight=1)
+        text(gear, "⚙", 14, c["muted"], IPA, "Regular")
+        text(gear, "ตั้งค่า", 12, c["text"], TH, "Medium")
+    text(head, "ฝึกภาษาอังกฤษวันละบท 365 วัน", 13, c["muted"])
+    card = col(body, "Today card", gap=14, pad=18, fill=c["surface"], cornerRadius=16, stroke=c["border"], strokeWeight=1)
+    r = row(card, "Day row", mainAlign="spaceBetween", crossAlign="max")
+    left = col(r, "Day", gap=2, sizingH="hug")
+    text(left, "บทเรียนวันนี้", 13, c["muted"], TH, "Medium")
+    d = row(left, "Day number", gap=6, sizingH="hug", crossAlign="baseline")
+    text(d, "วันที่ 2", 28, c["text"], TH, "Bold")
+    text(d, "/ 365", 14, c["faint"], EN, "Regular")
+    pill = frame(r, "Phase pill", layout="horizontal", padding=[5, 10, 5, 10], sizingH="hug", sizingV="hug",
+                 cornerRadius=999, fill=c["accentSoft"])
+    text(pill, "เฟส 1 · A1", 12, c["accent"], TH, "Medium")
+    text(card, "How are you? และเสียงสระ /e/", 14, c["text"], TH, "Regular", sizingH="fill", textAutoResize="height")
+    button(card, "เริ่มบทเรียนวันที่ 2", c)
+    return body
+
+def nav_pill(parent, c, active):
+    wrap = col(parent, "Floating nav wrap", pad=[0, 20, 22, 20])
+    bar = row(wrap, "Floating nav", gap=4, pad=6, fill=c["surface2"], cornerRadius=999, stroke=c["border"], strokeWeight=1,
+              mainAlign="spaceBetween")
+    for icon, lab in [("⌂", "วันนี้"), ("↻", "ฝึกเพิ่ม"), ("◔", "พัฒนาการ"), ("⚙", "ตั้งค่า")]:
+        on = lab == active
+        t = frame(bar, f"Item / {lab}", layout="horizontal", mainAlign="center", crossAlign="center", gap=6,
+                  padding=[10, 14, 10, 14], sizingH="hug", sizingV="hug", cornerRadius=999,
+                  fill=c["accent"] if on else "none")
+        text(t, icon, 16, c["accentText"] if on else c["muted"], IPA, "Regular")
+        if on: text(t, lab, 13, c["accentText"], TH, "Medium")
+    return wrap
+
+def nav_center(parent, c, active):
+    bar = row(parent, "Nav with centre action", gap=0, pad=[8, 8, 18, 8], fill=c["surface"], stroke=c["border"], strokeWeight=1,
+              strokeSides=[True, False, False, False], crossAlign="max")
+    def item(icon, lab):
+        on = lab == active
+        t = col(bar, f"Tab / {lab}", gap=2, pad=[6, 0, 6, 0], crossAlign="center")
+        text(t, icon, 17, c["accent"] if on else c["faint"], IPA, "Regular")
+        text(t, lab, 10, c["accent"] if on else c["muted"], TH, "Medium")
+    item("⌂", "วันนี้"); item("↻", "ฝึกเพิ่ม")
+    mid = col(bar, "Centre", gap=4, pad=[0, 0, 4, 0], crossAlign="center")
+    fab = frame(mid, "Start lesson", layout="horizontal", mainAlign="center", crossAlign="center", w=54, h=54,
+                sizingH="fixed", sizingV="fixed", cornerRadius=27, fill=c["accent"])
+    text(fab, "▶", 18, c["accentText"], IPA, "Regular")
+    text(mid, "เรียนต่อ", 10, c["text"], TH, "Medium")
+    item("◔", "พัฒนาการ"); item("⚙", "ตั้งค่า")
+    return bar
+
+def home_nav_variant(x, c, label, kind):
+    s = screen(f"Home / nav {kind}", x, c, label)
+    if kind == "hub":
+        body = home_body(s, c, with_gear=False)
+        grid = row(body, "Hub", gap=12, crossAlign="min")
+        for icon, t, d in [("↻", "ฝึกเพิ่ม", "ทวนคำศัพท์ 12 คำ"), ("◔", "พัฒนาการ", "Pre-A1 · ทันแผน")]:
+            cd = col(grid, f"Hub / {t}", gap=6, pad=16, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1)
+            text(cd, icon, 20, c["accent"], IPA, "Regular")
+            text(cd, t, 15, c["text"], TH, "Bold")
+            text(cd, d, 12, c["muted"], TH, "Regular", sizingH="fill", textAutoResize="height")
+        lst = col(body, "Menu list", gap=0, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, clip=True)
+        items = [("⚙", "ตั้งค่า", "ธีม · สำเนียง · เตือนให้ฝึก"), ("▤", "คลังคำศัพท์", "36 คำ")]
+        for i, (icon, t, d) in enumerate(items):
+            r = row(lst, f"Menu / {t}", gap=12, pad=[13, 16, 13, 16])
+            text(r, icon, 16, c["muted"], IPA, "Regular")
+            l = col(r, "Text", gap=1)
+            text(l, t, 14, c["text"], TH, "Medium")
+            text(l, d, 12, c["muted"], TH, "Regular")
+            text(r, "›", 16, c["faint"], EN, "Regular")
+            if i < len(items) - 1:
+                frame(lst, "Divider", h=1, sizingH="fill", sizingV="fixed", fill=c["border"], layout="horizontal")
+        col(s, "Bottom spacer", pad=[0, 0, 8, 0])
+    else:
+        body = home_body(s, c, with_gear=False)
+        stats = row(body, "Stats", gap=12, crossAlign="min")
+        for big, small in [("1 วัน", "สตรีคต่อเนื่อง"), ("36", "คำที่เรียนแล้ว"), ("94%", "คะแนนบทล่าสุด")]:
+            st = col(stats, f"Stat / {small}", gap=4, pad=14, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1)
+            text(st, big, 18, c["text"], TH, "Bold")
+            text(st, small, 11, c["muted"], TH, "Regular", sizingH="fill", textAutoResize="height")
+        (nav_pill if kind == "pill" else nav_center)(s, c, "วันนี้")
+    return s
+
 GAP = 420
 home(0 * GAP, DARK, "1 · หน้าแรก (มืด)")
 phoneme(1 * GAP, DARK, "2 · แนะนำเสียง")
@@ -395,6 +483,9 @@ settings(7 * GAP + 120, DARK, "8 · ตั้งค่าธีม (เลือ
 settings(8 * GAP + 120, LIGHT, "9 · ตั้งค่าธีม (เลือกสว่าง)", "สว่าง")
 practice(9 * GAP + 180, DARK, "10 · ฝึกเพิ่ม (ไม่ใช่บทประจำวัน)")
 progress_screen(10 * GAP + 180, DARK, "11 · พัฒนาการ")
+home_nav_variant(11 * GAP + 300, DARK, "เมนูแบบ A · แถบลอยทรงแคปซูล (4 ปุ่ม รวมตั้งค่า)", "pill")
+home_nav_variant(12 * GAP + 300, DARK, "เมนูแบบ B · ไม่มีแถบล่าง ใช้หน้าแรกเป็นศูนย์กลาง", "hub")
+home_nav_variant(13 * GAP + 300, DARK, "เมนูแบบ C · ปุ่มเรียนต่ออยู่กลางแถบ", "center")
 
 json.dump(steps, open(sys.argv[1], "w"), ensure_ascii=False, indent=0)
 print(len(steps), "steps")
