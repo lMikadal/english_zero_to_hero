@@ -243,7 +243,7 @@ Request: `{ attempts: AttemptInput[] }` 1–50 รายการ (`PostAttempts
 | `attemptNo` | `1 \| 2` | default 1; 2 = รอบทวนท้ายบท |
 | `answer` | union ตาม `kind` | `choice{selected}`, `choices{selected[]}`, `pairs{selected[]: a\|b}`, `text{text}`, `texts{texts[]}`, `match{pairs: {vocabId: vocabId}}`, `self{rating: ok\|unsure, recordingId?}` |
 | `durationMs` | int 0..3 600 000 | ไม่บังคับ client วัดด้วยนาฬิกา monotonic (`performance.now()`) แล้วครอบด้วย `clampDurationMs()` ก่อนส่งเสมอ (ปล่อยเครื่องข้ามคืนหรือปรับนาฬิกาแล้วค่าจึงไม่หลุดช่วง) |
-| `createdAt` | ISO datetime | เวลาฝั่ง client server ตัดให้ไม่เกิน `now + 5 นาที` (ทำใน PR `feat/m1-attempts-api`) |
+| `createdAt` | ISO datetime | เวลาฝั่ง client server ตัดให้ไม่เกิน `now + 5 นาที` |
 
 **แต่ละรายการถูกตรวจแยกกัน** รายการเสียหนึ่งรายการ (เช่น `durationMs` 2 ชั่วโมง, ค่าติดลบ, วางข้อความเกิน 5000 ตัวอักษร, รูปแบบจาก build เก่า) ไม่ทำให้ทั้ง batch ถูกปฏิเสธ (ไม่งั้นคิว offline จะทิ้ง attempt ดีๆ สูงสุด 50 รายการ) server ต้องใช้ `parseAttemptBatch(body)` จาก `src/lib/attempts/contract.ts` เสมอ: ตรวจเฉพาะ envelope `{ attempts: unknown[] }` 1–50 รายการ แล้วคืนผลต่อรายการ (`ok` พร้อม `attempt` หรือ `ok: false` พร้อม `id` ถ้าอ่านได้ ไม่งั้น `null`)
 
@@ -265,6 +265,18 @@ Request (`completeLessonRequestSchema`): `{ day: 1..365, sessionId: uuid, comple
 Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", score, completedAt }, streak: { current, longest }, currentDay }` เรียกซ้ำได้โดยผลไม่เปลี่ยน
 - `409`: วันนั้นยังล็อกอยู่ (`day > profiles.current_day`) ไม่ควรส่งซ้ำ
 - `400`: body ผิดรูปแบบ
+
+#### รายละเอียดฝั่ง server (`src/lib/server/`)
+
+- ผู้ใช้ปัจจุบัน: `getCurrentUserId()` (`current-user.ts`) คืน `"local"` และสร้างแถว `user` กับ `profiles` (`start_date` = วันนี้ตามเวลา Asia/Bangkok, `current_day` 1) ตอนเรียกครั้งแรก ปลอดภัยเมื่อเรียกพร้อมกัน; Better Auth ใน M2 แก้เฉพาะฟังก์ชันนี้
+- logic อยู่ใน `handlePostAttempts(body, {db, userId, now})` และ `handleCompleteLesson(...)` ที่คืน `{ status, body }`; route (`src/app/api/**`) แค่ parse JSON (อ่านไม่ออก = `400 {error:"invalid_json"}`) แล้วเรียก handler
+- ลำดับตรวจต่อรายการ: schema (`invalid`) → `unknown_exercise` → `locked_day` → `kind_mismatch`/`unsupported` → `attemptNo` ไม่อนุญาต (`invalid`) → insert `ON CONFLICT (id) DO NOTHING` ทั้ง batch อยู่ใน transaction เดียว
+- `duplicate` คืน `correct`/`score` ที่ **เก็บไว้ในแถวเดิม** (ไม่ตรวจ payload ใหม่ และไม่แก้แถว); ถ้า id นั้นเป็นของผู้ใช้อื่นจะไม่มี grade
+- `created` คืน grade ทั้งก้อนรวม `items`; `items` ไม่ถูกเก็บในฐานข้อมูล
+- `tags` = `deriveTags(lesson, ex, section, getTaughtWords(day))`; `created_at` = `createdAt` ของ client ตัดไม่เกิน `now + 5 นาที`
+- แถวแรกของวันนั้นสร้าง `progress` เป็น `in_progress` (`started_at` = `created_at` ที่เก่าที่สุดของรายการที่เพิ่งบันทึก) ไม่เคยแตะแถวที่มีอยู่ (ไม่ลดจาก `done`)
+- จบบท: `progress.score` = ค่าเฉลี่ยของ `score` ของแถวล่าสุดต่อ exercise ที่ `attempt_no = 1`, `source = 'lesson'`, `score IS NOT NULL` ของวันนั้น (`null` ถ้าไม่มี); วัน streak = วันที่ท้องถิ่น (`profiles.timezone`, ถอยกลับ Asia/Bangkok) ของ `completedAt` ที่ตัดแล้ว ไม่ใช่เวลา server เพื่อให้การส่งซ้ำจากคิว offline นับถูกวัน; `current_day = min(365, max(current_day, day + 1))`
+- จบซ้ำวันที่ `done` แล้ว: ไม่เปลี่ยนอะไร (คง `completed_at` และ `score` แรก) และคืนข้อมูลที่เก็บไว้ในรูปแบบเดิม; จบพร้อมกันสองคำขอนับครั้งเดียว (`WHERE status <> 'done'` + ล็อกแถว streak)
 
 #### การล็อกบทเรียน
 

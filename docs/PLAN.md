@@ -55,8 +55,8 @@
 - [ ] Vocabulary SRS (FSRS)
 - [ ] คลังคำศัพท์ Oxford 3000 ระดับ A1 พร้อมคำแปลไทย ตัวอย่างประโยค และเสียง
 - [ ] หน้า Word Bank + หน้ารายละเอียดคำ
-- [ ] เก็บความคืบหน้า, attempts, SRS และ streak ลง PostgreSQL
-- [ ] เก็บข้อมูลดิบสำหรับคำนวณพัฒนาการตั้งแต่บทแรก: `attempts` ครบทุกช่องรวม `tags`, ประวัติการทบทวนใน `srs_reviews` (ดู [PROGRESS.md](PROGRESS.md) หัวข้อ 1)
+- [ ] เก็บความคืบหน้า, attempts, SRS และ streak ลง PostgreSQL (ฝั่ง server ของ attempts, progress และ streak เสร็จแล้ว: `POST /api/attempts`, `POST /api/lessons/complete` ยังไม่ได้ต่อกับ UI และยังไม่มี SRS จึงยังไม่ติ๊ก)
+- [ ] เก็บข้อมูลดิบสำหรับคำนวณพัฒนาการตั้งแต่บทแรก: `attempts` ครบทุกช่องรวม `tags` และ `attempt_no` (ฝั่ง server เสร็จแล้ว รอต่อ UI), ประวัติการทบทวนใน `srs_reviews` (ยังไม่ทำ) (ดู [PROGRESS.md](PROGRESS.md) หัวข้อ 1)
 - [x] สูตรคำนวณพัฒนาการใน `src/lib/progress/` (คำที่รู้จริง, จุดอ่อน, ระดับ CEFR, ตามแผน 365 วัน) พร้อมเทสต์
 - [ ] หน้าสรุปสั้นหลังจบบท: คำใหม่วันนี้, คำที่รู้จริงสะสม, ทันแผนหรือไม่
 - [ ] เก็บไฟล์เสียงที่อัดลง `data/recordings/`
