@@ -171,6 +171,17 @@ describe("checkContent", () => {
       expect(check({ ...base, answer: "My name is Sam Sam" })).toHaveLength(1);
     });
 
+    it("arrange_words accept entries must use exactly the given words (case-insensitive: tile case follows the answer)", () => {
+      const base = { type: "arrange_words", words: ["is", "pen", "This", "my"], answer: "This is my pen" };
+      expect(check({ ...base, accept: ["Is this my pen"] })).toEqual([]);
+      expect(check({ ...base, accept: ["Is this my pen", "This is my pen"] })).toEqual([]);
+      const wrong = check({ ...base, accept: ["Is this my dog"] });
+      expect(wrong).toHaveLength(1);
+      expect(wrong[0]).toContain("accept");
+      expect(check({ ...base, accept: ["Is this my"] })).toHaveLength(1);
+      expect(check({ ...base, accept: ["Is  this my pen"] })).toHaveLength(1);
+    });
+
     it("fill_blank needs one answer per ___", () => {
       expect(check({ type: "fill_blank", text: "My ___ is ___.", answer: ["name", "Sam"] })).toEqual([]);
       expect(check({ type: "fill_blank", text: "My ___ is Sam.", answer: ["name", "x"] })).toHaveLength(1);
