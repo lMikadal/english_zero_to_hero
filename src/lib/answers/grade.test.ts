@@ -124,7 +124,7 @@ describe("fractional scores (0..1) for multi-item exercises", () => {
   });
   it("read_passage with several questions", () => {
     const multi = allExercises().find((e) => e.exercise.type === "read_passage" && e.exercise.questions.length > 1);
-    if (!multi || multi.exercise.type !== "read_passage") return; // content may only have single-question passages
+    if (!multi || multi.exercise.type !== "read_passage") throw new Error("expected a multi-question read_passage in days 1-7");
     const q = multi.exercise.questions;
     const sel = q.map((x, i) => (i === 0 ? x.answer : (x.answer + 1) % x.choices.length));
     expect(gradeExercise(multi.exercise, { kind: "choices", selected: sel })).toEqual({ correct: false, score: 1 / q.length });
