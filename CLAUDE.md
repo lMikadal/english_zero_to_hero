@@ -9,6 +9,7 @@
 - `docs/AI_TEAM.md`: บทบาทของทีม AI (นิยามอยู่ที่ `.claude/agents/`)
 - `docs/GIT_WORKFLOW.md`: branch, commit, แผน PR
 - `docs/TESTING.md`: TDD
+- `docs/PROGRESS.md`: สูตรคำนวณพัฒนาการของผู้เรียน และข้อมูลดิบที่ต้องเก็บ
 - `docs/DEPLOYMENT.md`: host บนเครื่องผู้ใช้เอง (ผู้ใช้คนเดียว) ผ่าน Docker + Tailscale
 
 ## กฎ

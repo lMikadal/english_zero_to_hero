@@ -16,6 +16,7 @@
 | [docs/AI_TEAM.md](docs/AI_TEAM.md) | ทีม AI: บทบาท, โมเดล, ขั้นตอนทำงาน |
 | [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) | การแบ่ง branch, commit และแผน PR |
 | [docs/TESTING.md](docs/TESTING.md) | แนวทาง TDD และเทสต์แต่ละชั้น |
+| [docs/PROGRESS.md](docs/PROGRESS.md) | สูตรคำนวณพัฒนาการของผู้เรียน |
 | [docs/CONTENT_SCHEMA.md](docs/CONTENT_SCHEMA.md) | รูปแบบไฟล์บทเรียน (JSON) |
 | [content/lessons/](content/lessons/) | เนื้อหาบทเรียนรายวัน `day-001.json` ถึง `day-365.json` |
 | [content/vocab/](content/vocab/) | คลังคำศัพท์ Oxford 3000/5000 แยกตามระดับ |
