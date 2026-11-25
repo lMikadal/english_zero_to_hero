@@ -56,10 +56,13 @@ def row(parent, name, gap=0, pad=0, **props):
     base.update(props)
     return frame(parent, name, **base)
 
+YOFF = [0]
+
 def screen(name, x, c, label):
+    y = YOFF[0]
     text(None, label, 13, "#8A94A3", TH, "Medium")
-    steps[-1]["params"].pop("parent"); steps[-1]["params"].update(x=x, y=-34)
-    return frame(None, name, 360, 760, x, 0, fill=c["bg"], layout="vertical", padding=0, gap=0,
+    steps[-1]["params"].pop("parent"); steps[-1]["params"].update(x=x, y=y - 34)
+    return frame(None, name, 360, 760, x, y, fill=c["bg"], layout="vertical", padding=0, gap=0,
                  mainAlign="spaceBetween", clip=True, cornerRadius=0)
 
 def button(parent, label, c, kind="primary", font=TH, disabled=False):
@@ -503,6 +506,302 @@ def home_nav_variant(x, c, label, kind):
         {"pill": nav_pill, "center": nav_center, "float": nav_float}[kind](s, c, "วันนี้")
     return s
 
+
+# ---------------------------------------------------------------- more screens (row 2 and 3)
+
+def ex_shell(name, x, c, label, section, pos, frac, instruction):
+    s = screen(name, x, c, label)
+    top = col(s, "Top", gap=0)
+    progress(top, c, section, pos, frac)
+    body = col(top, "Body", gap=14, pad=[8, 20, 0, 20])
+    text(body, instruction, 17, c["text"], TH, "Bold", sizingH="fill", textAutoResize="height")
+    return s, body
+
+def bar(s, c, border=False):
+    props = dict(gap=10, pad=[12, 20, 24, 20], fill=c["surface"] if border else c["bg"])
+    if border: props.update(stroke=c["border"], strokeWeight=1, strokeSides=[True, False, False, False])
+    return col(s, "Bottom bar", **props)
+
+def self_rating(s, c, hint="พูดออกเสียงแล้วประเมินตัวเอง"):
+    b = bar(s, c, border=True)
+    text(b, hint, 12, c["muted"], TH, "Regular")
+    r = row(b, "Self rating", gap=10)
+    for lab, kind in [("ยังไม่คล่อง", "secondary"), ("พูดได้", "primary")]:
+        button(r, lab, c, kind)
+    return b
+
+def card(parent, c, name, gap=8, pad=16, **props):
+    base = dict(fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1)
+    base.update(props)
+    return col(parent, name, gap=gap, pad=pad, **base)
+
+def option(parent, c, label, state="idle", font=EN):
+    fill, stroke, colr, sw = c["surface"], c["border"], c["text"], 1
+    if state == "selected": fill, stroke, colr, sw = c["accentSoft"], c["accent"], c["text"], 2
+    o = row(parent, f"Option / {label}", gap=10, pad=[13, 14, 13, 14], fill=fill, cornerRadius=12, stroke=stroke, strokeWeight=sw)
+    dot = frame(o, "Radio", w=18, h=18, sizingH="fixed", sizingV="fixed", cornerRadius=9, layout="horizontal",
+                mainAlign="center", crossAlign="center", fill="none", stroke=c["accent"] if state == "selected" else c["faint"], strokeWeight=2)
+    if state == "selected": frame(dot, "Dot", w=8, h=8, cornerRadius=4, fill=c["accent"])
+    text(o, label, 15, colr, font, "Medium")
+    return o
+
+def ex_repeat(x, c, label):
+    s, body = ex_shell("Exercise / Repeat after me", x, c, label, "เสียง /æ/", "ข้อ 3 / 10", 0.3, "ฟังแล้วพูดตาม")
+    cd = card(body, c, "Sentence", gap=10, pad=[22, 18, 22, 18], crossAlign="center")
+    text(cd, "Hello, Sam! Nice cat!", 22, c["text"], EN, "Bold", textAlign="center")
+    text(cd, "/həˈloʊ sæm naɪs kæt/", 14, c["muted"], IPA, "Regular")
+    play_buttons(cd, c)
+    self_rating(s, c)
+
+def ex_listen_choose(x, c, label):
+    s, body = ex_shell("Exercise / Listen and choose", x, c, label, "การทักทาย", "ข้อ 4 / 10", 0.4, "ฟังแล้วตอบว่าเขาชื่ออะไร")
+    cd = card(body, c, "Audio", gap=10, pad=[18, 16, 18, 16], crossAlign="center")
+    play_buttons(cd, c)
+    q = col(body, "Question", gap=2)
+    text(q, "What is his name?", 16, c["text"], EN, "Medium")
+    text(q, "เขาชื่ออะไร", 13, c["muted"], TH, "Regular")
+    for lab, st in [("Sam", "selected"), ("Ann", "idle"), ("Tom", "idle")]:
+        option(body, c, lab, st)
+    b = bar(s, c); button(b, "ตรวจคำตอบ", c)
+
+def ex_dictation(x, c, label):
+    s, body = ex_shell("Exercise / Dictation", x, c, label, "การทักทาย", "ข้อ 5 / 10", 0.5, "ฟังแล้วพิมพ์ตาม")
+    cd = card(body, c, "Audio", gap=10, pad=[18, 16, 18, 16], crossAlign="center")
+    play_buttons(cd, c)
+    inp = row(body, "Input", pad=14, fill=c["surface2"], cornerRadius=12, stroke=c["accent"], strokeWeight=2)
+    text(inp, "nice to meet", 16, c["text"], EN, "Regular")
+    frame(inp, "Caret", w=2, h=20, fill=c["accent"])
+    text(body, "ฟังซ้ำได้ไม่จำกัด", 12, c["faint"], TH, "Regular")
+    b = bar(s, c); button(b, "ตรวจคำตอบ", c)
+
+def ex_shadowing(x, c, label):
+    s, body = ex_shell("Exercise / Shadowing", x, c, label, "แนะนำตัว", "ข้อ 6 / 10", 0.6, "พูดตามทันทีทีละประโยค")
+    lst = col(body, "Lines", gap=0, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, clip=True)
+    lines = ["Hello!", "My name is Ann.", "Nice to meet you."]
+    for i, ln in enumerate(lines):
+        r = row(lst, f"Line {i + 1}", gap=10, pad=[14, 14, 14, 16], mainAlign="spaceBetween")
+        l = row(r, "Text", gap=10, sizingH="hug")
+        text(l, str(i + 1), 12, c["faint"], EN, "Medium")
+        text(l, ln, 16, c["text"], EN, "Medium")
+        ch = frame(r, "Play", layout="horizontal", crossAlign="center", padding=[7, 12, 7, 12], sizingH="hug", sizingV="hug",
+                   cornerRadius=999, fill=c["surface2"])
+        text(ch, "▶  ฟัง", 12, c["text"], TH, "Medium")
+        if i < len(lines) - 1:
+            frame(lst, "Divider", h=1, sizingH="fill", sizingV="fixed", fill=c["border"], layout="horizontal")
+    self_rating(s, c, "พูดตามครบทุกประโยคแล้วประเมินตัวเอง")
+
+def ex_speak_answer(x, c, label):
+    s, body = ex_shell("Exercise / Speak answer", x, c, label, "แนะนำตัว", "ข้อ 7 / 10", 0.7, "ตอบคำถามด้วยเสียง โดยบอกชื่อของคุณ")
+    cd = card(body, c, "Prompt", gap=12, pad=[20, 18, 20, 18], crossAlign="center")
+    text(cd, "Hello! What's your name?", 20, c["text"], EN, "Bold", textAlign="center")
+    play_buttons(cd, c)
+    hint = row(body, "Sample hidden", gap=10, pad=14, fill=c["surface"], cornerRadius=12, stroke=c["border"], strokeWeight=1)
+    text(hint, "◌", 14, c["faint"], IPA, "Regular")
+    text(hint, "ตัวอย่างคำตอบจะแสดงหลังประเมินตัวเอง", 13, c["muted"], TH, "Regular")
+    self_rating(s, c, "ลองพูดตอบออกเสียงแล้วประเมินตัวเอง")
+
+def ex_read(x, c, label):
+    s, body = ex_shell("Exercise / Read passage", x, c, label, "อ่านบทสนทนาสั้น", "ข้อ 8 / 10", 0.8, "อ่านแล้วตอบคำถาม")
+    cd = card(body, c, "Passage", gap=6, pad=16)
+    for who, ln in [("Sam", "Hello! My name is Sam."), ("Ann", "Hello, Sam. I'm Ann."), ("Sam", "Nice to meet you, Ann."), ("Ann", "Nice to meet you, too.")]:
+        r = row(cd, "Line", gap=8, crossAlign="min")
+        text(r, who, 13, c["accent"], EN, "Bold")
+        text(r, ln, 15, c["text"], EN, "Regular", sizingH="fill", textAutoResize="height")
+    g = row(body, "Glossary", gap=8, pad=[9, 12, 9, 12], fill=c["surface2"], cornerRadius=10)
+    text(g, "too", 13, c["text"], EN, "Bold")
+    text(g, "ด้วยเช่นกัน", 13, c["muted"], TH, "Regular")
+    q = col(body, "Question", gap=2)
+    text(q, "What is her name?", 15, c["text"], EN, "Medium")
+    text(q, "เธอชื่ออะไร", 12, c["muted"], TH, "Regular")
+    r = row(body, "Options", gap=10)
+    for lab, st in [("Sam", "idle"), ("Ann", "selected")]:
+        option(r, c, lab, st)
+    b = bar(s, c); button(b, "ตรวจคำตอบ", c)
+
+def tile(parent, c, w, placed=False):
+    t = frame(parent, f"Tile / {w}", layout="horizontal", crossAlign="center", padding=[10, 14, 10, 14], sizingH="hug",
+              sizingV="hug", cornerRadius=10, fill=c["surface2"] if placed else c["surface"],
+              stroke=c["accent"] if placed else c["border"], strokeWeight=1)
+    text(t, w, 16, c["text"], EN, "Medium")
+
+def ex_arrange(x, c, label):
+    s, body = ex_shell("Exercise / Arrange words", x, c, label, "เขียนประโยคแรก", "ข้อ 9 / 10", 0.9, "เรียงคำให้เป็นประโยค")
+    ans = col(body, "Answer", gap=8)
+    text(ans, "คำตอบของคุณ", 12, c["muted"], TH, "Medium")
+    box = frame(ans, "Answer box", layout="horizontal", wrap=True, gap=8, crossGap=8, padding=12, sizingH="fill", sizingV="hug",
+                minHeight=64, cornerRadius=14, fill=c["surface"], stroke=c["border"], strokeWeight=1, dashes=[6, 4])
+    for w in ["My", "name"]: tile(box, c, w, placed=True)
+    rest = col(body, "Remaining", gap=8)
+    text(rest, "คำที่เหลือ · แตะเพื่อวาง", 12, c["muted"], TH, "Medium")
+    rr = frame(rest, "Tiles", layout="horizontal", wrap=True, gap=8, crossGap=8, sizingH="fill", sizingV="hug", fill="none")
+    for w in ["Sam", "is"]: tile(rr, c, w)
+    b = bar(s, c); button(b, "ตรวจคำตอบ", c, disabled=True)
+
+def ex_fill(x, c, label):
+    s, body = ex_shell("Exercise / Fill blank", x, c, label, "เขียนประโยค", "ข้อ 11 / 13", 0.85, "เติมคำในช่องว่าง")
+    cd = card(body, c, "Sentence", gap=10, pad=[20, 16, 20, 16])
+    r = frame(cd, "Sentence row", layout="horizontal", wrap=True, gap=8, crossGap=10, crossAlign="center", sizingH="fill", sizingV="hug", fill="none")
+    text(r, "I'm", 18, c["text"], EN, "Medium")
+    inp = frame(r, "Blank", layout="horizontal", crossAlign="center", padding=[7, 12, 7, 12], sizingH="hug", sizingV="hug", minWidth=92,
+                cornerRadius=9, fill=c["surface2"], stroke=c["accent"], strokeWeight=2)
+    text(inp, "from", 18, c["text"], EN, "Medium")
+    frame(inp, "Caret", w=2, h=20, fill=c["accent"])
+    text(r, "Thailand.", 18, c["text"], EN, "Medium")
+    text(cd, "ฉันมาจากประเทศไทย", 13, c["muted"], TH, "Regular")
+    b = bar(s, c); button(b, "ตรวจคำตอบ", c)
+
+def ex_match(x, c, label):
+    s, body = ex_shell("Exercise / Vocab match", x, c, label, "คำศัพท์", "ข้อ 14 / 14", 1.0, "จับคู่คำกับความหมายภาษาไทย")
+    text(body, "แตะคำอังกฤษ แล้วแตะความหมาย", 12, c["muted"], TH, "Regular")
+    g = row(body, "Columns", gap=10, crossAlign="min")
+    left = col(g, "English", gap=8); right = col(g, "Thai", gap=8)
+    en = [("where", 1), ("country", 2), ("city", None), ("big", None)]
+    th = [("เมือง", None), ("ที่ไหน", 1), ("ใหญ่", None), ("ประเทศ", 2)]
+    def cell(parent, lab, n, font, active=False):
+        fill, stroke, sw = c["surface"], c["border"], 1
+        if n: fill = c["surface2"]
+        if active: fill, stroke, sw = c["accentSoft"], c["accent"], 2
+        o = row(parent, f"Cell / {lab}", gap=8, pad=[12, 12, 12, 12], fill=fill, cornerRadius=11, stroke=stroke, strokeWeight=sw, mainAlign="spaceBetween")
+        text(o, lab, 15, c["text"], font, "Medium")
+        if n:
+            bd = frame(o, "Badge", w=20, h=20, sizingH="fixed", sizingV="fixed", cornerRadius=10, layout="horizontal",
+                       mainAlign="center", crossAlign="center", fill=c["accent"])
+            text(bd, str(n), 11, c["accentText"], EN, "Bold")
+    for i, (lab, n) in enumerate(en): cell(left, lab, n, EN, active=(i == 2))
+    for lab, n in th: cell(right, lab, n, TH)
+    b = bar(s, c); button(b, "ตรวจคำตอบ", c, disabled=True)
+
+def ex_free(x, c, label):
+    s, body = ex_shell("Exercise / Free write", x, c, label, "Challenge", "ข้อ 9 / 9", 1.0, "เขียนแนะนำตัว 4–5 ประโยค")
+    tips = card(body, c, "Checklist", gap=6, pad=14)
+    for t in ["ชื่อของคุณ", "มาจากที่ไหน", "สบายดีไหม", "สะกดชื่อ"]:
+        r = row(tips, "Tip", gap=8, sizingH="hug")
+        text(r, "·", 14, c["faint"], EN, "Bold"); text(r, t, 13, c["muted"], TH, "Regular")
+    ta = col(body, "Textarea", gap=0, pad=14, fill=c["surface2"], cornerRadius=12, stroke=c["accent"], strokeWeight=2, minHeight=150)
+    text(ta, "Hello! My name is Mai. I'm from Thailand. I'm fine, thank you.", 15, c["text"], EN, "Regular",
+         sizingH="fill", textAutoResize="height", lineHeight="150%")
+    r = row(body, "Count", mainAlign="spaceBetween")
+    text(r, "12 / 15 คำ", 13, c["tip"], TH, "Medium")
+    text(r, "อีก 3 คำ", 12, c["faint"], TH, "Regular")
+    b = bar(s, c); button(b, "บันทึก", c, disabled=True)
+
+def review_shell(name, x, c, label, pos, frac):
+    s = screen(name, x, c, label)
+    top = col(s, "Top", gap=0)
+    progress(top, c, "ทวนคำศัพท์", pos, frac)
+    body = col(top, "Body", gap=14, pad=[12, 20, 0, 20])
+    return s, body
+
+def review_front(x, c, label):
+    s, body = review_shell("Vocab review / Front", x, c, label, "4 / 12", 0.33)
+    cd = card(body, c, "Card", gap=12, pad=[56, 20, 56, 20], crossAlign="center", cornerRadius=20)
+    text(cd, "country", 34, c["text"], EN, "Bold")
+    text(cd, "/ˈkʌntri/", 15, c["muted"], IPA, "Regular")
+    play_buttons(cd, c)
+    text(body, "นึกความหมายให้ออกก่อน แล้วค่อยเปิดดู", 13, c["muted"], TH, "Regular", textAlign="center", sizingH="fill")
+    b = bar(s, c); button(b, "ดูความหมาย", c)
+
+def review_back(x, c, label):
+    s, body = review_shell("Vocab review / Back", x, c, label, "4 / 12", 0.33)
+    cd = card(body, c, "Card", gap=10, pad=[26, 20, 26, 20], crossAlign="center", cornerRadius=20)
+    text(cd, "country", 26, c["text"], EN, "Bold")
+    text(cd, "/ˈkʌntri/", 13, c["muted"], IPA, "Regular")
+    frame(cd, "Divider", h=1, sizingH="fill", sizingV="fixed", fill=c["border"], layout="horizontal")
+    text(cd, "ประเทศ", 24, c["text"], TH, "Bold")
+    ex = col(cd, "Example", gap=2, crossAlign="center")
+    text(ex, "Thailand is a big country.", 14, c["text"], EN, "Regular")
+    text(ex, "ไทยเป็นประเทศที่ใหญ่", 12, c["muted"], TH, "Regular")
+    b = bar(s, c, border=True)
+    text(b, "จำได้แค่ไหน", 12, c["muted"], TH, "Regular")
+    r = row(b, "Ratings", gap=8)
+    for lab, when, colr in [("จำไม่ได้", "10 นาที", c["bad"]), ("ยาก", "1 วัน", c["tip"]), ("ได้", "3 วัน", c["ok"]), ("ง่าย", "7 วัน", c["accent"])]:
+        o = col(r, f"Rating / {lab}", gap=2, pad=[10, 4, 10, 4], crossAlign="center", fill=c["surface2"], cornerRadius=12, stroke=c["border"], strokeWeight=1)
+        text(o, lab, 13, colr, TH, "Bold")
+        text(o, when, 10, c["faint"], TH, "Regular")
+
+def drill_intro(x, c, label):
+    s = screen("Weakness drill / Intro", x, c, label)
+    body = col(s, "Body", gap=18, pad=[28, 20, 0, 20])
+    head = col(body, "Head", gap=6)
+    text(head, "บทพัฒนาจุดอ่อน", 13, c["accent"], TH, "Medium")
+    text(head, "เสียง /æ/ กับ /ʌ/", 24, c["text"], TH, "Bold")
+    text(head, "ผิด 42% ใน 14 วันล่าสุด (5 จาก 12 ข้อ)", 13, c["muted"], TH, "Regular")
+    tip = card(body, c, "Why", gap=8, pad=16, fill=c["tipSoft"], stroke=c["tipBorder"])
+    text(tip, "ทำไมถึงสับสน", 13, c["tip"], TH, "Bold")
+    text(tip, "/æ/ ใน cat ต้องอ้าปากกว้าง ส่วน /ʌ/ ใน cut ปากเปิดน้อยและเสียงสั้นกว่า คนไทยมักออกทั้งสองเป็น 'อะ'", 13, c["tip"], TH, "Regular",
+         sizingH="fill", textAutoResize="height", lineHeight="150%")
+    lst = col(body, "Steps", gap=0, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, clip=True)
+    rows = [("1", "บทฝึก", "10 ข้อ · เฉลยทันที · 6 นาที", c["accent"]), ("2", "บททดสอบ", "8 ข้อ · ไม่มีคำใบ้ · ผ่านที่ 80%", c["muted"]), ("3", "ทดสอบซ้ำอีกวัน", "ผ่าน 2 วันจึงถือว่าแก้ได้", c["muted"])]
+    for i, (n, t, d, colr) in enumerate(rows):
+        r = row(lst, f"Step {n}", gap=12, pad=[13, 16, 13, 16])
+        bd = frame(r, "Num", w=26, h=26, sizingH="fixed", sizingV="fixed", cornerRadius=13, layout="horizontal", mainAlign="center",
+                   crossAlign="center", fill=c["accentSoft"] if i == 0 else c["surface2"])
+        text(bd, n, 12, colr, EN, "Bold")
+        l = col(r, "Text", gap=1)
+        text(l, t, 14, c["text"], TH, "Medium"); text(l, d, 12, c["muted"], TH, "Regular")
+        if i < len(rows) - 1:
+            frame(lst, "Divider", h=1, sizingH="fill", sizingV="fixed", fill=c["border"], layout="horizontal")
+    b = bar(s, c); button(b, "เริ่มบทฝึก", c); button(b, "ไว้ทีหลัง", c, "secondary")
+
+def retest_result(x, c, label):
+    s = screen("Weakness retest / Result", x, c, label)
+    body = col(s, "Body", gap=18, pad=[56, 20, 0, 20])
+    head = col(body, "Head", gap=8)
+    badge = frame(head, "Badge", layout="horizontal", mainAlign="center", crossAlign="center", w=44, h=44, sizingH="fixed",
+                  sizingV="fixed", cornerRadius=22, fill=c["okSoft"], stroke=c["okBorder"], strokeWeight=1)
+    text(badge, "✓", 20, c["ok"], EN, "Bold")
+    text(head, "ผ่านบททดสอบ", 24, c["text"], TH, "Bold")
+    text(head, "เสียง /æ/ กับ /ʌ/", 14, c["muted"], TH, "Regular")
+    grid = row(body, "Compare", gap=12, crossAlign="min")
+    for big, small, colr in [("58%", "ก่อนฝึก", c["muted"]), ("88%", "หลังฝึก (7 จาก 8)", c["ok"])]:
+        st = card(grid, c, f"Stat / {small}", gap=4, pad=16)
+        text(st, big, 26, colr if small.startswith("หลัง") else c["text"], TH, "Bold")
+        text(st, small, 12, c["muted"], TH, "Regular")
+    nxt = card(body, c, "Next", gap=10, pad=16)
+    text(nxt, "ขั้นต่อไป", 13, c["muted"], TH, "Medium")
+    r = row(nxt, "Dots", gap=8, sizingH="hug")
+    for on in [True, False]:
+        frame(r, "Pass dot", w=28, h=8, cornerRadius=4, fill=c["ok"] if on else c["track"])
+    text(nxt, "ผ่านแล้ว 1 จาก 2 ครั้ง ทดสอบอีกครั้งพรุ่งนี้เพื่อยืนยันว่าจำได้จริง", 13, c["text"], TH, "Regular",
+         sizingH="fill", textAutoResize="height", lineHeight="150%")
+    st = row(body, "Streak", gap=8, pad=[12, 14, 12, 14], fill=c["okSoft"], cornerRadius=12, stroke=c["okBorder"], strokeWeight=1)
+    text(st, "✓", 14, c["ok"], EN, "Bold"); text(st, "นับเป็นสตรีควันนี้แล้ว · 8 วัน", 13, c["ok"], TH, "Medium")
+    b = bar(s, c); button(b, "กลับไปฝึกเพิ่ม", c); button(b, "กลับหน้าแรก", c, "secondary")
+
+def locked_day(x, c, label):
+    s = screen("Day locked", x, c, label)
+    body = col(s, "Body", gap=18, pad=[150, 28, 0, 28], crossAlign="center")
+    lock = frame(body, "Lock", layout="horizontal", mainAlign="center", crossAlign="center", w=64, h=64, sizingH="fixed",
+                 sizingV="fixed", cornerRadius=32, fill=c["surface"], stroke=c["border"], strokeWeight=1)
+    text(lock, "🔒", 24, c["muted"], IPA, "Regular")
+    text(body, "บทเรียนวันที่ 5 ยังไม่เปิด", 20, c["text"], TH, "Bold", textAlign="center")
+    text(body, "เรียนตามลำดับเพื่อให้คำและเสียงต่อเนื่องกัน ตอนนี้คุณอยู่ที่วันที่ 2 เรียนได้หลายบทต่อวัน", 14, c["muted"], TH, "Regular",
+         textAlign="center", sizingH="fill", textAutoResize="height", lineHeight="150%")
+    b = bar(s, c); button(b, "ไปบทเรียนวันที่ 2", c); button(b, "กลับหน้าแรก", c, "secondary")
+
+def replay_list(x, c, label):
+    s = screen("Replay / Lesson list", x, c, label)
+    top = col(s, "Top", gap=0)
+    head = col(top, "Header", gap=4, pad=[24, 20, 8, 20])
+    text(head, "เล่นบทที่เรียนแล้วซ้ำ", 22, c["text"], TH, "Bold")
+    text(head, "นับสตรีค แต่ไม่เปลี่ยนคะแนนเดิมของบท", 13, c["muted"], TH, "Regular")
+    body = col(top, "Body", gap=10, pad=[8, 20, 0, 20])
+    text(body, "สัปดาห์ที่ 1", 13, c["muted"], TH, "Medium")
+    lst = col(body, "Days", gap=0, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, clip=True)
+    days = [("1", "Hello! เสียง /æ/", "94%", True), ("2", "How are you? เสียง /e/", "88%", True), ("3", "Where are you from? เสียง /ɪ/", "75%", True),
+            ("4", "Hello and goodbye!", "วันนี้", False), ("5", "Spell your name!", "ล็อก", None), ("6", "ทบทวนสัปดาห์ที่ 1", "ล็อก", None)]
+    for i, (n, t, sc, done) in enumerate(days):
+        locked = done is None
+        r = row(lst, f"Day {n}", gap=12, pad=[12, 16, 12, 16])
+        bd = frame(r, "Num", w=30, h=30, sizingH="fixed", sizingV="fixed", cornerRadius=15, layout="horizontal", mainAlign="center",
+                   crossAlign="center", fill=c["okSoft"] if done else (c["accentSoft"] if done is False else c["surface2"]))
+        text(bd, n, 12, c["ok"] if done else (c["accent"] if done is False else c["faint"]), EN, "Bold")
+        text(r, t, 14, c["faint"] if locked else c["text"], TH, "Medium", sizingH="fill")
+        text(r, sc, 13, c["faint"] if locked else (c["accent"] if done is False else c["muted"]), TH, "Medium")
+        if i < len(days) - 1:
+            frame(lst, "Divider", h=1, sizingH="fill", sizingV="fixed", fill=c["border"], layout="horizontal")
+    navbar(s, c, "ฝึกเพิ่ม")
+
 GAP = 420
 NAVSTYLE[0] = "float"
 home(0 * GAP, DARK, "1 · วันนี้")
@@ -517,6 +816,16 @@ home(8 * GAP + 80, LIGHT, "9 · วันนี้ (สว่าง)")
 minimal_pair(9 * GAP + 80, LIGHT, "10 · ฟังแยกเสียง (สว่าง)")
 practice(10 * GAP + 80, LIGHT, "11 · ฝึกเพิ่ม (สว่าง)")
 settings(11 * GAP + 80, LIGHT, "12 · ตั้งค่า (เลือกสว่าง)", "สว่าง")
+
+YOFF[0] = 900
+for i, (fn, lab) in enumerate([(ex_repeat, "13 · พูดตาม"), (ex_listen_choose, "14 · ฟังแล้วเลือก"), (ex_dictation, "15 · เขียนตามคำบอก"),
+                               (ex_shadowing, "16 · Shadowing"), (ex_speak_answer, "17 · ตอบด้วยเสียง"), (ex_read, "18 · อ่านแล้วตอบ"),
+                               (ex_arrange, "19 · เรียงคำ"), (ex_fill, "20 · เติมคำ"), (ex_match, "21 · จับคู่คำศัพท์"), (ex_free, "22 · เขียนอิสระ")]):
+    fn(i * GAP, DARK, lab)
+YOFF[0] = 1800
+for i, (fn, lab) in enumerate([(review_front, "23 · ทวนคำศัพท์ ด้านหน้า"), (review_back, "24 · ทวนคำศัพท์ ด้านหลัง"), (drill_intro, "25 · บทพัฒนาจุดอ่อน เริ่มต้น"),
+                               (retest_result, "26 · ผลบททดสอบจุดอ่อน"), (locked_day, "27 · บทที่ยังล็อก"), (replay_list, "28 · เลือกบทเดิมมาเล่นซ้ำ")]):
+    fn(i * GAP, DARK, lab)
 
 json.dump(steps, open(sys.argv[1], "w"), ensure_ascii=False, indent=0)
 print(len(steps), "steps")
