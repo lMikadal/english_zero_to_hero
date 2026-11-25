@@ -27,8 +27,30 @@ export async function ensureDatabase(url: string): Promise<void> {
   const name = databaseName(url);
   await withAdmin(url, async (sql) => {
     const [row] = await sql`SELECT 1 AS found FROM pg_database WHERE datname = ${name}`;
-    if (!row) await sql.unsafe(`CREATE DATABASE ${quote(name)}`);
+    if (row) return;
+    try {
+      await sql.unsafe(`CREATE DATABASE ${quote(name)}`);
+    } catch (e) {
+      // another process created it between the check and the CREATE: Postgres reports either
+      // 42P04 duplicate_database or 23505 (unique violation on pg_database) for that race
+      const code = (e as { code?: string }).code;
+      if (code !== "42P04" && code !== "23505") throw e;
+    }
   });
+}
+
+/**
+ * Guard for `make db-reset`. Only a database whose name ends in `_dev` may be reset, whatever
+ * the host or NODE_ENV, and the caller must type that exact name (CONFIRM=<name>).
+ */
+export function assertResettable(url: string, confirm: string | undefined): void {
+  const name = databaseName(url);
+  if (!name.endsWith("_dev") || name === "_dev") {
+    throw new Error(`db-reset refuses to touch database "${name}": only names ending in "_dev" can be reset`);
+  }
+  if (confirm !== name) {
+    throw new Error(`db-reset drops and recreates "${name}". To confirm, run: make db-reset CONFIRM=${name}`);
+  }
 }
 
 export async function dropDatabase(url: string): Promise<void> {

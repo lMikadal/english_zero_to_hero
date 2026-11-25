@@ -64,7 +64,7 @@ describe("migrations", () => {
     const before = process.env.MIGRATIONS_DIR;
     process.env.MIGRATIONS_DIR = "/nonexistent/migrations";
     try {
-      await expect(runMigrations(scratchUrl)).rejects.toThrow(/nonexistent|migrations/i);
+      await expect(runMigrations(scratchUrl)).rejects.toThrow(/journal|nonexistent/i);
     } finally {
       if (before === undefined) delete process.env.MIGRATIONS_DIR;
       else process.env.MIGRATIONS_DIR = before;

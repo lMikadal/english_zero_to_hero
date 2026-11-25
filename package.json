@@ -18,6 +18,7 @@
     "e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db-migrate.ts",
+    "db:ensure": "tsx scripts/db-migrate.ts --ensure-only",
     "db:reset": "tsx scripts/db-reset.ts",
     "db:studio": "drizzle-kit studio --host 0.0.0.0",
     "content:validate": "tsx scripts/validate-content.ts"
