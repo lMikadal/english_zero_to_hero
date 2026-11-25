@@ -34,10 +34,12 @@ lint: ## ESLint
 typecheck: ## tsc --noEmit
 	$(RUN) pnpm typecheck
 
-check: lint typecheck test ## lint + typecheck + test (content:validate joins in PR 2)
+check: lint typecheck test validate ## lint + typecheck + test + content validation
+
+validate: ## Validate everything under content/ (schema + cross-file rules)
+	$(RUN) pnpm content:validate
 
 # Not implemented yet: fail loudly instead of faking success.
-validate:    ; @echo "make $@: not implemented yet (PR 2: content schema)" >&2; exit 1
 db-generate: ; @echo "make $@: not implemented yet (PR 3: db schema)" >&2; exit 1
 db-migrate:  ; @echo "make $@: not implemented yet (PR 3: db schema)" >&2; exit 1
 db-studio:   ; @echo "make $@: not implemented yet (PR 3: db schema)" >&2; exit 1

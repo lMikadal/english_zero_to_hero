@@ -38,7 +38,7 @@ fix(srs): use user timezone for due date    ← เทสต์ผ่าน (gre
 
 ## 3. Pull Request
 
-1. งานผ่าน `make check` ใน Docker (lint, typecheck, test และ content:validate เมื่อ PR 2 เข้าแล้ว) และ `make e2e` สำหรับ PR ที่แก้หน้าเว็บ
+1. งานผ่าน `make check` ใน Docker (lint, typecheck, test และ content:validate) และ `make e2e` สำหรับ PR ที่แก้หน้าเว็บ
 2. `qa-tester` และ reviewer (`code-reviewer` หรือ `content-reviewer`) ตรวจผ่านแล้ว
 3. orchestrator push branch และเปิด PR ตาม `.github/pull_request_template.md`
 4. CI บน GitHub ต้องผ่าน

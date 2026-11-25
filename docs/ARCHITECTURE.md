@@ -96,9 +96,9 @@ english_zero_to_hero/
 | `make up` / `make down` | เปิด / ปิดแอปโหมด dev ที่ `http://localhost:3000` |
 | `make test` | รัน unit + component + integration test |
 | `make e2e` | รัน Playwright |
-| `make check` | lint + typecheck + test (+ content:validate เมื่อมี PR 2) ต้องผ่านก่อนเปิด PR ไม่รวม e2e |
+| `make check` | lint + typecheck + test + validate ต้องผ่านก่อนเปิด PR ไม่รวม e2e |
 | `make lint` / `make typecheck` / `make logs` | ESLint / `tsc --noEmit` / ดู log ของ app |
-| `make validate` | ตรวจไฟล์ใน `content/` |
+| `make validate` | ตรวจไฟล์ทั้งหมดใน `content/` (`pnpm content:validate`: schema + กฎข้ามไฟล์ ดู [VOCABULARY.md](VOCABULARY.md#6-กฎการตรวจ-pnpm-contentvalidate)) |
 | `make db-generate` / `make db-migrate` | สร้าง / รัน migration |
 | `make db-studio` | เปิด Drizzle Studio |
 | `make db-reset` | ล้างฐานข้อมูล dev แล้ว migrate ใหม่ |
@@ -106,7 +106,7 @@ english_zero_to_hero/
 | `make sh` | เปิด shell ใน container `app` |
 | `make prod` | build และรันโหมดใช้งานจริง |
 
-คำสั่งที่ฟีเจอร์ยังไม่มี (`validate`, `db-*`, `audio`, `prod`) จะแจ้งว่า "not implemented yet (PR n)" และออกด้วย exit code ไม่เป็นศูนย์ จนกว่า PR นั้นจะ merge
+คำสั่งที่ฟีเจอร์ยังไม่มี (`db-*`, `audio`, `prod`) จะแจ้งว่า "not implemented yet (PR n)" และออกด้วย exit code ไม่เป็นศูนย์ จนกว่า PR นั้นจะ merge
 
 ชื่อสคริปต์แบบ `pnpm xxx` ที่เอกสารอื่นพูดถึง คือสคริปต์ใน `package.json` ที่รัน**ภายใน container** เท่านั้น
 
