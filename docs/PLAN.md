@@ -44,7 +44,7 @@
 - [x] Zod schema สำหรับตรวจไฟล์บทเรียนและคลังคำศัพท์ + สคริปต์ `pnpm content:validate`
 - [ ] สคริปต์ `pnpm vocab:import` นำเข้ารายการ Oxford 3000/5000 (headword, pos, level) แล้วสร้างโครงคำใน `content/vocab/`
 - [ ] จัดคำ Oxford 3000 ทุกคำเข้าหมวด (topic) และวางแผนว่าคำไหนสอนวันที่เท่าไร
-- [ ] `docker-compose.yml` (PostgreSQL 17), `.env.example`, Drizzle config + migration แรก
+- [x] `docker-compose.yml` (PostgreSQL 17), `.env.example`, Drizzle config + migration แรก (schema, `make db-*`, integration test กับ Postgres จริง)
 - [ ] ตั้ง CI ให้รัน lint, typecheck, test, ตรวจ content และรัน migration กับ Postgres ใน CI
 
 ### Milestone 1: MVP (เรียนได้จริง 30 วันแรก)

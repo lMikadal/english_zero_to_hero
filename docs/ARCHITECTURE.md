@@ -94,19 +94,20 @@ english_zero_to_hero/
 | คำสั่ง | ทำอะไร |
 |---|---|
 | `make up` / `make down` | เปิด / ปิดแอปโหมด dev ที่ `http://localhost:3000` |
-| `make test` | รัน unit + component + integration test |
+| `make test` | รัน unit + component + integration test (เปิด Postgres ให้เองถ้ายังไม่รัน ไม่ต้อง `make up`) |
+| `make test-unit` | รันเฉพาะ unit + component (ไม่ต้องใช้ฐานข้อมูล) |
 | `make e2e` | รัน Playwright |
 | `make check` | lint + typecheck + test + validate ต้องผ่านก่อนเปิด PR ไม่รวม e2e |
 | `make lint` / `make typecheck` / `make logs` | ESLint / `tsc --noEmit` / ดู log ของ app |
 | `make validate` | ตรวจไฟล์ทั้งหมดใน `content/` (`pnpm content:validate`: schema + กฎข้ามไฟล์ ดู [VOCABULARY.md](VOCABULARY.md#6-กฎการตรวจ-pnpm-contentvalidate)) |
-| `make db-generate` / `make db-migrate` | สร้าง / รัน migration |
-| `make db-studio` | เปิด Drizzle Studio |
-| `make db-reset` | ล้างฐานข้อมูล dev แล้ว migrate ใหม่ |
+| `make db-generate` / `make db-migrate` | สร้าง SQL migration จาก `src/db/schema.ts` / รัน migration กับฐานข้อมูล dev |
+| `make db-studio` | เปิด Drizzle Studio (port `127.0.0.1:4983`, เปิดผ่าน https://local.drizzle.studio) |
+| `make db-reset` | **dev เท่านั้น** (ปฏิเสธถ้า `NODE_ENV=production` หรือ host ไม่ใช่ local) drop + สร้างฐานข้อมูล dev ใหม่ แล้ว migrate |
 | `make audio` | สร้างไฟล์เสียง TTS ที่ยังไม่มี |
 | `make sh` | เปิด shell ใน container `app` |
 | `make prod` | build และรันโหมดใช้งานจริง |
 
-คำสั่งที่ฟีเจอร์ยังไม่มี (`db-*`, `audio`, `prod`) จะแจ้งว่า "not implemented yet (PR n)" และออกด้วย exit code ไม่เป็นศูนย์ จนกว่า PR นั้นจะ merge
+คำสั่งที่ฟีเจอร์ยังไม่มี (`audio`, `prod`) จะแจ้งว่า "not implemented yet (PR n)" และออกด้วย exit code ไม่เป็นศูนย์ จนกว่า PR นั้นจะ merge
 
 ชื่อสคริปต์แบบ `pnpm xxx` ที่เอกสารอื่นพูดถึง คือสคริปต์ใน `package.json` ที่รัน**ภายใน container** เท่านั้น
 
@@ -114,7 +115,9 @@ english_zero_to_hero/
 
 - **Dev:** `make up` จะรัน Postgres คู่กับแอป (เปิด port เฉพาะ `127.0.0.1:5432`)
 - **Connection:** ภายใน Docker ใช้ `DATABASE_URL=postgres://ezh:ezh@postgres:5432/english_zero_to_hero`
-- **Migrations:** แก้ `src/db/schema.ts` แล้วรัน `make db-generate` เพื่อสร้าง SQL จากนั้นรัน `make db-migrate` ห้ามแก้ตารางด้วยมือ
+- **Migrations:** แก้ `src/db/schema.ts` แล้วรัน `make db-generate` เพื่อสร้าง SQL จากนั้นรัน `make db-migrate` ห้ามแก้ตารางด้วยมือ ไฟล์ SQL อยู่ที่ `src/db/migrations/` (commit เข้า git) ตัวรัน migration คือ `src/db/migrate.ts` (`runMigrations(url)`) ใช้ซ้ำได้ทั้ง `make db-migrate`, เทสต์ และ production; รันซ้ำได้ปลอดภัย
+- **Client:** `src/db/client.ts` มี `getDb()` ตัวเดียวต่อ process (เก็บไว้บน `globalThis` กัน connection รั่วตอน hot reload) อ่าน `DATABASE_URL` และ throw ถ้าไม่ได้ตั้งค่า ใช้ได้ฝั่ง server เท่านั้น
+- **Integration test:** ใช้ฐานข้อมูล `english_zero_to_hero_test` (ชื่อ dev + `_test`) ที่ global setup สร้างและ migrate ให้เอง ล้างข้อมูลก่อนทุกเทสต์ (`TRUNCATE "user" CASCADE`) ไม่แตะฐานข้อมูล dev; Vitest แบ่งเป็น project `unit` (jsdom ไม่ใช้ DB) กับ `integration` (`*.int.test.ts`, node)
 - **ใช้งานจริง:** รันบนเครื่องของผู้ใช้เอง ดู [DEPLOYMENT.md](DEPLOYMENT.md)
 - **Backup:** `pg_dump` รายวันลง `data/backups/`
 
@@ -161,6 +164,10 @@ english_zero_to_hero/
 
 ```
 -- Better Auth จัดการเอง: user, session, account, verification
+-- (ตอนนี้ยังไม่ได้ติดตั้ง Better Auth จนถึง Milestone 2: มีเฉพาะตาราง user ที่ `src/db/auth-schema.ts`
+--  โครงสร้างตรงกับ core schema ของ Better Auth เพื่อให้ FK ใช้งานได้ตั้งแต่ตอนนี้
+--  user: id text PK, name text, email text UNIQUE, email_verified bool default false, image text,
+--  created_at/updated_at timestamptz default now(); session/account/verification เพิ่มพร้อม Better Auth)
 
 profiles       user_id PK→user, display_name, start_date date, current_day int, timezone text, accent(us|uk)
 progress       user_id, day int, status enum(not_started|in_progress|done), score real, completed_at timestamptz
@@ -179,6 +186,19 @@ reminder_settings   user_id PK, enabled bool, remind_at time, types text[]
 - `user_id` ทุกตารางเป็น FK ไปที่ `user.id` แบบ `ON DELETE CASCADE`
 - `jsonb` ใช้เก็บข้อมูลที่โครงสร้างต่างกันตาม exercise type (คำตอบ, คะแนนการออกเสียงรายเสียง)
 - `object_key` คือ path ของไฟล์ใน `data/recordings/` ไม่ได้เก็บไฟล์เสียงใน Postgres
+
+**ค่า default และ constraint ที่ spec ไม่ได้ระบุ (เลือกไว้ใน PR `feat/m0-db-schema`)**
+
+- ทุก `user_id` เป็น `text NOT NULL` (ยกเว้น PK) FK `ON DELETE CASCADE`; `created_at` ทุกตาราง `timestamptz NOT NULL DEFAULT now()`
+- `profiles`: `display_name` nullable, `start_date` NOT NULL ไม่มี default (ผู้เรียนเลือกตอน onboarding), `current_day` default 1 + CHECK 1..365, `timezone` NOT NULL default `Asia/Bangkok`, `accent` NOT NULL default `us`
+- `progress`: `status` default `not_started`; `score`, `completed_at` nullable; CHECK `day` 1..365 (ไม่ได้ CHECK ช่วงของ `score` เพราะยังไม่ได้กำหนดสเกล)
+- `attempts`: `id` default `gen_random_uuid()` (client ส่ง id มาเองได้); `correct` NOT NULL; `score`, `answer` nullable
+- `srs_cards`: `due` default `now()` (การ์ดใหม่ถึงกำหนดทันที), `stability`/`difficulty` NOT NULL default 0, `reps`/`lapses` default 0 + CHECK >= 0, `state` default 0 + CHECK 0..3 (ts-fsrs: New/Learning/Review/Relearning), `last_review` nullable
+- `recordings`: `id` default `gen_random_uuid()`; `object_key` NOT NULL; `pron_score` nullable (ยังไม่ได้ให้คะแนน)
+- `streaks`: `current`/`longest`/`freezes_left` NOT NULL default 0 + CHECK >= 0; `last_active_date` nullable
+- `push_subscriptions`: `id` default `gen_random_uuid()`; `p256dh`, `auth` NOT NULL
+- `reminder_settings`: `enabled` default false, `remind_at` NOT NULL default `20:00`, `types` NOT NULL default `{}`
+- Enum ใน Postgres: `accent`, `progress_status`, `srs_direction`
 
 `exercise_id` และ `vocab_id` เป็น ID แบบ string ที่กำหนดไว้ในไฟล์ content (เช่น `d001-pron-01`) จึงผูกกับ git ได้โดยตรง
 
