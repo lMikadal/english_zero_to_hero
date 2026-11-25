@@ -100,6 +100,8 @@ export const attempts = pgTable(
     tags: tags(),
     source: text("source").$type<AttemptSource>().notNull().default("lesson"),
     sessionId: uuid("session_id"),
+    // 1 = first try (counts for scores), 2 = the end-of-lesson retry round
+    attemptNo: smallint("attempt_no").notNull().default(1),
     answer: jsonb("answer"),
     createdAt: createdAt(),
   },
@@ -113,6 +115,7 @@ export const attempts = pgTable(
     check("attempts_skill_valid", inList(t.skill, SKILLS)),
     check("attempts_source_valid", inList(t.source, ATTEMPT_SOURCES)),
     check("attempts_duration_nonneg", sql`${t.durationMs} >= 0`),
+    check("attempts_attempt_no_range", sql`${t.attemptNo} BETWEEN 1 AND 2`),
   ],
 );
 

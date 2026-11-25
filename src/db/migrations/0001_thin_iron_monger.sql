@@ -1,0 +1,2 @@
+ALTER TABLE "attempts" ADD COLUMN "attempt_no" smallint DEFAULT 1 NOT NULL;--> statement-breakpoint
+ALTER TABLE "attempts" ADD CONSTRAINT "attempts_attempt_no_range" CHECK ("attempts"."attempt_no" BETWEEN 1 AND 2);

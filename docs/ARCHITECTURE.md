@@ -174,7 +174,9 @@ profiles       user_id PK→user, display_name, start_date date, current_day int
 progress       user_id, day int, status text(not_started|in_progress|done), score double, started_at timestamptz, completed_at timestamptz, updated_at
                PK(user_id, day), CHECK(status='done' ⇒ completed_at NOT NULL)
 attempts       id uuid PK (สร้างฝั่ง client เพื่อกันบันทึกซ้ำตอน sync), user_id, exercise_id text, day int, skill text, exercise_type text,
-               correct bool, score double, duration_ms int, tags text[], source text(lesson|drill|retest|checkpoint), session_id uuid, answer jsonb, created_at timestamptz
+               correct bool, score double, duration_ms int, tags text[], source text(lesson|drill|retest|checkpoint), session_id uuid,
+               attempt_no smallint NOT NULL DEFAULT 1 CHECK(1..2) (1 = ตอบครั้งแรก, 2 = รอบทวนท้ายบท), answer jsonb, created_at timestamptz
+               score เป็นเศษส่วน 0..1 เสมอ (progress.score ก็เช่นกัน); null = ระบบตรวจไม่ได้ (พูดประเมินตัวเอง, free_write)
                skill = pronunciation|listening|speaking|reading|writing|vocabulary
                INDEX(user_id, created_at), INDEX(user_id, exercise_id), INDEX(user_id, skill, created_at), INDEX(user_id, source, created_at), GIN(tags)
 srs_cards      user_id, vocab_id text, direction text(en_th|th_en|listen_spell|speak),
