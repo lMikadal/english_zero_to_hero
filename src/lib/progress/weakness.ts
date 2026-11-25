@@ -20,7 +20,7 @@ export type GroupStat = {
   key: string;
   /** unweighted number of attempts in the window */
   attempts: number;
-  /** weighted wrong / weighted total */
+  /** weighted sum of (1 - score) / weighted total */
   errorRate: number;
   weak: boolean;
   recovered: boolean;
@@ -44,12 +44,21 @@ export function groupKeys(a: Pick<AttemptLike, "tags" | "exerciseType" | "skill"
   return keys;
 }
 
-/** Attempts that count as evidence for detection: normal lessons and checkpoints, inside the window. */
+/**
+ * Attempts that count as evidence for detection: graded (score not null) first tries (attemptNo 1) from
+ * normal lessons and checkpoints, inside the window.
+ */
 export function detectionAttempts(attempts: readonly AttemptLike[], now: Date): AttemptLike[] {
   const from = now.getTime() - WEAKNESS_WINDOW_DAYS * DAY_MS;
   return attempts.filter((a) => {
     const t = a.createdAt.getTime();
-    return (DETECTION_SOURCES as readonly string[]).includes(a.source) && t >= from && t <= now.getTime();
+    return (
+      a.attemptNo === 1 &&
+      a.score !== null &&
+      (DETECTION_SOURCES as readonly string[]).includes(a.source) &&
+      t >= from &&
+      t <= now.getTime()
+    );
   });
 }
 
@@ -66,7 +75,7 @@ export function groupStats(attempts: readonly AttemptLike[], now: Date): GroupSt
       if (!g) groups.set(id, (g = { angle, key, attempts: 0, wrong: 0, total: 0 }));
       g.attempts += 1;
       g.total += weight;
-      if (!a.correct) g.wrong += weight;
+      g.wrong += weight * (1 - (a.score ?? 1)); // partial credit: error is 1 - score
     }
   }
   return [...groups.values()].map((g) => {
