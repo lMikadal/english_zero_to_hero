@@ -17,6 +17,11 @@ function setup(props: Partial<React.ComponentProps<typeof Shadowing>> = {}, avai
 }
 
 describe("Shadowing", () => {
+  it("marks the English text lang=en", () => {
+    setup();
+    expect(document.querySelector('[lang="en"]')).not.toBeNull();
+  });
+
   it("shows the Thai instruction and every line", () => {
     setup();
     expect(screen.getByText("พูดตามทันทีทีละประโยค")).toBeInTheDocument();

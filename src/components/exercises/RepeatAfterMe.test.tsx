@@ -17,6 +17,11 @@ function setup(props: Partial<React.ComponentProps<typeof RepeatAfterMe>> = {}, 
 }
 
 describe("RepeatAfterMe", () => {
+  it("marks the English text lang=en", () => {
+    setup();
+    expect(document.querySelector('[lang="en"]')).not.toBeNull();
+  });
+
   it("shows the Thai instruction, the text and the IPA", () => {
     setup();
     expect(screen.getByText("ฟังแล้วพูดตาม")).toBeInTheDocument();

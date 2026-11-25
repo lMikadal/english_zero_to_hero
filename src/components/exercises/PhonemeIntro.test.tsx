@@ -40,11 +40,12 @@ describe("PhonemeIntro", () => {
     expect(onAnswer).not.toHaveBeenCalled();
   });
 
-  it("without audio: examples stay visible, continue still works", async () => {
+  it("without audio: examples stay visible and there is exactly one way on, ถัดไป (no ข้าม)", async () => {
     const { onAnswer, onContinue } = setup(false);
     await screen.findByText("อุปกรณ์นี้ไม่มีเสียงภาษาอังกฤษ");
     expect(screen.getByText("cat")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "ข้าม" }));
+    expect(screen.queryByRole("button", { name: "ข้าม" })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "ถัดไป" }));
     expect(onContinue).toHaveBeenCalledTimes(1);
     expect(onAnswer).not.toHaveBeenCalled();
   });

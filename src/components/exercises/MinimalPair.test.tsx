@@ -77,17 +77,46 @@ describe("MinimalPair", () => {
     expect(pair(0)).toHaveAttribute("data-state", "wrong");
     expect(pair(1)).toHaveAttribute("data-state", "correct");
     expect(pair(2)).toHaveAttribute("data-state", "correct");
-    expect(within(pair(0)).getByRole("radio", { name: "bad" })).toHaveAttribute("data-state", "correct"); // the right word is shown
-    expect(within(pair(0)).getByRole("radio", { name: "bed" })).toBeDisabled();
+    expect(within(pair(0)).getByRole("radio", { name: /bad/ })).toHaveAttribute("data-state", "correct"); // the right word is shown
+    expect(within(pair(0)).getByRole("radio", { name: /bed/ })).toBeDisabled();
     expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).not.toBeInTheDocument();
   });
 
-  it("without audio: reveal the words, or skip through onContinue only", async () => {
+  it("without audio: a note and skip through onContinue only; the answer words are never listed", async () => {
     const { onAnswer, onContinue } = setup({}, false);
-    await userEvent.click(await screen.findByRole("button", { name: "แสดงข้อความ" }));
-    expect(screen.getByText(/bad/, { selector: "[data-revealed]" })).toBeInTheDocument();
+    expect(await screen.findByText("อุปกรณ์นี้ยังเล่นเสียงภาษาอังกฤษไม่ได้ ข้ามข้อนี้ไปก่อน")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "แสดงข้อความ" })).not.toBeInTheDocument();
+    expect(screen.queryByText("bad, men, cat")).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "ข้าม" }));
     expect(onContinue).toHaveBeenCalledTimes(1);
     expect(onAnswer).not.toHaveBeenCalled();
+  });
+
+  it("marks the words lang=en", () => {
+    setup();
+    expect(within(pair(0)).getByRole("radio", { name: "bad" })).toHaveAttribute("lang", "en");
+  });
+
+  it("marks each pair and word with a glyph and hidden Thai text after the result", async () => {
+    const { rerender } = setup();
+    await pick(0, "bed");
+    await pick(1, "men");
+    await pick(2, "cat");
+    rerender(
+      <MinimalPair exercise={exercise} vocab={{}} onAnswer={() => {}} onContinue={() => {}} result={{ correct: false, score: 2 / 3, items: [false, true, true] }} />,
+    );
+    expect(card(0)).toHaveTextContent("ผิด");
+    expect(card(0)).toHaveTextContent("✗");
+    expect(card(1)).toHaveTextContent("ถูก");
+    expect(card(1)).toHaveTextContent("✓");
+  });
+
+  it("moves and selects with the arrow keys inside a pair", async () => {
+    setup();
+    const radios = within(pair(0)).getAllByRole("radio");
+    radios[0].focus();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(radios[1]).toHaveAttribute("aria-checked", "true");
+    expect(radios[1]).toHaveFocus();
   });
 });

@@ -58,12 +58,23 @@ describe("Dictation", () => {
     expect(screen.getByRole("textbox")).toHaveAttribute("data-state", "correct");
   });
 
-  it("without audio: reveal the text, or skip through onContinue only", async () => {
+  it("without audio: a note and skip through onContinue only; the transcript is never shown", async () => {
     const { onAnswer, onContinue } = setup({}, false);
-    await userEvent.click(await screen.findByRole("button", { name: "แสดงข้อความ" }));
-    expect(screen.getByText(exercise.audioText)).toBeInTheDocument();
+    expect(await screen.findByText("อุปกรณ์นี้ยังเล่นเสียงภาษาอังกฤษไม่ได้ ข้ามข้อนี้ไปก่อน")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "แสดงข้อความ" })).not.toBeInTheDocument();
+    expect(screen.queryByText(exercise.audioText)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "ข้าม" }));
     expect(onContinue).toHaveBeenCalledTimes(1);
     expect(onAnswer).not.toHaveBeenCalled();
+  });
+
+  it("never shows the transcript before the result, even with audio", () => {
+    setup();
+    expect(screen.queryByText(exercise.audioText)).not.toBeInTheDocument();
+  });
+
+  it("marks the input lang=en", () => {
+    setup();
+    expect(screen.getByRole("textbox")).toHaveAttribute("lang", "en");
   });
 });
