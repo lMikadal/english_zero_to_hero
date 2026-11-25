@@ -1,5 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { Skill } from "@/db/schema"; // type-only
+import type { Section } from "@/lib/content/schema";
 import { allExercises, readLesson, vocabWords } from "@/lib/answers/test-content";
 import { attemptSkill, deriveTags, exerciseEnglishText, findExercise, type AttemptSkill } from "./derive";
 
@@ -44,7 +45,7 @@ describe("attemptSkill", () => {
     expect(skillOf("d006-write-01")).toBe("vocabulary");
   });
   it("is vocabulary for spell_word and for a -vocab- id", () => {
-    const section = { skill: "writing", title: { en: "w", th: "ก" }, exercises: [] } as const;
+    const section: Section = { skill: "writing", title: { en: "w", th: "ก" }, exercises: [] };
     expect(attemptSkill(section, { id: "d001-write-09", type: "spell_word", instruction: { th: "ก" }, vocabId: "v-cat" })).toBe("vocabulary");
     expect(attemptSkill(section, { id: "d001-vocab-01", type: "translate_th_en", instruction: { th: "ก" }, th: "ก", accept: ["x"] })).toBe("vocabulary");
   });
