@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import { AudioUnavailableError } from "./source";
-import { createSpeechAudioSource } from "./speech-source";
+import { AudioPlaybackError, createSpeechAudioSource } from "./speech-source";
 
 type FakeUtterance = {
   text: string; lang: string; rate: number; voice: unknown;
   onend: (() => void) | null; onerror: ((e: { error: string }) => void) | null;
 };
-type Voice = { lang: string; name: string };
+type Voice = { lang: string; name: string; localService?: boolean };
 
 function setup(voices: Voice[]) {
   const spoken: FakeUtterance[] = [];
@@ -15,6 +15,7 @@ function setup(voices: Voice[]) {
     getVoices: vi.fn(() => voices),
     speak: vi.fn((u: FakeUtterance) => { spoken.push(u); }),
     cancel: vi.fn(),
+    resume: vi.fn(),
     addEventListener: vi.fn((_: string, cb: () => void) => { listeners.push(cb); }),
     removeEventListener: vi.fn(),
   };
@@ -99,12 +100,65 @@ describe("createSpeechAudioSource", () => {
     expect(synth.speak).not.toHaveBeenCalled();
   });
 
-  it("rejects with AudioUnavailableError when the engine reports an error", async () => {
+  it("a one-off engine error is an AudioPlaybackError, not 'unavailable'", async () => {
+    const { source, spoken } = setup([US]);
+    for (const code of ["not-allowed", "network", "audio-busy", "synthesis-failed"]) {
+      const before = spoken.length;
+      const p = source.play("hello");
+      await vi.waitFor(() => expect(spoken).toHaveLength(before + 1));
+      spoken[before].onerror?.({ error: code });
+      const err = await p.catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(AudioPlaybackError);
+      expect(err).not.toBeInstanceOf(AudioUnavailableError);
+    }
+  });
+
+  it("language-unavailable and voice-unavailable mean unavailable", async () => {
     const { source, spoken } = setup([US]);
     const p = source.play("hello");
     await vi.waitFor(() => expect(spoken).toHaveLength(1));
-    spoken[0].onerror?.({ error: "synthesis-failed" });
+    spoken[0].onerror?.({ error: "language-unavailable" });
     await expect(p).rejects.toBeInstanceOf(AudioUnavailableError);
+  });
+
+  it("speaks synchronously when voices are already known (inside the user gesture)", () => {
+    const { source, synth } = setup([US]);
+    void source.play("hello");
+    expect(synth.speak).toHaveBeenCalledTimes(1);
+  });
+
+  it("when voices are not loaded yet it speaks with lang only instead of waiting", () => {
+    const { source, synth, spoken } = setup([]);
+    void source.play("hello", { accent: "uk" });
+    expect(synth.speak).toHaveBeenCalledTimes(1);
+    expect(spoken[0].lang).toBe("en-GB");
+    expect(spoken[0].voice).toBeNull();
+  });
+
+  it("calls resume() before speak()", () => {
+    const { source, synth } = setup([US]);
+    void source.play("hello");
+    expect(synth.resume.mock.invocationCallOrder[0]).toBeLessThan(synth.speak.mock.invocationCallOrder[0]);
+  });
+
+  it("prefers a local voice and normalises en_US", () => {
+    const remote = { lang: "en-US", name: "remote", localService: false };
+    const local = { lang: "en_US", name: "local", localService: true };
+    const { source, spoken } = setup([remote, local]);
+    void source.play("hello");
+    expect(spoken[0].voice).toEqual(local);
+  });
+
+  it("always settles: a play that never ends resolves after the safety timeout", async () => {
+    vi.useFakeTimers();
+    try {
+      const { source } = setup([US]);
+      const p = source.play("hello");
+      await vi.advanceTimersByTimeAsync(60_000);
+      await expect(p).resolves.toBeUndefined();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("stop() cancels the speech and the pending play resolves", async () => {
