@@ -1,0 +1,138 @@
+# CI = the same Docker path as local development: the jobs call the project's own Makefile
+# (docker compose + Dockerfile), they do not set up Node/pnpm on the runner. Nothing here
+# needs secrets.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# cancel superseded runs on the same PR; never cancel runs on main
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  # fixed compose project name, so the image we build below is named `ezh-app`, which is exactly
+  # what `docker compose` looks for (<project>-<service>) and therefore does not rebuild it
+  COMPOSE_PROJECT_NAME: ezh
+
+jobs:
+  check:
+    name: check (lint, typecheck, test, validate, migrations)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # The app container runs as uid/gid 1000 (compose `user:`) and writes into the bind-mounted
+      # workspace (next-env.d.ts, tsconfig.tsbuildinfo, coverage, drizzle output, node_modules and
+      # .next mount points). The runner user is uid 1001 and owns the checkout, so those writes
+      # would fail with EACCES. chown (not chmod a+w: that would show up as mode changes in git)
+      # and tell git the directory is fine to read as a different user.
+      - name: Make the workspace writable for uid 1000
+        run: |
+          sudo chown -R 1000:1000 "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - uses: docker/setup-buildx-action@v3
+
+      # Layer cache only (keyed by Docker on the Dockerfile contents, so it cannot go stale).
+      # `load: true` puts the image in the local daemon so `make` finds it and skips building.
+      - name: Build the dev image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: dev
+          load: true
+          tags: ezh-app:latest
+          cache-from: type=gha,scope=dev-image
+          cache-to: type=gha,scope=dev-image,mode=max
+
+      # First `make` call runs `pnpm install` inside dev-entrypoint.sh into the (empty) node_modules
+      # volume; later calls reuse the volume and skip the install via the stamp file.
+      - name: make check
+        run: make check
+
+      - name: Migrations apply to a fresh database
+        run: make db-migrate
+
+      - name: Migrations are in sync with the schema
+        run: |
+          make db-generate
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::src/db/schema.ts and the committed migrations are out of sync. Run 'make db-generate' and commit the result."
+            git status --porcelain
+            git diff
+            exit 1
+          fi
+
+      - name: App and postgres logs (on failure)
+        if: failure()
+        run: docker compose logs --no-color --tail=200 || true
+
+      # give the workspace back to the runner user so the checkout post-step can clean up
+      - name: Restore workspace ownership
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
+
+  # Playwright E2E at 360px. It has never been run anywhere before this job existed, so it must
+  # not block merging yet. Once it has been seen green on CI, remove `continue-on-error` and
+  # make `e2e` a required status check in the branch protection rules.
+  e2e:
+    name: e2e (not required yet)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Make the workspace writable for uid 1000
+        run: |
+          sudo chown -R 1000:1000 "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build the dev image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: dev
+          load: true
+          tags: ezh-app:latest
+          cache-from: type=gha,scope=dev-image
+          cache-to: type=gha,scope=dev-image,mode=max
+
+      # starts postgres + the dev server (waits for its healthcheck; the first start installs
+      # dependencies), then runs Playwright in the mcr.microsoft.com/playwright container
+      - name: make e2e
+        run: make e2e
+
+      - name: App logs (on failure)
+        if: failure()
+        run: docker compose --profile e2e logs --no-color --tail=300 || true
+
+      - name: Upload Playwright report and traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Restore workspace ownership
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
