@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { getLesson, getVocabLookup } from "./repo";
+import { getLesson, getTaughtWords, getVocabLookup } from "./repo";
 
 const tmp: string[] = [];
 afterEach(() => {
@@ -22,6 +22,11 @@ describe("getLesson", () => {
     expect(getLesson(0)).toBeNull();
     expect(getLesson(366)).toBeNull();
     expect(getLesson(1.5)).toBeNull();
+  });
+  it("a missing file is null even when the lessons directory itself is missing", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "repo-"));
+    tmp.push(root);
+    expect(getLesson(1, root)).toBeNull();
   });
   it("throws for a file that exists but is invalid (never serves broken content)", () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "repo-"));
@@ -54,5 +59,35 @@ describe("getVocabLookup", () => {
     const good = JSON.parse(fs.readFileSync(path.join(realRoot, "vocab/oxford-3000/a1.json"), "utf8")).find((x: { id: string }) => x.id === "v-cat");
     fs.writeFileSync(path.join(root, "vocab", "x.json"), JSON.stringify([good, { id: "v-bad" }]));
     expect(Object.keys(getVocabLookup(["v-cat", "v-bad"], root))).toEqual(["v-cat"]);
+  });
+});
+
+describe("getTaughtWords", () => {
+  it("returns every word taught on or before the day (id -> word)", () => {
+    const d1 = getTaughtWords(1);
+    expect(d1.get("v-hello")).toBe("hello");
+    expect(d1.has("v-where")).toBe(false); // taught on day 3
+    const d3 = getTaughtWords(3);
+    expect(d3.get("v-where")).toBe("where");
+    expect(d3.get("v-bed")).toBe("bed"); // day 2
+    expect(d3.has("v-goodbye")).toBe(false); // day 4
+  });
+  it("is cumulative on review days that teach nothing", () => {
+    expect(getTaughtWords(7).size).toBe(getTaughtWords(5).size);
+    expect(getTaughtWords(7).get("v-please")).toBe("please");
+  });
+  it("is empty for a day without lessons and for days out of range", () => {
+    expect(getTaughtWords(0).size).toBe(0);
+    expect(getTaughtWords(1000).size).toBe(getTaughtWords(365).size);
+  });
+  it("skips lesson files that are missing or broken instead of failing every attempt", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "repo-"));
+    tmp.push(root);
+    fs.cpSync(realRoot, root, { recursive: true });
+    fs.writeFileSync(path.join(root, "lessons", "day-002.json"), "not json");
+    const w = getTaughtWords(3, root);
+    expect(w.has("v-hello")).toBe(true);
+    expect(w.has("v-where")).toBe(true);
+    expect(w.has("v-bed")).toBe(false);
   });
 });
