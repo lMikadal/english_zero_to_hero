@@ -62,6 +62,7 @@
 - [ ] เก็บไฟล์เสียงที่อัดลง `data/recordings/`
 - [ ] PWA พื้นฐาน: manifest, ไอคอน, service worker (precache app shell + cache เสียง), ติดตั้งได้, ออกแบบ UI แบบ mobile-first
 - [ ] Deploy บนเครื่องตัวเอง: Dockerfile + service `app` ใน compose (profile `prod`), เปิด HTTPS ผ่าน Tailscale, backup `pg_dump` รายวัน (ดู [DEPLOYMENT.md](DEPLOYMENT.md))
+  - [ ] เส้นทาง migrate ของ prod: คัดลอก migration เข้า prod image แล้วรันโดยไม่ใช้ tsx (`MIGRATIONS_DIR`, `runMigrations` ใน `src/db/migrate.ts`)
 
 ### Milestone 2: บัญชีผู้ใช้และ AI
 - [ ] Login ด้วย Better Auth (email + password สำหรับผู้ใช้คนเดียว) เก็บใน PostgreSQL
