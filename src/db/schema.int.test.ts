@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { eq, sql as dsql } from "drizzle-orm";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import {
+  activityDays,
   attempts,
   profiles,
   progress,
@@ -190,6 +191,7 @@ describe("attempts", () => {
     expect(has(/\(user_id, skill, created_at\)/)).toBe(true);
     expect(has(/\(user_id, source, created_at\)/)).toBe(true);
     expect(has(/USING gin \(tags\)/)).toBe(true);
+    expect(has(/\(user_id, day\)/)).toBe(true);
   });
 });
 
@@ -354,5 +356,20 @@ describe("ON DELETE CASCADE", () => {
 
   it("rejects child rows whose user does not exist", async () => {
     expect(await pgErrorCode(db.insert(attempts).values(attemptRow("ghost")))).toBe(FK);
+  });
+});
+
+describe("activity_days", () => {
+  it("keeps one row per user and local date, defaults source, and cascades with the user", async () => {
+    const id = await newUser();
+    await db.insert(activityDays).values({ userId: id, localDate: "2026-11-25" });
+    await db.insert(activityDays).values({ userId: id, localDate: "2026-11-25" }).onConflictDoNothing();
+    expect(await pgErrorCode(db.insert(activityDays).values({ userId: id, localDate: "2026-11-25" }))).toBe(UNIQUE);
+    await db.insert(activityDays).values({ userId: id, localDate: "2026-11-26", source: "srs" });
+    const rows = await db.select().from(activityDays).orderBy(activityDays.localDate);
+    expect(rows.map((r) => [r.localDate, r.source])).toEqual([["2026-11-25", "lesson"], ["2026-11-26", "srs"]]);
+    expect(await pgErrorCode(db.insert(activityDays).values({ userId: "nobody", localDate: "2026-11-25" }))).toBe(FK);
+    await db.delete(user).where(eq(user.id, id));
+    expect(await db.select().from(activityDays)).toHaveLength(0);
   });
 });
