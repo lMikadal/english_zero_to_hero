@@ -5,7 +5,8 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   outputDir: "./test-results",
-  reporter: [["list"]],
+  // html report (never auto-opened) is uploaded as a CI artifact on failure
+  reporter: [["list"], ["html", { open: "never" }]],
   // the dev server compiles pages on first request
   timeout: 60_000,
   use: {
