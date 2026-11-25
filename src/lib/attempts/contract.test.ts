@@ -50,6 +50,12 @@ describe("attemptAnswerSchema", () => {
     { kind: "self", rating: "unsure", recordingId: uuid },
   ])("accepts %j", (a) => expect(attemptAnswerSchema.safeParse(a).success).toBe(true));
 
+  it("caps the number of match keys", () => {
+    const pairs = (n: number) => Object.fromEntries(Array.from({ length: n }, (_, i) => [`v-w${i}`, `v-w${i}`]));
+    expect(attemptAnswerSchema.safeParse({ kind: "match", pairs: pairs(20) }).success).toBe(true);
+    expect(attemptAnswerSchema.safeParse({ kind: "match", pairs: pairs(21) }).success).toBe(false);
+  });
+
   it.each([
     { kind: "choice", selected: -1 },
     { kind: "choice", selected: 1.5 },
