@@ -129,3 +129,34 @@ describe("pace and projection", () => {
     expect(estimatePace({ startDate: "2026-06-14", now: lateUtc, progress: [] }).expectedDay).toBe(2);
   });
 });
+
+describe("new learners", () => {
+  it("divides by the days since start while under 14", () => {
+    // started 9 days ago: day 10 of the plan, 6 lessons done -> 6 / 10
+    expect(run("2026-06-06", doneOn(6, 1)).pace).toBeCloseTo(0.6, 10);
+    // start today: one day of history
+    expect(run(TODAY, doneOn(1, 0)).pace).toBe(1);
+    // 14th day of the plan: full window
+    expect(run("2026-06-02", doneOn(7, 1)).pace).toBe(0.5);
+    expect(run("2026-01-01", doneOn(7, 1)).pace).toBe(0.5);
+  });
+
+  it("projects with the shorter divisor", () => {
+    // 6 done in 10 days, 359 left: 359 * 10 / 6 = 598.3 -> 599
+    expect(run("2026-06-06", doneOn(6, 1)).projectedFinish).toEqual({ kind: "date", date: addDays(TODAY, 599) });
+  });
+
+  it("uses a divisor of 1 when start_date is in the future", () => {
+    expect(run("2026-06-20", []).pace).toBe(0);
+  });
+});
+
+describe("invalid input", () => {
+  it.each(["", "garbage", "2026-13-01", "2026-02-30", "15/06/2026"])("throws a clear error for startDate %j", (bad) => {
+    expect(() => run(bad, [])).toThrow(/startDate/);
+  });
+
+  it("falls back to Asia/Bangkok for a bad time zone", () => {
+    expect(run(TODAY, [], NOW, "Asia/Bankok").expectedDay).toBe(1);
+  });
+});

@@ -77,6 +77,16 @@ describe("wordStatus", () => {
     expect(wordStatus(knownCards("v-cat"), reviews)).toBe("known");
   });
 
+  it("treats reviews with the same timestamp as a miss if any of them is a miss, whatever the order", () => {
+    const t = daysAgo(1);
+    const good = review({ direction: "th_en", rating: 3, reviewedAt: t });
+    const miss = review({ direction: "th_en", rating: 1, reviewedAt: t });
+    const en = review({ direction: "en_th", rating: 3 });
+    expect(wordStatus(knownCards("v-cat"), [en, good, miss])).toBe("remembered");
+    expect(wordStatus(knownCards("v-cat"), [en, miss, good])).toBe("remembered");
+    expect(wordStatus(knownCards("v-cat"), [en, good, { ...good }])).toBe("known");
+  });
+
   it("is not known when a direction has no review at all", () => {
     expect(wordStatus(knownCards("v-cat"), [review({ direction: "en_th" })])).toBe("remembered");
   });
