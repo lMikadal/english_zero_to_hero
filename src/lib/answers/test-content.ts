@@ -30,3 +30,11 @@ export function get(id: string): Exercise {
   if (!f) throw new Error(`no exercise ${id} in days 1-7`);
   return f.exercise;
 }
+
+/** Every word taught on or before `day` (vocab id -> word), as the server passes it to deriveTags. */
+export function taughtWords(day: number): Map<string, string> {
+  const words = vocabWords();
+  const out = new Map<string, string>();
+  for (const l of weekOne) if (l.day <= day) for (const id of l.vocab) out.set(id, words.get(id)!);
+  return out;
+}
