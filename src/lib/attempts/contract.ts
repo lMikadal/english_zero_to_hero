@@ -13,15 +13,25 @@ export const API = { attempts: "/api/attempts", completeLesson: "/api/lessons/co
 const exerciseId = z.string().regex(EXERCISE_ID_PATTERN);
 const index = z.number().int().min(0).max(1000);
 
+// Postgres jsonb refuses U+0000 and unpaired surrogates (22P05); one such item must be `invalid`, not a 500.
+const UNSTORABLE = /\u0000|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/;
+const storable = (max: number) => z.string().max(max).refine((s) => !UNSTORABLE.test(s), "contains a character that cannot be stored");
+
+/** ISO 8601 with `Z` or a numeric offset. Years outside 1900..2100 are invalid (Postgres limits, absurd clocks); the server clamps the rest. */
+export const isoTimestamp = z.iso.datetime({ offset: true }).refine((s) => {
+  const year = new Date(s).getUTCFullYear();
+  return year >= 1900 && year <= 2100;
+}, "timestamp out of range");
+
 export const attemptAnswerSchema = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("choice"), selected: index }),
   z.strictObject({ kind: z.literal("choices"), selected: z.array(index).max(100) }),
   z.strictObject({ kind: z.literal("pairs"), selected: z.array(z.enum(["a", "b"])).max(100) }),
-  z.strictObject({ kind: z.literal("text"), text: z.string().max(5000) }),
-  z.strictObject({ kind: z.literal("texts"), texts: z.array(z.string().max(1000)).max(100) }),
+  z.strictObject({ kind: z.literal("text"), text: storable(5000) }),
+  z.strictObject({ kind: z.literal("texts"), texts: z.array(storable(1000)).max(100) }),
   z.strictObject({
     kind: z.literal("match"),
-    pairs: z.record(z.string().max(100), z.string().max(100)).refine((o) => Object.keys(o).length <= 20, "too many pairs"),
+    pairs: z.record(storable(100), storable(100)).refine((o) => Object.keys(o).length <= 20, "too many pairs"),
   }),
   z.strictObject({ kind: z.literal("self"), rating: z.enum(["ok", "unsure"]), recordingId: z.uuid().optional() }),
 ]);
@@ -36,7 +46,7 @@ export const attemptInputSchema = z.strictObject({
   attemptNo: z.union([z.literal(1), z.literal(2)]).default(1),
   answer: attemptAnswerSchema,
   durationMs: z.number().int().min(0).max(3_600_000).optional(),
-  createdAt: z.iso.datetime(),
+  createdAt: isoTimestamp,
 });
 /** An item as sent: defaults are filled in. */
 export type AttemptInput = z.infer<typeof attemptInputSchema>;
@@ -95,7 +105,7 @@ export type PostAttemptsResponse = { results: AttemptResult[] };
 export const completeLessonRequestSchema = z.strictObject({
   day: z.number().int().min(1).max(365),
   sessionId: z.uuid(),
-  completedAt: z.iso.datetime(),
+  completedAt: isoTimestamp,
 });
 export type CompleteLessonRequest = z.infer<typeof completeLessonRequestSchema>;
 export type CompleteLessonResponse = {
