@@ -263,7 +263,8 @@
             "This",
             "my"
           ],
-          "answer": "This is my dog"
+          "answer": "This is my dog",
+          "accept": ["Is this my dog"]
         },
         {
           "id": "d004-write-02",

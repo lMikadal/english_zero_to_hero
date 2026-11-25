@@ -275,7 +275,8 @@
             "This",
             "my"
           ],
-          "answer": "This is my pen"
+          "answer": "This is my pen",
+          "accept": ["Is this my pen"]
         },
         {
           "id": "d002-write-03",
@@ -298,7 +299,7 @@
             "I'm good thank you",
             "Fine, thank you",
             "Fine, thank you."
-          ]
+          , "I'm fine, thanks", "I am fine, thanks", "I'm good, thanks", "I am good, thanks", "Fine, thanks"]
         }
       ]
     }
