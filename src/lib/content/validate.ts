@@ -1,6 +1,6 @@
 // Cross-file content rules (docs/VOCABULARY.md section 6, docs/TESTING.md). Pure: no file IO except validateContentDir.
 import path from "node:path";
-import { readContent, formatProblem, type ContentData, type LoadedLesson, type Problem } from "./loader";
+import { readContent, formatProblem, type ContentData, type Problem } from "./loader";
 import { CEFR_LEVELS, TOPICS, type CefrLevel, type Exercise, type VocabItem } from "./schema";
 
 export { formatProblem };
