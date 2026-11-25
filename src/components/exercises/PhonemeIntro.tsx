@@ -1,7 +1,7 @@
 "use client";
 import { AudioFallback, BUTTON, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { Instruction } from "./sound-ui";
+import { Instruction } from "./ui/Instruction";
 
 /** Teaching card, no question: it never calls `onAnswer`, only `onContinue`. */
 export function PhonemeIntro({ exercise, onContinue }: ExerciseProps<"phoneme_intro">) {

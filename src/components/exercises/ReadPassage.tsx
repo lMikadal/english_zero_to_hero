@@ -3,8 +3,9 @@ import { useState } from "react";
 import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
-import { Mark } from "./ui/Mark";
-import { rightWrong, toneClass, type Tone } from "./ui/tone";
+import { ChoiceButton } from "./ui/ChoiceButton";
+import { radioKeys } from "./ui/radio";
+import { rightWrong, type Tone } from "./ui/tone";
 
 export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_passage">) {
   const [selected, setSelected] = useState<(number | null)[]>(() => exercise.questions.map(() => null));
@@ -19,6 +20,7 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
     onAnswer({ kind: "choices", selected: selected as number[] });
   }
 
+  const choose = (qi: number, ci: number) => setSelected(selected.map((s, i) => (i === qi ? ci : s)));
   const questionTone = (qi: number): Tone => (result ? rightWrong(result.items ? result.items[qi] === true : result.correct) : "idle");
 
   return (
@@ -39,7 +41,7 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
       ) : null}
 
       {exercise.questions.map((q, qi) => (
-        <div key={qi} role="radiogroup" aria-label={`คำถามที่ ${qi + 1}`} data-state={questionTone(qi)} className="mt-5">
+        <div key={qi} role="radiogroup" aria-label={`คำถามที่ ${qi + 1}`} data-state={questionTone(qi)} onKeyDown={(e) => { if (!locked) radioKeys(e, q.choices.length, selected[qi], (ci) => choose(qi, ci)); }} className="mt-5">
           <p className="font-semibold text-slate-900">{q.question.th}</p>
           <p lang="en" className="mb-2 text-sm text-slate-600">{q.question.en}</p>
           <div className="flex flex-col gap-2">
@@ -47,21 +49,11 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
               const chosen = selected[qi] === ci;
               let tone: Tone = chosen ? "selected" : "idle";
               if (result) tone = ci === q.answer ? "right" : chosen ? "wrong" : "idle";
+              const mark = result ? (ci === q.answer ? true : chosen ? false : undefined) : undefined;
               return (
-                <button
-                  key={ci}
-                  type="button"
-                  role="radio"
-                  lang="en"
-                  aria-checked={chosen}
-                  disabled={locked}
-                  onClick={() => setSelected(selected.map((s, i) => (i === qi ? ci : s)))}
-                  className={`min-h-11 w-full rounded-xl border-2 px-3 py-2 text-left text-base ${toneClass(tone)}`}
-                >
+                <ChoiceButton key={ci} index={ci} selectedIndex={selected[qi]} selected={chosen} tone={tone} mark={mark} disabled={locked} onClick={() => choose(qi, ci)}>
                   {choice}
-                  {result && ci === q.answer ? <span className="ml-2"><Mark ok /></span> : null}
-                  {result && chosen && ci !== q.answer ? <span className="ml-2"><Mark ok={false} /></span> : null}
-                </button>
+                </ChoiceButton>
               );
             })}
           </div>

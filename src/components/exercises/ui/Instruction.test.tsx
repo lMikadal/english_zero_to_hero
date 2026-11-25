@@ -5,7 +5,7 @@ import { Instruction } from "./Instruction";
 describe("Instruction", () => {
   it("shows the Thai text as a heading and the English line marked lang=en", () => {
     render(<Instruction th="ฟังแล้วเลือก" en="Listen and choose" />);
-    expect(screen.getByRole("heading", { name: "ฟังแล้วเลือก" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3, name: "ฟังแล้วเลือก" })).toBeInTheDocument();
     expect(screen.getByText("Listen and choose")).toHaveAttribute("lang", "en");
   });
 

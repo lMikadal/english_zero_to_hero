@@ -3,7 +3,11 @@ import { useState } from "react";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { CHOICE, CheckButton, Instruction, Mark, radioKeys, radioTabIndex } from "./sound-ui";
+import { CheckButton } from "./ui/CheckButton";
+import { ChoiceButton } from "./ui/ChoiceButton";
+import { Instruction } from "./ui/Instruction";
+import { radioKeys } from "./ui/radio";
+import type { Tone } from "./ui/tone";
 
 export function ListenChoose({ exercise, onAnswer, onContinue, result }: ExerciseProps<"listen_choose">) {
   const audio = useExerciseAudio(exercise.audioText);
@@ -16,8 +20,9 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
     setSent(true);
     onAnswer({ kind: "choice", selected });
   };
-  const stateOf = (i: number) =>
-    result === undefined ? undefined : i === exercise.answer ? "correct" : i === selected ? "wrong" : undefined;
+  const toneOf = (i: number): Tone =>
+    result === undefined ? (i === selected ? "selected" : "idle") : i === exercise.answer ? "right" : i === selected ? "wrong" : "idle";
+  const markOf = (i: number) => (result === undefined ? undefined : i === exercise.answer ? true : i === selected ? false : undefined);
 
   return (
     <section className="flex flex-col gap-4">
@@ -30,21 +35,9 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
       </div>
       <div role="radiogroup" aria-label={exercise.question.en} onKeyDown={(e) => { if (!locked) radioKeys(e, exercise.choices.length, selected, setSelected); }} className="flex flex-col gap-2">
         {exercise.choices.map((choice, i) => (
-          <button
-            key={i}
-            type="button"
-            role="radio"
-            lang="en"
-            tabIndex={radioTabIndex(selected, i)}
-            aria-checked={selected === i}
-            data-state={stateOf(i)}
-            disabled={locked}
-            onClick={() => setSelected(i)}
-            className={CHOICE}
-          >
+          <ChoiceButton key={i} index={i} selectedIndex={selected} selected={selected === i} tone={toneOf(i)} mark={markOf(i)} disabled={locked} onClick={() => setSelected(i)}>
             {choice}
-            <Mark state={stateOf(i)} />
-          </button>
+          </ChoiceButton>
         ))}
       </div>
       <CheckButton hidden={result !== undefined} disabled={selected === null || sent} onClick={check} />

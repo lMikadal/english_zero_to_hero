@@ -33,8 +33,7 @@ describe("SpeakAnswer", () => {
 
   it("has no play button when audio is unavailable", async () => {
     renderWithAudio(<SpeakAnswer {...baseProps()} exercise={ex} />, fakeAudio(false));
-    await Promise.resolve();
-    expect(screen.queryByRole("button", { name: /ฟัง/ })).toBeNull();
+    await waitFor(() => expect(screen.queryByRole("button", { name: /ฟัง/ })).toBeNull());
   });
 
   it("uses the shared play buttons: normal and 0.75x, disabled until canPlay answers", async () => {

@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { Instruction, SelfRating } from "./sound-ui";
+import { Instruction } from "./ui/Instruction";
+import { SelfRating } from "./ui/SelfRating";
 
 export function RepeatAfterMe({ exercise, onAnswer, onContinue, result }: ExerciseProps<"repeat_after_me">) {
   const audio = useExerciseAudio(exercise.text);

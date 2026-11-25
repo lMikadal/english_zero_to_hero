@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export function Instruction({ th, en }: { th: string; en?: string }) {
   return (
     <header className="mb-3">
-      <h2 className="text-base font-semibold text-slate-900">{th}</h2>
+      <h3 className="text-base font-semibold text-slate-900">{th}</h3>
       {en ? (
         <p lang="en" className="text-sm text-slate-600">
           {en}
