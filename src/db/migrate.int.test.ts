@@ -1,7 +1,7 @@
 // @vitest-environment node
 import postgres from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import { recreateDatabase, dropDatabase, withDatabaseName } from "./admin";
+import { dropDatabase, ensureDatabase, recreateDatabase, withDatabaseName } from "./admin";
 import { runMigrations } from "./migrate";
 import { testDatabaseUrl } from "./test-utils";
 
@@ -15,6 +15,7 @@ const EXPECTED_TABLES = [
   "recordings",
   "reminder_settings",
   "srs_cards",
+  "srs_reviews",
   "streaks",
   "user",
 ];
@@ -48,13 +49,35 @@ describe("migrations", () => {
     await recreateDatabase(scratchUrl);
     expect(await listTables(scratchUrl)).toEqual([]);
 
-    await runMigrations(scratchUrl);
+    const first = await runMigrations(scratchUrl);
+    expect(first).toBeGreaterThan(0);
     expect(await listTables(scratchUrl)).toEqual(EXPECTED_TABLES);
     const applied = await appliedMigrations(scratchUrl);
-    expect(applied).toBeGreaterThan(0);
+    expect(applied).toBe(first);
 
-    await runMigrations(scratchUrl);
+    expect(await runMigrations(scratchUrl)).toBe(0);
     expect(await listTables(scratchUrl)).toEqual(EXPECTED_TABLES);
     expect(await appliedMigrations(scratchUrl)).toBe(applied);
+  });
+
+  it("takes the migrations folder from MIGRATIONS_DIR", async () => {
+    const before = process.env.MIGRATIONS_DIR;
+    process.env.MIGRATIONS_DIR = "/nonexistent/migrations";
+    try {
+      await expect(runMigrations(scratchUrl)).rejects.toThrow(/nonexistent|migrations/i);
+    } finally {
+      if (before === undefined) delete process.env.MIGRATIONS_DIR;
+      else process.env.MIGRATIONS_DIR = before;
+    }
+  });
+
+  it("ensureDatabase tolerates concurrent callers (duplicate_database race)", async () => {
+    const racy = withDatabaseName(scratchUrl, `${new URL(scratchUrl).pathname.slice(1)}_race`);
+    await dropDatabase(racy);
+    try {
+      await expect(Promise.all(Array.from({ length: 6 }, () => ensureDatabase(racy)))).resolves.toBeDefined();
+    } finally {
+      await dropDatabase(racy);
+    }
   });
 });

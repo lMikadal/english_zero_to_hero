@@ -1,7 +1,7 @@
 // Helpers for integration tests. They only ever talk to the *_test database.
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { withDatabaseName } from "./admin";
+import { databaseName, withDatabaseName } from "./admin";
 import * as schema from "./schema";
 
 export function testDatabaseUrl(): string {
@@ -14,16 +14,20 @@ export function testDatabaseUrl(): string {
 
 export function connectTestDb() {
   const url = testDatabaseUrl();
-  if (!new URL(url).pathname.slice(1).endsWith("_test")) {
-    throw new Error("refusing to run integration tests against a non-test database");
+  const name = databaseName(url);
+  if (!name.endsWith("_test") || name === databaseName(process.env.DATABASE_URL ?? "")) {
+    throw new Error(`refusing to run integration tests against "${name}"`);
   }
   const sql = postgres(url, { max: 4, onnotice: () => {} });
   return { sql, db: drizzle(sql, { schema }) };
 }
 
-/** Empty every user-owned table; children go with the `user` rows via ON DELETE CASCADE. */
+/** Empty every table in `public` (not only the ones reachable from "user"). */
 export async function cleanDatabase(sql: postgres.Sql) {
-  await sql`TRUNCATE TABLE "user" CASCADE`;
+  const tables = await sql`SELECT tablename FROM pg_tables WHERE schemaname = 'public'`;
+  if (tables.length === 0) return;
+  const list = tables.map((t) => `"public"."${t.tablename}"`).join(", ");
+  await sql.unsafe(`TRUNCATE TABLE ${list} CASCADE`);
 }
 
 /** Run a query and return the Postgres error code (23505 unique, 23503 fk, 23514 check, ...). */
