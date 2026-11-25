@@ -10,6 +10,7 @@ const pool = () => within(screen.getByRole("list", { name: "คำที่เ�
 const poolWords = () => pool().queryAllByRole("button").map((b) => b.textContent);
 const tap = (w: string) => fireEvent.click(pool().getByRole("button", { name: w }));
 const check = () => screen.getByRole("button", { name: "ตรวจคำตอบ" });
+const noCheck = () => expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).toBeNull();
 
 describe("ArrangeWords", () => {
   it("shows the Thai instruction and every tile, not in the correct order", () => {
@@ -87,7 +88,17 @@ describe("ArrangeWords", () => {
     fireEvent.click(check());
     rerender(<ArrangeWords {...props} exercise={ex} result={{ correct: false, score: 0 }} />);
     for (const b of placed().getAllByRole("button")) expect(b).toBeDisabled();
-    expect(check()).toBeDisabled();
+    noCheck();
     expect(screen.getByRole("list", { name: "คำตอบของคุณ" })).toHaveAttribute("data-state", "wrong");
+    expect(screen.getByText("ผิด")).toBeInTheDocument();
+    expect(screen.queryByText("ถูก")).toBeNull();
+    rerender(<ArrangeWords {...props} exercise={ex} result={{ correct: true, score: 1 }} />);
+    expect(screen.getByText("ถูก")).toBeInTheDocument();
+  });
+
+  it("does not wash out the colours of answered tiles", () => {
+    const props = baseProps();
+    renderWithAudio(<ArrangeWords {...props} exercise={ex} result={{ correct: false, score: 0 }} />);
+    expect(screen.getByRole("list", { name: "คำตอบของคุณ" }).className).not.toMatch(/opacity/);
   });
 });

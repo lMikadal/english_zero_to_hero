@@ -35,8 +35,9 @@ describe("FreeWrite", () => {
     fireEvent.click(check());
     expect(props.onAnswer).toHaveBeenCalledTimes(1);
     expect(props.onAnswer).toHaveBeenCalledWith({ kind: "text", text });
-    expect(screen.getByText("บันทึกแล้ว")).toBeInTheDocument();
-    expect(box()).toBeDisabled();
+    expect(screen.queryByText("บันทึกแล้ว")).toBeNull(); // the player shows the saved status
+    expect(box()).toHaveAttribute("readonly");
+    expect(box()).toHaveAttribute("aria-readonly", "true");
   });
 
   it("locks the box after a result and never styles it as right or wrong", () => {
@@ -45,9 +46,10 @@ describe("FreeWrite", () => {
     fireEvent.change(box(), { target: { value: words(ex.minWords) } });
     fireEvent.click(check());
     rerender(<FreeWrite {...props} exercise={ex} result={{ correct: true, score: null }} />);
-    expect(box()).toBeDisabled();
+    expect(box()).toHaveAttribute("readonly");
+    expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).toBeNull();
     expect(box()).not.toHaveAttribute("data-state", "right");
     expect(box()).not.toHaveAttribute("data-state", "wrong");
-    expect(screen.getByText("บันทึกแล้ว")).toBeInTheDocument();
+    expect(screen.queryByText("บันทึกแล้ว")).toBeNull();
   });
 });

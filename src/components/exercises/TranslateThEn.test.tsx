@@ -16,6 +16,7 @@ describe("TranslateThEn", () => {
     expect(input()).toHaveAttribute("autocorrect", "off");
     expect(input()).toHaveAttribute("spellcheck", "false");
     expect(input()).toHaveAttribute("lang", "en");
+    expect(input()).toHaveAttribute("enterkeyhint", "done");
   });
 
   it("keeps check disabled until something is typed", () => {
@@ -51,10 +52,14 @@ describe("TranslateThEn", () => {
     fireEvent.change(input(), { target: { value: "see you" } });
     fireEvent.click(check());
     rerender(<TranslateThEn {...props} exercise={ex} result={{ correct: false, score: 0 }} />);
-    expect(input()).toBeDisabled();
-    expect(check()).toBeDisabled();
+    expect(input()).toHaveAttribute("readonly");
+    expect(input()).toHaveAttribute("aria-readonly", "true");
+    expect(input()).not.toBeDisabled();
+    expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).toBeNull();
     expect(input()).toHaveAttribute("data-state", "wrong");
+    expect(input()).toHaveAttribute("aria-invalid", "true");
     rerender(<TranslateThEn {...props} exercise={ex} result={{ correct: true, score: 1 }} />);
     expect(input()).toHaveAttribute("data-state", "right");
+    expect(input()).not.toHaveAttribute("aria-invalid", "true");
   });
 });

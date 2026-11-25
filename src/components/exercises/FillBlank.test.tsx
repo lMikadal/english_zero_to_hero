@@ -23,6 +23,27 @@ describe("FillBlank", () => {
     expect(screen.getAllByRole("textbox")[0]).toHaveAttribute("spellcheck", "false");
   });
 
+  it("keeps each input together with the punctuation next to it", () => {
+    renderWithAudio(<FillBlank {...baseProps()} exercise={one} />);
+    const box = screen.getByRole("textbox");
+    expect(box.parentElement).toHaveClass("whitespace-nowrap");
+    expect(box.parentElement).toHaveTextContent("?");
+    expect(box.parentElement).not.toHaveTextContent("Where");
+  });
+
+  it("handles punctuation on both sides and blanks next to each other", () => {
+    renderWithAudio(<FillBlank {...baseProps()} exercise={{ ...one, text: "Say (___), then ___.", answer: ["a", "b"] }} />);
+    const [a, b] = screen.getAllByRole("textbox");
+    expect(a.parentElement).toHaveTextContent("(),");
+    expect(b.parentElement).toHaveTextContent(".");
+    expect(screen.getByText(/Say/)).toBeInTheDocument();
+  });
+
+  it("asks for a done key on the keyboard", () => {
+    renderWithAudio(<FillBlank {...baseProps()} exercise={one} />);
+    expect(screen.getByRole("textbox")).toHaveAttribute("enterkeyhint", "done");
+  });
+
   it("locks check until every blank is filled, then answers once with texts (right)", () => {
     const props = baseProps();
     renderWithAudio(<FillBlank {...props} exercise={two} />);
@@ -54,8 +75,13 @@ describe("FillBlank", () => {
     fireEvent.click(check());
     rerender(<FillBlank {...props} exercise={two} result={{ correct: false, score: 0.5, items: [true, false] }} />);
     const boxes = screen.getAllByRole("textbox");
-    expect(boxes[0]).toBeDisabled();
-    expect(boxes[1]).toBeDisabled();
+    expect(boxes[0]).toHaveAttribute("readonly");
+    expect(boxes[1]).toHaveAttribute("readonly");
+    expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).toBeNull();
+    expect(screen.getAllByText("ถูก")).toHaveLength(1);
+    expect(screen.getAllByText("ผิด")).toHaveLength(1);
+    expect(boxes[0]).not.toHaveAttribute("aria-invalid", "true");
+    expect(boxes[1]).toHaveAttribute("aria-invalid", "true");
     expect(boxes[0]).toHaveAttribute("data-state", "right");
     expect(boxes[1]).toHaveAttribute("data-state", "wrong");
   });
