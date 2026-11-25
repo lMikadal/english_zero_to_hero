@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { matchesWeakness, recommendDrills, sessionResults, weakPoints, weaknessStatus, type WeakPoint } from "./drills";
 import { attempt, daysAgo, NOW } from "./test-utils";
-import { weaknessTag, type Weakness } from "./weakness";
+import { groupStats, weaknessTag, type Weakness } from "./weakness";
 import type { AttemptLike } from "./types";
 
 const TZ = "Asia/Bangkok";
@@ -215,6 +215,32 @@ describe("weaknessStatus", () => {
     expect(status(a)).toBe("not_started");
   });
 
+  it("closes the cycle at the moment of natural recovery, so old passes do not come back after a relapse", () => {
+    const a = [
+      ...session("r0", "retest", 8, 8, daysAgo(40)), // one pass long ago
+      ...lesson(0, 6, daysAgo(32)), // recovered (0% with 6 attempts)
+      ...lesson(3, 5, daysAgo(3)), // relapse: 60%
+    ];
+    const ev = weaknessStatus(a, W, NOW, TZ);
+    expect(ev.status).toBe("not_started");
+    expect(ev.passedOn).toBeNull();
+    // one fresh pass is only "awaiting", not fixed
+    const one = weaknessStatus([...a, ...session("r1", "retest", 8, 8, daysAgo(1))], W, NOW, TZ);
+    expect(one.status).toBe("awaiting_retest");
+    expect(one.passedOn).toBe("2026-06-14");
+  });
+
+  it("needs two fresh passes on different days after a recovery and relapse", () => {
+    const a = [
+      ...session("r0", "retest", 8, 8, daysAgo(40)),
+      ...lesson(0, 6, daysAgo(32)),
+      ...lesson(3, 5, daysAgo(3)),
+      ...session("r1", "retest", 8, 8, daysAgo(2)),
+      ...session("r2", "retest", 8, 8, daysAgo(1)),
+    ];
+    expect(status(a)).toBe("fixed");
+  });
+
   it("reports the error rate from lesson attempts after the fix only", () => {
     const fixed = [...session("r1", "retest", 8, 8, daysAgo(6)), ...session("r2", "retest", 8, 8, daysAgo(5))];
     const ev = weaknessStatus([...lesson(5, 10, daysAgo(10)), ...fixed, ...lesson(1, 10, daysAgo(1))], W, NOW, TZ);
@@ -270,9 +296,13 @@ describe("weakPoints", () => {
   });
 
   it("lists an in-progress weakness in the 15-30% band, which plain detection would hide", () => {
-    const withDrill = [...lesson(2, 10, daysAgo(1)), ...session("d", "drill", 8, 8, daysAgo(2))];
+    // the two misses come first, so the rate never drops under 15% on the way
+    const wrongFirst = Array.from({ length: 10 }, (_, i) =>
+      attempt({ tags: ["phoneme:ae"], correct: i >= 2, createdAt: new Date(daysAgo(1).getTime() - (9 - i) * 1000) }),
+    );
+    const withDrill = [...wrongFirst, ...session("d", "drill", 8, 8, daysAgo(2))];
     expect(run(withDrill)).toMatchObject([{ key: "phoneme:ae", status: "in_progress", attempts: 10 }]);
-    expect(run(lesson(2, 10, daysAgo(1)))).toEqual([]); // no drill cycle: not weak, not listed
+    expect(run(wrongFirst)).toEqual([]); // no drill cycle: not weak, not listed
   });
 
   it("lists an awaiting-retest weakness with too few new attempts to judge", () => {
@@ -338,5 +368,56 @@ describe("recommendDrills", () => {
     const z = p("b", "not_started", 0.5);
     expect(recommendDrills([z, y, x], TODAY).map((r) => r.key)).toEqual(["z", "a"]);
     expect(recommendDrills([x, y, z], TODAY).map((r) => r.key)).toEqual(["z", "a"]);
+  });
+});
+
+describe("scan performance and equivalence", () => {
+  const LISTENING = { angle: "skill", key: "listening" } as const;
+  const T0 = Date.parse("2025-01-01T05:00:00Z");
+  const fixedLongAgo = [
+    ...session("r1", "retest", 8, 8, new Date(T0 - 3 * 86_400_000), weaknessTag(LISTENING)),
+    ...session("r2", "retest", 8, 8, new Date(T0 - 2 * 86_400_000), weaknessTag(LISTENING)),
+  ];
+  /** n listening lessons one every `stepMs` after T0; wrong when wrongAt(i) */
+  const stream = (n: number, stepMs: number, wrongAt: (i: number) => boolean) =>
+    Array.from({ length: n }, (_, i) =>
+      attempt({ skill: "listening", exerciseType: `t${i % 7}`, correct: !wrongAt(i), createdAt: new Date(T0 + i * stepMs) }),
+    );
+
+  /** the straightforward O(n^2) reopen search, for comparison */
+  function referenceReopen(lessons: AttemptLike[]): number | null {
+    const times = [...new Set(lessons.map((a) => a.createdAt.getTime()))].sort((x, y) => x - y);
+    for (const t of times) {
+      const s = groupStats(lessons.filter((a) => a.createdAt.getTime() <= t), new Date(t)).find((g) => g.angle === "skill" && g.key === "listening");
+      if (s?.weak) return t;
+    }
+    return null;
+  }
+
+  it("finds exactly the same reopen moment as the straightforward implementation", () => {
+    for (const mod of [2, 3]) {
+      const lessons = stream(300, 3_600_000, (i) => i % mod === mod - 1);
+      const ref = referenceReopen(lessons);
+      const now = new Date(T0 + 300 * 3_600_000);
+      expect(ref).not.toBeNull();
+      // a drill 1 ms before the reopen does not count; 1 ms after it does
+      const before = [...fixedLongAgo, ...lessons, ...session("d", "drill", 8, 8, new Date(ref! - 1), weaknessTag(LISTENING))];
+      const after = [...fixedLongAgo, ...lessons, ...session("d", "drill", 8, 8, new Date(ref! + 1000), weaknessTag(LISTENING))];
+      expect(weaknessStatus(before, LISTENING, now, TZ).status).toBe("not_started");
+      expect(weaknessStatus(after, LISTENING, now, TZ).status).toBe("in_progress");
+    }
+  });
+
+  it("reports the same error rate as groupStats and stays fast over ~5,000 post-fix attempts", () => {
+    const lessons = stream(5000, 3_600_000, (i) => i % 20 === 10); // ~5% wrong, never reopens
+    const now = new Date(T0 + 5000 * 3_600_000);
+    const started = Date.now();
+    const ev = weaknessStatus([...fixedLongAgo, ...lessons], LISTENING, now, TZ);
+    const elapsed = Date.now() - started;
+    const ref = groupStats(lessons, now).find((g) => g.angle === "skill" && g.key === "listening");
+    expect(ev.status).toBe("fixed");
+    expect(ev.attempts).toBe(ref?.attempts);
+    expect(ev.errorRate).toBeCloseTo(ref?.errorRate ?? -1, 12);
+    expect(elapsed).toBeLessThan(10_000);
   });
 });
