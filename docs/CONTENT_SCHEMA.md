@@ -17,6 +17,34 @@
 | `vocab` | `string[]` | ID ของคำศัพท์ใหม่ของวันนี้ (อ้างถึงคลังใน `content/vocab/`) จะเข้า SRS เมื่อจบบท |
 | `sections` | `Section[]` | |
 
+## ข้อกำหนดที่ schema ตีความไว้ (`src/lib/content/schema.ts`)
+
+ทุก object เป็นแบบ **strict**: key ที่ไม่รู้จักถือว่าผิด (กันพิมพ์ผิด) และ string ต้องไม่ว่าง
+
+- `cefr` ของบทเรียนรับ `C1` ด้วย (เฟส 4 สอนคำ Oxford 5000 ระดับ C1)
+- `objectives` และ `sections` ต้องมีอย่างน้อย 1 รายการ; `vocab` เป็น array ว่างได้ (วัน review / checkpoint); `exercises` ในแต่ละ section ต้องมีอย่างน้อย 1
+- `id` ของ exercise ต้องตรง `^d\d{3}-[a-z]+-\d{2}$` ส่วน `<skill>` เป็นตัวพิมพ์เล็กอะไรก็ได้ (ตัวอย่างใช้ `pron`, `listen`, `speak`, `read`, `write`) ยังไม่บังคับให้ตรงกับ `skill` ของ section
+- `instruction` = `{ th, en? }`; `th` จำเป็น
+- `question` ของ `listen_choose` และ `read_passage.questions[]` เป็น `{ en, th }`; `choices` เป็น `string[]` อย่างน้อย 2 ตัว; `answer` เป็นเลข index (เริ่มที่ 0) ของ `choices`
+- `minimal_pair.pairs[].answer` เป็น `"a"` หรือ `"b"`
+- `roleplay`: `scenario` เป็น `{ en, th }`, `aiRole` เป็น string (อังกฤษ, ใช้เป็นคำสั่งให้ AI), `goals` เป็น `{ en, th }[]` อย่างน้อย 1
+- `free_write`: `prompt` เป็น string, `minWords` เป็นจำนวนเต็มบวก, `rubric` เป็น `string[]` (เกณฑ์ให้ AI ตรวจ) ใส่หรือไม่ก็ได้
+- `read_passage.glossary` เป็น `{ [word]: คำแปลไทย }`
+- `vocab_match.pairs` ต้องมีอย่างน้อย 2 คู่; `vocabId` ทุกที่ต้องตรง `^v-[a-z0-9]+(-[a-z0-9]+)*$`
+- `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string)
+- `fill_blank.answer` เป็น array ของคำตอบ **หนึ่งตัวต่อหนึ่ง `___`** ตามลำดับ
+- ใน VocabItem `forms` เป็น `{ [ชื่อรูปผัน]: string }` ชื่อใดก็ได้ (ไม่จำกัดแค่ตัวอย่าง) และ `topics` เป็น string ที่ schema ไม่ตรวจชื่อ (ตัว validator ตรวจกับรายการใน VOCABULARY.md)
+
+## กฎที่ `content:validate` ตรวจเพิ่ม
+
+เกินกว่าที่ schema ตรวจได้ในไฟล์เดียว (รันด้วย `make validate`):
+- `day` ตรงกับชื่อไฟล์ `day-XXX.json`
+- exercise ID ไม่ซ้ำทั้ง repo และเลข `XXX` ใน ID เท่ากับ `day` ของบทนั้น
+- `listen_choose.answer` และ `read_passage.questions[].answer` เป็น index ที่มีอยู่ใน `choices`
+- `arrange_words.answer` ใช้คำใน `words` ครบและไม่เกิน (นับซ้ำด้วย แยกคำด้วยช่องว่าง เทียบตรงตัว รวมตัวพิมพ์ใหญ่และเครื่องหมายวรรคตอน)
+- จำนวน `___` ใน `fill_blank.text` เท่ากับจำนวน `answer`
+- กฎเรื่องคำศัพท์ทั้งหมดอยู่ที่ [VOCABULARY.md หัวข้อ 6](VOCABULARY.md#6-กฎการตรวจ-pnpm-contentvalidate)
+
 ## VocabItem
 
 คลังคำศัพท์อยู่ที่ `content/vocab/oxford-3000/<level>.json` และ `content/vocab/oxford-5000/b2-c1.json` แต่ละไฟล์เป็น array ของ VocabItem รายละเอียดแผนคำศัพท์ดูได้ที่ [VOCABULARY.md](VOCABULARY.md)
