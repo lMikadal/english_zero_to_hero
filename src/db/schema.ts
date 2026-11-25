@@ -100,6 +100,8 @@ export const attempts = pgTable(
     tags: tags(),
     source: text("source").$type<AttemptSource>().notNull().default("lesson"),
     sessionId: uuid("session_id"),
+    // 1 = first try (counts for scores), 2 = the end-of-lesson retry round
+    attemptNo: smallint("attempt_no").notNull().default(1),
     answer: jsonb("answer"),
     createdAt: createdAt(),
   },
@@ -108,11 +110,13 @@ export const attempts = pgTable(
     index("attempts_user_id_exercise_id_idx").on(t.userId, t.exerciseId),
     index("attempts_user_id_skill_created_at_idx").on(t.userId, t.skill, t.createdAt),
     index("attempts_user_id_source_created_at_idx").on(t.userId, t.source, t.createdAt),
+    index("attempts_user_id_day_idx").on(t.userId, t.day),
     index("attempts_tags_gin_idx").using("gin", t.tags),
     check("attempts_day_range", sql`${t.day} BETWEEN 1 AND 365`),
     check("attempts_skill_valid", inList(t.skill, SKILLS)),
     check("attempts_source_valid", inList(t.source, ATTEMPT_SOURCES)),
     check("attempts_duration_nonneg", sql`${t.durationMs} >= 0`),
+    check("attempts_attempt_no_range", sql`${t.attemptNo} BETWEEN 1 AND 2`),
   ],
 );
 
@@ -204,6 +208,18 @@ export const streaks = pgTable(
     check("streaks_longest_nonneg", sql`${t.longest} >= 0`),
     check("streaks_freezes_left_nonneg", sql`${t.freezesLeft} >= 0`),
   ],
+);
+
+// One row per user and local calendar day with learning activity; the streak is derived from it, so it does not
+// depend on the order in which days sync (a late offline day still lands in the right place).
+export const activityDays = pgTable(
+  "activity_days",
+  {
+    userId: userId(),
+    localDate: date("local_date").notNull(),
+    source: text("source").notNull().default("lesson"),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.localDate] })],
 );
 
 export const pushSubscriptions = pgTable("push_subscriptions", {

@@ -8,6 +8,7 @@ import { testDatabaseUrl } from "./test-utils";
 const scratchUrl = withDatabaseName(testDatabaseUrl(), `${new URL(testDatabaseUrl()).pathname.slice(1)}_scratch`);
 
 const EXPECTED_TABLES = [
+  "activity_days",
   "attempts",
   "profiles",
   "progress",
