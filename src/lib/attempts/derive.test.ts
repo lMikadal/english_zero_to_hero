@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { Skill } from "@/db/schema"; // type-only
-import type { Section } from "@/lib/content/schema";
+import type { Exercise, Section } from "@/lib/content/schema";
 import { allExercises, readLesson, taughtWords } from "@/lib/answers/test-content";
 import { attemptSkill, deriveTags, exerciseEnglishText, exerciseTagText, findExercise, type AttemptSkill } from "./derive";
 
@@ -133,7 +133,7 @@ describe("deriveTags", () => {
   });
   it("tokenises around punctuation: Sam: and (pen) still match", () => {
     const f = allExercises().find((e) => e.exercise.id === "d001-listen-02")!;
-    const ex = { id: "d001-listen-09", type: "shadowing", instruction: { th: "ก" }, lines: ["Sam: this is (pen)", "my \"name\"-tag"] } as const;
+    const ex: Exercise = { id: "d001-listen-09", type: "shadowing", instruction: { th: "ก" }, lines: ["Sam: this is (pen)", "my \"name\"-tag"] };
     expect(deriveTags(f.lesson, ex, f.section, new Map([["v-pen", "pen"], ["v-name", "name"], ["v-sam", "sam"]]))).toEqual(["vocab:v-name", "vocab:v-pen", "vocab:v-sam"]);
   });
   it("multi-word vocab entries match as a whole word sequence", () => {
