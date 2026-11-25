@@ -63,6 +63,12 @@ function answerProblems(ex: Exercise): string[] {
       const got = ex.answer.split(/\s+/).filter(Boolean);
       const tiles = ex.words.flatMap((w) => w.split(/\s+/).filter(Boolean));
       if (norm(got) !== norm(tiles)) out.push(`answer "${ex.answer}" does not use exactly the given words [${ex.words.join(", ")}]`);
+      // alternatives: same tiles, compared case-insensitively (the tile case follows the answer, e.g. "Is this" vs tile "This")
+      const lower = (xs: string[]) => norm(xs.map((x) => x.toLowerCase()));
+      for (const alt of ex.accept ?? []) {
+        if (alt !== alt.split(/\s+/).join(" ")) out.push(`accept "${alt}" must be single-spaced`);
+        else if (lower(alt.split(" ")) !== lower(tiles)) out.push(`accept "${alt}" does not use exactly the given words [${ex.words.join(", ")}]`);
+      }
       return out;
     }
     case "fill_blank": {

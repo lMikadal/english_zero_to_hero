@@ -18,12 +18,16 @@ const text = z.string().refine((s) => s.length > 0 && s.trim() === s, "must not 
 const thai = text.refine((s) => /[\u0E00-\u0E7F]/.test(s), "must contain Thai characters");
 const bilingual = z.strictObject({ en: text, th: thai });
 const vocabId = z.string().regex(/^v-[a-z0-9]+(-[a-z0-9]+)*$/, "vocab id must look like v-word or v-word-pos");
-const exerciseId = z.string().regex(/^d\d{3}-(pron|listen|speak|read|write|vocab)-\d{2}$/, "exercise id must look like dXXX-<skill>-NN, skill = pron|listen|speak|read|write|vocab");
+/** `dXXX-<skill>-NN`; also used by the attempts API contract. */
+export const EXERCISE_ID_PATTERN = /^d\d{3}-(pron|listen|speak|read|write|vocab)-\d{2}$/;
+const exerciseId = z.string().regex(EXERCISE_ID_PATTERN, "exercise id must look like dXXX-<skill>-NN, skill = pron|listen|speak|read|write|vocab");
 const choiceIndex = z.number().int().nonnegative();
 
 const base = {
   id: exerciseId,
   instruction: z.strictObject({ th: thai, en: text.optional() }),
+  /** Phoneme codes (same alphabet as `phoneme_intro.phoneme`); when present they define the exercise's `phoneme:` tags. */
+  phonemes: z.array(text).min(1).optional(),
 };
 
 export const phonemeIntroSchema = z.strictObject({
@@ -61,7 +65,7 @@ export const readPassageSchema = z.strictObject({
   questions: z.array(z.strictObject({ question: bilingual, choices: z.array(text).min(2), answer: choiceIndex })).min(1),
 });
 export const arrangeWordsSchema = z.strictObject({
-  ...base, type: z.literal("arrange_words"), words: z.array(text).min(2), answer: text,
+  ...base, type: z.literal("arrange_words"), words: z.array(text).min(2), answer: text, accept: z.array(text).min(1).optional(),
 });
 export const fillBlankSchema = z.strictObject({
   ...base, type: z.literal("fill_blank"), text, answer: z.array(text).min(1),
