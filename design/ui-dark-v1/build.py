@@ -124,8 +124,7 @@ def home(x, c, label):
     done = row(body, "Done today", gap=8, pad=[12, 14, 12, 14], fill=c["okSoft"], cornerRadius=12, stroke=c["okBorder"], strokeWeight=1)
     text(done, "✓", 14, c["ok"], EN, "Bold")
     text(done, "วันนี้เรียนแล้ว เรียนบทถัดไปต่อได้เลย", 13, c["ok"], TH, "Medium")
-    foot = col(s, "Footer", pad=[0, 20, 24, 20])
-    text(foot, "ระดับโดยประมาณ Pre-A1 · ทันแผน", 12, c["faint"], TH, "Regular", textAlign="center", sizingH="fill")
+    navbar(s, c, "วันนี้")
     return s
 
 def phoneme(x, c, label):
@@ -272,6 +271,118 @@ def settings(x, c, label, selected):
     text(foot, "ธีมจำไว้ในอุปกรณ์นี้ แต่ละเครื่องตั้งต่างกันได้", 12, c["faint"], TH, "Regular", textAlign="center", sizingH="fill")
     return s
 
+def navbar(parent, c, active):
+    bar = row(parent, "Tab bar", gap=0, pad=[8, 12, 20, 12], fill=c["surface"], stroke=c["border"], strokeWeight=1,
+              strokeSides=[True, False, False, False])
+    for icon, lab in [("⌂", "วันนี้"), ("↻", "ฝึกเพิ่ม"), ("◔", "พัฒนาการ")]:
+        on = lab == active
+        t = col(bar, f"Tab / {lab}", gap=2, pad=[6, 0, 6, 0], crossAlign="center")
+        text(t, icon, 18, c["accent"] if on else c["faint"], IPA, "Regular")
+        text(t, lab, 11, c["accent"] if on else c["muted"], TH, "Medium")
+    return bar
+
+def section_title(parent, c, title, right=None):
+    r = row(parent, f"Section / {title}", mainAlign="spaceBetween")
+    text(r, title, 13, c["muted"], TH, "Medium")
+    if right: text(r, right, 12, c["accent"], TH, "Medium")
+    return r
+
+def chip(parent, c, lab, on=False, font=TH):
+    b = frame(parent, f"Chip / {lab}", layout="horizontal", crossAlign="center", padding=[8, 13, 8, 13],
+              sizingH="hug", sizingV="hug", cornerRadius=999,
+              fill=c["accentSoft"] if on else c["surface"], stroke=c["accent"] if on else c["border"], strokeWeight=1)
+    text(b, lab, 13, c["accent"] if on else c["text"], font, "Medium")
+    return b
+
+def practice(x, c, label):
+    s = screen("Practice hub", x, c, label)
+    top = col(s, "Top", gap=0)
+    head = col(top, "Header", gap=4, pad=[24, 20, 8, 20])
+    text(head, "ฝึกเพิ่ม", 22, c["text"], TH, "Bold")
+    text(head, "ฝึกได้ไม่จำกัด ไม่กระทบคะแนนบทเรียนประจำวัน", 13, c["muted"], TH, "Regular")
+    body = col(top, "Body", gap=18, pad=[10, 20, 0, 20])
+    due = row(body, "Vocab review", gap=12, pad=14, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, mainAlign="spaceBetween")
+    dl = col(due, "Text", gap=2)
+    text(dl, "ทวนคำศัพท์", 15, c["text"], TH, "Bold")
+    text(dl, "ถึงกำหนด 12 คำ · ประมาณ 4 นาที", 12, c["muted"], TH, "Regular")
+    go = frame(due, "Go", layout="horizontal", crossAlign="center", padding=[9, 16, 9, 16], sizingH="hug", sizingV="hug",
+               cornerRadius=10, fill=c["accent"])
+    text(go, "เริ่ม", 13, c["accentText"], TH, "Medium")
+    sec = col(body, "Weak points", gap=8)
+    section_title(sec, c, "แนะนำสำหรับคุณ", "ดูทั้งหมด")
+    for t, d, st, colr in [("เสียง /æ/ กับ /ʌ/", "ผิด 42% ใน 14 วัน", "ยังไม่เริ่ม", c["bad"]), ("เขียนตามคำบอก", "ผิด 33% · ผ่านทดสอบแล้ว 1 ครั้ง", "รอทดสอบซ้ำ", c["tip"])]:
+        r = row(sec, f"Weak / {t}", gap=10, pad=[12, 14, 12, 14], fill=c["surface"], cornerRadius=12, stroke=c["border"], strokeWeight=1, mainAlign="spaceBetween")
+        l = col(r, "Text", gap=2)
+        text(l, t, 14, c["text"], TH, "Medium")
+        text(l, d, 12, c["muted"], TH, "Regular")
+        text(r, st, 12, colr, TH, "Medium")
+    sec2 = col(body, "Pick your own", gap=8)
+    section_title(sec2, c, "เลือกฝึกเอง")
+    w1 = frame(sec2, "Skill chips", layout="horizontal", wrap=True, gap=8, crossGap=8, sizingH="fill", sizingV="hug", fill="none")
+    for i, lab in enumerate(["ออกเสียง", "ฟัง", "พูด", "อ่าน", "เขียน", "คำศัพท์"]):
+        chip(w1, c, lab, on=(i == 1))
+    w2 = frame(sec2, "Topic chips", layout="horizontal", wrap=True, gap=8, crossGap=8, sizingH="fill", sizingV="hug", fill="none")
+    for i, lab in enumerate(["ทักทาย", "ตัวอักษร A–Z", "เสียง /e/", "เสียง /ɪ/", "ประเทศและเมือง"]):
+        chip(w2, c, lab, on=(i == 0))
+    r = row(sec2, "Start custom", gap=10, mainAlign="spaceBetween")
+    text(r, "ฟัง · ทักทาย · 10 ข้อ", 13, c["muted"], TH, "Regular")
+    go2 = frame(r, "Go", layout="horizontal", crossAlign="center", padding=[9, 16, 9, 16], sizingH="hug", sizingV="hug",
+                cornerRadius=10, fill=c["surface2"], stroke=c["border"], strokeWeight=1)
+    text(go2, "เริ่มฝึก", 13, c["text"], TH, "Medium")
+    sec3 = row(body, "Replay", gap=10, pad=[12, 14, 12, 14], fill=c["surface"], cornerRadius=12, stroke=c["border"], strokeWeight=1, mainAlign="spaceBetween")
+    text(sec3, "เล่นบทที่เรียนแล้วซ้ำ", 14, c["text"], TH, "Medium")
+    text(sec3, "วันที่ 1–7  ›", 13, c["muted"], TH, "Regular")
+    navbar(s, c, "ฝึกเพิ่ม")
+    return s
+
+def progress_screen(x, c, label):
+    s = screen("Progress", x, c, label)
+    top = col(s, "Top", gap=0)
+    head = col(top, "Header", gap=4, pad=[24, 20, 8, 20])
+    text(head, "พัฒนาการ", 22, c["text"], TH, "Bold")
+    body = col(top, "Body", gap=14, pad=[8, 20, 0, 20])
+    lvl = col(body, "Level card", gap=12, pad=16, fill=c["surface"], cornerRadius=16, stroke=c["border"], strokeWeight=1)
+    lr = row(lvl, "Level row", mainAlign="spaceBetween", crossAlign="max")
+    ll = col(lr, "Level", gap=2, sizingH="hug")
+    text(ll, "ระดับโดยประมาณ", 12, c["muted"], TH, "Medium")
+    text(ll, "Pre-A1", 28, c["text"], EN, "Bold")
+    text(lr, "ไป A1 อีก 88%", 12, c["muted"], TH, "Regular")
+    tr = frame(lvl, "Level track", h=6, layout="horizontal", sizingH="fill", sizingV="fixed", fill=c["track"], cornerRadius=3, clip=True)
+    frame(tr, "Level fill", w=36, h=6, fill=c["accent"], cornerRadius=3)
+    text(lvl, "A1 ต้องผ่านสอบวันที่ 60 และรู้จริง 400 คำ", 12, c["faint"], TH, "Regular", sizingH="fill", textAutoResize="height")
+    grid = row(body, "Plan", gap=12, crossAlign="min")
+    for big, small, colr in [("วันที่ 7", "จาก 365 · ทันแผน", c["ok"]), ("7 วัน", "สตรีค · นานสุด 7", c["muted"])]:
+        st = col(grid, f"Stat / {small}", gap=4, pad=14, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1)
+        text(st, big, 20, c["text"], TH, "Bold")
+        text(st, small, 12, colr, TH, "Regular")
+    voc = col(body, "Vocabulary", gap=10, pad=16, fill=c["surface"], cornerRadius=16, stroke=c["border"], strokeWeight=1)
+    vr = row(voc, "Vocab head", mainAlign="spaceBetween", crossAlign="baseline")
+    text(vr, "คำศัพท์ Oxford 3000", 14, c["text"], TH, "Bold")
+    text(vr, "รู้จริง 9 / 3,000", 12, c["muted"], TH, "Regular")
+    bar = frame(voc, "Stacked bar", h=10, layout="horizontal", sizingH="fill", sizingV="fixed", fill=c["track"], cornerRadius=5, clip=True, gap=2)
+    for w_, colr in [(22, c["ok"]), (38, c["accent"]), (46, c["tip"])]:
+        frame(bar, "Seg", w=w_, h=10, fill=colr)
+    lg = row(voc, "Legend", gap=14, sizingH="hug")
+    for lab, colr in [("รู้จริง 9", c["ok"]), ("จำได้ 14", c["accent"]), ("กำลังเรียน 13", c["tip"])]:
+        it = row(lg, f"Legend / {lab}", gap=5, sizingH="hug")
+        frame(it, "Dot", w=8, h=8, fill=colr, cornerRadius=4)
+        text(it, lab, 11, c["muted"], TH, "Regular")
+    wk = col(body, "Weak points", gap=0, fill=c["surface"], cornerRadius=14, stroke=c["border"], strokeWeight=1, clip=True)
+    hd = row(wk, "Weak head", pad=[12, 16, 10, 16], mainAlign="spaceBetween")
+    text(hd, "จุดอ่อนที่ต้องแก้", 14, c["text"], TH, "Bold")
+    text(hd, "2 จุด", 12, c["muted"], TH, "Regular")
+    for t, d, btn in [("เสียง /æ/ กับ /ʌ/", "ผิด 42%", "ฝึก"), ("เขียนตามคำบอก", "ผิด 33% · รอทดสอบซ้ำ", "ทดสอบ")]:
+        frame(wk, "Divider", h=1, sizingH="fill", sizingV="fixed", fill=c["border"], layout="horizontal")
+        r = row(wk, f"Weak / {t}", pad=[11, 16, 11, 16], mainAlign="spaceBetween")
+        l = col(r, "Text", gap=2)
+        text(l, t, 14, c["text"], TH, "Medium")
+        text(l, d, 12, c["muted"], TH, "Regular")
+        b = frame(r, "Action", layout="horizontal", crossAlign="center", padding=[7, 14, 7, 14], sizingH="hug", sizingV="hug",
+                  cornerRadius=9, fill=c["surface2"], stroke=c["border"], strokeWeight=1)
+        text(b, btn, 12, c["text"], TH, "Medium")
+    navbar(s, c, "พัฒนาการ")
+    return s
+
 GAP = 420
 home(0 * GAP, DARK, "1 · หน้าแรก (มืด)")
 phoneme(1 * GAP, DARK, "2 · แนะนำเสียง")
@@ -282,6 +393,8 @@ home(5 * GAP + 60, LIGHT, "6 · หน้าแรก (สว่าง) สำ�
 minimal_pair(6 * GAP + 60, LIGHT, "7 · ฟังแยกเสียง (สว่าง)")
 settings(7 * GAP + 120, DARK, "8 · ตั้งค่าธีม (เลือกมืด)", "มืด")
 settings(8 * GAP + 120, LIGHT, "9 · ตั้งค่าธีม (เลือกสว่าง)", "สว่าง")
+practice(9 * GAP + 180, DARK, "10 · ฝึกเพิ่ม (ไม่ใช่บทประจำวัน)")
+progress_screen(10 * GAP + 180, DARK, "11 · พัฒนาการ")
 
 json.dump(steps, open(sys.argv[1], "w"), ensure_ascii=False, indent=0)
 print(len(steps), "steps")
