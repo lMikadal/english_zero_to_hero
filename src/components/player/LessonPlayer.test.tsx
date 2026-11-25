@@ -66,7 +66,7 @@ describe("LessonPlayer", () => {
     setup(["d001-listen-01", "d001-listen-02"]);
     await answerListen01(false);
     expect(screen.getByRole("status")).toHaveTextContent("Sam");
-    expect(screen.getByRole("status")).not.toHaveTextContent("ถูกต้อง");
+    expect(screen.getByRole("status")).toHaveTextContent("ยังไม่ถูก");
   });
 
   it("sends a valid attempt payload with the same sessionId all lesson long", async () => {
