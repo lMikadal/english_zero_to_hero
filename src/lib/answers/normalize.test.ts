@@ -27,6 +27,29 @@ describe("normalizeAnswer", () => {
   });
 });
 
+describe("normalizeAnswer: unicode hardening", () => {
+  it("treats the ellipsis character like the punctuation it removes", () => {
+    expect(normalizeAnswer("Nice to meet you…")).toBe("nice to meet you");
+    expect(normalizeAnswer("wait…what")).toBe("wait what");
+  });
+  it("folds fullwidth forms (NFKC)", () => {
+    expect(normalizeAnswer("Where are you from？")).toBe("where are you from");
+    expect(normalizeAnswer("Ｈｅｌｌｏ！Ｓａｍ，ｈｉ")).toBe("hello sam hi");
+  });
+  it("strips zero-width characters, even inside a word", () => {
+    expect(normalizeAnswer("Nice to me\u200Det you")).toBe("nice to meet you");
+    for (const z of ["\u200B", "\u200C", "\u200D", "\uFEFF"]) expect(normalizeAnswer(`ca${z}t`)).toBe("cat");
+  });
+  it.each(["\u2019", "\u2018", "\u02BC", "\u00B4", "`"])("maps the apostrophe look-alike %j to '", (a) => {
+    expect(normalizeAnswer(`I${a}m from Bangkok`)).toBe("i'm from bangkok");
+  });
+  it("real content: d001-listen-02 accepts the ellipsis and fullwidth variants", () => {
+    expect(matchesAny("Nice to meet you…", ["Nice to meet you."])).toBe(true);
+    expect(matchesAny("Nice to meet you！", ["Nice to meet you."])).toBe(true);
+    expect(matchesAny("Nice to meet\u200D you", ["Nice to meet you."])).toBe(true);
+  });
+});
+
 describe("matchesAny", () => {
   it("matches after normalising both sides", () => {
     expect(matchesAny("i’m from bangkok.", ["I'm from Bangkok"])).toBe(true);
