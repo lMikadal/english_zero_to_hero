@@ -1,0 +1,232 @@
+{
+  "day": 7,
+  "phase": 1,
+  "week": 1,
+  "type": "challenge",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 1 challenge: introduce yourself",
+    "th": "ภารกิจสัปดาห์ที่ 1: แนะนำตัวเอง"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read a longer introduction dialogue",
+      "th": "ฟังและอ่านบทสนทนาแนะนำตัวที่ยาวขึ้นได้"
+    },
+    {
+      "en": "Introduce yourself aloud in about 30 seconds",
+      "th": "แนะนำตัวเองด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write a 4–5 sentence self-introduction",
+      "th": "เขียนแนะนำตัวเอง 4–5 ประโยคได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d007-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียงสระสั้นและเสียงท้ายคำ"
+          },
+          "text": "Hello! My name is Mai. Nice to meet you.",
+          "ipa": "/həˈloʊ maɪ neɪm ɪz maɪ naɪs tə miːt juː/"
+        },
+        {
+          "id": "d007-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /ɪ/ ใน big และ city"
+          },
+          "text": "I'm from Chiang Mai. It is a big city.",
+          "ipa": "/aɪm frʌm ˌtʃjæŋ ˈmaɪ ɪt ɪz ə bɪɡ ˈsɪti/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a conversation",
+        "th": "ฟังบทสนทนา"
+      },
+      "exercises": [
+        {
+          "id": "d007-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังบทสนทนาแล้วตอบคำถาม"
+          },
+          "audioText": "Sam: Good morning! I'm Sam. Mai: Hi, Sam. My name is Mai. Nice to meet you. Sam: Nice to meet you, too. How are you? Mai: I'm fine, thank you. And you? Sam: I'm good, thank you. Where are you from, Mai? Mai: I'm from Thailand. I'm from Chiang Mai.",
+          "question": {
+            "en": "Where is Mai from?",
+            "th": "ไหมมาจากที่ไหน"
+          },
+          "choices": [
+            "Bangkok",
+            "Chiang Mai",
+            "England"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d007-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าไหมสะกดชื่อของเธออย่างไร"
+          },
+          "audioText": "Sam: How do you spell Mai? Mai: M, A, I. Please sit and meet my friend, Ben.",
+          "question": {
+            "en": "How does Mai spell her name?",
+            "th": "ไหมสะกดชื่อของเธออย่างไร"
+          },
+          "choices": [
+            "M, A, I",
+            "M, I, A",
+            "N, A, I"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d007-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "My name is Mai. M, A, I.",
+          "accept": [
+            "My name is Mai. M, A, I.",
+            "My name is Mai. M, A, I",
+            "My name is Mai. MAI",
+            "My name is Mai. M A I",
+            "My name is Mai, M, A, I.",
+            "My name is Mai, M, A, I"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d007-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "Good morning! I'm Sam.",
+            "Hi, Sam. My name is Mai. Nice to meet you.",
+            "Nice to meet you, too. How are you?",
+            "I'm fine, thank you. And you?",
+            "I'm good, thank you. Where are you from, Mai?",
+            "I'm from Thailand. I'm from Chiang Mai. It is a big city.",
+            "How do you spell Mai?",
+            "M, A, I. Please sit and meet my friend, Ben.",
+            "Hello, Ben!",
+            "Hello, Sam. Goodbye, Mai. See you!"
+          ]
+        },
+        {
+          "id": "d007-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "แนะนำตัวเองด้วยเสียงประมาณ 30 วินาที: ชื่อ ที่ที่คุณมาจาก สบายดีไหม และสะกดชื่อ"
+          },
+          "prompt": "Hello! What's your name? Where are you from? How are you?",
+          "sampleAnswer": "Hello! My name is Mai. M, A, I. I'm from Thailand. I'm fine, thank you. Nice to meet you!",
+          "keywords": [
+            "name",
+            "from",
+            "fine"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read the conversation",
+        "th": "อ่านบทสนทนา"
+      },
+      "exercises": [
+        {
+          "id": "d007-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Sam: Good morning! I'm Sam.\nMai: Hi, Sam. My name is Mai. Nice to meet you.\nSam: Nice to meet you, too. How are you?\nMai: I'm fine, thank you. And you?\nSam: I'm good, thank you. Where are you from, Mai?\nMai: I'm from Thailand. I'm from Chiang Mai. It is a big city.\nSam: How do you spell Mai?\nMai: M, A, I. Please sit and meet my friend, Ben.\nSam: Hello, Ben!\nBen: Hello, Sam. Goodbye, Mai. See you!",
+          "glossary": {
+            "too": "ด้วยเช่นกัน"
+          },
+          "questions": [
+            {
+              "question": {
+                "en": "Who says goodbye?",
+                "th": "ใครเป็นคนกล่าวลา"
+              },
+              "choices": [
+                "Ben",
+                "Sam"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is Chiang Mai a big city?",
+                "th": "เชียงใหม่เป็นเมืองใหญ่ไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who is Mai's friend?",
+                "th": "ใครเป็นเพื่อนของไหม"
+              },
+              "choices": [
+                "Sam",
+                "Ben"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write your introduction",
+        "th": "เขียนแนะนำตัวเอง"
+      },
+      "exercises": [
+        {
+          "id": "d007-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียนแนะนำตัวเอง 4–5 ประโยค: ชื่อ มาจากที่ไหน สบายดีไหม และสะกดชื่อของคุณ"
+          },
+          "prompt": "Write 4–5 sentences about you. Say your name, where you are from, how you are, and how to spell your name.",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}
