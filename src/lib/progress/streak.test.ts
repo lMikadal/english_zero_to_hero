@@ -1,28 +1,33 @@
 import { describe, expect, it } from "vitest";
-import { nextStreak, type StreakState } from "./streak";
+import { computeStreak } from "./streak";
 
-const s = (current: number, longest: number, lastActiveDate: string | null): StreakState => ({ current, longest, lastActiveDate });
-
-describe("nextStreak", () => {
-  it("starts at 1 on the first active day", () => {
-    expect(nextStreak(s(0, 0, null), "2026-11-25")).toEqual(s(1, 1, "2026-11-25"));
+describe("computeStreak", () => {
+  it("is empty without activity", () => {
+    expect(computeStreak([])).toEqual({ current: 0, longest: 0, lastActiveDate: null });
   });
-  it("leaves the same day unchanged", () => {
-    expect(nextStreak(s(3, 5, "2026-11-25"), "2026-11-25")).toEqual(s(3, 5, "2026-11-25"));
+  it("a single day is a streak of 1", () => {
+    expect(computeStreak(["2026-11-25"])).toEqual({ current: 1, longest: 1, lastActiveDate: "2026-11-25" });
   });
-  it("adds one on the next day", () => {
-    expect(nextStreak(s(3, 3, "2026-11-25"), "2026-11-26")).toEqual(s(4, 4, "2026-11-26"));
+  it("counts consecutive days ending at the latest activity day", () => {
+    expect(computeStreak(["2026-11-23", "2026-11-24", "2026-11-25"])).toEqual({ current: 3, longest: 3, lastActiveDate: "2026-11-25" });
   });
-  it("counts across a month and year boundary", () => {
-    expect(nextStreak(s(1, 1, "2026-12-31"), "2027-01-01")).toEqual(s(2, 2, "2027-01-01"));
+  it("ignores duplicates", () => {
+    expect(computeStreak(["2026-11-25", "2026-11-25", "2026-11-24"])).toEqual({ current: 2, longest: 2, lastActiveDate: "2026-11-25" });
   });
-  it("resets to 1 after a gap but keeps longest", () => {
-    expect(nextStreak(s(7, 7, "2026-11-20"), "2026-11-25")).toEqual(s(1, 7, "2026-11-25"));
+  it("does not depend on insertion order (an old day syncing late)", () => {
+    expect(computeStreak(["2026-11-26", "2026-11-24", "2026-11-25"])).toEqual({ current: 3, longest: 3, lastActiveDate: "2026-11-26" });
+    expect(computeStreak(["2026-11-24", "2026-11-26"])).toMatchObject({ current: 1, longest: 1 });
+    expect(computeStreak(["2026-11-26", "2026-11-24", "2026-11-25"])).toEqual(computeStreak(["2026-11-24", "2026-11-25", "2026-11-26"]));
   });
-  it("never lowers longest", () => {
-    expect(nextStreak(s(2, 9, "2026-11-25"), "2026-11-26")).toEqual(s(3, 9, "2026-11-26"));
+  it("a gap ends the current run but longest remembers the best run", () => {
+    expect(computeStreak(["2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-20", "2026-11-21"])).toEqual({
+      current: 2,
+      longest: 4,
+      lastActiveDate: "2026-11-21",
+    });
   });
-  it("leaves the state unchanged for an older date (late offline replay)", () => {
-    expect(nextStreak(s(4, 6, "2026-11-25"), "2026-11-23")).toEqual(s(4, 6, "2026-11-25"));
+  it("runs across month and year boundaries", () => {
+    expect(computeStreak(["2026-12-30", "2026-12-31", "2027-01-01"])).toEqual({ current: 3, longest: 3, lastActiveDate: "2027-01-01" });
+    expect(computeStreak(["2028-02-28", "2028-02-29", "2028-03-01"]).current).toBe(3);
   });
 });

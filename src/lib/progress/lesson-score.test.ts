@@ -28,4 +28,12 @@ describe("lessonScore", () => {
       ]),
     ).toBeCloseTo(0.5);
   });
+  it("breaks a createdAt tie on id, whatever the row order", () => {
+    const rows = [
+      { id: "00000000-0000-4000-8000-000000000001", exerciseId: "a", score: 0, createdAt: at(0) },
+      { id: "00000000-0000-4000-8000-000000000002", exerciseId: "a", score: 1, createdAt: at(0) },
+    ];
+    expect(lessonScore(rows)).toBe(1);
+    expect(lessonScore([...rows].reverse())).toBe(1);
+  });
 });
