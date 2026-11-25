@@ -14,7 +14,8 @@ help: ## List targets
 postgres-up:
 	$(COMPOSE) up -d --wait postgres
 
-up: ## Start app (dev, hot reload) + postgres at http://localhost:3000
+up: postgres-up ## Start app (dev, hot reload) + postgres at http://localhost:3000
+	$(COMPOSE) run --rm --no-deps app pnpm db:ensure
 	$(COMPOSE) up -d --build --wait app
 
 down: ## Stop and remove containers (volumes are kept)
@@ -49,17 +50,17 @@ validate: ## Validate everything under content/ (schema + cross-file rules)
 db-generate: ## Generate a SQL migration from src/db/schema.ts
 	$(RUN) pnpm db:generate
 
-db-migrate: postgres-up ## Apply pending migrations to the dev database
+db-migrate: postgres-up ## Create the dev database if missing, apply pending migrations
 	$(RUN) pnpm db:migrate
 
 db-studio: postgres-up ## Drizzle Studio at https://local.drizzle.studio (port 4983, localhost only)
 	$(COMPOSE) run --rm --no-deps -p 127.0.0.1:4983:4983 app dev-entrypoint.sh pnpm db:studio
 
-db-reset: postgres-up ## DEV ONLY: drop + recreate the dev database, then migrate
-ifeq ($(NODE_ENV),production)
-	$(error db-reset is dev only and refuses to run with NODE_ENV=production)
-endif
-	$(RUN) pnpm db:reset
+db-reset: ## DEV ONLY: drop + recreate the *_dev database, then migrate (needs CONFIRM=<database name>)
+	@# guard first, before postgres is even started; the script refuses any database not ending in _dev
+	$(RUN) env CONFIRM='$(CONFIRM)' pnpm db:reset --check
+	@$(MAKE) --no-print-directory postgres-up
+	$(RUN) env CONFIRM='$(CONFIRM)' pnpm db:reset
 
 # Not implemented yet: fail loudly instead of faking success.
 audio:       ; @echo "make $@: not implemented yet (PR 7: audio-tts)" >&2; exit 1

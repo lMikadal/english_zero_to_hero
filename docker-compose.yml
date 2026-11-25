@@ -23,7 +23,9 @@ services:
     # uid/gid 1000 = host user, so files written into the bind mount are not root-owned
     user: "1000:1000"
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-ezh}:${POSTGRES_PASSWORD:-ezh}@postgres:5432/${POSTGRES_DB:-english_zero_to_hero}
+      # dev uses its own database (<POSTGRES_DB>_dev); the real `english_zero_to_hero` is reserved
+      # for production and `make db-reset` refuses anything not ending in _dev
+      DATABASE_URL: postgres://${POSTGRES_USER:-ezh}:${POSTGRES_PASSWORD:-ezh}@postgres:5432/${POSTGRES_DB:-english_zero_to_hero}_dev
     env_file:
       - path: .env
         required: false
