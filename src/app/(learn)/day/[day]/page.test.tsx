@@ -18,7 +18,7 @@ describe("day page", () => {
   it("renders the lesson player for an unlocked day", async () => {
     await show("1");
     expect(screen.getByText("ฟังและสังเกตรูปปาก")).toBeInTheDocument(); // first exercise of day 1
-    expect(screen.getByText("ข้อ 1 / 11")).toBeInTheDocument();
+    expect(screen.getByText("ข้อ 1 / 10")).toBeInTheDocument();
   });
 
   it("shows the locked screen with a link to the current day for a later day", async () => {

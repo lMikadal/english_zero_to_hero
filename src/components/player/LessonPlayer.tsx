@@ -26,7 +26,6 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
     createPlayerState({ lesson, sessionId: newId(), now: clock(), isSupported: isRegistered }),
   );
   const [completion, setCompletion] = useState<CompleteResult | null>(null);
-  const answered = useRef(new Set<string>());
   const completing = useRef(false);
 
   useEffect(() => {
@@ -47,10 +46,9 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   const graded = recordsAttempt(item);
 
   const onAnswer = (answer: AttemptAnswer) => {
-    if (!graded || answered.current.has(item.key)) return;
+    if (!graded || record) return; // one attempt per exercise per round
     const grade = gradeExercise(exercise, answer);
     if ("error" in grade) return;
-    answered.current.add(item.key);
     const now = clock();
     sink.sendAttempt({
       id: newId(),
