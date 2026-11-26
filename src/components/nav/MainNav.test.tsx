@@ -67,4 +67,42 @@ describe("MainNav", () => {
     const rule = css.slice(css.indexOf(".nav-notch"));
     expect(rule).toMatch(/mask-image:\s*radial-gradient\([^;]*var\(--cx\)/);
   });
+
+  describe("outline ring around the notch (design 13: the bar's outline follows the notch curve)", () => {
+    const ring = (c: HTMLElement) => c.querySelector(".nav-ring") as HTMLElement | null;
+
+    it.each(NAV_ITEMS)("on $href there is one decorative ring layer centred like the notch", ({ href }) => {
+      const { container } = show(href);
+      const layer = ring(container);
+      expect(layer).not.toBeNull();
+      expect(container.querySelectorAll(".nav-ring")).toHaveLength(1);
+      expect(layer).toHaveAttribute("aria-hidden", "true");
+      expect(layer!.textContent).toBe("");
+      const notch = container.querySelector(".nav-notch") as HTMLElement;
+      expect(layer!.getAttribute("style")).toBe(notch.getAttribute("style")); // same --cx, so the two always line up
+    });
+
+    it("is not drawn when no menu is current (there is no notch either)", () => {
+      const { container } = show("/somewhere-else");
+      expect(container.querySelector(".nav-notch")).toBeNull();
+      expect(ring(container)).toBeNull();
+    });
+
+    it("globals.css draws it from tokens only: a --line fill, masked to a thin circle band around the notch", () => {
+      const css = fs.readFileSync(path.join(process.cwd(), "src/app/globals.css"), "utf8");
+      const rule = /\.nav-ring\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+      expect(rule).toMatch(/background(-color)?:\s*var\(--line\)/);
+      expect(rule).toMatch(/mask-image:\s*radial-gradient\([^;]*var\(--cx\)/);
+      expect(rule).not.toMatch(/#[0-9a-f]{3,8}\b|rgb|hsl/i);
+    });
+
+    it("sits inside the bar box (same rounded corners), under the links", () => {
+      const { container } = show("/");
+      const classes = ring(container)!.className;
+      expect(classes).toMatch(/\babsolute\b/);
+      expect(classes).toMatch(/\binset-0\b/);
+      expect(classes).toMatch(/\brounded-3xl\b/);
+      expect(classes).toMatch(/\bpointer-events-none\b/);
+    });
+  });
 });
