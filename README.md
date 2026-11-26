@@ -16,6 +16,7 @@
 | [docs/AI_TEAM.md](docs/AI_TEAM.md) | ทีม AI: บทบาท, โมเดล, ขั้นตอนทำงาน |
 | [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) | การแบ่ง branch, commit และแผน PR |
 | [docs/TESTING.md](docs/TESTING.md) | แนวทาง TDD และเทสต์แต่ละชั้น |
+| [docs/FEATURE_MAP.md](docs/FEATURE_MAP.md) | แผนที่หน้าจอและ API ที่มีอยู่ + วิธียืนยันว่าทำงานจริง |
 | [docs/PROGRESS.md](docs/PROGRESS.md) | สูตรคำนวณพัฒนาการของผู้เรียน |
 | [docs/CONTENT_SCHEMA.md](docs/CONTENT_SCHEMA.md) | รูปแบบไฟล์บทเรียน (JSON) |
 | [content/lessons/](content/lessons/) | เนื้อหาบทเรียนรายวัน `day-001.json` ถึง `day-365.json` |

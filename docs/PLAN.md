@@ -48,7 +48,7 @@
 - [x] ตั้ง CI ให้รัน lint, typecheck, test, ตรวจ content, ตรวจ migration และ E2E ทุก PR (`.github/workflows/ci.yml`)
 
 ### Milestone 1: MVP (เรียนได้จริง 30 วันแรก)
-- [ ] Lesson Player ครอบคลุม exercise ทุกประเภทของเฟส 1 (ทำแล้ว 13 ประเภทที่ใช้ในสัปดาห์แรก: วันที่ 1–7 เล่นได้ครบทุกข้อ, ล็อกบทตามลำดับ, รอบทวนข้อที่ตอบผิดท้ายบท; ยังไม่มี `roleplay`, `use_in_sentence`, `spell_word` ซึ่งไม่อยู่ในวันที่ 1–7 และรอ AI tutor/TTS; ยังไม่เคยลองเล่นในเบราว์เซอร์จริง: เสียงพูด, layout 360px และการโต้ตอบฝั่ง client ตรวจด้วย E2E บน CI เท่านั้น)
+- [ ] Lesson Player ครอบคลุม exercise ทุกประเภทของเฟส 1 (ทำแล้ว 13 ประเภทที่ใช้ในสัปดาห์แรก: วันที่ 1–7 เล่นได้ครบทุกข้อ, ล็อกบทตามลำดับ, รอบทวนข้อที่ตอบผิดท้ายบท; ยังไม่มี `roleplay`, `use_in_sentence`, `spell_word` ซึ่งไม่อยู่ในวันที่ 1–7 และรอ AI tutor/TTS) ทดสอบแล้ว: เล่นวันที่ 1 ด้วยมือใน Chrome ที่ความกว้าง 356px เมื่อ 2026-11-25 (ครบทุกข้อ, เสียงพูดทำงาน, รอบทวน, หน้าจบบท) และ E2E บน CI เล่นวันที่ 1 ทุกครั้ง **ยังไม่ได้ทดสอบ:** วันที่ 2–7 ในเบราว์เซอร์, มือถือจริง, ออฟไลน์ / ฐานข้อมูลล่มในเบราว์เซอร์, พฤติกรรมแคชเมื่อกดปุ่ม Back
 - [ ] เนื้อหาวันที่ 1–30
 - [ ] สคริปต์สร้างเสียง TTS (`pnpm audio:generate`)
 - [ ] อัดเสียงด้วย MediaRecorder แล้วฟังเทียบกับต้นฉบับ
@@ -64,6 +64,9 @@
 - [ ] Deploy บนเครื่องตัวเอง: Dockerfile + service `app` ใน compose (profile `prod`), เปิด HTTPS ผ่าน Tailscale, backup `pg_dump` รายวัน (ดู [DEPLOYMENT.md](DEPLOYMENT.md))
   - [ ] prod image ต้อง `COPY` โฟลเดอร์ `content/` เข้าไปด้วย (API ตรวจคำตอบและหน้า `/day/[day]` อ่านบทเรียนจากดิสก์ตอนรัน ที่ `process.cwd()/content`)
   - [ ] เส้นทาง migrate ของ prod: คัดลอก migration เข้า prod image แล้วรันโดยไม่ใช้ tsx (`MIGRATIONS_DIR`, `runMigrations` ใน `src/db/migrate.ts`)
+
+- [ ] ติดตามผลของ PR player wiring: เล่นซ้ำบทที่จบแล้วจะเห็นคะแนนที่เก็บไว้และ streak แบบดิบ (API จบบทคืน `streaks.current` โดยไม่ปรับตามวันที่ขาด ต่างจากหน้าแรกที่ปรับแล้ว)
+- [ ] ติดตามผลของ PR player wiring: แยกฐานข้อมูล `_e2e` ให้ `make e2e` ในเครื่องไม่แก้ข้อมูลผู้เรียนของ dev (ตอนนี้ต้อง `make db-reset CONFIRM=english_zero_to_hero_dev` ก่อนรัน)
 
 ### Milestone 2: บัญชีผู้ใช้และ AI
 - [ ] Login ด้วย Better Auth (email + password สำหรับผู้ใช้คนเดียว) เก็บใน PostgreSQL
