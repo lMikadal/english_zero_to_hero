@@ -69,7 +69,7 @@
 
 ## ตรวจโดยเครื่อง (ไม่ต้องจำ)
 
-- `src/lib/theme/color-scan.test.ts`: ห้ามมีสี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]`, hex หรือ `rgb()/hsl()/oklch()` ใน `src/` นอก `src/app/globals.css` (มี self-test ว่าจับตัวอย่างผิดได้) ชุดสีของ Tailwind ถูกลบออกใน `@theme` จึงไม่มี utility สีดิบให้ใช้อยู่แล้ว
+- `src/lib/theme/color-scan.test.ts`: ห้ามมีสี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]`, hex หรือ `rgb()/hsl()/oklch()` ใน `src/` นอก `src/app/globals.css` (มี self-test ว่าจับตัวอย่างผิดได้) ชุดสีเริ่มต้นของ Tailwind ถูกลบใน `@theme` (utility สีดิบอย่าง `bg-white` จึงไม่สร้าง CSS) แต่ค่า arbitrary (`bg-[#fff]`, `bg-[red]`) ยังแสดงผลได้ ตัวตรวจจึงเป็นสิ่งที่กันไว้ และตรวจอีกทิศด้วย: class สีทุกตัวต้องเป็น token จริงหรือ utility ที่ไม่ใช่สีที่ระบุไว้ชัด (กัน token ที่พิมพ์ผิด เช่น `text-primary`) รวม `style={{ color }}` และ `fill=`/`stroke=` ที่เป็นค่าตรงๆ ข้อจำกัด: class ที่ประกอบจากสตริง (`"bg-" + x`) และค่าที่เป็นตัวแปรตรวจไม่ได้
 
 - `src/components/exercises/a11y-guard.test.tsx`: ทุก exercise ของวันที่ 1–7 ที่ render ก่อน/หลังผลตรวจ ต้องไม่มีสถานะถูก/ผิดที่สื่อด้วยสีอย่างเดียว และข้อความที่มีตัวอักษรละตินทุกชิ้นต้องอยู่ใต้ `lang="en*"`
 - `src/lib/client-safe.test.ts`: โค้ดฝั่ง client (รวม `DayPlayer`, `CompletionScreen`, `registry`) ห้าม import โมดูล server

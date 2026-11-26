@@ -98,7 +98,10 @@
   --color-ring: var(--ring);
 }
 
-:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+/* In @layer base so Tailwind utilities (outline-none, outline-offset-*) can override it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
 }
