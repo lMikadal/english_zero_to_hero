@@ -9,11 +9,13 @@
 
 | หน้าจอ | ไปถึงอย่างไร | พิสูจน์ว่าทำงาน | เทสต์ |
 |---|---|---|---|
-| หน้าแรก `/` | เปิด `/` | HTTP 200; h1 "English Zero to Hero"; "วันที่ N / 365"; "สตรีค X วัน"; ลิงก์เริ่มบทเดียว "เริ่มบทเรียนวันที่ N" → `/day/N` (กับเฟือง "ตั้งค่า"); "วันนี้เรียนแล้ว ✓" เมื่อวันนี้มี activity | `src/app/page.test.tsx`, `src/db/queries/home.int.test.ts`, `e2e/home.spec.ts`, `e2e/lesson.spec.ts` |
-| หน้าแรก: เรียนครบ 365 วัน | `progress` วันที่ 365 = done | ข้อความ "เรียนครบ 365 วันแล้ว" ไม่มีลิงก์เริ่มบท | `src/app/page.test.tsx`, `home.int.test.ts` |
-| หน้าแรก/วัน: ฐานข้อมูลล่ม | หยุด postgres (`docker compose stop postgres`) แล้วเปิดหน้า | `role=alert` "เชื่อมต่อฐานข้อมูลไม่ได้ ลองใหม่อีกครั้ง" + ลิงก์ "ลองใหม่"; ไม่ crash | `src/app/page.test.tsx`, `src/app/(learn)/day/[day]/page.test.tsx`, `src/components/ui/DbErrorScreen.test.tsx` |
-| หน้าแรก: ปุ่มตั้งค่า | เปิด `/` | ลิงก์ชื่อ "ตั้งค่า" (ไอคอนเฟือง มุมขวาบน) → `/settings` | `src/app/page.test.tsx` |
-| ตั้งค่า `/settings` | กดเฟืองที่หน้าแรก หรือเปิด `/settings` | HTTP 200; h1 "ตั้งค่า"; `radiogroup` "ธีม" มี radio สว่าง / มืด / ตามเครื่อง (ตัวที่ตรงกับ cookie ถูกเลือก); ลิงก์ "← กลับหน้าแรก" → `/` | `src/app/settings/page.test.tsx`, `src/components/ui/ThemePicker.test.tsx` |
+| หน้าแรก `/` | เปิด `/` | HTTP 200; h1 "English Zero to Hero"; การ์ด "บทเรียนวันนี้": h2 "วันที่ N / 365", ชื่อบท (อังกฤษ `lang="en"` + ไทย) และ "เฟส P · ระดับ" จาก `content/`, แถบ `progressbar` "เรียนแล้ว" (ค่า = วันที่จบแล้ว); ลิงก์เริ่มบทเดียวในหน้า "เริ่มบทเรียนวันที่ N" → `/day/N`; ช่อง "สตรีคต่อเนื่อง" / "สตรีคนานที่สุด" (X วัน); แถบเขียว "วันนี้เรียนแล้ว เรียนบทถัดไปต่อได้เลย" เมื่อวันนี้มี activity; ไม่มีข้อมูลที่แอปยังไม่มี (คำที่เรียนแล้ว, คะแนนล่าสุด, ควรฝึกเพิ่ม, ระดับ) | `src/app/(main)/page.test.tsx`, `src/db/queries/home.int.test.ts`, `e2e/home.spec.ts`, `e2e/lesson.spec.ts` |
+| หน้าแรก: เรียนครบ 365 วัน | `progress` วันที่ 365 = done | ข้อความ "เรียนครบ 365 วันแล้ว" ไม่มีลิงก์เริ่มบท | `src/app/(main)/page.test.tsx`, `home.int.test.ts` |
+| หน้าแรก/วัน: ฐานข้อมูลล่ม | หยุด postgres (`docker compose stop postgres`) แล้วเปิดหน้า | `role=alert` "เชื่อมต่อฐานข้อมูลไม่ได้ ลองใหม่อีกครั้ง" + ลิงก์ "ลองใหม่"; ไม่ crash | `src/app/(main)/page.test.tsx`, `src/app/(learn)/day/[day]/page.test.tsx`, `src/components/ui/DbErrorScreen.test.tsx` |
+| แถบเมนูหลัก | เปิด `/`, `/practice`, `/progress` หรือ `/settings` (อยู่ใน route group `src/app/(main)/`) | `nav[aria-label="เมนูหลัก"]` เดียว มีลิงก์ 4 อัน: วันนี้ `/`, ฝึกเพิ่ม `/practice`, พัฒนาการ `/progress`, ตั้งค่า `/settings`; ลิงก์ของหน้าปัจจุบันเท่านั้นมี `aria-current="page"` เป็นวงกลมสีเน้นยกเหนือแถบ **ไม่มีชื่อที่มองเห็น** (ชื่อเป็น sr-only) และขอบบนของแถบยุบเว้ารอบวงกลม (`.nav-notch` ใน `globals.css`); เมนูอื่นมีไอคอน+ชื่อ; ลิงก์สูงอย่างน้อย 44px; เนื้อหาไม่ถูกแถบบัง (padding ล่างใน layout); **ไม่แสดงใน `/day/N`** | `src/components/nav/MainNav.test.tsx`, `src/app/(main)/layout.test.tsx` (เดินทุก `page.tsx` ในกลุ่มอัตโนมัติ), `e2e/nav.spec.ts` (แตะทีละเมนูที่ 360px: URL, heading, ไม่มี horizontal scroll, ปุ่ม >= 44px; `/day/1` ไม่มีแถบ) |
+| ฝึกเพิ่ม `/practice` (ยังไม่เปิดใช้) | แตะ "ฝึกเพิ่ม" ในแถบเมนู | HTTP 200; h1 "ฝึกเพิ่ม"; ข้อความ "ยังไม่เปิดใช้ในเวอร์ชันนี้"; ไม่มีปุ่ม/ลิงก์/ช่องกรอก | `src/app/(main)/practice/page.test.tsx` |
+| พัฒนาการ `/progress` (ยังไม่เปิดใช้) | แตะ "พัฒนาการ" ในแถบเมนู | HTTP 200; h1 "พัฒนาการ"; ข้อความ "ยังไม่เปิดใช้ในเวอร์ชันนี้"; ไม่มีปุ่ม/ลิงก์/ช่องกรอก | `src/app/(main)/progress/page.test.tsx` |
+| ตั้งค่า `/settings` | แตะ "ตั้งค่า" ในแถบเมนู หรือเปิด `/settings` | HTTP 200; h1 "ตั้งค่า"; `radiogroup` "ธีม" มี radio สว่าง / มืด / ตามเครื่อง (ตัวที่ตรงกับ cookie ถูกเลือก); ไม่มีลิงก์ "กลับหน้าแรก" (ใช้แถบเมนู) | `src/app/(main)/settings/page.test.tsx`, `src/components/ui/ThemePicker.test.tsx` |
 | `/today` | เปิด `/today` | HTTP 307 → `/day/<current_day>` | `src/app/today/page.test.tsx` |
 | `/day/N` เล่นได้ | `N <= current_day` เช่น `/day/1` | HTTP 200; หัว `h2` "<ชื่อหมวด> ข้อ 1 / M"; คำสั่งไทยของข้อแรกเป็น `h3`; ไม่มี "ยังไม่รองรับ" | `src/app/(learn)/day/[day]/page.test.tsx`, `src/components/exercises/registry.test.tsx` |
 | `/day/N` ล็อก | `N > current_day` เช่น `/day/3` เมื่อยังอยู่วันที่ 1 | HTTP 200; h1 "ยังไม่ปลดล็อก"; ลิงก์ "ไปบทเรียนวันที่ <current_day>" | `page.test.tsx` (day), `e2e/lesson.spec.ts` |
@@ -65,12 +67,14 @@
 | ตามเครื่อง | เลือก "ตามเครื่อง" (หรือยังไม่เคยตั้ง) | `data-theme="system"`; พื้นหลังเป็นสีมืดเมื่อเครื่องตั้ง dark และสีสว่างเมื่อเครื่องตั้ง light (DevTools > Rendering > Emulate prefers-color-scheme) |
 | ครั้งแรกที่โหลดไม่กะพริบ | `curl -s -H 'Cookie: ezh-theme=dark' localhost:3000/ \| grep -o '<html[^>]*>'` | `<html lang="th" data-theme="dark">` มากับ HTML แรก ไม่ต้องรอ JS |
 
-เทสต์: `src/app/layout.test.tsx` (cookie → `data-theme`), `src/lib/theme/theme.test.ts`, `src/lib/theme/tokens.test.ts` (ค่าสีตรงตาราง design, dark ใน media query ตรงกับ `[data-theme=dark]`, contrast WCAG AA ทุกคู่ตัวอักษร/พื้นทั้งสองธีม)
+เทสต์: `src/app/layout.test.tsx` (cookie → `data-theme`), `src/lib/theme/theme.test.ts`, `src/lib/theme/tokens.test.ts` (ค่าสีตรงตาราง design, dark ใน media query ตรงกับ `[data-theme=dark]`, contrast WCAG AA ทุกคู่ตัวอักษร/พื้นทั้งสองธีม, ขอบช่องกรอก `control` >= 3:1)
 
 ## ตรวจโดยเครื่อง (ไม่ต้องจำ)
 
 - `src/lib/theme/color-scan.test.ts`: ห้ามมีสี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]`, hex หรือ `rgb()/hsl()/oklch()` ใน `src/` นอก `src/app/globals.css` (มี self-test ว่าจับตัวอย่างผิดได้) ชุดสีเริ่มต้นของ Tailwind ถูกลบใน `@theme` (utility สีดิบอย่าง `bg-white` จึงไม่สร้าง CSS) แต่ค่า arbitrary (`bg-[#fff]`, `bg-[red]`) ยังแสดงผลได้ ตัวตรวจจึงเป็นสิ่งที่กันไว้ และตรวจอีกทิศด้วย: class สีทุกตัวต้องเป็น token จริงหรือ utility ที่ไม่ใช่สีที่ระบุไว้ชัด (กัน token ที่พิมพ์ผิด เช่น `text-primary`) รวม `style={{ color }}` และ `fill=`/`stroke=` ที่เป็นค่าตรงๆ ข้อจำกัด: class ที่ประกอบจากสตริง (`"bg-" + x`) และค่าที่เป็นตัวแปรตรวจไม่ได้
 
+- `src/app/(main)/layout.test.tsx`: ทุก `page.tsx` ใต้ `src/app/(main)/` ต้อง render ในแถบเมนูหลักที่มีลิงก์ `aria-current="page"` ตรงกับ route เพียงอันเดียว และ `/day/[day]` ต้องไม่มีแถบ (เพิ่มหน้าในกลุ่ม = ได้แถบ + ถูกตรวจเอง)
+- `src/components/exercises/control-border.test.ts`: `<input>`/`<textarea>` ของ exercise ต้องใช้ขอบ `border-control` (หรือ `fieldToneClass`) ไม่ใช่ `border-line`; `tokens.test.ts` บังคับ `control` >= 3:1 กับ bg/card/surface ทั้งสองธีม
 - `src/components/exercises/a11y-guard.test.tsx`: ทุก exercise ของวันที่ 1–7 ที่ render ก่อน/หลังผลตรวจ ต้องไม่มีสถานะถูก/ผิดที่สื่อด้วยสีอย่างเดียว และข้อความที่มีตัวอักษรละตินทุกชิ้นต้องอยู่ใต้ `lang="en*"`
 - `src/lib/client-safe.test.ts`: โค้ดฝั่ง client (รวม `DayPlayer`, `CompletionScreen`, `registry`) ห้าม import โมดูล server
 - `make check` รันทั้งหมด; E2E (`make e2e`) รันบน CI เท่านั้น

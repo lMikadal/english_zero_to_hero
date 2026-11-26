@@ -4,7 +4,7 @@ import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Mark } from "./ui/Mark";
 import { Instruction, Prompt } from "./ui/Instruction";
-import { rightWrong, toneClass, type Tone } from "./ui/tone";
+import { rightWrong, fieldToneClass, type Tone } from "./ui/tone";
 
 export function TranslateThEn({ exercise, onAnswer, result }: ExerciseProps<"translate_th_en">) {
   const [text, setText] = useState("");
@@ -42,7 +42,7 @@ export function TranslateThEn({ exercise, onAnswer, result }: ExerciseProps<"tra
         enterKeyHint="done"
         data-state={tone}
         onChange={(e) => setText(e.target.value)}
-        className={`min-h-12 w-full rounded-xl border-2 px-3 text-lg ${toneClass(tone)}`}
+        className={`min-h-12 w-full rounded-xl border-2 px-3 text-lg ${fieldToneClass(tone)}`}
       />
       {result ? <p className="mt-1 text-sm font-semibold"><Mark ok={result.correct} /></p> : null}
       <CheckButton type="submit" hidden={result !== undefined} disabled={locked || text.trim() === ""} />

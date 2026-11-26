@@ -11,3 +11,6 @@ const BORDER: Record<Tone, string> = {
 
 export const toneClass = (t: Tone) => BORDER[t];
 export const rightWrong = (ok: boolean): Tone => (ok ? "right" : "wrong");
+
+/** Like toneClass, for text inputs and textareas only: the idle border is the 3:1 `control` token, not the subtle `line`. */
+export const fieldToneClass = (t: Tone) => (t === "idle" ? "border-control bg-card text-fg" : BORDER[t]);

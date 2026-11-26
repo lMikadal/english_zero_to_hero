@@ -49,13 +49,14 @@ english_zero_to_hero/
 │   │   ├── manifest.ts          # Web App Manifest
 │   │   ├── sw.ts                # Service Worker (Serwist)
 │   │   ├── ~offline/            # หน้าที่แสดงเมื่อออฟไลน์และยังไม่มี cache
-│   │   ├── (learn)/day/[day]/   # Lesson Player
+│   │   ├── (main)/              # หน้าที่มีแถบเมนูหลัก: / , practice, progress, settings (layout.tsx ใส่ MainNav)
+│   │   ├── (learn)/day/[day]/   # Lesson Player (ไม่มีแถบเมนู)
 │   │   ├── review/              # SRS
 │   │   ├── words/               # Word Bank + หน้ารายละเอียดคำ
 │   │   ├── pronunciation/       # Pronunciation Lab
-│   │   ├── progress/            # Dashboard
 │   │   └── api/                 # AI, scoring, STT
 │   ├── components/
+│   │   ├── nav/            # MainNav (แถบเมนูหลัก) + items.ts (รายการเมนู)
 │   │   └── exercises/      # 1 component ต่อ exercise type
 │   ├── lib/
 │   │   ├── content/        # schema.ts, loader.ts
@@ -84,6 +85,8 @@ english_zero_to_hero/
 - **Token:** สีทั้งหมดเป็นตัวแปร CSS ใน `src/app/globals.css` (`--bg`, `--card`, `--surface`, `--line`, `--fg`, `--muted`, `--accent`, `--on-accent`, `--good/--bad/--hint` พร้อม `-fg` และ `-soft`, `--ring`) แล้วเปิดเป็น utility ของ Tailwind ด้วย `@theme inline` (`bg-card`, `text-fg`, `border-line`, `text-good-fg`, `bg-bad-soft` ...) ชุดสีเดิมของ Tailwind ถูกลบ (`--color-*: initial`) ห้ามใส่สีดิบที่อื่น (`src/lib/theme/color-scan.test.ts`)
 - **เก็บธีม:** cookie `ezh-theme` = `light` | `dark` | `system` (ค่าเริ่มต้น) ต่ออุปกรณ์ ไม่เก็บใน DB ตั้งโดย `applyTheme()` ใน `src/lib/theme/theme.ts` (เรียกจาก `ThemePicker` ที่ `/settings`)
 - **ตัดสินธีม:** root layout (`src/app/layout.tsx`) อ่าน cookie บน server ใส่ `data-theme` ที่ `<html>` CSS: `:root` = สว่าง; `[data-theme="dark"]` = มืด; ค่า `system`/ไม่มี = มืดเมื่อ `prefers-color-scheme: dark` (media query) จึงไม่ต้องมี script และไม่กะพริบ `color-scheme` ตามธีมเพื่อให้ฟอร์มและ scrollbar เปลี่ยนตาม
+- **ขอบช่องกรอก:** token `--control` ใช้กับขอบ `<input>`/`<textarea>` เท่านั้น (ต้องได้ >= 3:1 กับ bg/card/surface ทั้งสองธีม) `--line` ละเอียดอ่อนกว่า ใช้กับเส้นแบ่งและการ์ด
+- **แถบเมนูหลัก:** `src/components/nav/MainNav.tsx` (client, อ่าน `usePathname`) วางไว้ที่เดียวใน `src/app/(main)/layout.tsx` **กฎ: หน้าที่ต้องมีแถบเมนูต้องอยู่ใต้ `src/app/(main)/` และต้องเพิ่มใน `NAV_ITEMS` (`src/components/nav/items.ts`); หน้าเล่นบทเรียน `/day/[day]` อยู่ใน `(learn)` เพื่อไม่มีแถบ** (`(main)/layout.test.tsx` ตรวจให้) route group ไม่เปลี่ยน URL แถบเว้ารอบวงกลมทำด้วย CSS mask (`.nav-notch` ใน `globals.css`, ตัวแปร `--cx` = กึ่งกลางคอลัมน์ของเมนูปัจจุบัน) ไม่ใช้สีดิบ layout เติม padding ล่าง `8rem + env(safe-area-inset-bottom)` กันเนื้อหาถูกบัง ดังนั้นหน้าใน `(main)` ไม่ต้องใส่ `min-h-dvh` เอง
 - ผลข้างเคียง: การอ่าน cookie ใน root layout ทำให้ทุกหน้าเป็น dynamic rendering
 
 ## 3.0 Docker-first

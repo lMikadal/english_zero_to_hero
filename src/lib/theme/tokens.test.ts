@@ -32,7 +32,7 @@ export function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-const TOKENS = ["bg", "card", "surface", "line", "fg", "muted", "accent", "on-accent", "good", "bad", "hint", "good-fg", "bad-fg", "hint-fg", "good-soft", "bad-soft", "hint-soft", "ring"];
+const TOKENS = ["bg", "card", "surface", "line", "fg", "muted", "accent", "on-accent", "good", "bad", "hint", "good-fg", "bad-fg", "hint-fg", "good-soft", "bad-soft", "hint-soft", "ring", "control"];
 const SURFACES = ["bg", "card", "surface"];
 // Every text token paired with every background it is actually drawn on.
 const TEXT_PAIRS: [string, string][] = [
@@ -96,6 +96,13 @@ describe("design tokens (src/app/globals.css)", () => {
       for (const nonText of ["accent", "ring", "good", "bad"]) {
         it(`${nonText} against the page background is at least 3:1 (non-text)`, () => {
           expect(contrast(palette[nonText], palette.bg)).toBeGreaterThanOrEqual(3);
+        });
+      }
+      // Borders of text inputs and textareas are the only cue that a field is editable: they need 3:1 on every surface
+      // a field can sit on (border-line is deliberately subtle and is for dividers and cards).
+      for (const surface of SURFACES) {
+        it(`control (input border) against ${surface} is at least 3:1 (non-text)`, () => {
+          expect(contrast(palette.control, palette[surface])).toBeGreaterThanOrEqual(3);
         });
       }
     });

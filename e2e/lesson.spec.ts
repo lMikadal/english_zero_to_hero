@@ -142,6 +142,12 @@ test("a learner plays day 1 to the end, day 2 opens, day 3 stays locked", async 
   await page.getByRole("link", { name: "เริ่มบทเรียนวันที่ 1" }).click();
   await expect(page).toHaveURL(/\/day\/1$/, SLOW);
 
+  // The player keeps its position in memory, so a full page load in the middle of the lesson (for example the dev
+  // server's Fast Refresh falling back to a reload) sends it back to step 1 and the step being played never settles.
+  // Count loads so that failure names its cause instead of timing out somewhere else.
+  let reloads = 0;
+  page.on("load", () => reloads++);
+
   // play every step (and the retry round, if one appears) until the completion screen
   for (let guard = 0; guard < 40; guard++) {
     await expect(stepLabel(page).or(done(page))).toBeVisible(SLOW);
@@ -151,7 +157,13 @@ test("a learner plays day 1 to the end, day 2 opens, day 3 stays locked", async 
     const th = (await page.getByRole("heading", { level: 3 }).first().innerText()).trim();
     const ex = byInstruction.get(th);
     if (!ex) throw new Error(`no exercise in day-001.json has the instruction "${th}"`);
-    await playStep(page, ex);
+    try {
+      await playStep(page, ex);
+    } catch (e) {
+      if (reloads > 0) throw new Error(`the lesson page loaded again ${reloads} time(s) while playing "${th}" (now showing: ${await stepLabel(page).innerText().catch(() => "?")}): ${String(e)}`);
+      throw e;
+    }
+    expect(reloads, `the lesson page loaded again by itself after "${th}"`).toBe(0);
     // the player moved on (another step, or the completion screen)
     await expect.poll(async () => (await done(page).isVisible()) || (await stepLabel(page).innerText()) !== before, SLOW).toBe(true);
   }
@@ -171,7 +183,7 @@ test("a learner plays day 1 to the end, day 2 opens, day 3 stays locked", async 
   // home: now day 2, streak 1
   await page.goto("/");
   await expect(page.getByText("วันที่ 2 / 365")).toBeVisible(SLOW);
-  await expect(page.getByText(/สตรีค 1 วัน/)).toBeVisible();
+  await expect(page.getByText("สตรีคต่อเนื่อง").locator("..")).toContainText("1 วัน");
   await expectNoHorizontalScroll(page, "home after day 1");
 
   // day 3 is locked until day 2 is done
