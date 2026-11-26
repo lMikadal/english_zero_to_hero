@@ -43,3 +43,7 @@
 | `qa-tester` | เขียน E2E, หาเคสที่ dev ไม่ได้คิดถึง, ตรวจว่าเทสต์ทดสอบพฤติกรรมจริง |
 | `code-reviewer` | ตรวจว่า PR มีเทสต์ครอบคลุมสิ่งที่เปลี่ยน และ commit เทสต์มาก่อนโค้ด |
 | CI | GitHub Actions (`.github/workflows/ci.yml`) รัน `make check` และตรวจ migration (`make db-migrate`, `make db-generate` ต้องไม่มีไฟล์เปลี่ยน) ทุก PR ถ้าไม่ผ่านห้าม merge; job `e2e` (`make e2e`) รันแยกและต้องผ่านเช่นกัน |
+
+## แคชของโหมดพัฒนา
+
+ถ้าย้ายหรือเปลี่ยนชื่อไฟล์ใน `src/app` แล้วเบราว์เซอร์โหลดหน้าเดิมซ้ำไม่หยุด (log มี `Compiled in 1ms` ถี่ๆ และ console มี `[Fast Refresh] rebuilding`) ให้รัน `make clean-cache` แล้ว `make up` ใหม่ สาเหตุคือ volume `next_cache` เก็บผล build ของโครงสร้างไฟล์เดิมไว้ (พบเมื่อ 2026-11-26 ตอนย้ายหน้าเข้า `(main)`)

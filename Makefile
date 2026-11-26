@@ -12,7 +12,7 @@ APP_UP = $(shell docker ps -q --filter status=running --filter label=com.docker.
 	--filter "label=com.docker.compose.project.working_dir=$(CURDIR)" 2>/dev/null)
 RUN = $(if $(APP_UP),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
 
-.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset audio prod
+.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod
 
 help: ## List targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -69,6 +69,10 @@ db-migrate: postgres-up ## Create the dev database if missing, apply pending mig
 
 db-studio: postgres-up ## Drizzle Studio at https://local.drizzle.studio (port 4983, localhost only)
 	$(COMPOSE) run --rm --no-deps -p 127.0.0.1:4983:4983 app dev-entrypoint.sh pnpm db:studio
+
+clean-cache: ## Empty the Next.js dev cache (.next). Use after moving/renaming files under src/app if the browser reloads in a loop
+	$(COMPOSE) stop app
+	$(COMPOSE) run --rm --no-deps -T app sh -c 'rm -rf /app/.next/* /app/.next/.[!.]* 2>/dev/null; true'
 
 db-reset: ## DEV ONLY: drop + recreate the *_dev database, then migrate (needs CONFIRM=<database name>)
 	@# guard first, before postgres is even started; the script refuses any database not ending in _dev

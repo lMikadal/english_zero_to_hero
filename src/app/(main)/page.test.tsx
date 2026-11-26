@@ -75,6 +75,7 @@ describe("Home page", () => {
     await show();
     const bar = screen.getByRole("progressbar", { name: "เรียนแล้ว" });
     expect(bar).toHaveAttribute("aria-valuenow", "3");
+    expect(bar).toHaveAttribute("aria-valuetext", "3 จาก 365 วัน");
     expect(bar).toHaveAttribute("aria-valuemax", "365");
   });
 

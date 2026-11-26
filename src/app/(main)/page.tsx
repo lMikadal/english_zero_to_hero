@@ -68,6 +68,7 @@ export default async function Home() {
             aria-valuemin={0}
             aria-valuemax={COURSE_DAYS}
             aria-valuenow={finished}
+            aria-valuetext={`${finished} จาก ${COURSE_DAYS} วัน`}
             className="h-1.5 w-full overflow-hidden rounded-full bg-surface"
           >
             <div className="h-full min-w-1.5 rounded-full bg-accent" style={{ width: `${(finished / COURSE_DAYS) * 100}%` }} />
