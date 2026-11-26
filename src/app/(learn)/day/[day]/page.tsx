@@ -7,7 +7,7 @@ import { DayPlayer } from "@/components/player/DayPlayer";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
 import { getLesson, getVocabLookup } from "@/lib/content/repo";
 import type { Lesson } from "@/lib/content/schema";
-import { REPLAY_SKILL_LABEL_TH, parseReplaySkill, replaySkills } from "@/lib/practice/replay";
+import { REPLAY_SKILL_LABEL_TH, parseReplaySkill, replayHref, replaySkills } from "@/lib/practice/replay";
 import { getCurrentDay, getDayStatus } from "../../access";
 import { vocabIdsFor } from "./vocab-ids";
 
@@ -32,7 +32,7 @@ export default async function DayPage({ params, searchParams }: { params: Promis
     currentDay = await getCurrentDay();
   } catch (e) {
     console.error("Cannot read the learner's current day:", e);
-    return <DbErrorScreen retryHref={`/day/${day}`} />;
+    return <DbErrorScreen retryHref={replayHref(day, skill)} />;
   }
   if (!isDayUnlocked(day, currentDay)) {
     return (
@@ -69,7 +69,7 @@ export default async function DayPage({ params, searchParams }: { params: Promis
     finished = (await getDayStatus(day)) === "done";
   } catch (e) {
     console.error(`Cannot read the status of day ${day}:`, e);
-    return <DbErrorScreen retryHref={skill === null ? `/day/${day}` : `/day/${day}?skill=${skill}`} />;
+    return <DbErrorScreen retryHref={replayHref(day, skill)} />;
   }
 
   if (skill !== null && !finished) {

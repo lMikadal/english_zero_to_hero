@@ -36,7 +36,7 @@ export default async function PracticePage() {
     <main className="mx-auto flex max-w-md flex-col gap-5 px-4 pt-14">
       <header className="flex flex-col gap-1.5">
         <h1 className="text-2xl font-bold tracking-tight">ฝึกเพิ่ม</h1>
-        <p className="text-sm text-muted">เล่นทั้งบทจนจบนับสตรีค เล่นทีละทักษะไม่นับ ไม่เปลี่ยนคะแนนเดิมของบท</p>
+        <p className="text-sm text-muted">เล่นทั้งบทจนจบและตอบอย่างน้อยหนึ่งข้อ นับสตรีค · เล่นทีละทักษะไม่นับ · คะแนนเดิมของบทไม่เปลี่ยน</p>
       </header>
       <h2 className="text-base font-medium text-muted">เล่นบทที่เรียนแล้วซ้ำ</h2>
       {rows.length === 0 ? (
@@ -58,12 +58,15 @@ export default async function PracticePage() {
                       <span className="block break-words text-sm text-muted">{lesson.title.th}</span>
                     </span>
                     {score !== null && <span className="shrink-0 text-sm text-muted">คะแนน {Math.round(score * 100)}%</span>}
+                    <svg data-chevron aria-hidden="true" viewBox="0 0 20 20" className="size-5 shrink-0 text-muted transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m5 7.5 5 5 5-5" />
+                    </svg>
                   </summary>
                   <div className="flex flex-col gap-2.5 border-t border-line px-4 pb-4 pt-3.5">
-                    <Link href={replayHref(day, null)} className={buttonClass("primary")}>เล่นทั้งบท</Link>
+                    <Link href={replayHref(day, null)} className={buttonClass("primary")}>เล่นทั้งบท{" "}<span className="sr-only">วันที่ {day}</span></Link>
                     {replaySkills(lesson).map(({ skill, exercises }) => (
                       <Link key={skill} href={replayHref(day, skill)} className={buttonClass("secondary")}>
-                        {REPLAY_SKILL_LABEL_TH[skill]} · {exercises} ข้อ
+                        {REPLAY_SKILL_LABEL_TH[skill]} · {exercises} ข้อ{" "}<span className="sr-only">วันที่ {day}</span>
                       </Link>
                     ))}
                   </div>
