@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getDb } from "@/db/client";
 import { getLearnerHome, type LearnerHome } from "@/db/queries/home";
+import { UnsavedNote } from "@/components/player/UnsavedNote";
 import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
 import { getCurrentUserId } from "@/lib/server/current-user";
 import { COURSE_DAYS } from "@/lib/progress/config";
@@ -36,6 +37,7 @@ export default async function Home() {
           เริ่มบทเรียนวันที่ {home.currentDay}
         </Link>
       )}
+      <UnsavedNote />
     </main>
   );
 }

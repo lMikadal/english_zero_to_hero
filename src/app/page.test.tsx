@@ -4,6 +4,7 @@ import type { LearnerHome } from "@/db/queries/home";
 import Home, { dynamic } from "./page";
 
 const query = vi.hoisted(() => ({ result: null as unknown as LearnerHome | Error }));
+vi.mock("@/components/player/UnsavedNote", () => ({ UnsavedNote: () => <p>unsaved-note</p> }));
 vi.mock("@/db/client", () => ({ getDb: () => ({}) }));
 vi.mock("@/lib/server/current-user", () => ({ getCurrentUserId: async () => "local" }));
 vi.mock("@/db/queries/home", () => ({
@@ -67,6 +68,11 @@ describe("Home page", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("เชื่อมต่อฐานข้อมูลไม่ได้ ลองใหม่อีกครั้ง");
     expect(error).toHaveBeenCalled();
     error.mockRestore();
+  });
+
+  it("includes the unsaved-answers note (it renders only while the in-memory queue has pending items)", async () => {
+    await show();
+    expect(screen.getByText("unsaved-note")).toBeInTheDocument();
   });
 
   it("is rendered on every request", () => {
