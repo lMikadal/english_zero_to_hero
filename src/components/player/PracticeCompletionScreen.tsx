@@ -4,12 +4,11 @@ import { Card } from "@/components/exercises/ui/Card";
 import { buttonClass } from "@/components/ui/button-styles";
 import type { CompletePracticeResponse, ReplaySkill } from "@/lib/attempts/contract";
 import type { CompleteResult } from "@/lib/offline/sink";
+import { replayHref } from "@/lib/practice/replay";
 import { UnsavedNote } from "./UnsavedNote";
 
 /** `error` = completePractice threw or its promise rejected: nothing was decided, so trying again is safe. */
 export type PracticeCompletion = CompleteResult<CompletePracticeResponse> | { status: "error" };
-
-export const practiceHref = (day: number, skill: ReplaySkill | null) => (skill === null ? `/day/${day}` : `/day/${day}?skill=${skill}`);
 
 /**
  * End of a replay (docs/plans/replay-plan.md 3.6). `result` is null while completePractice is in flight; `localScore`
@@ -57,7 +56,7 @@ export function PracticeCompletionScreen({
       <UnsavedNote />
       <div className="mt-auto flex flex-col gap-2.5 pt-3">
         <Link
-          href={practiceHref(day, skill)}
+          href={replayHref(day, skill)}
           onClick={onReplay ? (e) => { e.preventDefault(); onReplay(); } : undefined}
           className={buttonClass("primary")}
         >

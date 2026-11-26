@@ -1,9 +1,80 @@
-// Placeholder: this feature is a later PR (design/README.md ui-v2). No data and no controls until it exists.
-export default function Page() {
+import Link from "next/link";
+import { getDb } from "@/db/client";
+import { listDoneDays } from "@/db/queries/practice";
+import { buttonClass } from "@/components/ui/button-styles";
+import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
+import { getLesson } from "@/lib/content/repo";
+import type { Lesson } from "@/lib/content/schema";
+import { REPLAY_SKILL_LABEL_TH, replayHref, replaySkills } from "@/lib/practice/replay";
+import { getCurrentUserId } from "@/lib/server/current-user";
+
+// Which days are finished depends on the learner: never cache.
+export const dynamic = "force-dynamic";
+
+type Done = Awaited<ReturnType<typeof listDoneDays>>[number];
+
+export default async function PracticePage() {
+  let days: Done[];
+  try {
+    days = await listDoneDays(getDb(), await getCurrentUserId());
+  } catch (e) {
+    console.error("Cannot read the finished days:", e);
+    return <DbErrorScreen retryHref="/practice" underNav />;
+  }
+
+  const rows = days.map((d) => {
+    let lesson: Lesson | null = null;
+    try {
+      lesson = getLesson(d.day);
+    } catch (e) {
+      console.error(`Cannot load lesson for day ${d.day}:`, e); // a missing or invalid file hides that row's content only
+    }
+    return { ...d, lesson };
+  });
+
   return (
-    <main className="mx-auto flex max-w-md flex-col gap-4 px-4 pt-10">
-      <h1 className="text-2xl font-bold">ฝึกเพิ่ม</h1>
-      <p className="text-base text-muted">ยังไม่เปิดใช้ในเวอร์ชันนี้</p>
+    <main className="mx-auto flex max-w-md flex-col gap-5 px-4 pt-14">
+      <header className="flex flex-col gap-1.5">
+        <h1 className="text-2xl font-bold tracking-tight">ฝึกเพิ่ม</h1>
+        <p className="text-sm text-muted">เล่นทั้งบทจนจบนับสตรีค เล่นทีละทักษะไม่นับ ไม่เปลี่ยนคะแนนเดิมของบท</p>
+      </header>
+      <h2 className="text-base font-medium text-muted">เล่นบทที่เรียนแล้วซ้ำ</h2>
+      {rows.length === 0 ? (
+        <div className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5">
+          <p className="text-base">ยังไม่มีบทที่เรียนจบ เรียนบทแรกให้จบก่อน</p>
+          <Link href="/today" className={buttonClass("primary")}>ไปบทเรียนวันนี้</Link>
+        </div>
+      ) : (
+        <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-card">
+          {rows.map(({ day, score, lesson }) => (
+            <li key={day}>
+              {lesson ? (
+                <details className="group">
+                  <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+                    <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full border border-good/40 bg-good-soft text-sm font-bold text-good-fg">{day}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-xs text-muted">วันที่ {day}</span>
+                      <span lang="en" className="block break-words text-base font-semibold">{lesson.title.en}</span>
+                      <span className="block break-words text-sm text-muted">{lesson.title.th}</span>
+                    </span>
+                    {score !== null && <span className="shrink-0 text-sm text-muted">คะแนน {Math.round(score * 100)}%</span>}
+                  </summary>
+                  <div className="flex flex-col gap-2.5 border-t border-line px-4 pb-4 pt-3.5">
+                    <Link href={replayHref(day, null)} className={buttonClass("primary")}>เล่นทั้งบท</Link>
+                    {replaySkills(lesson).map(({ skill, exercises }) => (
+                      <Link key={skill} href={replayHref(day, skill)} className={buttonClass("secondary")}>
+                        {REPLAY_SKILL_LABEL_TH[skill]} · {exercises} ข้อ
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              ) : (
+                <p className="flex min-h-14 items-center px-4 py-3 text-sm text-muted">วันที่ {day} · ไม่มีเนื้อหา</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }

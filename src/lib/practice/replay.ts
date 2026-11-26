@@ -33,3 +33,6 @@ export function replaySkills(lesson: Lesson): { skill: ReplaySkill; exercises: n
 export function replaySections(lesson: Lesson, skill: ReplaySkill | null): Section[] {
   return skill === null ? lesson.sections : lesson.sections.filter((s) => s.skill === skill);
 }
+
+/** The page that plays a replay: the whole day, or one skill's sections. Neutral (no "use client"), so server and client pages share it. */
+export const replayHref = (day: number, skill: ReplaySkill | null): string => (skill === null ? `/day/${day}` : `/day/${day}?skill=${skill}`);
