@@ -6,6 +6,7 @@ import { toneClass, type Tone } from "./tone";
 /**
  * One option of a single-choice radio group. `tone` is also `data-state`. `mark` shows the right/wrong glyph
  * (true = right, false = wrong, undefined = none). `index` / `selectedIndex` give the roving tabindex.
+ * The list look has a radio dot; `center` (short two-up options such as minimal pairs, which sit on a card) has none.
  */
 export function ChoiceButton({
   children, index, selectedIndex, selected, tone, mark, disabled, onClick, center = false,
@@ -18,9 +19,9 @@ export function ChoiceButton({
   mark?: boolean;
   disabled: boolean;
   onClick(): void;
-  /** Centre the label (short two-up options such as minimal pairs). */
   center?: boolean;
 }) {
+  const dotBorder = tone === "selected" ? "border-accent" : tone === "idle" ? "border-muted" : "border-current";
   return (
     <button
       type="button"
@@ -31,10 +32,17 @@ export function ChoiceButton({
       data-state={tone}
       disabled={disabled}
       onClick={onClick}
-      className={`min-h-11 w-full rounded-xl border-2 px-3 py-2 ${center ? "text-center" : "text-left"} text-base ${toneClass(tone)}`}
+      className={`flex min-h-12 w-full items-center gap-2.5 border px-3.5 py-3 text-[15px] font-medium ${
+        center ? "justify-center rounded-[10px] text-center" : "rounded-xl text-left"
+      } ${toneClass(tone, center)}`}
     >
-      {children}
-      {mark !== undefined ? <span className="ml-2"><Mark ok={mark} /></span> : null}
+      {center ? null : (
+        <span aria-hidden="true" className={`flex size-[18px] shrink-0 items-center justify-center rounded-full border-2 ${dotBorder}`}>
+          {selected ? <span className={`size-2 rounded-full ${tone === "selected" ? "bg-accent" : "bg-current"}`} /> : null}
+        </span>
+      )}
+      <span className={center ? "" : "min-w-0 flex-1 break-words"}>{children}</span>
+      {mark !== undefined ? <Mark ok={mark} /> : null}
     </button>
   );
 }

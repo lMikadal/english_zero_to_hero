@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AudioUnavailableError } from "@/lib/audio/source";
 import { useAudio } from "@/lib/audio/context";
+import { CHIP } from "@/components/ui/button-styles";
 
 export type ExerciseAudio = {
   /** True until `canPlay` has answered; the buttons are shown disabled so nothing shifts when it does. */
@@ -12,7 +13,8 @@ export type ExerciseAudio = {
   reportUnavailable(): void;
 };
 
-export const BUTTON = "min-h-11 min-w-11 rounded-lg border border-line px-4 py-2 text-base font-medium active:bg-surface disabled:opacity-50";
+/** Kept as an alias: the one chip look lives in `@/components/ui/button-styles`. */
+export const BUTTON = CHIP;
 
 export function useExerciseAudio(sampleText: string): ExerciseAudio {
   const { source } = useAudio();
@@ -55,10 +57,10 @@ export function PlayButtons({ audio, text, label = "ฟัง" }: { audio: Exerc
   };
 
   return (
-    <span className="inline-flex flex-col gap-1">
-      <span className="inline-flex flex-wrap gap-2">
-        <button type="button" disabled={audio.checking} className={BUTTON} onClick={() => play(1)}>{label}</button>
-        <button type="button" disabled={audio.checking} className={BUTTON} onClick={() => play(0.75)}>{label}ช้า 0.75×</button>
+    <span className="inline-flex flex-col items-center gap-1">
+      <span className="inline-flex flex-wrap justify-center gap-2">
+        <button type="button" disabled={audio.checking} className={CHIP} onClick={() => play(1)}><span aria-hidden="true" className="text-[11px]">{"\u25B6\uFE0E"}</span>{label}</button>
+        <button type="button" disabled={audio.checking} className={CHIP} onClick={() => play(0.75)}>{label}ช้า 0.75×</button>
       </span>
       {failed && <span role="status" className="text-sm text-bad-fg">เล่นเสียงไม่สำเร็จ ลองอีกครั้ง</span>}
     </span>
@@ -76,11 +78,11 @@ export const NO_AUDIO_NOTE = "อุปกรณ์นี้ไม่มีเ�
 export function AudioFallback({ audio, onSkip, note = NO_AUDIO_NOTE }: { audio: ExerciseAudio; onSkip?: () => void; note?: string }) {
   if (!audio.unavailable) return null;
   return (
-    <div className="rounded-lg bg-hint-soft p-3 text-sm text-hint-fg">
+    <div className="rounded-xl border border-hint/40 bg-hint-soft p-3.5 text-[13px] leading-relaxed text-hint-fg">
       <p>{note}</p>
       {onSkip && (
         <div className="mt-2">
-          <button type="button" className={BUTTON} onClick={onSkip}>ข้าม</button>
+          <button type="button" className={CHIP} onClick={onSkip}>ข้าม</button>
         </div>
       )}
     </div>

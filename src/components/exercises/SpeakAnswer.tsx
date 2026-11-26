@@ -1,8 +1,11 @@
 "use client";
 import { useState } from "react";
-import { PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { useExerciseAudio } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { Instruction, Prompt } from "./ui/Instruction";
+import { AudioCard } from "./ui/AudioCard";
+import { Card } from "./ui/Card";
+import { ExerciseShell } from "./ui/ExerciseShell";
+import { Instruction } from "./ui/Instruction";
 import { SelfRating } from "./ui/SelfRating";
 
 // Self-rated speaking: the two rating buttons are the answer. The sample answer appears only after rating.
@@ -19,18 +22,19 @@ export function SpeakAnswer({ exercise, onAnswer, result }: ExerciseProps<"speak
   }
 
   return (
-    <section className="flex flex-col gap-3">
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <Prompt lang="en">{exercise.prompt}</Prompt>
-      <PlayButtons audio={audio} text={exercise.prompt} />
-      <p className="text-sm text-muted">ลองพูดตอบออกเสียงแล้วประเมินตัวเอง</p>
-      <SelfRating chosen={rating} locked={revealed} onRate={rate} />
+      <AudioCard audio={audio} text={exercise.prompt}>
+        <p lang="en" className="whitespace-pre-line break-words text-xl font-bold leading-snug">{exercise.prompt}</p>
+      </AudioCard>
+      <p className="text-[13px] text-muted">ลองพูดตอบออกเสียงแล้วประเมินตัวเอง</p>
       {revealed ? (
-        <div className="rounded-xl bg-surface p-3">
-          <p className="text-sm text-muted">ตัวอย่างคำตอบ</p>
-          <p lang="en" className="text-lg text-fg">{exercise.sampleAnswer}</p>
-        </div>
+        <Card pad="p-3.5">
+          <p className="text-[13px] text-muted">ตัวอย่างคำตอบ</p>
+          <p lang="en" className="break-words text-lg text-fg">{exercise.sampleAnswer}</p>
+        </Card>
       ) : null}
-    </section>
+      <SelfRating chosen={rating} locked={revealed} onRate={rate} />
+    </ExerciseShell>
   );
 }

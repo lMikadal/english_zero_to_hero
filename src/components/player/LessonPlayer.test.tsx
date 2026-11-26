@@ -376,7 +376,7 @@ describe("LessonPlayer action bar", () => {
     expect(screen.getAllByRole("status")).toHaveLength(1);
     expect(bar().className).toMatch(/\bsticky\b/);
     expect(bar().className).toMatch(/\bbottom-0\b/);
-    expect(bar().className).toMatch(/\bborder-t\b/);
+    expect(bar().className).not.toMatch(/\bborder-t\b/); // no chrome until there is feedback to show
     expect(bar().className).toMatch(/\bbg-bg\b/); // opaque, so content scrolls under it
     expect(bar().className).toMatch(/safe-area-inset-bottom/);
   });
@@ -388,6 +388,8 @@ describe("LessonPlayer action bar", () => {
     await check();
     expect(bar()).toContainElement(screen.getByRole("button", { name: "ถัดไป" }));
     expect(bar()).toHaveTextContent("ถูกต้อง");
+    expect(bar().className).toMatch(/\bborder-t\b/); // feedback panel: card colour with a top border (design 03)
+    expect(bar().className).toMatch(/\bbg-card\b/);
   });
 
   it("lets a long correct-answer list scroll inside the bar instead of pushing the button away", async () => {

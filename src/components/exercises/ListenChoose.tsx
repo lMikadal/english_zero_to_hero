@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
-import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { AudioFallback, useExerciseAudio } from "@/components/audio/AudioControls";
 import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
+import { AudioCard } from "./ui/AudioCard";
 import { CheckButton } from "./ui/CheckButton";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { ChoiceButton } from "./ui/ChoiceButton";
 import { Instruction } from "./ui/Instruction";
 import { MixedText } from "./ui/MixedText";
@@ -26,15 +28,15 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
   const markOf = (i: number) => (result === undefined ? undefined : i === exercise.answer ? true : i === selected ? false : undefined);
 
   return (
-    <section className="flex flex-col gap-4">
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <PlayButtons audio={audio} text={exercise.audioText} />
+      <AudioCard audio={audio} text={exercise.audioText} />
       <AudioFallback audio={audio} onSkip={onContinue} note={GRADED_NO_AUDIO_NOTE} />
       <div>
         <p lang="en" className="text-base font-medium">{exercise.question.en}</p>
-        <p className="text-sm text-muted"><MixedText text={exercise.question.th} /></p>
+        <p className="text-[13px] text-muted"><MixedText text={exercise.question.th} /></p>
       </div>
-      <div role="radiogroup" aria-label={exercise.question.en} onKeyDown={(e) => { if (!locked) radioKeys(e, exercise.choices.length, selected, setSelected); }} className="flex flex-col gap-2">
+      <div role="radiogroup" aria-label={exercise.question.en} onKeyDown={(e) => { if (!locked) radioKeys(e, exercise.choices.length, selected, setSelected); }} className="flex flex-col gap-2.5">
         {exercise.choices.map((choice, i) => (
           <ChoiceButton key={i} index={i} selectedIndex={selected} selected={selected === i} tone={toneOf(i)} mark={markOf(i)} disabled={locked} onClick={() => setSelected(i)}>
             {choice}
@@ -42,6 +44,6 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
         ))}
       </div>
       <CheckButton hidden={result !== undefined} disabled={selected === null || sent} onClick={check} />
-    </section>
+    </ExerciseShell>
   );
 }

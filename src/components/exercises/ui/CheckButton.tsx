@@ -1,4 +1,9 @@
-/** The "ตรวจคำตอบ" button every exercise owns. `hidden` renders nothing (after a result the player shows feedback). */
+import { buttonClass } from "@/components/ui/button-styles";
+
+/**
+ * The "ตรวจคำตอบ" button every exercise owns. `hidden` renders nothing (after a result the player shows feedback).
+ * mt-auto: on a short screen it sits at the bottom of the step (the exercise root is a flex column that fills it).
+ */
 export function CheckButton({
   disabled,
   onClick,
@@ -12,12 +17,7 @@ export function CheckButton({
 }) {
   if (hidden) return null;
   return (
-    <button
-      type={type}
-      disabled={disabled}
-      onClick={onClick}
-      className="mt-4 min-h-12 w-full rounded-xl bg-accent px-4 text-base font-semibold text-on-accent disabled:bg-surface disabled:text-muted"
-    >
+    <button type={type} disabled={disabled} onClick={onClick} className={buttonClass("primary", "mt-auto")}>
       ตรวจคำตอบ
     </button>
   );

@@ -17,7 +17,7 @@ export default async function Home() {
     home = await getLearnerHome(getDb(), await getCurrentUserId());
   } catch (e) {
     console.error("Cannot read the learner's home data:", e);
-    return <DbErrorScreen retryHref="/" />;
+    return <DbErrorScreen retryHref="/" underNav />;
   }
 
   // The title comes from content/. A missing or invalid lesson file only hides the title; the start button still works.

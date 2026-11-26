@@ -6,10 +6,10 @@ import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
 import { shuffleSeeded } from "./ui/shuffle";
 import { Mark } from "./ui/Mark";
+import { ExerciseShell } from "./ui/ExerciseShell";
+import { Tile } from "./ui/Tile";
 import { capitaliseFirst, tileLabel } from "./ui/tile-label";
 import { rightWrong, toneClass } from "./ui/tone";
-
-const TILE = "min-h-11 rounded-lg border px-3 py-2 text-base font-medium disabled:cursor-default";
 
 export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arrange_words">) {
   const [placed, setPlaced] = useState<number[]>([]); // indexes into exercise.words, in tap order
@@ -36,19 +36,19 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
   }
 
   return (
-    <section>
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <ul
         aria-label="คำตอบของคุณ"
         data-state={answerTone}
         lang="en"
-        className={`flex min-h-14 flex-wrap gap-2 rounded-xl border-2 border-dashed p-2 ${toneClass(answerTone)}`}
+        className={`flex min-h-16 flex-wrap gap-2 rounded-[14px] border border-dashed p-3 ${toneClass(answerTone)}`}
       >
         {placed.map((i, n) => (
           <li key={i}>
-            <button type="button" disabled={locked} onClick={() => setPlaced(placed.filter((p) => p !== i))} className={`${TILE} ${toneClass(result ? answerTone : "selected")}`}>
+            <Tile tone={result ? answerTone : "selected"} disabled={locked} onClick={() => setPlaced(placed.filter((p) => p !== i))}>
               {n === 0 ? capitaliseFirst(label(i)) : label(i)}
-            </button>
+            </Tile>
           </li>
         ))}
         {result ? (
@@ -57,17 +57,17 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
           </li>
         ) : null}
       </ul>
-      {placed.length === 0 ? <p className="mt-1 text-sm text-muted">แตะคำด้านล่างเพื่อเรียงประโยค</p> : null}
-      <ul aria-label="คำที่เหลือ" lang="en" className="mt-4 flex min-h-12 flex-wrap gap-2">
+      {placed.length === 0 ? <p className="-mt-2 text-xs text-muted">แตะคำด้านล่างเพื่อเรียงประโยค</p> : null}
+      <ul aria-label="คำที่เหลือ" lang="en" className="flex min-h-12 flex-wrap gap-2">
         {remaining.map((i) => (
           <li key={i}>
-            <button type="button" disabled={locked} onClick={() => setPlaced([...placed, i])} className={`${TILE} ${toneClass("idle")}`}>
+            <Tile tone="idle" disabled={locked} onClick={() => setPlaced([...placed, i])}>
               {label(i)}
-            </button>
+            </Tile>
           </li>
         ))}
       </ul>
       <CheckButton hidden={result !== undefined} disabled={locked || !complete} onClick={check} />
-    </section>
+    </ExerciseShell>
   );
 }

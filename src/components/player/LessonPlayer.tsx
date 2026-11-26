@@ -1,6 +1,8 @@
 "use client";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { Card } from "@/components/exercises/ui/Card";
+import { buttonClass } from "@/components/ui/button-styles";
 import { correctAnswerText, gradeExercise, isRetryable, type Grade } from "@/lib/answers/grade";
 import { newId, type AttemptAnswer, type CompleteLessonRequest } from "@/lib/attempts/contract";
 import type { ExerciseType, Lesson } from "@/lib/content/schema";
@@ -11,8 +13,6 @@ import { CompletionScreen, type Completion } from "./CompletionScreen";
 import {
   createPlayerState, currentItem, elapsedMs, canAdvance, firstAttemptScore, isRetryRound, playerReducer, recordsAttempt,
 } from "./player-state";
-
-const BTN = "min-h-11 w-full rounded-lg px-4 py-2 text-base font-semibold";
 
 export type LessonPlayerProps = {
   lesson: Lesson;
@@ -129,41 +129,42 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   const total = position.length;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-4 px-4 pt-4">
-      <header className="flex flex-col gap-1">
-        <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-sm font-normal text-muted outline-none">
-          <span>{item.step.sectionTitle.th}</span>
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-4 px-5 pt-4">
+      <header className="flex flex-col gap-2.5">
+        <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-[13px] font-normal text-muted outline-none">
+          <span className="font-medium">{item.step.sectionTitle.th}</span>
           <span>ข้อ {x} / {total}</span>
         </h2>
-        <div className="h-2 rounded-full bg-line" aria-hidden>
-          <div className="h-2 rounded-full bg-accent" style={{ width: `${(x / total) * 100}%` }} />
+        <div className="h-1 rounded-full bg-line" aria-hidden>
+          <div className="h-1 rounded-full bg-accent" style={{ width: `${(x / total) * 100}%` }} />
         </div>
-        {isRetryRound(state) && <p className="text-sm font-medium text-hint-fg">ทบทวนข้อที่ตอบผิด</p>}
+        {isRetryRound(state) && <p className="text-[13px] font-medium text-hint-fg">ทบทวนข้อที่ตอบผิด</p>}
       </header>
 
       {item.step.supported ? (
-        <div key={item.key}>
+        <div key={item.key} className="flex flex-1 flex-col">
           {renderExercise(exercise, { vocab, onAnswer, onContinue: skip, result: record?.grade })}
         </div>
       ) : (
-        <div className="flex flex-col gap-3 rounded-lg bg-surface p-4">
-          <p className="text-lg font-semibold">ยังไม่รองรับ</p>
+        <Card pad="p-4" className="flex flex-col gap-3 bg-surface">
+          <p className="text-lg font-bold">ยังไม่รองรับ</p>
           <p className="text-sm text-muted">แบบฝึกหัดชนิดนี้ยังเล่นไม่ได้ในเวอร์ชันนี้ ข้ามไปก่อนได้</p>
-          <button type="button" onClick={skip} className={`${BTN} border border-line`}>ข้าม</button>
-        </div>
+          <button type="button" onClick={skip} className={buttonClass("secondary")}>ข้าม</button>
+        </Card>
       )}
 
       {/* Sticky bottom bar: the feedback and ถัดไป stay on screen however long the exercise is. mt-auto keeps it at
-          the bottom of a short page. The component-owned ตรวจคำตอบ button stays in the content above. */}
+          the bottom of a short page. The component-owned ตรวจคำตอบ button stays in the content above (at the
+          bottom of the step). Once there is feedback the bar becomes a card-coloured panel with a top border. */}
       <div
         data-testid="action-bar"
-        className={`sticky bottom-0 mt-auto -mx-4 flex flex-col gap-3 bg-bg px-4 ${
-          graded || record ? "border-t border-line pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]" : "pb-[max(1rem,env(safe-area-inset-bottom))]"
-        }`}
+        className={`sticky bottom-0 mt-auto -mx-5 flex flex-col gap-3 px-5 ${
+          record ? "border-t border-line bg-card pt-3.5" : "bg-bg"
+        } pb-[max(1.5rem,env(safe-area-inset-bottom))]`}
       >
         <Feedback type={exercise.type} grade={record?.grade} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />
         {graded && (
-          <button type="button" disabled={!canAdvance(state)} onClick={goNext} className={`${BTN} bg-accent text-on-accent disabled:bg-surface disabled:text-muted`}>
+          <button type="button" disabled={!canAdvance(state)} onClick={goNext} className={buttonClass("primary")}>
             ถัดไป
           </button>
         )}
@@ -178,23 +179,23 @@ function Feedback({ type, grade, lines }: { type: ExerciseType; grade: Grade | u
   let tone = "";
   if (grade && !isRetryable(type)) {
     body = "บันทึกแล้ว";
-    tone = "bg-surface";
+    tone = "text-sm text-muted";
   } else if (grade?.correct) {
-    body = <span className="font-semibold">✓ ถูกต้อง</span>;
-    tone = "bg-good-soft text-good-fg";
+    body = <span className="text-[15px] font-bold">✓ ถูกต้อง</span>;
+    tone = "text-good-fg";
   } else if (grade) {
     body = (
       <>
-        <span className="block font-semibold">✗ ยังไม่ถูก</span>
+        <span className="block text-[15px] font-bold">✗ ยังไม่ถูก</span>
         {lines.length > 0 && (
           <>
-            <span className="block text-sm">คำตอบที่ถูกต้อง</span>
-            {lines.map((l, i) => <span key={i} lang="en" className="block font-medium">{l}</span>)}
+            <span className="mt-1 block text-[13px] text-muted">คำตอบที่ถูกต้อง</span>
+            {lines.map((l, i) => <span key={i} lang="en" className="block break-words text-sm font-medium text-fg">{l}</span>)}
           </>
         )}
       </>
     );
-    tone = "bg-bad-soft text-bad-fg";
+    tone = "text-bad-fg";
   }
-  return <div role="status" className={body ? `max-h-[30dvh] overflow-y-auto rounded-lg p-3 ${tone}` : "max-h-[30dvh] overflow-y-auto"}>{body}</div>;
+  return <div role="status" className={`max-h-[30dvh] overflow-y-auto ${body ? tone : ""}`}>{body}</div>;
 }

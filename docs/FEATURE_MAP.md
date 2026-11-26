@@ -28,7 +28,7 @@
 
 ## Exercise 13 ประเภทใน Player (ตัวอย่างจริงใน `content/lessons/day-001..007.json`)
 
-ทุกข้อ: ปุ่ม "ตรวจคำตอบ" อยู่ในเนื้อหา (ไม่แสดงหลังตรวจ); หลังตรวจ แถวล่างแสดง "✓ ถูกต้อง" หรือ "✗ ยังไม่ถูก" + "คำตอบที่ถูกต้อง"; ข้อที่ให้คะแนนไม่ได้แสดง "บันทึกแล้ว" ครั้งเดียว สถานะถูก/ผิดมี `data-state` = `right`/`wrong` และข้อความ sr-only "ถูก"/"ผิด" เสมอ ข้อความอังกฤษมี `lang="en"` (บังคับโดย `a11y-guard.test.tsx`) ถ้าอุปกรณ์ไม่มีเสียง ข้อที่ต้องฟังแสดง "ข้าม" (ไม่บันทึก attempt)
+ทุกข้อ: ปุ่ม "ตรวจคำตอบ" อยู่ในเนื้อหา ที่ล่างสุดของข้อ (ไม่แสดงหลังตรวจ); หลังตรวจ แถบล่างติดจอ (พื้นการ์ด+เส้นบน) แสดง "✓ ถูกต้อง" หรือ "✗ ยังไม่ถูก" + "คำตอบที่ถูกต้อง"; ข้อที่ให้คะแนนไม่ได้แสดง "บันทึกแล้ว" ครั้งเดียว สถานะถูก/ผิดมี `data-state` = `right`/`wrong` และข้อความ sr-only "ถูก"/"ผิด" เสมอ ข้อความอังกฤษมี `lang="en"` (บังคับโดย `a11y-guard.test.tsx`) ถ้าอุปกรณ์ไม่มีเสียง ข้อที่ต้องฟังแสดง "ข้าม" (ไม่บันทึก attempt)
 
 | type | ตัวอย่าง | ทำอย่างไร | selector/ข้อความยืนยัน | เทสต์ |
 |---|---|---|---|---|
@@ -75,6 +75,7 @@
 
 - `src/app/(main)/layout.test.tsx`: ทุก `page.tsx` ใต้ `src/app/(main)/` ต้อง render ในแถบเมนูหลักที่มีลิงก์ `aria-current="page"` ตรงกับ route เพียงอันเดียว และ `/day/[day]` ต้องไม่มีแถบ (เพิ่มหน้าในกลุ่ม = ได้แถบ + ถูกตรวจเอง)
 - `src/components/exercises/control-border.test.ts`: `<input>`/`<textarea>` ของ exercise ต้องใช้ขอบ `border-control` (หรือ `fieldToneClass`) ไม่ใช่ `border-line`; `tokens.test.ts` บังคับ `control` >= 3:1 กับ bg/card/surface ทั้งสองธีม
+- `src/components/exercises/touch-targets.test.tsx`: ทุก `button`/`a`/`input`/`textarea`/`[role=radio]` ของ exercise วันที่ 1–7 (ก่อนและหลังผลตรวจ) ต้องมี class สูง >= 44px (`min-h-11` ขึ้นไป); อ่านจาก class เพราะ jsdom ไม่มี layout จึงไม่ได้วัดขนาดจริง (ขนาดจริงตรวจด้วย `e2e/nav.spec.ts` สำหรับเมนู และด้วยตาในเบราว์เซอร์สำหรับแบบฝึกหัด)
 - `src/components/exercises/a11y-guard.test.tsx`: ทุก exercise ของวันที่ 1–7 ที่ render ก่อน/หลังผลตรวจ ต้องไม่มีสถานะถูก/ผิดที่สื่อด้วยสีอย่างเดียว และข้อความที่มีตัวอักษรละตินทุกชิ้นต้องอยู่ใต้ `lang="en*"`
 - `src/lib/client-safe.test.ts`: โค้ดฝั่ง client (รวม `DayPlayer`, `CompletionScreen`, `registry`) ห้าม import โมดูล server
 - `make check` รันทั้งหมด; E2E (`make e2e`) รันบน CI เท่านั้น

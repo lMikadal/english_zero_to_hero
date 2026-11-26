@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
+import { CardList } from "./ui/Card";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction } from "./ui/Instruction";
 import { SelfRating } from "./ui/SelfRating";
 
@@ -17,18 +19,19 @@ export function Shadowing({ exercise, onAnswer, onContinue, result }: ExercisePr
   };
 
   return (
-    <section className="flex flex-col gap-4">
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <AudioFallback audio={audio} onSkip={onContinue} />
-      <ol className="flex flex-col gap-3">
+      <CardList as="ol">
         {exercise.lines.map((line, i) => (
-          <li key={i} className="flex flex-col gap-2 rounded-lg bg-surface p-3">
-            <p lang="en" className="text-lg font-medium">{line}</p>
+          <li key={i} className="flex flex-wrap items-center gap-x-2.5 gap-y-2 px-4 py-3">
+            <span aria-hidden="true" className="text-xs font-medium text-muted">{i + 1}</span>
+            <p lang="en" className="min-w-0 flex-1 basis-40 break-words text-base font-medium">{line}</p>
             <PlayButtons audio={audio} text={line} />
           </li>
         ))}
-      </ol>
+      </CardList>
       <SelfRating chosen={chosen} locked={locked} onRate={rate} />
-    </section>
+    </ExerciseShell>
   );
 }
