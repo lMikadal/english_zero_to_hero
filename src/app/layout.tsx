@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme/theme";
+import "./fonts.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
