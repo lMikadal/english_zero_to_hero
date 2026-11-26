@@ -314,3 +314,49 @@ describe("progress", () => {
     expect((await db.select().from(progress))[0].startedAt?.toISOString()).toBe(early.createdAt);
   });
 });
+
+describe("source practice", () => {
+  const PSESSION = "22222222-2222-4222-8222-222222222222";
+  const practice = (exerciseId: string, answer: Parameters<typeof attemptItem>[1], over: Partial<Parameters<typeof attemptItem>[2]> = {}) =>
+    attemptItem(exerciseId, answer, { source: "practice", sessionId: PSESSION, ...over });
+  const finish = async () => {
+    const { handleCompleteLesson } = await import("./complete-handler");
+    await handleCompleteLesson({ day: 1, sessionId: SESSION, completedAt: NOW.toISOString() }, { db, userId, now: NOW });
+  };
+  const statuses = (r: Awaited<ReturnType<typeof post>>) => (r.body as { results: { status: string; reason?: string }[] }).results.map((x) => [x.status, x.reason]);
+
+  it("is rejected not_finished for a day that has no progress row, and creates nothing (not even a progress row)", async () => {
+    const res = await post(batch(practice("d001-listen-01", ANSWERS.listenChooseRight)));
+    expect(statuses(res)).toEqual([["rejected", "not_finished"]]);
+    expect(await rows()).toHaveLength(0);
+    expect(await db.select().from(progress)).toHaveLength(0);
+  });
+
+  it("is rejected not_finished for an in_progress day, while the other items of the batch are stored", async () => {
+    await post(batch(attemptItem("d001-listen-01", ANSWERS.listenChooseRight)));
+    const res = await post(batch(practice("d001-listen-02", ANSWERS.dictationRight), attemptItem("d001-write-01", ANSWERS.arrangeRight)));
+    expect(statuses(res)).toEqual([["rejected", "not_finished"], ["created", undefined]]);
+    expect((await rows()).map((r) => r.source)).toEqual(["lesson", "lesson"]);
+    expect((await db.select().from(progress))[0].status).toBe("in_progress");
+  });
+
+  it("locked_day wins over not_finished", async () => {
+    expect(statuses(await post(batch(practice("d002-listen-01", { kind: "choice", selected: 1 }))))).toEqual([["rejected", "locked_day"]]);
+  });
+
+  it("is created for a done day with the attempt_no sent, and leaves the progress row untouched", async () => {
+    await finish();
+    const before = (await db.select().from(progress))[0];
+    const res = await post(batch(practice("d001-pron-02", ANSWERS.minimalPairOneWrong, { attemptNo: 2 }), practice("d001-listen-01", ANSWERS.listenChooseRight)));
+    expect(statuses(res)).toEqual([["created", undefined], ["created", undefined]]);
+    expect((await rows()).map((r) => [r.source, r.attemptNo, r.sessionId]).sort()).toEqual([["practice", 1, PSESSION], ["practice", 2, PSESSION]]);
+    expect((await db.select().from(progress))[0]).toEqual(before);
+  });
+
+  it("a duplicate id of a stored practice attempt is reported duplicate", async () => {
+    await finish();
+    const a = practice("d001-listen-01", ANSWERS.listenChooseRight);
+    await post(batch(a));
+    expect(statuses(await post(batch(a)))).toEqual([["duplicate", undefined]]);
+  });
+});

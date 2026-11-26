@@ -39,3 +39,12 @@ export const ANSWERS = {
   selfOk: { kind: "self", rating: "ok" } as AttemptAnswer, // d001-speak-01 / d001-pron-03
   selfUnsure: { kind: "self", rating: "unsure" } as AttemptAnswer,
 };
+
+/** Finishes `day` the normal way (lesson attempts + completion), the precondition of every practice test. */
+export async function finishDay(db: Db, userId: string, day: number, now = NOW): Promise<void> {
+  const { handleCompleteLesson } = await import("./complete-handler");
+  const r = await handleCompleteLesson({ day, sessionId: SESSION, completedAt: now.toISOString() }, { db, userId, now });
+  if (r.status !== 200) throw new Error(`could not finish day ${day}: ${JSON.stringify(r.body)}`);
+}
+
+export const PRACTICE_SESSION = "22222222-2222-4222-8222-222222222222";

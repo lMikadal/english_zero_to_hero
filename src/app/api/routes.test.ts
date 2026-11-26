@@ -2,12 +2,13 @@
 import { describe, expect, it } from "vitest";
 import { POST as postAttempts } from "./attempts/route";
 import { POST as postComplete } from "./lessons/complete/route";
+import { POST as postPractice } from "./practice/complete/route";
 
 const post = (url: string, body: string, headers: Record<string, string> = { "content-type": "application/json" }) =>
   new Request(`http://localhost${url}`, { method: "POST", body, headers });
 
 describe("route handlers answer without touching the database", () => {
-  const routes = [[postAttempts, "/api/attempts"], [postComplete, "/api/lessons/complete"]] as const;
+  const routes = [[postAttempts, "/api/attempts"], [postComplete, "/api/lessons/complete"], [postPractice, "/api/practice/complete"]] as const;
   it("400 for unparseable JSON", async () => {
     for (const [route, url] of routes) {
       const res = await route(post(url, "{not json"));
