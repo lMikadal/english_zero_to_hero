@@ -43,6 +43,28 @@ describe("no external font host (self-hosted fonts only)", () => {
   });
 });
 
+describe("Thai line height", () => {
+  // Noto Sans Thai has tall vowels and stacked tone marks: a line box under about 1.375 (leading-snug) clips or
+  // crowds them. Only classes that make the line box shorter than that are banned (leading-snug/normal/relaxed are fine).
+  const TIGHT = /\bleading-(?:none|tight|[3-6]|\[(?:0?\.\d+|1(?:\.[0-2]\d*)?|1\.3[0-4]\d*)\])(?![\w.-])/;
+  it("flags short line-heights (self-test)", () => {
+    for (const c of ["leading-none", "leading-tight", "leading-4", "leading-[1.2]", "leading-[1]"]) expect(TIGHT.test(c), c).toBe(true);
+    for (const c of ["leading-snug", "leading-normal", "leading-relaxed", "leading-[3rem]", "leading-7", "leading-[1.375]"]) expect(TIGHT.test(c), c).toBe(false);
+  });
+  it("no component uses one", () => {
+    const hits: string[] = [];
+    const walk = (d: string) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const p = path.join(d, e.name);
+        if (e.isDirectory()) walk(p);
+        else if (/\.tsx$/.test(e.name) && !/\.test\.tsx$/.test(e.name) && TIGHT.test(fs.readFileSync(p, "utf8"))) hits.push(path.relative(root, p));
+      }
+    };
+    walk(path.join(root, "src"));
+    expect(hits).toEqual([]);
+  });
+});
+
 describe("fonts.css", () => {
   const faces = [...fontsCss.matchAll(/@font-face\s*\{([^}]*)\}/g)].map((m) => m[1]);
   const family = (b: string) => /font-family:\s*['"]([^'"]+)['"]/.exec(b)?.[1];

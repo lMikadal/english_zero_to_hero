@@ -100,6 +100,14 @@
   --color-bad-soft: var(--bad-soft);
   --color-hint-soft: var(--hint-soft);
   --color-ring: var(--ring);
+
+  /*
+   * Fonts (files: src/app/fonts.css). Inter comes first and only covers Latin, so Thai characters fall through to
+   * Noto Sans Thai; the system fonts are the fallback while a file loads (font-display: swap) or if it is missing.
+   * --font-sans is Tailwind's default sans family, so `body`/`font-sans` pick it up with no class.
+   */
+  --font-sans: "Inter Variable", "Noto Sans Thai Variable", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Thai", "Sarabun", sans-serif;
+  --font-ipa: "Noto Sans Variable", "Inter Variable", "Noto Sans", "Segoe UI", "DejaVu Sans", sans-serif;
 }
 
 /* In @layer base so Tailwind utilities (outline-none, outline-offset-*) can override it. */
@@ -118,4 +126,9 @@
 .nav-notch {
   -webkit-mask-image: radial-gradient(circle 33px at var(--cx) 4px, transparent 32px, #000 33px);
   mask-image: radial-gradient(circle 33px at var(--cx) 4px, transparent 32px, #000 33px);
+}
+
+/* IPA (transcriptions are marked lang="en-fonipa") uses Noto Sans, which has the phonetic letters. */
+:lang(en-fonipa) {
+  font-family: var(--font-ipa);
 }
