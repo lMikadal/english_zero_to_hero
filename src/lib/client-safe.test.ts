@@ -18,6 +18,14 @@ const CLIENT_SAFE = [
   "lib/offline/sink.ts",
   "lib/offline/http-sink.ts",
   "lib/practice/replay.ts",
+  // vocabulary review: the scheduler runs in the browser for the interval under each button
+  "lib/srs/config.ts",
+  "lib/srs/contract.ts",
+  "lib/srs/scheduler.ts",
+  "lib/srs/format.ts",
+  "lib/srs/queue.ts",
+  "lib/srs/initial.ts",
+  "lib/srs/simulate.ts",
   "components/exercises/ui/radio.ts",
   "components/exercises/ui/tone.ts",
   "lib/audio/source.ts",
@@ -31,7 +39,9 @@ const CLIENT_SAFE = [
 
 const BUILTINS = new Set(builtinModules.filter((m) => !m.startsWith("_")).flatMap((m) => [m, m.replace(/\/.*$/, "")]));
 const FORBIDDEN_PACKAGES = new Set(["next/headers", "next/server", "server-only", "pg", "postgres", "drizzle-orm", "drizzle-kit"]);
-const FORBIDDEN_SRC = [/^(lib\/)?db(\/|$)/, /^lib\/content\/(loader|repo|validate|cli)$/, /^lib\/(server|progress)(\/|$)/];
+// lib/progress is server-side except its pure date and config helpers (dates.ts -> config.ts -> sources.ts -> types.ts),
+// which the review queue needs for "today" in the learner's time zone.
+const FORBIDDEN_SRC = [/^(lib\/)?db(\/|$)/, /^lib\/content\/(loader|repo|validate|cli)$/, /^lib\/server(\/|$)/, /^lib\/progress(\/(?!(dates|config|sources|types)$)|$)/];
 
 /** Runtime import specifiers: static imports, re-exports and dynamic imports. Type-only ones are skipped. */
 function runtimeSpecifiers(code: string): string[] {
@@ -147,6 +157,17 @@ describe("the checker itself", () => {
   });
   it("reports a missing entry file instead of passing silently", () => {
     expect(findViolations(project({}), ["nope.ts"])).toEqual(["nope.ts -> (file does not exist)"]);
+  });
+  it("lets the pure progress helpers through but still flags the rest of lib/progress", () => {
+    const root = project({
+      "a.ts": [
+        'import "@/lib/progress/dates";', 'import "@/lib/progress/config";', 'import "@/lib/progress/sources";', 'import "@/lib/progress/types";',
+        'import "@/lib/progress/vocab";', 'import "@/lib/progress/streak";', 'import "@/lib/progress";', 'import "@/lib/progress/index";',
+      ].join("\n"),
+    });
+    expect(findViolations(root, ["a.ts"]).map((v) => v.split(" -> ")[1])).toEqual([
+      "@/lib/progress/vocab", "@/lib/progress/streak", "@/lib/progress", "@/lib/progress/index",
+    ]);
   });
   it("keeps repo.ts out of the client-safe list", () => {
     expect(CLIENT_SAFE).not.toContain("lib/content/repo.ts");

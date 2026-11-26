@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { API, type AttemptInput, type CompleteLessonRequest, type CompleteLessonResponse, type CompletePracticeRequest, type CompletePracticeResponse } from "@/lib/attempts/contract";
+import { API_SRS, type CompleteReviewRequest, type CompleteReviewResponse, type ReviewInput } from "@/lib/srs/contract";
 import { createHttpSink, getSyncSink } from "./http-sink";
 
 type Reply = { status: number; body?: unknown; retryAfter?: string; notJson?: boolean } | Error | "hang";
@@ -573,5 +574,170 @@ describe("createHttpSink: completePractice", () => {
     expect(await t.sink.completePractice(practiceReq)).toEqual({ status: "queued" });
     expect(t.sink.getState().status).toBe("paused");
     expect(t.sink.pendingCount()).toBe(1);
+  });
+});
+
+describe("createHttpSink: reviews (vocabulary review)", () => {
+  const review = (n: number): ReviewInput => ({
+    id: uuid(n), sessionId: uuid(8888), vocabId: "v-hello", direction: n % 2 ? "en_th" : "th_en", rating: 3, reviewedAt: "2026-11-26T10:00:00.000Z",
+  });
+  const reviewCompletion: CompleteReviewRequest = { sessionId: uuid(8888), startedAt: "2026-11-26T10:00:00.000Z", completedAt: "2026-11-26T10:05:00.000Z" };
+  const reviewCompleteResponse: CompleteReviewResponse = {
+    sessionDate: "2026-11-26", reviewed: 2, remainingDue: 0, streak: { current: 1, longest: 1 }, countedForStreak: true,
+  };
+  const wire = { due: "2026-11-27T10:00:00.000Z", lastReview: "2026-11-26T10:00:00.000Z", stability: 2.3, difficulty: 2.1, scheduledDays: 1, learningSteps: 0, elapsedDays: 0, reps: 1, lapses: 0, state: 2 };
+  const createdReview = (n: number) => ({ id: uuid(n), status: "created", card: wire });
+  const reviewsOf = (c: Call) => ((c.body as unknown as { reviews: ReviewInput[] }).reviews ?? []).map((r) => r.id);
+  const kindOf = (c: Call) => (c.url === API_SRS.reviews ? reviewsOf(c) : c.url === API_SRS.completeReview ? "review-complete" : c.url === API.attempts ? ids(c) : "other");
+
+  it("posts reviews to API_SRS.reviews as { reviews: [...] }, in order, in one batch", async () => {
+    const t = setup([{ status: 200, body: { results: [1, 2, 3].map(createdReview) } }]);
+    [1, 2, 3].forEach((n) => t.sink.sendReview(review(n)));
+    expect(t.sink.pendingCount()).toBe(3);
+    await settle();
+    expect(t.calls).toHaveLength(1);
+    expect(t.calls[0].url).toBe(API_SRS.reviews);
+    expect(reviewsOf(t.calls[0])).toEqual([uuid(1), uuid(2), uuid(3)]);
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("does not mix attempts and reviews in one request; first in, first out across the two kinds", async () => {
+    const t = setup([okFor(1), { status: 200, body: { results: [createdReview(2)] } }, okFor(3)]);
+    t.sink.sendAttempt(attempt(1));
+    t.sink.sendReview(review(2));
+    t.sink.sendAttempt(attempt(3));
+    await settle();
+    expect(t.calls.map(kindOf)).toEqual([[uuid(1)], [uuid(2)], [uuid(3)]]);
+  });
+
+  it("does not queue the same review id twice", async () => {
+    const t = setup([{ status: 200, body: { results: [createdReview(1)] } }]);
+    t.sink.sendReview(review(1));
+    t.sink.sendReview(review(1));
+    expect(t.sink.pendingCount()).toBe(1);
+    await settle();
+    expect(reviewsOf(t.calls[0])).toEqual([uuid(1)]);
+  });
+
+  it("an attempt and a review with the same id are different entries", async () => {
+    const t = setup([okFor(1), { status: 200, body: { results: [createdReview(1)] } }]);
+    t.sink.sendAttempt(attempt(1));
+    t.sink.sendReview(review(1));
+    expect(t.sink.pendingCount()).toBe(2);
+    await settle();
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("drops created, duplicate and rejected reviews, and keeps one with no usable status", async () => {
+    const t = setup([
+      { status: 200, body: { results: [{ id: uuid(1), status: "duplicate", card: wire }, { id: uuid(2), status: "rejected", reason: "not_taught" }, { id: uuid(3) }] } },
+    ]);
+    [1, 2, 3].forEach((n) => t.sink.sendReview(review(n)));
+    await settle();
+    expect(t.sink.pendingCount()).toBe(1);
+    expect(t.live()).toHaveLength(1);
+  });
+
+  it("5xx keeps every review, backs off, then retries in the same order", async () => {
+    const t = setup([{ status: 503 }, { status: 200, body: { results: [1, 2].map(createdReview) } }]);
+    t.sink.sendReview(review(1));
+    t.sink.sendReview(review(2));
+    await settle();
+    expect(t.sink.pendingCount()).toBe(2);
+    expect(t.live()[0].ms).toBe(1000);
+    await t.runTimer();
+    expect(t.calls.map(kindOf)).toEqual([[uuid(1), uuid(2)], [uuid(1), uuid(2)]]);
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("a 200 whose results do not line up is treated as a server error and loses nothing", async () => {
+    const t = setup([{ status: 200, body: { results: [createdReview(9)] } }]);
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    t.sink.sendReview(review(1));
+    await settle();
+    expect(t.sink.pendingCount()).toBe(1);
+  });
+
+  it("413 halves the batch; another 4xx drops the batch and logs", async () => {
+    const t = setup([{ status: 413 }, { status: 200, body: { results: [createdReview(1)] } }, { status: 400 }]);
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    t.sink.sendReview(review(1));
+    t.sink.sendReview(review(2));
+    await settle();
+    expect(t.calls.map(kindOf)).toEqual([[uuid(1), uuid(2)], [uuid(1)], [uuid(2)]]);
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("completeReview waits for earlier reviews, posts to API_SRS.completeReview and resolves done", async () => {
+    const t = setup([{ status: 200, body: { results: [1, 2].map(createdReview) } }, { status: 200, body: reviewCompleteResponse }]);
+    t.sink.sendReview(review(1));
+    t.sink.sendReview(review(2));
+    const r = await t.sink.completeReview(reviewCompletion);
+    expect(r).toEqual({ status: "done", response: reviewCompleteResponse });
+    expect(t.calls.map(kindOf)).toEqual([[uuid(1), uuid(2)], "review-complete"]);
+    expect(t.calls[1].body).toEqual(reviewCompletion);
+  });
+
+  it("reviews queued after a completion are not sent before it", async () => {
+    const t = setup([{ status: 200, body: { results: [createdReview(1)] } }, { status: 200, body: reviewCompleteResponse }, { status: 200, body: { results: [createdReview(2)] } }]);
+    t.sink.sendReview(review(1));
+    const p = t.sink.completeReview(reviewCompletion);
+    t.sink.sendReview(review(2));
+    await p;
+    await settle();
+    expect(t.calls.map(kindOf)).toEqual([[uuid(1)], "review-complete", [uuid(2)]]);
+  });
+
+  it("completion 409 settles rejected 409 and 400 settles rejected 400, both dropped", async () => {
+    const a = setup([{ status: 409 }]);
+    expect(await a.sink.completeReview(reviewCompletion)).toEqual({ status: "rejected", code: 409 });
+    expect(a.sink.pendingCount()).toBe(0);
+    const b = setup([{ status: 400 }]);
+    expect(await b.sink.completeReview(reviewCompletion)).toEqual({ status: "rejected", code: 400 });
+  });
+
+  it("completion on 5xx resolves queued, stays pending, and is retried", async () => {
+    const t = setup([{ status: 500 }, { status: 200, body: reviewCompleteResponse }]);
+    expect(await t.sink.completeReview(reviewCompletion)).toEqual({ status: "queued" });
+    expect(t.sink.pendingCount()).toBe(1);
+    await t.runTimer();
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("a completion body of the wrong shape (a lesson or practice one) is retried, not accepted", async () => {
+    const t = setup([{ status: 200, body: completeResponse }]);
+    expect(await t.sink.completeReview(reviewCompletion)).toEqual({ status: "queued" });
+    expect(t.sink.pendingCount()).toBe(1);
+  });
+
+  it("a review completion body is not accepted by the lesson or practice completion", async () => {
+    const t = setup([{ status: 200, body: reviewCompleteResponse }]);
+    expect(await t.sink.completeLesson(completion)).toEqual({ status: "queued" });
+    const u = setup([{ status: 200, body: reviewCompleteResponse }]);
+    expect(await u.sink.completePractice(practiceReq)).toEqual({ status: "queued" });
+  });
+
+  it("a second completeReview for the same session returns the same promise and sends once", async () => {
+    const t = setup([{ status: 200, body: reviewCompleteResponse }]);
+    const p1 = t.sink.completeReview(reviewCompletion);
+    const p2 = t.sink.completeReview(reviewCompletion);
+    expect(p2).toBe(p1);
+    await p1;
+    expect(t.calls).toHaveLength(1);
+  });
+
+  it("getState counts pending reviews separately and leaves pendingAttempts alone", async () => {
+    const t = setup([{ status: 500 }]);
+    t.sink.sendAttempt(attempt(1));
+    t.sink.sendReview(review(2));
+    expect(t.sink.getState()).toMatchObject({ pending: 2, pendingAttempts: 1, pendingReviews: 1 });
+  });
+
+  it("401 on reviews keeps them and pauses", async () => {
+    const t = setup([{ status: 401 }]);
+    t.sink.sendReview(review(1));
+    await settle();
+    expect(t.sink.pendingCount()).toBe(1);
+    expect(t.sink.getState().status).toBe("paused");
   });
 });
