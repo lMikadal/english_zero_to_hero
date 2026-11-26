@@ -22,6 +22,7 @@
 - ข้อความที่แสดงผู้เรียนต้องมีภาษาไทยกำกับ (`{ en, th }`)
 - API key ใช้เฉพาะฝั่ง server เท่านั้น ห้าม commit `.env*` (ยกเว้น `.env.example`)
 - Database คือ PostgreSQL ผ่าน Drizzle ORM: แก้โครงสร้างตารางที่ `src/db/schema.ts` แล้วรัน `make db-generate` และ commit ไฟล์ migration ด้วย ห้ามแก้ตารางด้วยมือ
+- สีทุกสีอยู่ใน design token ที่ `src/app/globals.css` เท่านั้น (`bg-card`, `text-fg`, `border-line` ...) ห้ามใช้สี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]` หรือ hex/rgb ใน `src/` ตัวตรวจ `src/lib/theme/color-scan.test.ts` ใน `make check` บังคับให้
 - **ทุกอย่างของแอปรันใน Docker:** ห้ามรัน `pnpm`, `node`, `psql` บน host ให้ใช้ `make <target>` หรือ `docker compose run --rm app ...`
 - **TDD:** เขียนเทสต์ที่ไม่ผ่านก่อน แล้วค่อยเขียนโค้ด และ commit เทสต์ก่อนโค้ด
 - **Git:** ห้าม commit ลง `main` โดยตรง ทำงานใน branch แล้วเปิด PR ด้วย `gh` เมื่อเทสต์และการตรวจของทีม AI ผ่าน orchestrator merge (squash) เองได้ทุก PR แล้วสรุปให้ผู้ใช้หลัง merge สิ่งที่ยังไม่ได้ทดสอบต้องเขียนไว้ใน PR และ `docs/PLAN.md` ให้ชัด

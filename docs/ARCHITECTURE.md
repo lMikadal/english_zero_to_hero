@@ -79,6 +79,13 @@ english_zero_to_hero/
 └── docs/
 ```
 
+## 3.-1 สีและธีม
+
+- **Token:** สีทั้งหมดเป็นตัวแปร CSS ใน `src/app/globals.css` (`--bg`, `--card`, `--surface`, `--line`, `--fg`, `--muted`, `--accent`, `--on-accent`, `--good/--bad/--hint` พร้อม `-fg` และ `-soft`, `--ring`) แล้วเปิดเป็น utility ของ Tailwind ด้วย `@theme inline` (`bg-card`, `text-fg`, `border-line`, `text-good-fg`, `bg-bad-soft` ...) ชุดสีเดิมของ Tailwind ถูกลบ (`--color-*: initial`) ห้ามใส่สีดิบที่อื่น (`src/lib/theme/color-scan.test.ts`)
+- **เก็บธีม:** cookie `ezh-theme` = `light` | `dark` | `system` (ค่าเริ่มต้น) ต่ออุปกรณ์ ไม่เก็บใน DB ตั้งโดย `applyTheme()` ใน `src/lib/theme/theme.ts` (เรียกจาก `ThemePicker` ที่ `/settings`)
+- **ตัดสินธีม:** root layout (`src/app/layout.tsx`) อ่าน cookie บน server ใส่ `data-theme` ที่ `<html>` CSS: `:root` = สว่าง; `[data-theme="dark"]` = มืด; ค่า `system`/ไม่มี = มืดเมื่อ `prefers-color-scheme: dark` (media query) จึงไม่ต้องมี script และไม่กะพริบ `color-scheme` ตามธีมเพื่อให้ฟอร์มและ scrollbar เปลี่ยนตาม
+- ผลข้างเคียง: การอ่าน cookie ใน root layout ทำให้ทุกหน้าเป็น dynamic rendering
+
 ## 3.0 Docker-first
 
 **ทุกอย่างของแอปรันใน Docker** เครื่อง host ต้องมีแค่ Docker กับ git ไม่ต้องติดตั้ง Node, pnpm หรือ PostgreSQL

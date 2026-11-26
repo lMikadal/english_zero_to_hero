@@ -11,3 +11,12 @@ test("home page loads at 360px with the app name and no horizontal scroll", asyn
   );
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test("theme choice on /settings persists across a reload", async ({ page }) => {
+  await page.goto("/settings");
+  await page.getByRole("radio", { name: "มืด" }).check({ force: true });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("radio", { name: "มืด" })).toBeChecked();
+});
