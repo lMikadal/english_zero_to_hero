@@ -13,9 +13,12 @@ export default defineConfig([
       "no-restricted-imports": [
         "error",
         {
-          paths: [
-            { name: "@/db/queries/progress", importNames: ["finishProgress", "advanceCurrentDay", "lockProgress"], message: "A practice handler must not write progress or profiles." },
-            { name: "@/db/queries/attempts", importNames: ["markInProgress", "refreshDoneScore"], message: "A practice handler must not write progress." },
+          patterns: [
+            // tables come only through query functions; types may come from the schema
+            { group: ["@/db/schema", "**/db/schema"], allowTypeImports: true, message: "A practice handler reads tables through @/db/queries/practice only." },
+            // namespace imports are rejected whenever allowImportNames is used
+            { group: ["@/db/queries/progress", "**/db/queries/progress"], allowImportNames: ["getProfile", "getStreak", "touchStreak"], message: "A practice handler must not write progress or profiles." },
+            { group: ["@/db/queries/attempts", "**/db/queries/attempts"], message: "A practice handler must not write progress." },
           ],
         },
       ],
