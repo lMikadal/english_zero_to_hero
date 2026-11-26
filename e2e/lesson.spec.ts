@@ -7,7 +7,7 @@
 // show "ข้าม" and the test skips them; when audio does work it answers them instead.
 import fs from "node:fs";
 import path from "node:path";
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, request, test, type Locator, type Page } from "@playwright/test";
 
 type Ex = {
   id: string;
@@ -50,10 +50,22 @@ async function audioMode(page: Page): Promise<"skip" | "audio"> {
 
 const radio = (scope: Locator | Page, name: string) => scope.getByRole("radio", { name, exact: true });
 
+/** The "ถัดไป" button must be on screen as it is, without scrolling (Playwright's click would scroll it into view and hide the bug). */
+async function expectInViewport(page: Page, button: Locator, where: string) {
+  const box = await button.boundingBox();
+  const viewport = page.viewportSize();
+  if (!box || !viewport) throw new Error(`no box for ${where}`);
+  expect(box.y, `${where}: top of the button`).toBeGreaterThanOrEqual(0);
+  expect(box.y + box.height, `${where}: bottom of the button`).toBeLessThanOrEqual(viewport.height);
+}
+
 async function checkAndNext(page: Page) {
   await page.getByRole("button", { name: "ตรวจคำตอบ" }).click();
-  await expect(page.getByRole("status")).toContainText("ถูกต้อง");
-  await page.getByRole("button", { name: "ถัดไป" }).click();
+  await expect(page.locator("main").getByRole("status")).toContainText("ถูกต้อง");
+  const next = page.getByRole("button", { name: "ถัดไป" });
+  await expect(next).toBeEnabled();
+  await expectInViewport(page, next, "after checking the answer");
+  await next.click();
 }
 
 /** Answers the current step the way the lesson file says is right. Returns once the player has moved on or is about to. */
@@ -108,6 +120,14 @@ async function playStep(page: Page, ex: Ex) {
   }
 }
 
+// The first request to an API route compiles it (dev server); warm both so that compile time cannot push the
+// completion past the sink's 15 s request timeout. Any status will do.
+test.beforeAll(async () => {
+  const api = await request.newContext({ baseURL: process.env.BASE_URL ?? "http://localhost:3000" });
+  for (const url of ["/api/attempts", "/api/lessons/complete"]) await api.post(url, { data: {}, timeout: 90_000 }).catch(() => {});
+  await api.dispose();
+});
+
 test("a learner plays day 1 to the end, day 2 opens, day 3 stays locked", async ({ page }) => {
   test.setTimeout(240_000);
 
@@ -138,8 +158,14 @@ test("a learner plays day 1 to the end, day 2 opens, day 3 stays locked", async 
   await expect(page.getByRole("link", { name: "ไปบทถัดไป" })).toHaveAttribute("href", "/day/2");
   await expectNoHorizontalScroll(page, "completion");
 
+  // the next-lesson link opens day 2's first step (no state carried over from day 1)
+  await page.getByRole("link", { name: "ไปบทถัดไป" }).click();
+  await expect(page).toHaveURL(/\/day\/2$/, SLOW);
+  await expect(page.locator("main h2").first()).toContainText("ข้อ 1 /", SLOW);
+  await expectNoHorizontalScroll(page, "day 2 first step");
+
   // home: now day 2, streak 1
-  await page.getByRole("link", { name: "กลับหน้าแรก" }).click();
+  await page.goto("/");
   await expect(page.getByText("วันที่ 2 / 365")).toBeVisible(SLOW);
   await expect(page.getByText(/สตรีค 1 วัน/)).toBeVisible();
   await expectNoHorizontalScroll(page, "home after day 1");
