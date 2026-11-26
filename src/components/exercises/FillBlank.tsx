@@ -67,7 +67,7 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
                   onChange={(e) => setTexts(texts.map((t, j) => (j === i ? e.target.value : t)))}
                   className={`mx-1 inline-block min-h-11 w-28 max-w-full rounded-[9px] border px-2 text-center align-middle font-medium ${fieldToneClass(toneOf(i))}`}
                 />
-                {result ? <Mark ok={toneOf(i) === "right"} /> : null}
+                {result ? <span className="mr-1.5"><Mark ok={toneOf(i) === "right"} /></span> : null}
                 {segments[i + 1].lead}
               </span>
             ) : null}

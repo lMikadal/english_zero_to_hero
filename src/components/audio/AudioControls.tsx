@@ -59,7 +59,7 @@ export function PlayButtons({ audio, text, label = "ฟัง" }: { audio: Exerc
   return (
     <span className="inline-flex flex-col items-center gap-1">
       <span className="inline-flex flex-wrap justify-center gap-2">
-        <button type="button" disabled={audio.checking} className={CHIP} onClick={() => play(1)}><span aria-hidden="true" className="text-[11px]">▶</span>{label}</button>
+        <button type="button" disabled={audio.checking} className={CHIP} onClick={() => play(1)}><span aria-hidden="true" className="text-[11px]">{"\u25B6\uFE0E"}</span>{label}</button>
         <button type="button" disabled={audio.checking} className={CHIP} onClick={() => play(0.75)}>{label}ช้า 0.75×</button>
       </span>
       {failed && <span role="status" className="text-sm text-bad-fg">เล่นเสียงไม่สำเร็จ ลองอีกครั้ง</span>}
