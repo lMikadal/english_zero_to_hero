@@ -108,7 +108,11 @@ async function playStep(page: Page, ex: Ex) {
     }
     case "arrange_words": {
       const pool = page.getByRole("list", { name: "คำที่เหลือ" });
-      for (const word of (ex.answer as string).split(" ")) await pool.getByRole("button", { name: word, exact: true }).first().click();
+      // Tiles are displayed in lower case (except "I" and proper nouns), so match the word case-insensitively.
+      for (const word of (ex.answer as string).split(" ")) {
+        const name = new RegExp(`^${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+        await pool.getByRole("button", { name }).first().click();
+      }
       return checkAndNext(page);
     }
     case "translate_th_en": {
