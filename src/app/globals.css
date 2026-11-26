@@ -120,25 +120,36 @@
 
 /*
  * Main nav bar (src/components/nav/MainNav.tsx): the bar's background is cut by a circular notch around the raised
- * current-menu circle. --cx is the circle's centre (set per current menu); 33px = circle radius 27 + 6px gap; the
- * circle's centre sits 4px below the bar's top edge. The mask only uses alpha, so the colour here is not a theme colour.
+ * current-menu circle. --cx is the circle's centre (set per current menu). The notch geometry lives here, once, and
+ * is derived from the circle in MainNav.tsx: a 54px circle (radius 27) raised 23px above the bar, so its centre sits
+ * 4px below the bar's top edge (54/2 - 23) = --notch-y; the notch radius is the circle radius plus a 6px gap = --notch-r.
+ * Change the circle in MainNav.tsx and update these two numbers together (nav test checks both rules use the variables).
  */
+.nav-notch,
+.nav-ring {
+  --notch-y: 4px;
+  --notch-r: 33px;
+}
+
+/* The mask only uses alpha, so the colour here is not a theme colour. */
 .nav-notch {
-  -webkit-mask-image: radial-gradient(circle 33px at var(--cx) 4px, transparent 32px, #000 33px);
-  mask-image: radial-gradient(circle 33px at var(--cx) 4px, transparent 32px, #000 33px);
+  -webkit-mask-image: radial-gradient(circle var(--notch-r) at var(--cx) var(--notch-y), transparent calc(var(--notch-r) - 1px), #000 var(--notch-r));
+  mask-image: radial-gradient(circle var(--notch-r) at var(--cx) var(--notch-y), transparent calc(var(--notch-r) - 1px), #000 var(--notch-r));
+}
+
+/*
+ * Outline of the notch (MainNav.tsx): the same circle as .nav-notch, drawn as a thin band on its edge (the mask above
+ * is transparent up to --notch-r - 1px and opaque from --notch-r, so the band sits on that edge). The layer is the
+ * size of the bar and has its rounded corners, so the part of the band above the bar's top edge is clipped away and
+ * the ring joins the bar's own border. Colour is the --line token, so both themes follow.
+ */
+.nav-ring {
+  background: var(--line);
+  -webkit-mask-image: radial-gradient(circle calc(var(--notch-r) + 7px) at var(--cx) var(--notch-y), transparent calc(var(--notch-r) - 1.5px), #000 calc(var(--notch-r) - 0.75px), #000 calc(var(--notch-r) - 0.25px), transparent calc(var(--notch-r) + 0.5px));
+  mask-image: radial-gradient(circle calc(var(--notch-r) + 7px) at var(--cx) var(--notch-y), transparent calc(var(--notch-r) - 1.5px), #000 calc(var(--notch-r) - 0.75px), #000 calc(var(--notch-r) - 0.25px), transparent calc(var(--notch-r) + 0.5px));
 }
 
 /* IPA (transcriptions are marked lang="en-fonipa") uses Noto Sans, which has the phonetic letters. */
 :lang(en-fonipa) {
   font-family: var(--font-ipa);
-/*
- * Outline of the notch (MainNav.tsx): the same circle as .nav-notch, drawn as a 1px band between radius 32 and 33
- * (the mask above is transparent up to 32 and opaque from 33, so the band sits on its edge). The layer is the size
- * of the bar and has its rounded corners, so the part of the band above the bar's top edge is clipped away and the
- * ring joins the bar's own border. Colour is the --line token, so both themes follow.
- */
-.nav-ring {
-  background: var(--line);
-  -webkit-mask-image: radial-gradient(circle 40px at var(--cx) 4px, transparent 31.5px, #000 32.25px, #000 32.75px, transparent 33.5px);
-  mask-image: radial-gradient(circle 40px at var(--cx) 4px, transparent 31.5px, #000 32.25px, #000 32.75px, transparent 33.5px);
 }

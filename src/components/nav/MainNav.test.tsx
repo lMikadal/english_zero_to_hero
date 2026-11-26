@@ -90,7 +90,7 @@ describe("MainNav", () => {
 
     it("globals.css draws it from tokens only: a --line fill, masked to a thin circle band around the notch", () => {
       const css = fs.readFileSync(path.join(process.cwd(), "src/app/globals.css"), "utf8");
-      const rule = /\.nav-ring\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+      const rule = /\*\/\s*\.nav-ring\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
       expect(rule).toMatch(/background(-color)?:\s*var\(--line\)/);
       expect(rule).toMatch(/mask-image:\s*radial-gradient\([^;]*var\(--cx\)/);
       // the opaque stop inside mask-image is alpha only (as in .nav-notch), not a colour that is painted
@@ -104,6 +104,20 @@ describe("MainNav", () => {
       expect(classes).toMatch(/\binset-0\b/);
       expect(classes).toMatch(/\brounded-3xl\b/);
       expect(classes).toMatch(/\bpointer-events-none\b/);
+    });
+
+    it("the notch and the ring take radius and centre from the same custom properties, with no raw numbers", () => {
+      const css = fs.readFileSync(path.join(process.cwd(), "src/app/globals.css"), "utf8");
+      const body = (sel: RegExp) => sel.exec(css)?.[1] ?? "";
+      const shared = body(/\.nav-notch,\s*\.nav-ring\s*\{([^}]*)\}/);
+      expect(shared).toMatch(/--notch-y:\s*\d+px/);
+      expect(shared).toMatch(/--notch-r:\s*\d+px/);
+      for (const [name, rule] of [["nav-notch", body(/\*\/\s*\.nav-notch\s*\{([^}]*)\}/)], ["nav-ring", body(/\*\/\s*\.nav-ring\s*\{([^}]*)\}/)]]) {
+        expect(rule, name).toMatch(/var\(--notch-r\)/);
+        expect(rule, name).toMatch(/var\(--notch-y\)/);
+        // every length in the gradient is a calc() of the variables; a bare px number would be a second source of truth
+        expect(rule.replace(/calc\([^()]*(?:\([^()]*\)[^()]*)*\)/g, "").replace(/var\([^)]*\)/g, ""), name).not.toMatch(/\d+(\.\d+)?px/);
+      }
     });
   });
 });
