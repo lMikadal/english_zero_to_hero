@@ -121,13 +121,46 @@ describe("LessonPlayer in practice mode", () => {
     expect(completePractice).toHaveBeenCalledTimes(2);
   });
 
-  it("says a session with nothing to score has no score", async () => {
-    setup(["d001-pron-01"], { // phoneme_intro: ungraded, only "ถัดไป"
-      result: { status: "done", response: { ...DONE.response, session: { ...DONE.response.session, score: null, graded: 0 } } },
+  it("an intro-only whole lesson stores no attempt: the server says not counted, and the screen says no answer was saved", async () => {
+    setup(["d001-pron-01"], { // phoneme_intro: ungraded, only "ถัดไป", so nothing is sent and the real server answers countedForStreak false
+      result: { status: "done", response: { ...DONE.response, session: { ...DONE.response.session, score: null, graded: 0 }, countedForStreak: false } },
     });
     await next();
     await screen.findByText("จบการเล่นซ้ำแล้ว");
+    expect(screen.getByText("ไม่มีคำตอบที่บันทึกในรอบนี้ จึงไม่นับสตรีค")).toBeInTheDocument();
+    expect(screen.queryByText("ส่วนนี้ประเมินตัวเอง ไม่มีคะแนน")).not.toBeInTheDocument();
+  });
+
+  it("a whole lesson with only a self-rated answer is stored and counted but has no score", async () => {
+    const { sent } = setup(["d001-speak-02"], { // speak_answer: a self-rated answer is stored, so the real server counts it
+      result: { status: "done", response: { ...DONE.response, session: { ...DONE.response.session, score: null, graded: 0 }, countedForStreak: true } },
+    });
+    await userEvent.click(screen.getByRole("button", { name: "พูดได้" }));
+    await next();
+    await screen.findByText("จบการเล่นซ้ำแล้ว");
+    expect(sent).toHaveLength(1);
     expect(screen.getByText("รอบนี้ไม่มีข้อที่ให้คะแนน")).toBeInTheDocument(); // whole lesson: not "ส่วนนี้ประเมินตัวเอง"
+  });
+});
+
+describe("LessonPlayer self-rated line in a skill replay", () => {
+  const NONE = { status: "done" as const, response: { ...DONE.response, session: { ...DONE.response.session, skill: "speaking" as const, score: null, graded: 0 } } };
+
+  it("says the section is self-rated when the learner self-rated an answer", async () => {
+    setup(["d001-speak-02"], { skill: "speaking", result: NONE, lesson: { ...readLesson(1), sections: [{ skill: "speaking", title: { en: "Introduce yourself", th: "แนะนำตัว" }, exercises: [get("d001-speak-02")] as Exercise[] }] } });
+    await userEvent.click(screen.getByRole("button", { name: "พูดได้" }));
+    await next();
+    await screen.findByText("จบการเล่นซ้ำแล้ว");
+    expect(screen.getByText("ส่วนนี้ประเมินตัวเอง ไม่มีคะแนน")).toBeInTheDocument();
+  });
+
+  it("does not say so when the section had only an ungraded intro", async () => {
+    const lesson: Lesson = { ...readLesson(1), sections: [{ skill: "pronunciation", title: { en: "The /æ/ sound", th: "เสียง /æ/" }, exercises: [get("d001-pron-01")] as Exercise[] }] };
+    setup([], { skill: "pronunciation", result: { ...NONE, response: { ...NONE.response, session: { ...NONE.response.session, skill: "pronunciation" } } }, lesson });
+    await next();
+    await screen.findByText("จบการเล่นซ้ำแล้ว");
+    expect(screen.queryByText("ส่วนนี้ประเมินตัวเอง ไม่มีคะแนน")).not.toBeInTheDocument();
+    expect(screen.getByText("ส่วนนี้ไม่มีข้อที่ให้คะแนน")).toBeInTheDocument();
   });
 });
 

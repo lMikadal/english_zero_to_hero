@@ -16,8 +16,8 @@ const response = (over: Partial<CompletePracticeResponse> = {}): CompleteResult<
   },
 });
 
-function show(result: PracticeCompletion | null, o: { skill?: ReplaySkill | null; localScore?: number | null; onRetry?: () => void; onReplay?: () => void } = {}) {
-  return render(<PracticeCompletionScreen day={3} skill={o.skill ?? null} result={result} localScore={o.localScore ?? null} onRetry={o.onRetry ?? (() => {})} onReplay={o.onReplay} />);
+function show(result: PracticeCompletion | null, o: { skill?: ReplaySkill | null; selfRated?: boolean; localScore?: number | null; onRetry?: () => void; onReplay?: () => void } = {}) {
+  return render(<PracticeCompletionScreen day={3} skill={o.skill ?? null} result={result} localScore={o.localScore ?? null} selfRated={o.selfRated} onRetry={o.onRetry ?? (() => {})} onReplay={o.onReplay} />);
 }
 
 describe("PracticeCompletionScreen", () => {
@@ -61,7 +61,7 @@ describe("PracticeCompletionScreen", () => {
   });
 
   it("says a session without a scored exercise has no score", () => {
-    show(response({ session: { sessionId: "s", day: 3, skill: "speaking", score: null, graded: 0 } }), { skill: "speaking" });
+    show(response({ session: { sessionId: "s", day: 3, skill: "speaking", score: null, graded: 0 } }), { skill: "speaking", selfRated: true });
     expect(screen.getByText("ส่วนนี้ประเมินตัวเอง ไม่มีคะแนน")).toBeInTheDocument();
     expect(screen.queryByText(/คะแนนรอบนี้/)).not.toBeInTheDocument();
   });
@@ -126,7 +126,7 @@ describe("PracticeCompletionScreen score and streak lines (skill/whole x score x
   });
 
   it.each([true, false])("skill, no score (counted %s): self-rated line and the skill note", (counted) => {
-    show(response({ session: session("speaking", null), countedForStreak: counted }), { skill: "speaking" });
+    show(response({ session: session("speaking", null), countedForStreak: counted }), { skill: "speaking", selfRated: true });
     expect(screen.getByText(SELF_RATED)).toBeInTheDocument();
     expect(screen.getByText("ฝึกแยกส่วนไม่นับสตรีค นับเมื่อเล่นทั้งบทจนจบ")).toBeInTheDocument();
     expect(screen.queryByText(NO_ANSWERS)).not.toBeInTheDocument();
@@ -141,9 +141,16 @@ describe("PracticeCompletionScreen score and streak lines (skill/whole x score x
     expect(screen.queryByText(BARE)).not.toBeInTheDocument();
   });
 
-  it("whole lesson still saving with no local score: does not claim self-rating", () => {
+  it("skill, no score and nothing self-rated (only intros, or no answer stored): does not claim self-rating", () => {
+    show(response({ session: session("pronunciation", null), countedForStreak: false }), { skill: "pronunciation", selfRated: false });
+    expect(screen.queryByText(SELF_RATED)).not.toBeInTheDocument();
+    expect(screen.getByText("ส่วนนี้ไม่มีข้อที่ให้คะแนน")).toBeInTheDocument();
+  });
+
+  it("whole lesson still saving with no local score: does not claim self-rating, and says it is saving", () => {
     show(null, { localScore: null });
     expect(screen.queryByText(SELF_RATED)).not.toBeInTheDocument();
+    expect(screen.getByText("กำลังบันทึก…")).toBeInTheDocument();
   });
 });
 
