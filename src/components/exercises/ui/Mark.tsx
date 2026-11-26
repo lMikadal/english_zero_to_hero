@@ -5,7 +5,7 @@ export function Mark({ ok }: { ok: boolean }) {
       <span aria-hidden="true" className="font-bold">
         {ok ? "✓" : "✗"}
       </span>
-      <span className="sr-only">{ok ? "ถูก" : "ผิด"}</span>
+      <span className="sr-only" lang="th">{ok ? "ถูก" : "ผิด"}</span>
     </>
   );
 }
