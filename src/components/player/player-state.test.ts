@@ -3,6 +3,7 @@ import { get, readLesson } from "@/lib/answers/test-content";
 import type { Grade } from "@/lib/answers/grade";
 import type { AttemptAnswer } from "@/lib/attempts/contract";
 import type { Exercise, Lesson } from "@/lib/content/schema";
+import { replaySections } from "@/lib/practice/replay";
 import {
   buildSteps, canAdvance, createPlayerState, currentItem, elapsedMs, firstAttemptScore, playerReducer, type PlayerState,
 } from "./player-state";
@@ -173,5 +174,30 @@ describe("playerReducer", () => {
 
   it("firstAttemptScore is null when nothing was scored", () => {
     expect(firstAttemptScore(start(["d001-pron-01"]))).toBeNull();
+  });
+});
+
+describe("createPlayerState with sections (replay)", () => {
+  it("plays only the sections it is given, in order", () => {
+    const lesson = readLesson(1);
+    const sections = replaySections(lesson, "listening");
+    const s = createPlayerState({ lesson, sections, sessionId: SESSION, now: 0, isSupported });
+    expect(s.items.map((i) => i.step.exercise.id)).toEqual(sections.flatMap((x) => x.exercises.map((e) => e.id)));
+    expect(s.items).toHaveLength(2);
+  });
+
+  it("plays the whole lesson when no sections are given", () => {
+    const lesson = readLesson(1);
+    const s = createPlayerState({ lesson, sessionId: SESSION, now: 0, isSupported });
+    expect(s.items).toHaveLength(lesson.sections.flatMap((x) => x.exercises).length);
+  });
+
+  it("still builds the retry round for a section replay", () => {
+    const lesson = readLesson(1);
+    let s = createPlayerState({ lesson, sections: replaySections(lesson, "listening"), sessionId: SESSION, now: 0, isSupported });
+    s = next(answer(s, WRONG));
+    s = next(answer(s, RIGHT));
+    expect(currentItem(s).attemptNo).toBe(2);
+    expect(s.items.filter((i) => i.attemptNo === 2)).toHaveLength(1);
   });
 });
