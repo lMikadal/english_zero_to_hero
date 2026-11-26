@@ -60,6 +60,10 @@ test("replaying one skill (reading) and then the whole lesson leaves the origina
   await expect(page.getByRole("heading", { level: 1, name: "ฝึกเพิ่ม" })).toBeVisible(SLOW);
   await expectNoHorizontalScroll(page, "practice (collapsed)");
   await expect(dayOneRow(page)).toHaveCount(1);
+  // the lesson's original score as the list shows it: every later screen must show this same number
+  const original = (await dayOneRow(page).locator("summary").innerText()).match(/คะแนน (\d+)%/)?.[1];
+  expect(original, "the finished day row shows its original score").toBeTruthy();
+  const originalLine = `คะแนนเดิมของบท ${original}% (ไม่เปลี่ยน)`;
   await dayOneRow(page).locator("summary").click();
   await expect(dayOneRow(page).getByRole("link", { name: /^เล่นทั้งบท/ })).toBeVisible();
   for (const skill of ["ออกเสียง", "ฟัง", "พูด", "อ่าน", "เขียน"]) {
@@ -75,7 +79,7 @@ test("replaying one skill (reading) and then the whole lesson leaves the origina
   await playToEnd(page, replayDone(page));
   await expect(replayDone(page)).toBeVisible(SLOW);
   await expect(page.getByText(/^คะแนนรอบนี้ \d+%$/)).toBeVisible(SLOW);
-  await expect(page.getByText(/^คะแนนเดิมของบท \d+% \(ไม่เปลี่ยน\)$/)).toBeVisible(SLOW);
+  await expect(page.getByText(originalLine, { exact: true })).toBeVisible(SLOW);
   await expect(page.getByText("ฝึกแยกส่วนไม่นับสตรีค นับเมื่อเล่นทั้งบทจนจบ")).toBeVisible();
   await expect(page.getByRole("link", { name: "ไปบทถัดไป" })).toHaveCount(0);
   await expectNoHorizontalScroll(page, "skill replay completion");
@@ -87,13 +91,16 @@ test("replaying one skill (reading) and then the whole lesson leaves the origina
   await playToEnd(page, replayDone(page));
   await expect(replayDone(page)).toBeVisible(SLOW);
   await expect(done(page)).toHaveCount(0); // not the first-time completion screen
-  await expect(page.getByText(/^คะแนนเดิมของบท \d+% \(ไม่เปลี่ยน\)$/)).toBeVisible(SLOW);
+  await expect(page.getByText(originalLine, { exact: true })).toBeVisible(SLOW);
+  await expect(page.getByText(/^สตรีค \d+ วัน/)).toBeVisible(); // a whole lesson with stored answers counts
   await expect(page.getByRole("link", { name: "ไปบทถัดไป" })).toHaveCount(0);
   await expectNoHorizontalScroll(page, "whole-lesson replay completion");
 
   // the original progress did not move
   await page.goto("/");
   await expect.poll(() => currentDayText(page), SLOW).toBe(homeBefore);
+  await page.goto("/practice");
+  await expect(dayOneRow(page).locator("summary")).toContainText(`คะแนน ${original}%`, SLOW);
 });
 
 test("/day/1?skill=vocabulary is not a page", async ({ page }) => {

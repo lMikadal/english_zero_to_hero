@@ -2,6 +2,8 @@
 //
 // It needs a CLEAN learner state: it expects the home page to start at day 1 with streak 0. CI always starts from a
 // fresh database. Locally, reset first:   make db-reset CONFIRM=english_zero_to_hero_dev   (then `make e2e`).
+// It must run BEFORE e2e/replay.spec.ts (alphabetical order with `workers: 1` gives that): the replay spec finishes
+// day 1 through the API when it is not done yet, after which this spec's "วันที่ 1 / 365" start state is gone.
 //
 // It does not depend on audio: headless Chromium usually has no English voice, in which case the sound exercises
 // show "ข้าม" and the test skips them; when audio does work it answers them instead.
