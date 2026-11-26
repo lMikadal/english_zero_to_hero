@@ -14,7 +14,7 @@ export function SelfRating({
       disabled={locked}
       aria-pressed={chosen === r}
       onClick={() => onRate(r)}
-      className={`${buttonClass(r === "ok" ? "primary" : "secondary", "flex-1 disabled:opacity-60")} ${chosen === r ? "opacity-100 ring-2 ring-ring ring-offset-2 ring-offset-bg disabled:opacity-100" : ""}`}
+      className={buttonClass(r !== "ok" ? "secondary" : chosen === r ? "selected" : "primary", chosen === r ? "flex-1 ring-2 ring-ring ring-offset-2 ring-offset-bg" : "flex-1 disabled:opacity-60")}
     >
       {label}
     </button>

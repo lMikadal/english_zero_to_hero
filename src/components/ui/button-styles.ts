@@ -1,11 +1,13 @@
 // The one set of button looks (design/ui-v2: 12px radius, 15px medium text, at least 48px tall). Used by the player,
 // the exercise "ตรวจคำตอบ" button, the completion / locked-day / error screens. A new screen takes its buttons from here.
-export type ButtonKind = "primary" | "secondary" | "quiet";
+export type ButtonKind = "primary" | "selected" | "secondary" | "quiet";
 
 const BASE = "flex min-h-12 w-full items-center justify-center rounded-xl border px-4 py-3 text-center text-[15px] font-medium disabled:cursor-default";
 
 const KIND: Record<ButtonKind, string> = {
   primary: "border-transparent bg-accent text-on-accent disabled:bg-surface disabled:text-muted",
+  // a primary button that stays in accent while disabled: the learner's own choice after it is locked (self-rating)
+  selected: "border-transparent bg-accent text-on-accent",
   secondary: "border-line text-fg",
   quiet: "border-line bg-surface text-fg",
 };
