@@ -4,7 +4,7 @@ import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
 import { Mark } from "./ui/Mark";
-import { rightWrong, toneClass, type Tone } from "./ui/tone";
+import { rightWrong, fieldToneClass, type Tone } from "./ui/tone";
 
 const BLANK = "___";
 
@@ -68,7 +68,7 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
                   aria-invalid={toneOf(i) === "wrong" || undefined}
                   data-state={toneOf(i)}
                   onChange={(e) => setTexts(texts.map((t, j) => (j === i ? e.target.value : t)))}
-                  className={`mx-1 inline-block min-h-11 w-28 max-w-full rounded-lg border-2 px-2 text-center align-middle ${toneClass(toneOf(i))}`}
+                  className={`mx-1 inline-block min-h-11 w-28 max-w-full rounded-lg border-2 px-2 text-center align-middle ${fieldToneClass(toneOf(i))}`}
                 />
                 {result ? <Mark ok={toneOf(i) === "right"} /> : null}
                 {segments[i + 1].lead}

@@ -4,6 +4,8 @@ import { getLearnerHome, type LearnerHome } from "@/db/queries/home";
 import { UnsavedNote } from "@/components/player/UnsavedNote";
 import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
 import { getCurrentUserId } from "@/lib/server/current-user";
+import { getLesson } from "@/lib/content/repo";
+import type { Lesson } from "@/lib/content/schema";
 import { COURSE_DAYS } from "@/lib/progress/config";
 
 // Today's day and streak depend on the learner and the clock: never cache.
@@ -18,34 +20,82 @@ export default async function Home() {
     return <DbErrorScreen retryHref="/" />;
   }
 
+  // The title comes from content/. A missing or invalid lesson file only hides the title; the start button still works.
+  let lesson: Lesson | null = null;
+  if (!home.courseComplete) {
+    try {
+      lesson = getLesson(home.currentDay);
+    } catch (e) {
+      console.error(`Cannot load lesson for day ${home.currentDay}:`, e);
+    }
+  }
+  const finished = home.courseComplete ? COURSE_DAYS : home.currentDay - 1;
+
   return (
-    <main className="relative mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-4 py-8 text-center">
-      <Link
-        href="/settings"
-        aria-label="ตั้งค่า"
-        className="absolute right-4 top-4 flex size-11 items-center justify-center rounded-full text-muted"
-      >
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
-        </svg>
-      </Link>
-      <h1 className="text-3xl font-bold">English Zero to Hero</h1>
-      <p className="text-lg text-muted">ฝึกภาษาอังกฤษทุกวัน จากศูนย์สู่มือโปร</p>
-      <p className="text-2xl font-semibold">วันที่ {home.currentDay} / {COURSE_DAYS}</p>
-      <p className="text-lg">สตรีค {home.streak.current} วัน</p>
-      {home.activeToday && <p className="text-good-fg">วันนี้เรียนแล้ว ✓</p>}
+    <main className="mx-auto flex max-w-md flex-col gap-6 px-4 pt-14">
+      <header className="flex flex-col gap-1.5">
+        <h1 className="text-2xl font-bold tracking-tight">English Zero to Hero</h1>
+        <p className="text-sm text-muted">ฝึกภาษาอังกฤษทุกวัน จากศูนย์สู่มือโปร</p>
+      </header>
       {home.courseComplete ? (
-        <p className="w-full rounded-xl bg-good-soft p-4 text-lg font-semibold text-good-fg">
+        <p className="rounded-2xl border border-good bg-good-soft p-4 text-lg font-semibold text-good-fg">
           เรียนครบ {COURSE_DAYS} วันแล้ว ยินดีด้วย!
         </p>
       ) : (
-        <Link
-          href={`/day/${home.currentDay}`}
-          className="flex min-h-12 w-full items-center justify-center rounded-xl bg-accent px-4 text-lg font-semibold text-on-accent"
-        >
-          เริ่มบทเรียนวันที่ {home.currentDay}
-        </Link>
+        <section aria-label="บทเรียนวันนี้" className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-muted">บทเรียนวันนี้</p>
+              <h2 className="text-3xl font-bold">
+                วันที่ {home.currentDay} <span className="text-base font-normal text-muted">/ {COURSE_DAYS}</span>
+              </h2>
+            </div>
+            {lesson && (
+              <span className="shrink-0 rounded-full bg-surface px-2.5 py-1 text-xs font-medium text-fg">
+                เฟส {lesson.phase} · {lesson.cefr}
+              </span>
+            )}
+          </div>
+          {lesson && (
+            <div>
+              <p lang="en" className="text-base font-semibold">{lesson.title.en}</p>
+              <p className="text-base text-muted">{lesson.title.th}</p>
+            </div>
+          )}
+          <div
+            role="progressbar"
+            aria-label="เรียนแล้ว"
+            aria-valuemin={0}
+            aria-valuemax={COURSE_DAYS}
+            aria-valuenow={finished}
+            className="h-1.5 w-full overflow-hidden rounded-full bg-surface"
+          >
+            <div className="h-full min-w-1.5 rounded-full bg-accent" style={{ width: `${(finished / COURSE_DAYS) * 100}%` }} />
+          </div>
+          <Link
+            href={`/day/${home.currentDay}`}
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-accent px-4 text-lg font-semibold text-on-accent"
+          >
+            เริ่มบทเรียนวันที่ {home.currentDay}
+          </Link>
+        </section>
+      )}
+      <dl className="grid grid-cols-2 gap-3">
+        {[
+          { label: "สตรีคต่อเนื่อง", days: home.streak.current },
+          { label: "สตรีคนานที่สุด", days: home.streak.longest },
+        ].map((s) => (
+          <div key={s.label} className="flex flex-col-reverse gap-1 rounded-2xl border border-line bg-card p-4">
+            <dt className="text-xs text-muted">{s.label}</dt>
+            <dd className="m-0 text-lg font-bold">{s.days} วัน</dd>
+          </div>
+        ))}
+      </dl>
+      {home.activeToday && (
+        <p className="flex items-center gap-2 rounded-xl border border-good bg-good-soft px-3.5 py-3 text-sm font-medium text-good-fg">
+          <span aria-hidden="true">✓</span>
+          วันนี้เรียนแล้ว เรียนบทถัดไปต่อได้เลย
+        </p>
       )}
       <UnsavedNote />
     </main>

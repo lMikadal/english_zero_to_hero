@@ -26,7 +26,7 @@ test("tapping each menu in the nav bar opens its page; the current menu is marke
     await nav.getByRole("link", { name: menu.label }).tap();
     await expect(page).toHaveURL(new RegExp(`${menu.url === "/" ? "/$" : `${menu.url}$`}`), SLOW);
     await expect(page.getByRole("heading", { level: 1, name: menu.heading })).toBeVisible(SLOW);
-    await expect(nav.getByRole("link", { current: "page" })).toHaveCount(1);
+    await expect(nav.locator("a[aria-current=page]")).toHaveCount(1);
     await expect(nav.getByRole("link", { name: menu.label })).toHaveAttribute("aria-current", "page");
     await expectNoHorizontalScroll(page, menu.url);
 

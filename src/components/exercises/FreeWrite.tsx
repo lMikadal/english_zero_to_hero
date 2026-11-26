@@ -34,7 +34,7 @@ export function FreeWrite({ exercise, onAnswer, result }: ExerciseProps<"free_wr
         readOnly={locked}
         aria-readonly={locked || undefined}
         onChange={(e) => setText(e.target.value)}
-        className="w-full rounded-xl border-2 border-line bg-card p-3 text-lg text-fg read-only:bg-surface"
+        className="w-full rounded-xl border-2 border-control bg-card p-3 text-lg text-fg read-only:bg-surface"
       />
       <p data-testid="word-count" className={`mt-1 text-sm ${enough ? "text-good-fg" : "text-muted"}`}>
         {words} / {exercise.minWords} คำ
