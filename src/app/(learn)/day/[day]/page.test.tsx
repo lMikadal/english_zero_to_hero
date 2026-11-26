@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import DayPage from "./page";
 
+// DayPlayer refreshes the router when a day is done; there is no app router in a unit test (notFound stays real)
+vi.mock("next/navigation", async (importOriginal) => ({ ...(await importOriginal<typeof import("next/navigation")>()), useRouter: () => ({ refresh: () => {} }) }));
 const getCurrentDay = vi.hoisted(() => vi.fn<() => Promise<number>>());
 vi.mock("../../access", () => ({ getCurrentDay }));
 const getLessonMock = vi.hoisted(() => ({ fail: false }));

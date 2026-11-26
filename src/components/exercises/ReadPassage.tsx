@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
+import { MixedText } from "./ui/MixedText";
 import { ChoiceButton } from "./ui/ChoiceButton";
 import { radioKeys } from "./ui/radio";
 import { rightWrong, type Tone } from "./ui/tone";
@@ -34,7 +35,7 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
           {glossary.map(([word, th]) => (
             <div key={word} className="flex flex-wrap gap-x-2">
               <dt lang="en" className="font-semibold text-slate-900">{word}</dt>
-              <dd className="text-slate-700">{th}</dd>
+              <dd className="text-slate-700"><MixedText text={th} /></dd>
             </div>
           ))}
         </dl>
@@ -42,7 +43,7 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
 
       {exercise.questions.map((q, qi) => (
         <div key={qi} role="radiogroup" aria-label={`คำถามที่ ${qi + 1}`} data-state={questionTone(qi)} onKeyDown={(e) => { if (!locked) radioKeys(e, q.choices.length, selected[qi], (ci) => choose(qi, ci)); }} className="mt-5">
-          <p className="font-semibold text-slate-900">{q.question.th}</p>
+          <p className="font-semibold text-slate-900"><MixedText text={q.question.th} /></p>
           <p lang="en" className="mb-2 text-sm text-slate-600">{q.question.en}</p>
           <div className="flex flex-col gap-2">
             {q.choices.map((choice, ci) => {
