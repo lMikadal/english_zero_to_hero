@@ -186,7 +186,7 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
       <header className="flex flex-col gap-2.5">
         {mode === "practice" && (
           <p className="self-start rounded-full border border-hint/40 bg-hint-soft px-2.5 py-0.5 text-xs font-medium text-hint-fg">
-            {skill === null ? "ฝึกซ้ำ" : `ฝึกซ้ำ · ${REPLAY_SKILL_LABEL_TH[skill]}`}
+            {skill === null ? "เล่นซ้ำ" : `เล่นซ้ำ · ${REPLAY_SKILL_LABEL_TH[skill]}`}
           </p>
         )}
         <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-[13px] font-normal text-muted outline-none">

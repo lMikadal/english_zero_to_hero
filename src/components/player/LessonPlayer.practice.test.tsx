@@ -48,12 +48,12 @@ const answer01 = async (right: boolean) => { await choose(right ? "Sam" : "Ann")
 describe("LessonPlayer in practice mode", () => {
   it("marks the screen as a replay in the header (whole lesson)", () => {
     setup(["d001-listen-01"]);
-    expect(screen.getByText("ฝึกซ้ำ")).toBeInTheDocument();
+    expect(screen.getByText("เล่นซ้ำ")).toBeInTheDocument();
   });
 
   it("names the skill in the header for a section replay", () => {
     setup(["d001-listen-01"], { skill: "listening" });
-    expect(screen.getByText("ฝึกซ้ำ · ฟัง")).toBeInTheDocument();
+    expect(screen.getByText("เล่นซ้ำ · ฟัง")).toBeInTheDocument();
   });
 
   it("sends every attempt as source practice, retry round included, and never completeLesson", async () => {
@@ -61,7 +61,7 @@ describe("LessonPlayer in practice mode", () => {
     await answer01(false);
     await next();
     expect(screen.getByText("ทบทวนข้อที่ตอบผิด")).toBeInTheDocument(); // the retry round stays in replay mode
-    expect(screen.getByText("ฝึกซ้ำ")).toBeInTheDocument();
+    expect(screen.getByText("เล่นซ้ำ")).toBeInTheDocument();
     await answer01(true);
     await next();
     await screen.findByText("จบการเล่นซ้ำแล้ว");
@@ -148,6 +148,6 @@ describe("LessonPlayer in lesson mode (unchanged)", () => {
     expect(sent[0].source).toBe("lesson");
     expect(sink.completeLesson).toHaveBeenCalledTimes(1);
     expect(sink.completePractice).not.toHaveBeenCalled();
-    expect(screen.queryByText("ฝึกซ้ำ")).not.toBeInTheDocument();
+    expect(screen.queryByText("เล่นซ้ำ")).not.toBeInTheDocument();
   });
 });

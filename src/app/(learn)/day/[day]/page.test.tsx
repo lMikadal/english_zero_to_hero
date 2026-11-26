@@ -71,20 +71,20 @@ describe("day page replay", () => {
 
   it("plays a finished day in practice mode (replay marker, whole lesson)", async () => {
     await show("1");
-    expect(screen.getByText("ฝึกซ้ำ")).toBeInTheDocument();
+    expect(screen.getByText("เล่นซ้ำ")).toBeInTheDocument();
     expect(screen.getByText("ข้อ 1 / 10")).toBeInTheDocument();
   });
 
   it.each(["not_started", "in_progress"])("plays a %s day as a normal lesson, without the replay marker", async (status) => {
     getDayStatus.mockResolvedValue(status);
     await show("1");
-    expect(screen.queryByText(/ฝึกซ้ำ/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/เล่นซ้ำ/)).not.toBeInTheDocument();
     expect(screen.getByText("ข้อ 1 / 10")).toBeInTheDocument();
   });
 
   it("plays only the listening section for ?skill=listening", async () => {
     await show("1", { skill: "listening" });
-    expect(screen.getByText("ฝึกซ้ำ · ฟัง")).toBeInTheDocument();
+    expect(screen.getByText("เล่นซ้ำ · ฟัง")).toBeInTheDocument();
     expect(screen.getByText("ข้อ 1 / 2")).toBeInTheDocument();
   });
 
