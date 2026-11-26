@@ -377,7 +377,7 @@ describe("LessonPlayer action bar", () => {
     expect(bar().className).toMatch(/\bsticky\b/);
     expect(bar().className).toMatch(/\bbottom-0\b/);
     expect(bar().className).toMatch(/\bborder-t\b/);
-    expect(bar().className).toMatch(/\bbg-white\b/); // opaque, so content scrolls under it
+    expect(bar().className).toMatch(/\bbg-bg\b/); // opaque, so content scrolls under it
     expect(bar().className).toMatch(/safe-area-inset-bottom/);
   });
 
