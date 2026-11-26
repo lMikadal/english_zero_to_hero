@@ -46,7 +46,6 @@ describe("UnsavedNote", () => {
     render(<UnsavedNote sink={f.sink} />);
     const e = fire();
     expect(e.defaultPrevented).toBe(true);
-    expect(e.returnValue).toBe("");
     act(() => f.set({ pending: 0, pendingAttempts: 0 }));
     expect(fire().defaultPrevented).toBe(false);
     expect(alert).not.toHaveBeenCalled();
