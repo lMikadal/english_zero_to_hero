@@ -169,7 +169,19 @@ describe("the other paths keep a single action", () => {
     render(1, [get("d001-listen-01")], false);
     await screen.findByRole("button", { name: "ข้าม" });
     expect(nextButtons()).toHaveLength(0);
-    expect(checkButtons().every((b) => (b as HTMLButtonElement).disabled)).toBe(true);
+    expect(checkButtons()).toHaveLength(1); // assert the count first: `every` on an empty list is always true
+    expect(checkButtons()[0]).toBeDisabled();
+  });
+
+  it("self-rated step with no audio: ข้าม moves on, and two primary actions are never shown together", async () => {
+    render(1, [get("d001-pron-03"), get("d001-listen-01")], false);
+    const skip = await screen.findByRole("button", { name: "ข้าม" });
+    expect(checkButtons()).toHaveLength(0);
+    expect(nextButtons()).toHaveLength(0);
+    await userEvent.click(skip);
+    expect(screen.getByText("ข้อ 2 / 2")).toBeInTheDocument();
+    expect(nextButtons()).toHaveLength(0);
+    expect(checkButtons().length).toBeLessThanOrEqual(1);
   });
 
   it("after ถัดไป the next exercise gets the heading focus, not the button", async () => {
@@ -177,5 +189,64 @@ describe("the other paths keep a single action", () => {
     await userEvent.click(nextButtons()[0]);
     await act(async () => {});
     expect(document.activeElement).toBe(screen.getByRole("heading", { level: 2 }));
+  });
+});
+
+describe("after the check, focus is on ถัดไป without skipping the feedback", () => {
+  async function checked() {
+    render(1, [get("d001-listen-01"), get("d001-listen-02")]);
+    fireEvent.click(radio(await screen.findByRole("radiogroup"), "Ann")); // wrong, so the feedback has more text
+    await userEvent.click(checkButtons()[0]);
+    return nextButtons()[0];
+  }
+
+  it("a held key (repeat keydown) on ถัดไป is ignored: Enter and Space are cancelled and nothing advances", async () => {
+    const next = await checked();
+    expect(fireEvent.keyDown(next, { key: "Enter", repeat: true })).toBe(false); // false = preventDefault was called
+    expect(fireEvent.keyDown(next, { key: " ", repeat: true })).toBe(false);
+    expect(screen.getByText("ข้อ 1 / 2")).toBeInTheDocument();
+    expect(nextButtons()).toHaveLength(1);
+  });
+
+  it("a normal press is not touched: keydown is not cancelled, Enter and click advance", async () => {
+    const next = await checked();
+    expect(fireEvent.keyDown(next, { key: "Enter" })).toBe(true);
+    expect(fireEvent.keyDown(next, { key: "a", repeat: true })).toBe(true); // only Enter and Space are held-key activations
+    await userEvent.keyboard("{Enter}"); // focus is on ถัดไป
+    expect(screen.getByText("ข้อ 2 / 2")).toBeInTheDocument();
+  });
+
+  it("a click still advances", async () => {
+    const next = await checked();
+    await userEvent.click(next);
+    expect(screen.getByText("ข้อ 2 / 2")).toBeInTheDocument();
+  });
+});
+
+describe("screen readers get the result with the focus announcement", () => {
+  const danglingDescriptions = () =>
+    Array.from(document.querySelectorAll("[aria-describedby]")).filter((el) => !document.getElementById(el.getAttribute("aria-describedby")!));
+
+  it("ถัดไป is described by the single role=status region; nothing points at a missing id before the answer", async () => {
+    render(1, [get("d001-listen-01"), get("d001-listen-02")]);
+    const status = screen.getByRole("status");
+    expect(status.id).not.toBe("");
+    expect(danglingDescriptions()).toEqual([]);
+    fireEvent.click(radio(await screen.findByRole("radiogroup"), "Ann"));
+    await userEvent.click(checkButtons()[0]);
+    const next = nextButtons()[0];
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect(screen.getByRole("status")).toBe(status); // same element, always mounted
+    expect(next).toHaveAttribute("aria-describedby", status.id);
+    expect(status.textContent).toMatch(/ยังไม่ถูก/);
+    expect(next).toHaveAccessibleDescription(status.textContent!);
+    expect(danglingDescriptions()).toEqual([]);
+  });
+
+  it("a correct answer is described as ถูกต้อง", async () => {
+    render(1, [get("d001-listen-01")]);
+    fireEvent.click(radio(await screen.findByRole("radiogroup"), "Sam"));
+    await userEvent.click(checkButtons()[0]);
+    expect(nextButtons()[0]).toHaveAccessibleDescription(/ถูกต้อง/);
   });
 });
