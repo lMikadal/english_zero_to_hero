@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { eq } from "drizzle-orm";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { activityDays } from "@/db/schema";
+import { activityDays, progress } from "@/db/schema";
 import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import type { CompletePracticeResponse } from "@/lib/attempts/contract";
 import { handlePostAttempts } from "./attempts-handler";
@@ -38,12 +38,15 @@ describe("request checks", () => {
       expect((await complete(bad)).status).toBe(400);
     }
   });
-  it("409 not_replayable when the day is not done, and when the lesson file is missing", async () => {
+  it("409 not_replayable when the day is not done", async () => {
     expect(await complete(body())).toEqual({ status: 409, body: { error: "not_replayable" } });
-    await seedLocal(db, 8);
-    expect((await complete(body({ day: 8 }))).status).toBe(409);
     await finishDay(db, userId, 1);
     expect((await complete(body())).status).toBe(200);
+  });
+  it("409 not_replayable when the lesson file is missing although the day is done", async () => {
+    await seedLocal(db, 9);
+    await db.insert(progress).values({ userId, day: 8, status: "done", startedAt: NOW, completedAt: NOW, score: 1 }); // day 8 has no lesson file
+    expect(await complete(body({ day: 8 }))).toEqual({ status: 409, body: { error: "not_replayable" } });
   });
 });
 
@@ -85,6 +88,7 @@ describe("session score", () => {
 describe("streak", () => {
   beforeEach(async () => {
     await finishDay(db, userId, 1); // activity 2026-11-25 (source lesson), streak 1
+    await send(practice("d001-listen-01", ANSWERS.listenChooseRight)); // a whole-lesson replay needs real activity
   });
 
   it("whole lesson on a new day: writes activity_days(source=practice) and extends the streak", async () => {
@@ -127,7 +131,42 @@ describe("streak", () => {
     expect(ok(a).streak).toEqual({ current: 2, longest: 2 });
   });
 
-  it("completion without any attempt still counts a whole-lesson replay (plan 3.4 item 23)", async () => {
-    expect(ok(await complete(body({ completedAt: DAY2.toISOString() }), DAY2))).toMatchObject({ session: { score: null, graded: 0 }, countedForStreak: true });
+  it("a self-rated attempt (score null) is activity enough, any attempt_no", async () => {
+    const S2 = "55555555-5555-4555-8555-555555555555";
+    await send(practice("d001-speak-01", ANSWERS.selfOk, { sessionId: S2 }));
+    expect(ok(await complete(body({ sessionId: S2, completedAt: DAY2.toISOString() }), DAY2))).toMatchObject({ session: { score: null, graded: 0 }, countedForStreak: true });
+    const S3 = "66666666-6666-4666-8666-666666666666";
+    await send(practice("d001-pron-02", ANSWERS.minimalPairRight, { sessionId: S3, attemptNo: 2 }));
+    expect(ok(await complete(body({ sessionId: S3 }))).countedForStreak).toBe(true);
+  });
+
+  describe("without real activity in this session", () => {
+    const S = "77777777-7777-4777-8777-777777777777";
+    const noActivity = async (setup: () => Promise<unknown>) => {
+      await setup();
+      const res = ok(await complete(body({ sessionId: S, completedAt: DAY2.toISOString() }), DAY2));
+      expect(res).toMatchObject({ session: { score: null, graded: 0 }, countedForStreak: false, streak: { current: 1, longest: 1 } });
+      expect(await days()).toHaveLength(1);
+    };
+    it("zero attempts (only another session has one): 200, not counted, no day written", () => noActivity(async () => {}));
+    it("a lesson-source attempt with this session id does not count", () =>
+      noActivity(() => send(attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { sessionId: S }))));
+  });
+});
+
+describe("no back-filling before the lesson was finished", () => {
+  it("a completedAt earlier than progress.completed_at is raised to it: no new day", async () => {
+    await finishDay(db, userId, 1, DAY2); // done on 2026-11-26
+    await send(practice("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: DAY2.toISOString() }));
+    const d3 = new Date(DAY2.getTime() + 86_400_000);
+    const res = ok(await complete(body({ completedAt: NOW.toISOString() }), d3)); // 2026-11-25 would be a new day
+    expect(res).toMatchObject({ countedForStreak: true, streak: { current: 1, longest: 1 } });
+    expect((await days()).map((d) => d.localDate)).toEqual(["2026-11-26"]);
+  });
+  it("a normal later date still counts", async () => {
+    await finishDay(db, userId, 1, DAY2);
+    await send(practice("d001-listen-01", ANSWERS.listenChooseRight, { createdAt: DAY2.toISOString() }));
+    const d3 = new Date(DAY2.getTime() + 86_400_000);
+    expect(ok(await complete(body({ completedAt: d3.toISOString() }), d3)).streak).toEqual({ current: 2, longest: 2 });
   });
 });
