@@ -142,6 +142,15 @@ describe("completing a lesson", () => {
     expect(await progressRow(1)).toEqual(before);
   });
 
+  it("a practice attempt created before completed_at never enters the lesson score", async () => {
+    ok(await complete(req(1, new Date(NOW.getTime() - 30_000).toISOString())));
+    await send(attemptItem("d001-listen-01", ANSWERS.listenChooseWrong, { source: "practice", createdAt: new Date(NOW.getTime() - 60_000).toISOString() }));
+    expect((await progressRow(1)).score).toBeNull();
+    await send(attemptItem("d001-write-01", ANSWERS.arrangeRight, { createdAt: new Date(NOW.getTime() - 50_000).toISOString() }));
+    await send(attemptItem("d001-listen-02", ANSWERS.dictationRight, { source: "practice", createdAt: new Date(NOW.getTime() - 40_000).toISOString() }));
+    expect((await progressRow(1)).score).toBe(1);
+  });
+
   it("recomputing for a done day ignores attempt_no 2, null scores and other sources", async () => {
     ok(await complete(req(1)));
     await send(
