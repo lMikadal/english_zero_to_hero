@@ -7,7 +7,8 @@ import { DayPlayer } from "@/components/player/DayPlayer";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
 import { getLesson, getVocabLookup } from "@/lib/content/repo";
 import type { Lesson } from "@/lib/content/schema";
-import { getCurrentDay } from "../../access";
+import { REPLAY_SKILL_LABEL_TH, parseReplaySkill, replaySkills } from "@/lib/practice/replay";
+import { getCurrentDay, getDayStatus } from "../../access";
 import { vocabIdsFor } from "./vocab-ids";
 
 // The lock depends on the learner, so this page must never be cached.
@@ -15,11 +16,16 @@ export const dynamic = "force-dynamic";
 
 const TEXT = "text-sm leading-relaxed text-muted";
 
-export default async function DayPage({ params }: { params: Promise<{ day: string }> }) {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+export default async function DayPage({ params, searchParams }: { params: Promise<{ day: string }>; searchParams?: SearchParams }) {
   const { day: raw } = await params;
   // Canonical form only: "/day/007" is not a day page.
   if (!/^[1-9]\d{0,2}$/.test(raw) || Number(raw) > 365) notFound();
   const day = Number(raw);
+  // ?skill= picks one skill of a replay; anything but one valid skill (repeated, empty, vocabulary, upper case) is not a page.
+  const skill = parseReplaySkill(((await searchParams) ?? {}).skill);
+  if (skill === "invalid") notFound();
 
   let currentDay: number;
   try {
@@ -57,5 +63,36 @@ export default async function DayPage({ params }: { params: Promise<{ day: strin
     );
   }
 
-  return <DayPlayer lesson={lesson} vocab={getVocabLookup(vocabIdsFor(lesson))} />;
+  // A finished day opens as a replay (practice mode); anything else is the lesson. The player remembers this at mount.
+  let finished: boolean;
+  try {
+    finished = (await getDayStatus(day)) === "done";
+  } catch (e) {
+    console.error(`Cannot read the status of day ${day}:`, e);
+    return <DbErrorScreen retryHref={skill === null ? `/day/${day}` : `/day/${day}?skill=${skill}`} />;
+  }
+
+  if (skill !== null && !finished) {
+    return (
+      <StatusScreen
+        icon="🔒"
+        title="ฝึกแยกส่วนได้หลังเรียนบทนี้จบ"
+        actions={<Link href={`/day/${day}`} className={buttonClass("primary")}>ไปเรียนบทวันที่ {day}</Link>}
+      >
+        <p className={TEXT}>เรียนบทวันที่ {day} ให้จบก่อน แล้วจึงเลือกฝึกทีละทักษะได้</p>
+      </StatusScreen>
+    );
+  }
+  if (skill !== null && !replaySkills(lesson).some((s) => s.skill === skill)) {
+    return (
+      <StatusScreen
+        title={`บทนี้ไม่มีส่วน${REPLAY_SKILL_LABEL_TH[skill]}`}
+        actions={<Link href="/practice" className={buttonClass("primary")}>กลับไปหน้าฝึกเพิ่ม</Link>}
+      >
+        <p className={TEXT}>บทวันที่ {day} ไม่มีส่วนนี้ เลือกส่วนอื่นหรือเล่นทั้งบทได้ที่หน้าฝึกเพิ่ม</p>
+      </StatusScreen>
+    );
+  }
+
+  return <DayPlayer lesson={lesson} vocab={getVocabLookup(vocabIdsFor(lesson))} mode={finished ? "practice" : "lesson"} skill={skill} />;
 }

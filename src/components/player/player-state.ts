@@ -3,7 +3,7 @@
 // m1-lesson-player-decisions.md item 2): every exercise answered wrong that is retryable comes back once.
 import { isRetryable, UNGRADED_TYPES, type Grade } from "@/lib/answers/grade";
 import { clampDurationMs, type AttemptAnswer } from "@/lib/attempts/contract";
-import type { Exercise, Lesson } from "@/lib/content/schema";
+import type { Exercise, Lesson, Section } from "@/lib/content/schema";
 
 export type Step = {
   exercise: Exercise;
@@ -42,19 +42,22 @@ export type PlayerAction =
 const isUngraded = (type: string) => (UNGRADED_TYPES as readonly string[]).includes(type);
 const item = (step: Step, attemptNo: 1 | 2): PlayItem => ({ step, attemptNo, key: `${step.exercise.id}-${attemptNo}` });
 
-export function buildSteps(lesson: Lesson, isSupported: (type: Exercise["type"]) => boolean = () => true): Step[] {
-  return lesson.sections.flatMap((section) =>
+/** `sections` (default: the lesson's own) lets a replay play one skill's sections. */
+export function buildSteps(lesson: Lesson, isSupported: (type: Exercise["type"]) => boolean = () => true, sections: Section[] = lesson.sections): Step[] {
+  return sections.flatMap((section) =>
     section.exercises.map((exercise) => ({ exercise, sectionTitle: section.title, supported: isSupported(exercise.type) })),
   );
 }
 
 export function createPlayerState(args: {
   lesson: Lesson;
+  /** Only these sections are played (replay of one skill); default: all of the lesson's. */
+  sections?: Section[];
   sessionId: string;
   now: number;
   isSupported?: (type: Exercise["type"]) => boolean;
 }): PlayerState {
-  const items = buildSteps(args.lesson, args.isSupported).map((s) => item(s, 1));
+  const items = buildSteps(args.lesson, args.isSupported, args.sections).map((s) => item(s, 1));
   return { items, index: 0, phase: items.length === 0 ? "complete" : "playing", sessionId: args.sessionId, startedAt: args.now, answers: {}, retryBuilt: false };
 }
 

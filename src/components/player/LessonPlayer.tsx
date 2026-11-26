@@ -4,18 +4,37 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Card } from "@/components/exercises/ui/Card";
 import { buttonClass } from "@/components/ui/button-styles";
 import { correctAnswerText, gradeExercise, isRetryable, type Grade } from "@/lib/answers/grade";
-import { newId, type AttemptAnswer, type CompleteLessonRequest } from "@/lib/attempts/contract";
+import {
+  newId, type AttemptAnswer, type AttemptInput, type CompleteLessonRequest, type CompletePracticeRequest, type ReplaySkill,
+} from "@/lib/attempts/contract";
 import type { ExerciseType, Lesson } from "@/lib/content/schema";
 import type { SyncSink } from "@/lib/offline/sink";
+import { REPLAY_SKILL_LABEL_TH, replaySections } from "@/lib/practice/replay";
 import { isRegistered, renderExercise } from "@/components/exercises/registry";
 import type { VocabLookup } from "@/components/exercises/types";
 import { CompletionScreen, type Completion } from "./CompletionScreen";
+import { PracticeCompletionScreen, type PracticeCompletion } from "./PracticeCompletionScreen";
 import {
   createPlayerState, currentItem, elapsedMs, canAdvance, firstAttemptScore, isRetryRound, playerReducer, recordsAttempt,
 } from "./player-state";
 
+/** lesson = first time through the day; practice = replay of a finished day (docs/plans/replay-plan.md). */
+export type PlayerMode = "lesson" | "practice";
+
+/** The one place that turns the mode into the `source` every attempt carries. */
+export const attemptSourceFor = (mode: PlayerMode): AttemptInput["source"] => (mode === "practice" ? "practice" : "lesson");
+
 export type LessonPlayerProps = {
   lesson: Lesson;
+  /**
+   * Read once, when the player mounts, and never again: after the first completion the day page re-renders (router.refresh)
+   * with the day now done, and the first-time completion screen must stay. So never put the mode in a React `key`.
+   */
+  mode?: PlayerMode;
+  /** Practice only: the one skill whose sections are played (null/absent = the whole lesson). Remembered at mount like `mode`. */
+  skill?: ReplaySkill | null;
+  /** Practice only: the learner chose "เล่นอีกครั้ง"; the parent remounts the player for a fresh session. */
+  onReplay?(): void;
   vocab: VocabLookup;
   sink: SyncSink;
   /** Monotonic clock in ms; tests pass a fake. */
@@ -24,20 +43,37 @@ export type LessonPlayerProps = {
   onDone?(): void;
 };
 
-export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.now(), onDone }: LessonPlayerProps) {
+export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillProp = null, vocab, sink, clock = () => performance.now(), onDone, onReplay }: LessonPlayerProps) {
+  const [mode] = useState(modeProp);
+  const [skill] = useState(mode === "practice" ? skillProp : null);
   const [state, dispatch] = useReducer(playerReducer, undefined, () =>
-    createPlayerState({ lesson, sessionId: newId(), now: clock(), isSupported: isRegistered }),
+    createPlayerState({
+      lesson, sections: mode === "practice" ? replaySections(lesson, skill) : undefined, sessionId: newId(), now: clock(), isSupported: isRegistered,
+    }),
   );
   const [completion, setCompletion] = useState<Completion | null>(null);
+  const [practiceCompletion, setPracticeCompletion] = useState<PracticeCompletion | null>(null);
   const [answered] = useState(() => new Set<string>()); // step keys already sent: one attempt per presentation
   const completing = useRef(false);
   const request = useRef<CompleteLessonRequest | null>(null); // the same request every time, so asking again is idempotent
+  const practiceRequest = useRef<CompletePracticeRequest | null>(null);
   const doneNotified = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const shownKey = useRef<string | null>(null);
 
   const { sessionId } = state;
   const complete = useCallback(() => {
+    if (mode === "practice") {
+      setPracticeCompletion(null);
+      practiceRequest.current ??= { kind: "replay", day: lesson.day, skill, sessionId, completedAt: new Date().toISOString() };
+      const fail = () => setPracticeCompletion({ status: "error" });
+      try {
+        sink.completePractice(practiceRequest.current).then(setPracticeCompletion, fail);
+      } catch {
+        fail();
+      }
+      return;
+    }
     setCompletion(null);
     request.current ??= { day: lesson.day, sessionId, completedAt: new Date().toISOString() };
     const fail = () => setCompletion({ status: "error" });
@@ -46,7 +82,7 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
     } catch {
       fail();
     }
-  }, [sink, lesson.day, sessionId]);
+  }, [sink, lesson.day, sessionId, mode, skill]);
 
   useEffect(() => {
     if (state.phase !== "complete" || completing.current) return;
@@ -57,21 +93,31 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   // `queued` means the first answer took too long or the network was down; the sink keeps sending and the later
   // success cannot reach this promise. When nothing is pending any more, ask again (the server is idempotent and
   // returns the stored result) so the screen can move on to `done`.
-  const queued = completion?.status === "queued";
+  const queued = (mode === "practice" ? practiceCompletion : completion)?.status === "queued";
   useEffect(() => {
     if (!queued) return;
     let asking = false;
     return sink.subscribe(() => {
-      if (asking || sink.pendingCount() > 0 || !request.current) return;
+      if (asking || sink.pendingCount() > 0) return;
+      if (mode === "practice") {
+        if (!practiceRequest.current) return;
+        asking = true;
+        sink.completePractice(practiceRequest.current).then(
+          (r) => { if (r.status !== "queued") setPracticeCompletion(r); },
+          () => {},
+        ).finally(() => { asking = false; });
+        return;
+      }
+      if (!request.current) return;
       asking = true;
       sink.completeLesson(request.current).then(
         (r) => { if (r.status !== "queued") setCompletion(r); },
         () => {},
       ).finally(() => { asking = false; });
     });
-  }, [queued, sink]);
+  }, [queued, sink, mode]);
 
-  const done = completion?.status === "done";
+  const done = (mode === "practice" ? practiceCompletion : completion)?.status === "done";
   useEffect(() => {
     if (!done || doneNotified.current) return;
     doneNotified.current = true;
@@ -90,6 +136,13 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   }, [stepKey]);
 
   if (state.phase === "complete") {
+    if (mode === "practice") {
+      return (
+        <PracticeCompletionScreen
+          day={lesson.day} skill={skill} result={practiceCompletion} localScore={firstAttemptScore(state)} onRetry={complete} onReplay={onReplay}
+        />
+      );
+    }
     return <CompletionScreen day={lesson.day} result={completion} localScore={firstAttemptScore(state)} onRetry={complete} />;
   }
 
@@ -113,7 +166,7 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
       id: newId(),
       exerciseId: exercise.id,
       sessionId: state.sessionId,
-      source: "lesson",
+      source: attemptSourceFor(mode),
       attemptNo: item.attemptNo,
       answer,
       durationMs: elapsedMs(state, now),
@@ -131,6 +184,11 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-4 px-5 pt-4">
       <header className="flex flex-col gap-2.5">
+        {mode === "practice" && (
+          <p className="self-start rounded-full border border-hint/40 bg-hint-soft px-2.5 py-0.5 text-xs font-medium text-hint-fg">
+            {skill === null ? "ฝึกซ้ำ" : `ฝึกซ้ำ · ${REPLAY_SKILL_LABEL_TH[skill]}`}
+          </p>
+        )}
         <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-[13px] font-normal text-muted outline-none">
           <span className="font-medium">{item.step.sectionTitle.th}</span>
           <span>ข้อ {x} / {total}</span>
