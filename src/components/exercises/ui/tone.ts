@@ -2,11 +2,11 @@
 export type Tone = "idle" | "selected" | "paired" | "right" | "wrong";
 
 const BORDER: Record<Tone, string> = {
-  idle: "border-slate-300 bg-white text-slate-900",
-  selected: "border-sky-600 bg-sky-50 text-slate-900",
-  paired: "border-slate-500 bg-slate-100 text-slate-900",
-  right: "border-green-600 bg-green-50 text-green-900",
-  wrong: "border-red-600 bg-red-50 text-red-900",
+  idle: "border-line bg-card text-fg",
+  selected: "border-accent bg-surface text-fg",
+  paired: "border-muted bg-surface text-fg",
+  right: "border-good bg-good-soft text-good-fg",
+  wrong: "border-bad bg-bad-soft text-bad-fg",
 };
 
 export const toneClass = (t: Tone) => BORDER[t];

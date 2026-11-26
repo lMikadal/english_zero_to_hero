@@ -11,17 +11,17 @@ export function PhonemeIntro({ exercise, onContinue }: ExerciseProps<"phoneme_in
     <section className="flex flex-col gap-4">
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <p lang="en-fonipa" className="text-center text-5xl font-bold">{exercise.ipa}</p>
-      <p className="rounded-lg bg-amber-50 p-3 text-base"><MixedText text={exercise.tipTh} /></p>
+      <p className="rounded-lg bg-hint-soft p-3 text-base text-hint-fg"><MixedText text={exercise.tipTh} /></p>
       <AudioFallback audio={audio} />
       <ul className="flex flex-col gap-3">
         {exercise.examples.map((word) => (
-          <li key={word} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-zinc-50 p-3">
+          <li key={word} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface p-3">
             <span lang="en" className="text-xl font-semibold">{word}</span>
             <PlayButtons audio={audio} text={word} />
           </li>
         ))}
       </ul>
-      <button type="button" className={`${BUTTON} w-full bg-sky-600 text-white`} onClick={onContinue}>ถัดไป</button>
+      <button type="button" className={`${BUTTON} w-full bg-accent text-on-accent`} onClick={onContinue}>ถัดไป</button>
     </section>
   );
 }

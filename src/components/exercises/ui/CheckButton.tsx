@@ -16,7 +16,7 @@ export function CheckButton({
       type={type}
       disabled={disabled}
       onClick={onClick}
-      className="mt-4 min-h-12 w-full rounded-xl bg-sky-600 px-4 text-base font-semibold text-white disabled:bg-slate-300 disabled:text-slate-500"
+      className="mt-4 min-h-12 w-full rounded-xl bg-accent px-4 text-base font-semibold text-on-accent disabled:bg-surface disabled:text-muted"
     >
       ตรวจคำตอบ
     </button>

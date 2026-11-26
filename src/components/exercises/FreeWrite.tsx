@@ -34,9 +34,9 @@ export function FreeWrite({ exercise, onAnswer, result }: ExerciseProps<"free_wr
         readOnly={locked}
         aria-readonly={locked || undefined}
         onChange={(e) => setText(e.target.value)}
-        className="w-full rounded-xl border-2 border-slate-300 bg-white p-3 text-lg text-slate-900 read-only:bg-slate-100"
+        className="w-full rounded-xl border-2 border-line bg-card p-3 text-lg text-fg read-only:bg-surface"
       />
-      <p data-testid="word-count" className={`mt-1 text-sm ${enough ? "text-green-700" : "text-slate-600"}`}>
+      <p data-testid="word-count" className={`mt-1 text-sm ${enough ? "text-good-fg" : "text-muted"}`}>
         {words} / {exercise.minWords} คำ
       </p>
       <CheckButton hidden={result !== undefined} disabled={locked || !enough} onClick={check} />

@@ -32,7 +32,7 @@ export function UnsavedNote({ sink }: { sink?: SinkView }) {
   const { pending, attempts } = usePending(sink ?? getSyncSink());
   if (pending === 0) return null;
   return (
-    <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+    <p role="status" className="rounded-lg bg-hint-soft p-3 text-sm text-hint-fg">
       {attempts > 0 ? `มีคำตอบ ${attempts} ข้อที่ยังไม่ได้บันทึก อย่าปิดหน้านี้` : "มีผลบทเรียนที่ยังไม่ได้บันทึก อย่าปิดหน้านี้"}
     </p>
   );

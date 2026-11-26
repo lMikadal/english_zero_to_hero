@@ -38,7 +38,13 @@ describe("Home page", () => {
     expect(screen.getByText("วันที่ 4 / 365")).toBeInTheDocument();
     const start = screen.getByRole("link", { name: "เริ่มบทเรียนวันที่ 4" });
     expect(start).toHaveAttribute("href", "/day/4");
-    expect(screen.getAllByRole("link")).toHaveLength(1);
+    // one primary start button (plus the settings gear)
+    expect(screen.getAllByRole("link").filter((l) => l !== screen.getByRole("link", { name: "ตั้งค่า" }))).toEqual([start]);
+  });
+
+  it("has a gear link named ตั้งค่า to /settings", async () => {
+    await show();
+    expect(screen.getByRole("link", { name: "ตั้งค่า" })).toHaveAttribute("href", "/settings");
   });
 
   it("shows the current streak", async () => {

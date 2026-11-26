@@ -23,12 +23,12 @@ export function SpeakAnswer({ exercise, onAnswer, result }: ExerciseProps<"speak
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <Prompt lang="en">{exercise.prompt}</Prompt>
       <PlayButtons audio={audio} text={exercise.prompt} />
-      <p className="text-sm text-slate-600">ลองพูดตอบออกเสียงแล้วประเมินตัวเอง</p>
+      <p className="text-sm text-muted">ลองพูดตอบออกเสียงแล้วประเมินตัวเอง</p>
       <SelfRating chosen={rating} locked={revealed} onRate={rate} />
       {revealed ? (
-        <div className="rounded-xl bg-slate-100 p-3">
-          <p className="text-sm text-slate-600">ตัวอย่างคำตอบ</p>
-          <p lang="en" className="text-lg text-slate-900">{exercise.sampleAnswer}</p>
+        <div className="rounded-xl bg-surface p-3">
+          <p className="text-sm text-muted">ตัวอย่างคำตอบ</p>
+          <p lang="en" className="text-lg text-fg">{exercise.sampleAnswer}</p>
         </div>
       ) : null}
     </section>

@@ -37,7 +37,7 @@ export function MinimalPair({ exercise, onAnswer, onContinue, result }: Exercise
         const pickIndex = picks[i] === null ? null : picks[i] === "a" ? 0 : 1;
         return (
           <div key={i} role="group" aria-label={`ข้อ ${i + 1}`} className={`flex flex-col gap-2 rounded-xl border-2 p-3 ${toneClass(itemTone)}`} data-state={itemTone}>
-            <p className="text-sm text-slate-600">คู่ที่ {i + 1} {itemOk !== undefined ? <Mark ok={itemOk} /> : null}</p>
+            <p className="text-sm text-muted">คู่ที่ {i + 1} {itemOk !== undefined ? <Mark ok={itemOk} /> : null}</p>
             <PlayButtons audio={audio} text={pair[pair.answer]} />
             <div role="radiogroup" aria-label={`คู่ที่ ${i + 1}`} data-state={itemTone} onKeyDown={(e) => { if (!locked) radioKeys(e, 2, pickIndex, (n) => choose(i, n === 0 ? "a" : "b")); }} className="grid grid-cols-2 gap-2">
               {(["a", "b"] as const).map((side, si) => {

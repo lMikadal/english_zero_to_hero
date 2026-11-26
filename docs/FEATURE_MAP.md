@@ -9,9 +9,11 @@
 
 | หน้าจอ | ไปถึงอย่างไร | พิสูจน์ว่าทำงาน | เทสต์ |
 |---|---|---|---|
-| หน้าแรก `/` | เปิด `/` | HTTP 200; h1 "English Zero to Hero"; "วันที่ N / 365"; "สตรีค X วัน"; ลิงก์เดียว "เริ่มบทเรียนวันที่ N" → `/day/N`; "วันนี้เรียนแล้ว ✓" เมื่อวันนี้มี activity | `src/app/page.test.tsx`, `src/db/queries/home.int.test.ts`, `e2e/home.spec.ts`, `e2e/lesson.spec.ts` |
+| หน้าแรก `/` | เปิด `/` | HTTP 200; h1 "English Zero to Hero"; "วันที่ N / 365"; "สตรีค X วัน"; ลิงก์เริ่มบทเดียว "เริ่มบทเรียนวันที่ N" → `/day/N` (กับเฟือง "ตั้งค่า"); "วันนี้เรียนแล้ว ✓" เมื่อวันนี้มี activity | `src/app/page.test.tsx`, `src/db/queries/home.int.test.ts`, `e2e/home.spec.ts`, `e2e/lesson.spec.ts` |
 | หน้าแรก: เรียนครบ 365 วัน | `progress` วันที่ 365 = done | ข้อความ "เรียนครบ 365 วันแล้ว" ไม่มีลิงก์เริ่มบท | `src/app/page.test.tsx`, `home.int.test.ts` |
 | หน้าแรก/วัน: ฐานข้อมูลล่ม | หยุด postgres (`docker compose stop postgres`) แล้วเปิดหน้า | `role=alert` "เชื่อมต่อฐานข้อมูลไม่ได้ ลองใหม่อีกครั้ง" + ลิงก์ "ลองใหม่"; ไม่ crash | `src/app/page.test.tsx`, `src/app/(learn)/day/[day]/page.test.tsx`, `src/components/ui/DbErrorScreen.test.tsx` |
+| หน้าแรก: ปุ่มตั้งค่า | เปิด `/` | ลิงก์ชื่อ "ตั้งค่า" (ไอคอนเฟือง มุมขวาบน) → `/settings` | `src/app/page.test.tsx` |
+| ตั้งค่า `/settings` | กดเฟืองที่หน้าแรก หรือเปิด `/settings` | HTTP 200; h1 "ตั้งค่า"; `radiogroup` "ธีม" มี radio สว่าง / มืด / ตามเครื่อง (ตัวที่ตรงกับ cookie ถูกเลือก); ลิงก์ "← กลับหน้าแรก" → `/` | `src/app/settings/page.test.tsx`, `src/components/ui/ThemePicker.test.tsx` |
 | `/today` | เปิด `/today` | HTTP 307 → `/day/<current_day>` | `src/app/today/page.test.tsx` |
 | `/day/N` เล่นได้ | `N <= current_day` เช่น `/day/1` | HTTP 200; หัว `h2` "<ชื่อหมวด> ข้อ 1 / M"; คำสั่งไทยของข้อแรกเป็น `h3`; ไม่มี "ยังไม่รองรับ" | `src/app/(learn)/day/[day]/page.test.tsx`, `src/components/exercises/registry.test.tsx` |
 | `/day/N` ล็อก | `N > current_day` เช่น `/day/3` เมื่อยังอยู่วันที่ 1 | HTTP 200; h1 "ยังไม่ปลดล็อก"; ลิงก์ "ไปบทเรียนวันที่ <current_day>" | `page.test.tsx` (day), `e2e/lesson.spec.ts` |
@@ -52,7 +54,22 @@
 | `POST /api/attempts` | body `{"attempts":[AttemptInput...]}` (ดู `src/lib/attempts/contract.ts`) | 200 `{results:[{status:"created"|"duplicate"|"rejected"...}]}`; แถวใน `attempts` ตาม id (ซ้ำ id = แถวเดียว); 400 body ผิด, 415 ไม่ใช่ JSON | `src/lib/server/attempts-handler.int.test.ts`, `src/app/api/routes.test.ts` |
 | `POST /api/lessons/complete` | `{"day":1,"sessionId":"<uuid>","completedAt":"<ISO>"}` | 200 `{progress, streak, currentDay}`; เรียกซ้ำได้ผลเดิม; 409 `locked_day` เมื่อวันถูกล็อก; แถว `progress` = done | `src/lib/server/complete-handler.int.test.ts` |
 
+## ธีม (สว่าง / มืด / ตามเครื่อง)
+
+เก็บใน cookie `ezh-theme` (`light` | `dark` | `system`, อายุ 1 ปี, ต่ออุปกรณ์, ไม่อยู่ใน DB) root layout อ่าน cookie บน server แล้วใส่ `data-theme` ที่ `<html>` ทุกหน้า สีมาจากตัวแปร CSS ใน `src/app/globals.css`
+
+| ตรวจอะไร | ทำอย่างไร | พิสูจน์ว่าทำงาน |
+|---|---|---|
+| มืด | เปิด `/settings` เลือก "มืด" แล้วรีโหลด | `document.documentElement.dataset.theme === "dark"`; cookie `ezh-theme=dark`; `getComputedStyle(document.body).backgroundColor` = `rgb(14, 17, 22)` (#0E1116) |
+| สว่าง | เลือก "สว่าง" แล้วรีโหลด | `data-theme="light"`; พื้นหลัง body `rgb(247, 248, 250)` (#F7F8FA) |
+| ตามเครื่อง | เลือก "ตามเครื่อง" (หรือยังไม่เคยตั้ง) | `data-theme="system"`; พื้นหลังเป็นสีมืดเมื่อเครื่องตั้ง dark และสีสว่างเมื่อเครื่องตั้ง light (DevTools > Rendering > Emulate prefers-color-scheme) |
+| ครั้งแรกที่โหลดไม่กะพริบ | `curl -s -H 'Cookie: ezh-theme=dark' localhost:3000/ \| grep -o '<html[^>]*>'` | `<html lang="th" data-theme="dark">` มากับ HTML แรก ไม่ต้องรอ JS |
+
+เทสต์: `src/app/layout.test.tsx` (cookie → `data-theme`), `src/lib/theme/theme.test.ts`, `src/lib/theme/tokens.test.ts` (ค่าสีตรงตาราง design, dark ใน media query ตรงกับ `[data-theme=dark]`, contrast WCAG AA ทุกคู่ตัวอักษร/พื้นทั้งสองธีม)
+
 ## ตรวจโดยเครื่อง (ไม่ต้องจำ)
+
+- `src/lib/theme/color-scan.test.ts`: ห้ามมีสี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]`, hex หรือ `rgb()/hsl()/oklch()` ใน `src/` นอก `src/app/globals.css` (มี self-test ว่าจับตัวอย่างผิดได้) ชุดสีเริ่มต้นของ Tailwind ถูกลบใน `@theme` (utility สีดิบอย่าง `bg-white` จึงไม่สร้าง CSS) แต่ค่า arbitrary (`bg-[#fff]`, `bg-[red]`) ยังแสดงผลได้ ตัวตรวจจึงเป็นสิ่งที่กันไว้ และตรวจอีกทิศด้วย: class สีทุกตัวต้องเป็น token จริงหรือ utility ที่ไม่ใช่สีที่ระบุไว้ชัด (กัน token ที่พิมพ์ผิด เช่น `text-primary`) รวม `style={{ color }}` และ `fill=`/`stroke=` ที่เป็นค่าตรงๆ ข้อจำกัด: class ที่ประกอบจากสตริง (`"bg-" + x`) และค่าที่เป็นตัวแปรตรวจไม่ได้
 
 - `src/components/exercises/a11y-guard.test.tsx`: ทุก exercise ของวันที่ 1–7 ที่ render ก่อน/หลังผลตรวจ ต้องไม่มีสถานะถูก/ผิดที่สื่อด้วยสีอย่างเดียว และข้อความที่มีตัวอักษรละตินทุกชิ้นต้องอยู่ใต้ `lang="en*"`
 - `src/lib/client-safe.test.ts`: โค้ดฝั่ง client (รวม `DayPlayer`, `CompletionScreen`, `registry`) ห้าม import โมดูล server
