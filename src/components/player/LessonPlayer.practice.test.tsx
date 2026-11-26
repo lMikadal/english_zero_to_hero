@@ -127,7 +127,7 @@ describe("LessonPlayer in practice mode", () => {
     });
     await next();
     await screen.findByText("จบการเล่นซ้ำแล้ว");
-    expect(screen.getByText("ส่วนนี้ประเมินตัวเอง ไม่มีคะแนน")).toBeInTheDocument();
+    expect(screen.getByText("รอบนี้ไม่มีข้อที่ให้คะแนน")).toBeInTheDocument(); // whole lesson: not "ส่วนนี้ประเมินตัวเอง"
   });
 });
 

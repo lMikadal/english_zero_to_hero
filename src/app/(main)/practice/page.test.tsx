@@ -7,10 +7,10 @@ const listDoneDays = vi.hoisted(() => vi.fn());
 vi.mock("@/db/client", () => ({ getDb: () => ({}) }));
 vi.mock("@/lib/server/current-user", () => ({ getCurrentUserId: async () => "local" }));
 vi.mock("@/db/queries/practice", () => ({ listDoneDays }));
-const lessons = vi.hoisted(() => ({ throwFor: new Set<number>() }));
+const lessons = vi.hoisted(() => ({ throwFor: new Set<number>(), override: null as null | ((l: import("@/lib/content/schema").Lesson) => import("@/lib/content/schema").Lesson) }));
 vi.mock("@/lib/content/repo", async (importOriginal) => {
   const real = await importOriginal<typeof import("@/lib/content/repo")>();
-  return { ...real, getLesson: (day: number) => { if (lessons.throwFor.has(day)) throw new Error("bad file"); return real.getLesson(day); } };
+  return { ...real, getLesson: (day: number) => { if (lessons.throwFor.has(day)) throw new Error("bad file"); const l = real.getLesson(day); return l && lessons.override ? lessons.override(l) : l; } };
 });
 
 const done = (day: number, score: number | null) => ({ day, score, completedAt: new Date("2026-11-25T10:00:00Z") });
@@ -20,14 +20,16 @@ const rows = () => within(screen.getByRole("list")).getAllByRole("listitem");
 describe("practice page", () => {
   beforeEach(() => {
     lessons.throwFor.clear();
+    lessons.override = null;
     listDoneDays.mockResolvedValue([done(2, 0.8), done(1, 0.94)]);
   });
 
   it("has the h1, a short true rule line and the h2", async () => {
     await show();
     expect(screen.getByRole("heading", { level: 1, name: "ฝึกเพิ่ม" })).toBeInTheDocument();
-    expect(screen.getByText(/เล่นทั้งบทจนจบนับสตรีค/)).toHaveTextContent(/ทีละทักษะไม่นับ/);
-    expect(screen.getByText(/ไม่เปลี่ยนคะแนนเดิม/)).toBeInTheDocument();
+    const rule = screen.getByText(/เล่นทั้งบทจนจบและตอบอย่างน้อยหนึ่งข้อ นับสตรีค/);
+    expect(rule).toHaveTextContent("เล่นทีละทักษะไม่นับ");
+    expect(rule).toHaveTextContent("คะแนนเดิมของบทไม่เปลี่ยน");
     expect(screen.getByRole("heading", { level: 2, name: "เล่นบทที่เรียนแล้วซ้ำ" })).toBeInTheDocument();
   });
 
@@ -47,7 +49,7 @@ describe("practice page", () => {
     await show();
     const row = rows()[1]; // day 1
     expect(row.querySelector("details > summary")).not.toBeNull();
-    expect(within(row).getByRole("link", { name: "เล่นทั้งบท" })).toHaveAttribute("href", "/day/1");
+    expect(within(row).getByRole("link", { name: "เล่นทั้งบท วันที่ 1" })).toHaveAttribute("href", "/day/1");
     const skills = [["ออกเสียง", "pronunciation"], ["ฟัง", "listening"], ["พูด", "speaking"], ["อ่าน", "reading"], ["เขียน", "writing"]];
     for (const [label, skill] of skills) {
       expect(within(row).getByRole("link", { name: new RegExp(`^${label}`) })).toHaveAttribute("href", `/day/1?skill=${skill}`);
@@ -56,11 +58,49 @@ describe("practice page", () => {
     expect(within(row).getByRole("link", { name: /^ฟัง/ })).toHaveTextContent("2 ข้อ");
   });
 
+  it("gives every link sr-only day context in its accessible name while the visible text stays the same", async () => {
+    await show();
+    const row = rows()[1]; // day 1
+    const whole = within(row).getByRole("link", { name: "เล่นทั้งบท วันที่ 1" });
+    expect(whole.querySelector(".sr-only")).toHaveTextContent("วันที่ 1");
+    expect(within(row).getByRole("link", { name: "ฟัง · 2 ข้อ วันที่ 1" })).toHaveAttribute("href", "/day/1?skill=listening");
+    // every link of every row names its day
+    for (const [i, day] of [2, 1].entries()) {
+      for (const a of within(rows()[i]).getAllByRole("link")) expect(a).toHaveAccessibleName(new RegExp(`วันที่ ${day}$`));
+    }
+  });
+
+  it("shows a decorative chevron on each expandable row that turns when open", async () => {
+    await show();
+    for (const row of rows()) {
+      const chevron = row.querySelector("summary [data-chevron]");
+      expect(chevron).not.toBeNull();
+      expect(chevron).toHaveAttribute("aria-hidden", "true");
+      expect(chevron!.getAttribute("class")).toMatch(/group-open:rotate-/);
+    }
+  });
+
+  // jsdom has no layout, so this only checks the wrapping classes are on the title containers; it cannot prove the
+  // text really wraps at 360px (that needs a real browser, see docs/PLAN.md).
+  it("lets a long unbroken English title and a long Thai title wrap instead of overflowing", async () => {
+    const long = "Supercalifragilistic".repeat(3).slice(0, 60); // one 60-character word
+    expect(long).toHaveLength(60);
+    lessons.override = (l) => ({ ...l, title: { en: long, th: "บทเรียนที่มีชื่อภาษาไทยยาวมากๆ ".repeat(4).trim() } });
+    listDoneDays.mockResolvedValue([done(1, 0.5)]);
+    await show();
+    const en = screen.getByText(long);
+    const th = screen.getByText(/บทเรียนที่มีชื่อภาษาไทยยาวมาก/);
+    for (const el of [en, th]) expect(el.className).toMatch(/\bbreak-words\b/);
+    const summary = rows()[0].querySelector("summary")!;
+    expect(en.parentElement!.className).toMatch(/\bmin-w-0\b/); // the flex child holding the titles may shrink
+    expect(summary.className).toMatch(/\bitems-center\b/);
+  });
+
   it("shows no score text when the score is null", async () => {
     listDoneDays.mockResolvedValue([done(1, null)]);
     await show();
     expect(rows()[0]).not.toHaveTextContent("คะแนน");
-    expect(within(rows()[0]).getByRole("link", { name: "เล่นทั้งบท" })).toBeInTheDocument();
+    expect(within(rows()[0]).getByRole("link", { name: /^เล่นทั้งบท/ })).toBeInTheDocument();
   });
 
   it.each([["no lesson file", 200], ["an invalid lesson file", 1]])("keeps the page alive for %s: row without title or links", async (_n, day) => {
