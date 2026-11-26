@@ -27,15 +27,15 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
   return (
     <section>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <p data-testid="passage" lang="en" className="whitespace-pre-line break-words rounded-xl bg-amber-50 p-3 text-lg leading-relaxed text-slate-900">
+      <p data-testid="passage" lang="en" className="whitespace-pre-line break-words rounded-xl bg-hint-soft p-3 text-lg leading-relaxed text-fg">
         {exercise.text}
       </p>
       {glossary.length > 0 ? (
-        <dl className="mt-2 rounded-xl bg-slate-100 p-3 text-sm">
+        <dl className="mt-2 rounded-xl bg-surface p-3 text-sm">
           {glossary.map(([word, th]) => (
             <div key={word} className="flex flex-wrap gap-x-2">
-              <dt lang="en" className="font-semibold text-slate-900">{word}</dt>
-              <dd className="text-slate-700"><MixedText text={th} /></dd>
+              <dt lang="en" className="font-semibold text-fg">{word}</dt>
+              <dd className="text-fg"><MixedText text={th} /></dd>
             </div>
           ))}
         </dl>
@@ -43,8 +43,8 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
 
       {exercise.questions.map((q, qi) => (
         <div key={qi} role="radiogroup" aria-label={`คำถามที่ ${qi + 1}`} data-state={questionTone(qi)} onKeyDown={(e) => { if (!locked) radioKeys(e, q.choices.length, selected[qi], (ci) => choose(qi, ci)); }} className="mt-5">
-          <p className="font-semibold text-slate-900"><MixedText text={q.question.th} /></p>
-          <p lang="en" className="mb-2 text-sm text-slate-600">{q.question.en}</p>
+          <p className="font-semibold text-fg"><MixedText text={q.question.th} /></p>
+          <p lang="en" className="mb-2 text-sm text-muted">{q.question.en}</p>
           <div className="flex flex-col gap-2">
             {q.choices.map((choice, ci) => {
               const chosen = selected[qi] === ci;

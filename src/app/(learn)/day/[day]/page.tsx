@@ -12,7 +12,7 @@ import { vocabIdsFor } from "./vocab-ids";
 export const dynamic = "force-dynamic";
 
 const SCREEN = "mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 p-4";
-const LINK = "flex min-h-11 items-center justify-center rounded-lg bg-sky-600 px-4 py-2 text-base font-semibold text-white";
+const LINK = "flex min-h-11 items-center justify-center rounded-lg bg-accent px-4 py-2 text-base font-semibold text-on-accent";
 
 export default async function DayPage({ params }: { params: Promise<{ day: string }> }) {
   const { day: raw } = await params;

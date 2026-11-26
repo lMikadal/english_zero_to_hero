@@ -32,7 +32,7 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
       <AudioFallback audio={audio} onSkip={onContinue} note={GRADED_NO_AUDIO_NOTE} />
       <div>
         <p lang="en" className="text-base font-medium">{exercise.question.en}</p>
-        <p className="text-sm text-zinc-600"><MixedText text={exercise.question.th} /></p>
+        <p className="text-sm text-muted"><MixedText text={exercise.question.th} /></p>
       </div>
       <div role="radiogroup" aria-label={exercise.question.en} onKeyDown={(e) => { if (!locked) radioKeys(e, exercise.choices.length, selected, setSelected); }} className="flex flex-col gap-2">
         {exercise.choices.map((choice, i) => (

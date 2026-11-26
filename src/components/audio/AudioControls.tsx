@@ -12,7 +12,7 @@ export type ExerciseAudio = {
   reportUnavailable(): void;
 };
 
-export const BUTTON = "min-h-11 min-w-11 rounded-lg border border-zinc-300 px-4 py-2 text-base font-medium active:bg-zinc-100 disabled:opacity-50";
+export const BUTTON = "min-h-11 min-w-11 rounded-lg border border-line px-4 py-2 text-base font-medium active:bg-surface disabled:opacity-50";
 
 export function useExerciseAudio(sampleText: string): ExerciseAudio {
   const { source } = useAudio();
@@ -60,7 +60,7 @@ export function PlayButtons({ audio, text, label = "ฟัง" }: { audio: Exerc
         <button type="button" disabled={audio.checking} className={BUTTON} onClick={() => play(1)}>{label}</button>
         <button type="button" disabled={audio.checking} className={BUTTON} onClick={() => play(0.75)}>{label}ช้า 0.75×</button>
       </span>
-      {failed && <span role="status" className="text-sm text-red-700">เล่นเสียงไม่สำเร็จ ลองอีกครั้ง</span>}
+      {failed && <span role="status" className="text-sm text-bad-fg">เล่นเสียงไม่สำเร็จ ลองอีกครั้ง</span>}
     </span>
   );
 }
@@ -76,7 +76,7 @@ export const NO_AUDIO_NOTE = "อุปกรณ์นี้ไม่มีเ�
 export function AudioFallback({ audio, onSkip, note = NO_AUDIO_NOTE }: { audio: ExerciseAudio; onSkip?: () => void; note?: string }) {
   if (!audio.unavailable) return null;
   return (
-    <div className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+    <div className="rounded-lg bg-hint-soft p-3 text-sm text-hint-fg">
       <p>{note}</p>
       {onSkip && (
         <div className="mt-2">

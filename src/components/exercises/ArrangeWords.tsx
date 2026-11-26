@@ -52,12 +52,12 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
           </li>
         ))}
         {result ? (
-          <li className={`self-center text-sm font-semibold ${answerTone === "right" ? "text-green-800" : "text-red-800"}`}>
+          <li className={`self-center text-sm font-semibold ${answerTone === "right" ? "text-good-fg" : "text-bad-fg"}`}>
             <Mark ok={result.correct} />
           </li>
         ) : null}
       </ul>
-      {placed.length === 0 ? <p className="mt-1 text-sm text-slate-500">แตะคำด้านล่างเพื่อเรียงประโยค</p> : null}
+      {placed.length === 0 ? <p className="mt-1 text-sm text-muted">แตะคำด้านล่างเพื่อเรียงประโยค</p> : null}
       <ul aria-label="คำที่เหลือ" lang="en" className="mt-4 flex min-h-12 flex-wrap gap-2">
         {remaining.map((i) => (
           <li key={i}>

@@ -59,7 +59,7 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
   }
 
   const badge = (leftId: string) => (
-    <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-sm text-white">
+    <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-fg text-sm text-bg">
       {ids.indexOf(leftId) + 1}
     </span>
   );
@@ -73,7 +73,7 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
   return (
     <section>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <p className="mb-3 text-sm text-slate-600">แตะคำภาษาอังกฤษ แล้วแตะความหมายภาษาไทย แตะคู่ที่จับแล้วเพื่อยกเลิก</p>
+      <p className="mb-3 text-sm text-muted">แตะคำภาษาอังกฤษ แล้วแตะความหมายภาษาไทย แตะคู่ที่จับแล้วเพื่อยกเลิก</p>
       <div className="grid grid-cols-2 gap-3">
         <div role="group" aria-label="คำภาษาอังกฤษ" className="flex flex-col gap-2">
           {ids.map((id) => {
@@ -90,13 +90,13 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
                   aria-label={partner !== undefined ? `${wordOf(id)} จับคู่กับ ${meaningOf(partner)}` : undefined}
                   data-state={tone}
                   onClick={() => tapWord(id)}
-                  className={`${OPTION} ${toneClass(tone)} ${selected === id ? "ring-4 ring-sky-300" : ""}`}
+                  className={`${OPTION} ${toneClass(tone)} ${selected === id ? "ring-4 ring-ring" : ""}`}
                 >
                   <span>{wordOf(id)}</span>
                   {partner !== undefined ? trailing(id) : null}
                 </button>
                 {wrong ? (
-                  <p data-testid={`reveal-${id}`} className="mt-1 text-sm font-semibold text-red-800">
+                  <p data-testid={`reveal-${id}`} className="mt-1 text-sm font-semibold text-bad-fg">
                     <Mark ok={false} /> <span lang="en">{wordOf(id)}</span> → {meaningOf(id)}
                   </p>
                 ) : null}

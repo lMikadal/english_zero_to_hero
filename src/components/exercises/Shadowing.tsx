@@ -22,7 +22,7 @@ export function Shadowing({ exercise, onAnswer, onContinue, result }: ExercisePr
       <AudioFallback audio={audio} onSkip={onContinue} />
       <ol className="flex flex-col gap-3">
         {exercise.lines.map((line, i) => (
-          <li key={i} className="flex flex-col gap-2 rounded-lg bg-zinc-50 p-3">
+          <li key={i} className="flex flex-col gap-2 rounded-lg bg-surface p-3">
             <p lang="en" className="text-lg font-medium">{line}</p>
             <PlayButtons audio={audio} text={line} />
           </li>

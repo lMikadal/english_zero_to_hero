@@ -131,14 +131,14 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-4 px-4 pt-4">
       <header className="flex flex-col gap-1">
-        <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-sm font-normal text-zinc-600 outline-none">
+        <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-sm font-normal text-muted outline-none">
           <span>{item.step.sectionTitle.th}</span>
           <span>ข้อ {x} / {total}</span>
         </h2>
-        <div className="h-2 rounded-full bg-zinc-200" aria-hidden>
-          <div className="h-2 rounded-full bg-sky-600" style={{ width: `${(x / total) * 100}%` }} />
+        <div className="h-2 rounded-full bg-line" aria-hidden>
+          <div className="h-2 rounded-full bg-accent" style={{ width: `${(x / total) * 100}%` }} />
         </div>
-        {isRetryRound(state) && <p className="text-sm font-medium text-amber-800">ทบทวนข้อที่ตอบผิด</p>}
+        {isRetryRound(state) && <p className="text-sm font-medium text-hint-fg">ทบทวนข้อที่ตอบผิด</p>}
       </header>
 
       {item.step.supported ? (
@@ -146,10 +146,10 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
           {renderExercise(exercise, { vocab, onAnswer, onContinue: skip, result: record?.grade })}
         </div>
       ) : (
-        <div className="flex flex-col gap-3 rounded-lg bg-zinc-50 p-4">
+        <div className="flex flex-col gap-3 rounded-lg bg-surface p-4">
           <p className="text-lg font-semibold">ยังไม่รองรับ</p>
-          <p className="text-sm text-zinc-600">แบบฝึกหัดชนิดนี้ยังเล่นไม่ได้ในเวอร์ชันนี้ ข้ามไปก่อนได้</p>
-          <button type="button" onClick={skip} className={`${BTN} border border-zinc-300`}>ข้าม</button>
+          <p className="text-sm text-muted">แบบฝึกหัดชนิดนี้ยังเล่นไม่ได้ในเวอร์ชันนี้ ข้ามไปก่อนได้</p>
+          <button type="button" onClick={skip} className={`${BTN} border border-line`}>ข้าม</button>
         </div>
       )}
 
@@ -157,13 +157,13 @@ export function LessonPlayer({ lesson, vocab, sink, clock = () => performance.no
           the bottom of a short page. The component-owned ตรวจคำตอบ button stays in the content above. */}
       <div
         data-testid="action-bar"
-        className={`sticky bottom-0 mt-auto -mx-4 flex flex-col gap-3 bg-white px-4 ${
-          graded || record ? "border-t border-zinc-200 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]" : "pb-[max(1rem,env(safe-area-inset-bottom))]"
+        className={`sticky bottom-0 mt-auto -mx-4 flex flex-col gap-3 bg-bg px-4 ${
+          graded || record ? "border-t border-line pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]" : "pb-[max(1rem,env(safe-area-inset-bottom))]"
         }`}
       >
         <Feedback type={exercise.type} grade={record?.grade} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />
         {graded && (
-          <button type="button" disabled={!canAdvance(state)} onClick={goNext} className={`${BTN} bg-sky-600 text-white disabled:bg-zinc-300 disabled:text-zinc-600`}>
+          <button type="button" disabled={!canAdvance(state)} onClick={goNext} className={`${BTN} bg-accent text-on-accent disabled:bg-surface disabled:text-muted`}>
             ถัดไป
           </button>
         )}
@@ -178,10 +178,10 @@ function Feedback({ type, grade, lines }: { type: ExerciseType; grade: Grade | u
   let tone = "";
   if (grade && !isRetryable(type)) {
     body = "บันทึกแล้ว";
-    tone = "bg-zinc-100";
+    tone = "bg-surface";
   } else if (grade?.correct) {
     body = <span className="font-semibold">✓ ถูกต้อง</span>;
-    tone = "bg-green-100 text-green-900";
+    tone = "bg-good-soft text-good-fg";
   } else if (grade) {
     body = (
       <>
@@ -194,7 +194,7 @@ function Feedback({ type, grade, lines }: { type: ExerciseType; grade: Grade | u
         )}
       </>
     );
-    tone = "bg-red-100 text-red-900";
+    tone = "bg-bad-soft text-bad-fg";
   }
   return <div role="status" className={body ? `max-h-[30dvh] overflow-y-auto rounded-lg p-3 ${tone}` : "max-h-[30dvh] overflow-y-auto"}>{body}</div>;
 }

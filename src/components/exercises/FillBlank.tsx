@@ -46,7 +46,7 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
       }}
     >
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <p lang="en" className="my-3 text-lg leading-[3rem] text-slate-900">
+      <p lang="en" className="my-3 text-lg leading-[3rem] text-fg">
         {segments.map((seg, i) => (
           <span key={i}>
             {seg.middle}
