@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FillBlank } from "./FillBlank";
-import { baseProps, exercise, renderWithAudio } from "./text-test-helpers";
+import { baseProps, exercise, renderWithAudio } from "./test-helpers";
 
 const one = exercise("d003-write-03", "fill_blank");
 const two = { ...one, text: "My ___ is Ann and I'm ___ Thailand.", answer: ["name", "from"] };

@@ -43,8 +43,8 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      # any HTTP response means the dev server is up (even a 404/500 while developing)
-      test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(()=>process.exit(0),()=>process.exit(1))"]
+      # any HTTP response means the dev server is up; /api/health touches no database (`/` would seed the learner every 5 s)
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(()=>process.exit(0),()=>process.exit(1))"]
       interval: 5s
       timeout: 30s
       retries: 30

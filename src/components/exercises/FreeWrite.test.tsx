@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FreeWrite } from "./FreeWrite";
-import { baseProps, exercise, renderWithAudio } from "./text-test-helpers";
+import { baseProps, exercise, renderWithAudio } from "./test-helpers";
 
 const ex = exercise("d007-write-01", "free_write");
 const box = () => screen.getByRole("textbox");

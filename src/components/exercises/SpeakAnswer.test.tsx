@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { SpeakAnswer } from "./SpeakAnswer";
-import { baseProps, exercise, fakeAudio, renderWithAudio } from "./text-test-helpers";
+import { baseProps, exercise, fakeAudio, renderWithAudio } from "./test-helpers";
 
 const ex = exercise("d001-speak-02", "speak_answer");
 
@@ -33,15 +33,21 @@ describe("SpeakAnswer", () => {
 
   it("has no play button when audio is unavailable", async () => {
     renderWithAudio(<SpeakAnswer {...baseProps()} exercise={ex} />, fakeAudio(false));
-    await Promise.resolve();
-    expect(screen.queryByRole("button", { name: /ฟัง/ })).toBeNull();
+    await waitFor(() => expect(screen.queryByRole("button", { name: /ฟัง/ })).toBeNull());
+  });
+
+  it("uses the shared play buttons: normal and 0.75x, disabled until canPlay answers", async () => {
+    renderWithAudio(<SpeakAnswer {...baseProps()} exercise={ex} />, fakeAudio(true));
+    expect(screen.getByRole("button", { name: "ฟัง" })).toBeDisabled();
+    await waitFor(() => expect(screen.getByRole("button", { name: "ฟัง" })).toBeEnabled());
   });
 
   it("plays the prompt when audio is available", async () => {
     const audio = fakeAudio(true);
     renderWithAudio(<SpeakAnswer {...baseProps()} exercise={ex} />, audio);
-    const play = await screen.findByRole("button", { name: /ฟัง/ });
-    fireEvent.click(play);
+    fireEvent.click(await screen.findByRole("button", { name: "ฟัง" }));
     await waitFor(() => expect(audio.played).toEqual([ex.prompt]));
+    fireEvent.click(screen.getByRole("button", { name: /ฟังช้า/ }));
+    await waitFor(() => expect(audio.play).toHaveBeenLastCalledWith(ex.prompt, expect.objectContaining({ rate: 0.75 })));
   });
 });

@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import DayPage from "./page";
 
+// DayPlayer refreshes the router when a day is done; there is no app router in a unit test (notFound stays real)
+vi.mock("next/navigation", async (importOriginal) => ({ ...(await importOriginal<typeof import("next/navigation")>()), useRouter: () => ({ refresh: () => {} }) }));
 const getCurrentDay = vi.hoisted(() => vi.fn<() => Promise<number>>());
 vi.mock("../../access", () => ({ getCurrentDay }));
 const getLessonMock = vi.hoisted(() => ({ fail: false }));
@@ -66,6 +68,20 @@ describe("day page robustness", () => {
     expect(error).toHaveBeenCalled();
     error.mockRestore();
     getLessonMock.fail = false;
+  });
+
+  it("shows the Thai database-error screen, not a crash, when the current day cannot be read", async () => {
+    getCurrentDay.mockRejectedValue(new Error("connect ECONNREFUSED"));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    render(await DayPage({ params: params("1") }));
+    expect(screen.getByText("เชื่อมต่อฐานข้อมูลไม่ได้ ลองใหม่อีกครั้ง")).toBeInTheDocument();
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
+  });
+
+  it("still answers 404 for a malformed day when the database is down", async () => {
+    getCurrentDay.mockRejectedValue(new Error("down"));
+    await expect(DayPage({ params: params("007") })).rejects.toMatchObject({ digest: expect.stringContaining("404") });
   });
 
   it("is always rendered dynamically (the lock must never be cached)", async () => {

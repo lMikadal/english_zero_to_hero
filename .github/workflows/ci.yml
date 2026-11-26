@@ -111,7 +111,8 @@ jobs:
           cache-from: type=gha,scope=dev-image
           cache-to: type=gha,scope=dev-image,mode=max
 
-      # starts postgres + the dev server (waits for its healthcheck; the first start installs
+      # `make e2e` first migrates the dev database (db-migrate creates it when missing; CI is always a fresh
+      # database, which the lesson test needs: day 1, streak 0), then starts postgres + the dev server (waits for its healthcheck; the first start installs
       # dependencies), then runs Playwright in the mcr.microsoft.com/playwright container
       - name: make e2e
         run: make e2e

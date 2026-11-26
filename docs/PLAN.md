@@ -48,15 +48,15 @@
 - [x] ตั้ง CI ให้รัน lint, typecheck, test, ตรวจ content, ตรวจ migration และ E2E ทุก PR (`.github/workflows/ci.yml`)
 
 ### Milestone 1: MVP (เรียนได้จริง 30 วันแรก)
-- [ ] Lesson Player ครอบคลุม exercise ทุกประเภทของเฟส 1
+- [ ] Lesson Player ครอบคลุม exercise ทุกประเภทของเฟส 1 (ทำแล้ว 13 ประเภทที่ใช้ในสัปดาห์แรก: วันที่ 1–7 เล่นได้ครบทุกข้อ, ล็อกบทตามลำดับ, รอบทวนข้อที่ตอบผิดท้ายบท; ยังไม่มี `roleplay`, `use_in_sentence`, `spell_word` ซึ่งไม่อยู่ในวันที่ 1–7 และรอ AI tutor/TTS) ทดสอบแล้ว: เล่นวันที่ 1 ด้วยมือใน Chrome ที่ความกว้าง 356px เมื่อ 2026-11-25 (ครบทุกข้อ, เสียงพูดทำงาน, รอบทวน, หน้าจบบท) และ E2E บน CI เล่นวันที่ 1 ทุกครั้ง **ยังไม่ได้ทดสอบ:** วันที่ 2–7 ในเบราว์เซอร์, มือถือจริง, ออฟไลน์ / ฐานข้อมูลล่มในเบราว์เซอร์, พฤติกรรมแคชเมื่อกดปุ่ม Back
 - [ ] เนื้อหาวันที่ 1–30
 - [ ] สคริปต์สร้างเสียง TTS (`pnpm audio:generate`)
 - [ ] อัดเสียงด้วย MediaRecorder แล้วฟังเทียบกับต้นฉบับ
 - [ ] Vocabulary SRS (FSRS)
 - [ ] คลังคำศัพท์ Oxford 3000 ระดับ A1 พร้อมคำแปลไทย ตัวอย่างประโยค และเสียง
 - [ ] หน้า Word Bank + หน้ารายละเอียดคำ
-- [ ] เก็บความคืบหน้า, attempts, SRS และ streak ลง PostgreSQL (ฝั่ง server ของ attempts, progress และ streak เสร็จแล้ว: `POST /api/attempts`, `POST /api/lessons/complete` ยังไม่ได้ต่อกับ UI และยังไม่มี SRS จึงยังไม่ติ๊ก)
-- [ ] เก็บข้อมูลดิบสำหรับคำนวณพัฒนาการตั้งแต่บทแรก: `attempts` ครบทุกช่องรวม `tags` และ `attempt_no` (ฝั่ง server เสร็จแล้ว รอต่อ UI), ประวัติการทบทวนใน `srs_reviews` (ยังไม่ทำ) (ดู [PROGRESS.md](PROGRESS.md) หัวข้อ 1)
+- [ ] เก็บความคืบหน้า, attempts, SRS และ streak ลง PostgreSQL (attempts, progress, streak และการล็อกบทต่อกับ UI แล้ว: player ส่งผ่านคิว HTTP ไป `POST /api/attempts` และ `/api/lessons/complete`, หน้าแรกอ่าน `current_day`/streak จาก DB; **ยังขาด:** SRS/`srs_cards` และการนับ streak จากการทบทวนคำ, คิว IndexedDB ออฟไลน์ (ตอนนี้คิวอยู่ในหน่วยความจำ), จึงยังไม่ติ๊ก)
+- [ ] เก็บข้อมูลดิบสำหรับคำนวณพัฒนาการตั้งแต่บทแรก: `attempts` ครบทุกช่องรวม `tags` และ `attempt_no` (ต่อกับ UI แล้ว), ประวัติการทบทวนใน `srs_reviews` (ยังไม่ทำ) (ดู [PROGRESS.md](PROGRESS.md) หัวข้อ 1)
 - [x] สูตรคำนวณพัฒนาการใน `src/lib/progress/` (คำที่รู้จริง, จุดอ่อน, ระดับ CEFR, ตามแผน 365 วัน) พร้อมเทสต์
 - [ ] หน้าสรุปสั้นหลังจบบท: คำใหม่วันนี้, คำที่รู้จริงสะสม, ทันแผนหรือไม่
 - [ ] เก็บไฟล์เสียงที่อัดลง `data/recordings/`
@@ -64,6 +64,12 @@
 - [ ] Deploy บนเครื่องตัวเอง: Dockerfile + service `app` ใน compose (profile `prod`), เปิด HTTPS ผ่าน Tailscale, backup `pg_dump` รายวัน (ดู [DEPLOYMENT.md](DEPLOYMENT.md))
   - [ ] prod image ต้อง `COPY` โฟลเดอร์ `content/` เข้าไปด้วย (API ตรวจคำตอบและหน้า `/day/[day]` อ่านบทเรียนจากดิสก์ตอนรัน ที่ `process.cwd()/content`)
   - [ ] เส้นทาง migrate ของ prod: คัดลอก migration เข้า prod image แล้วรันโดยไม่ใช้ tsx (`MIGRATIONS_DIR`, `runMigrations` ใน `src/db/migrate.ts`)
+
+- [ ] ติดตามผลของ PR player wiring: เล่นซ้ำบทที่จบแล้วจะเห็นคะแนนที่เก็บไว้และ streak แบบดิบ (API จบบทคืน `streaks.current` โดยไม่ปรับตามวันที่ขาด ต่างจากหน้าแรกที่ปรับแล้ว)
+- [ ] ติดตามผลของ PR player wiring: แยกฐานข้อมูล `_e2e` ให้ `make e2e` ในเครื่องไม่แก้ข้อมูลผู้เรียนของ dev (ตอนนี้ต้อง `make db-reset CONFIRM=english_zero_to_hero_dev` ก่อนรัน)
+- [ ] ติดตามผลของ PR player wiring (จากการตรวจรอบสอง): แผ่นคำ `arrange_words` ตัดสินชื่อเฉพาะจากคำที่ไม่ได้ขึ้นต้นประโยคเท่านั้น คำอย่าง "Sam is here" (ไม่มี `accept`) จะแสดงเป็น "sam" ให้เพิ่มตัวตรวจเนื้อหาหรือฟิลด์ `properNouns` ก่อนเขียนเนื้อหาที่เข้ากรณีนี้ (วันที่ 1–7 ไม่เข้ากรณี)
+- [ ] ติดตามผลของ PR player wiring (จากการตรวจรอบสอง): หน้าจบบทที่ค้าง "จะบันทึกเมื่อออนไลน์" ควรเช็ก `pendingCount()` หนึ่งครั้งตอนเริ่ม subscribe และไม่ควรพึ่งลำดับ microtask ของ sink ในการกันการถามซ้ำครั้งที่สาม (ตอนนี้ไม่ซ้ำเพราะ server กันไว้)
+- [ ] ติดตามผลของ PR player wiring (จากการตรวจรอบสอง): `MixedText` ตัด IPA ในคำอธิบายไทย (เช่น `/iː/`) เป็นช่วง `lang="en"` ที่ไม่ครบ และตัวตรวจ a11y ยังไม่ครอบคลุมข้อความใน attribute (`aria-label`)
 
 ### Milestone 2: บัญชีผู้ใช้และ AI
 - [ ] Login ด้วย Better Auth (email + password สำหรับผู้ใช้คนเดียว) เก็บใน PostgreSQL

@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { fakeAudio, renderWithAudio } from "@/components/audio/audio-test-utils";
+import { fakeAudio, renderWithAudio } from "@/components/exercises/test-helpers";
 import { get } from "@/lib/answers/test-content";
 import type { ExerciseOf } from "@/lib/content/schema";
 import { ListenChoose } from "./ListenChoose";
@@ -63,7 +63,7 @@ describe("ListenChoose", () => {
       <ListenChoose exercise={exercise} vocab={{}} onAnswer={onAnswer} onContinue={() => {}} result={{ correct: false, score: 0 }} />,
     );
     expect(screen.getByRole("radio", { name: /Ann/ })).toHaveAttribute("data-state", "wrong");
-    expect(screen.getByRole("radio", { name: /Sam/ })).toHaveAttribute("data-state", "correct");
+    expect(screen.getByRole("radio", { name: /Sam/ })).toHaveAttribute("data-state", "right");
     expect(screen.getByRole("radio", { name: /Tom/ })).toBeDisabled();
     expect(screen.queryByRole("button", { name: "ตรวจคำตอบ" })).not.toBeInTheDocument();
   });

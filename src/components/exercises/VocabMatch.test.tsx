@@ -2,7 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { gradeExercise } from "@/lib/answers/grade";
 import { VocabMatch } from "./VocabMatch";
-import { baseProps, exercise, renderWithAudio, vocabLookup } from "./text-test-helpers";
+import { baseProps, exercise, renderWithAudio, vocabLookup } from "./test-helpers";
 
 const ex = exercise("d003-write-04", "vocab_match");
 const vocab = vocabLookup();

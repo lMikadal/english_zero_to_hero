@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { fakeAudio, renderWithAudio } from "@/components/audio/audio-test-utils";
+import { fakeAudio, renderWithAudio } from "@/components/exercises/test-helpers";
 import { get } from "@/lib/answers/test-content";
 import type { ExerciseOf } from "@/lib/content/schema";
 import { RepeatAfterMe } from "./RepeatAfterMe";

@@ -2,7 +2,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { fakeAudio, renderWithAudio } from "@/components/audio/audio-test-utils";
+import { fakeAudio, renderWithAudio } from "@/components/exercises/test-helpers";
 import { get, readLesson } from "@/lib/answers/test-content";
 import type { AttemptInput } from "@/lib/attempts/contract";
 import type { Exercise, Lesson } from "@/lib/content/schema";

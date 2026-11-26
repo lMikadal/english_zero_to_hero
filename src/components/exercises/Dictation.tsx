@@ -3,7 +3,10 @@ import { useState } from "react";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { CheckButton, Instruction } from "./sound-ui";
+import { CheckButton } from "./ui/CheckButton";
+import { Mark } from "./ui/Mark";
+import { Instruction } from "./ui/Instruction";
+import { rightWrong, toneClass, type Tone } from "./ui/tone";
 
 export function Dictation({ exercise, onAnswer, onContinue, result }: ExerciseProps<"dictation">) {
   const audio = useExerciseAudio(exercise.audioText);
@@ -11,6 +14,7 @@ export function Dictation({ exercise, onAnswer, onContinue, result }: ExercisePr
   const [sent, setSent] = useState(false);
   const locked = result !== undefined || sent;
   const empty = text.trim() === "";
+  const tone: Tone = result ? rightWrong(result.correct) : "idle";
 
   const check = () => {
     if (empty || locked) return;
@@ -27,7 +31,8 @@ export function Dictation({ exercise, onAnswer, onContinue, result }: ExercisePr
         type="text"
         value={text}
         disabled={locked}
-        data-state={result === undefined ? undefined : result.correct ? "correct" : "wrong"}
+        data-state={tone}
+        aria-invalid={tone === "wrong" || undefined}
         onChange={(e) => setText(e.target.value)}
         lang="en"
         aria-label="พิมพ์สิ่งที่ได้ยิน"
@@ -35,9 +40,10 @@ export function Dictation({ exercise, onAnswer, onContinue, result }: ExercisePr
         autoCorrect="off"
         autoComplete="off"
         spellCheck={false}
-        className="min-h-11 w-full rounded-lg border border-zinc-300 px-3 py-2 text-base data-[state=correct]:border-green-600 data-[state=correct]:bg-green-50 data-[state=wrong]:border-red-600 data-[state=wrong]:bg-red-50"
+        className={`min-h-12 w-full rounded-xl border-2 px-3 text-lg ${toneClass(tone)}`}
       />
-      <CheckButton hidden={result !== undefined} disabled={empty || sent} />
+      {result ? <p className="text-sm font-semibold"><Mark ok={result.correct} /></p> : null}
+      <CheckButton type="submit" hidden={result !== undefined} disabled={empty || sent} />
     </form>
   );
 }

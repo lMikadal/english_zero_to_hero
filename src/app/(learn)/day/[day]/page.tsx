@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
 import { DayPlayer } from "@/components/player/DayPlayer";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
 import { getLesson, getVocabLookup } from "@/lib/content/repo";
@@ -19,7 +20,13 @@ export default async function DayPage({ params }: { params: Promise<{ day: strin
   if (!/^[1-9]\d{0,2}$/.test(raw) || Number(raw) > 365) notFound();
   const day = Number(raw);
 
-  const currentDay = await getCurrentDay();
+  let currentDay: number;
+  try {
+    currentDay = await getCurrentDay();
+  } catch (e) {
+    console.error("Cannot read the learner's current day:", e);
+    return <DbErrorScreen retryHref={`/day/${day}`} />;
+  }
   if (!isDayUnlocked(day, currentDay)) {
     return (
       <main className={SCREEN}>

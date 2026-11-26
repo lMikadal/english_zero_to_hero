@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { Instruction, SelfRating } from "./sound-ui";
+import { Instruction } from "./ui/Instruction";
+import { SelfRating } from "./ui/SelfRating";
 
 export function Shadowing({ exercise, onAnswer, onContinue, result }: ExerciseProps<"shadowing">) {
   const audio = useExerciseAudio(exercise.lines[0]);

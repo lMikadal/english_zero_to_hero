@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import type { CompleteResult } from "@/lib/offline/sink";
+import { UnsavedNote } from "./UnsavedNote";
 
 const LINK = "flex min-h-11 items-center justify-center rounded-lg border border-zinc-300 px-4 py-2 text-base font-medium";
 
@@ -36,6 +37,7 @@ export function CompletionScreen({
           <button type="button" onClick={onRetry} className={`${LINK} bg-white`}>ลองอีกครั้ง</button>
         </div>
       )}
+      <UnsavedNote />
       {nextDay !== null && <Link href={`/day/${nextDay}`} className={`${LINK} bg-sky-600 text-white`}>ไปบทถัดไป</Link>}
       <Link href="/" className={LINK}>กลับหน้าแรก</Link>
     </main>

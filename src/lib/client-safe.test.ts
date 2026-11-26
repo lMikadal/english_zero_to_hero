@@ -16,9 +16,16 @@ const CLIENT_SAFE = [
   "lib/attempts/derive.ts",
   "lib/attempts/unlock.ts",
   "lib/offline/sink.ts",
+  "lib/offline/http-sink.ts",
+  "components/exercises/ui/radio.ts",
+  "components/exercises/ui/tone.ts",
   "lib/audio/source.ts",
   "lib/audio/context.tsx",
   "components/exercises/types.ts",
+  // the real client entry points: a server import anywhere in the player tree is caught
+  "components/player/DayPlayer.tsx",
+  "components/player/CompletionScreen.tsx",
+  "components/exercises/registry.tsx",
 ];
 
 const BUILTINS = new Set(builtinModules.filter((m) => !m.startsWith("_")).flatMap((m) => [m, m.replace(/\/.*$/, "")]));

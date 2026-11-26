@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { TranslateThEn } from "./TranslateThEn";
-import { baseProps, exercise, renderWithAudio } from "./text-test-helpers";
+import { baseProps, exercise, renderWithAudio } from "./test-helpers";
 
 const ex = exercise("d001-write-02", "translate_th_en");
 const input = () => screen.getByRole("textbox");

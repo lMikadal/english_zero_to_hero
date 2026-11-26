@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { fakeAudio, renderWithAudio } from "@/components/audio/audio-test-utils";
+import { fakeAudio, renderWithAudio } from "@/components/exercises/test-helpers";
 import { get, readLesson } from "@/lib/answers/test-content";
 import { attemptInputSchema, type AttemptInput, type CompleteLessonResponse } from "@/lib/attempts/contract";
 import type { Exercise, Lesson } from "@/lib/content/schema";
@@ -151,7 +151,12 @@ describe("LessonPlayer", () => {
   });
 
   it("shows ยังไม่รองรับ for a type without a component, lets the learner skip, and records nothing", async () => {
-    const { sent, sink } = setup(["d003-write-04", "d001-listen-01"]);
+    // no week-1 exercise is unsupported any more, so make one: a roleplay (no component, M2)
+    const roleplay = { ...get("d001-listen-01"), id: "d001-rp-01", type: "roleplay" } as unknown as Exercise;
+    const base = lessonOf(["d001-listen-01"]);
+    const lesson: Lesson = { ...base, sections: [{ ...base.sections[0], exercises: [roleplay, get("d001-listen-01")] }] };
+    const { sink, sent } = fakeSink();
+    renderWithAudio(<LessonPlayer lesson={lesson} vocab={{}} sink={sink} />, fakeAudio());
     expect(screen.getByText("ยังไม่รองรับ")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "ข้าม" }));
     expect(screen.getByText("ข้อ 2 / 2")).toBeInTheDocument();
@@ -207,6 +212,22 @@ describe("LessonPlayer", () => {
     expect(screen.getByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/2");
   });
 
+  it("the next-lesson link uses the server's currentDay, not day + 1", async () => {
+    const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 5 } });
+    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    expect(await screen.findByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/5");
+  });
+
+  it("free_write shows บันทึกแล้ว exactly once after submitting", async () => {
+    setup(["d007-write-01"]);
+    const text = Array.from({ length: 60 }, () => "word").join(" ");
+    await userEvent.type(screen.getByRole("textbox"), text);
+    await check();
+    expect(screen.getAllByText("บันทึกแล้ว")).toHaveLength(1);
+  });
+
   it("when the finished day is the current day cap (365) it does not link to /day/365 again", async () => {
     const { sink } = fakeSink({ status: "done", response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay: 365 } });
     const lesson = { ...lessonOf(["d001-listen-01"]), day: 365 };
@@ -222,6 +243,69 @@ describe("LessonPlayer", () => {
     await answerListen01(true);
     await next();
     expect(await screen.findByText("จะบันทึกเมื่อออนไลน์")).toBeInTheDocument();
+  });
+
+  it("queued becomes done: when the sink has nothing pending the player asks again with the same day and sessionId", async () => {
+    let pending = 1;
+    const listeners = new Set<() => void>();
+    const answers: CompleteResult[] = [{ status: "queued" }, DONE];
+    const sink = {
+      sendAttempt: vi.fn(),
+      completeLesson: vi.fn(async () => answers.shift() ?? DONE),
+      pendingCount: () => pending,
+      subscribe: (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb); }; },
+    } satisfies SyncSink;
+    renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    expect(await screen.findByText("จะบันทึกเมื่อออนไลน์")).toBeInTheDocument();
+    expect(sink.completeLesson).toHaveBeenCalledTimes(1);
+
+    listeners.forEach((cb) => cb()); // still pending: nothing to do
+    expect(sink.completeLesson).toHaveBeenCalledTimes(1);
+
+    pending = 0;
+    await act(async () => listeners.forEach((cb) => cb()));
+    await waitFor(() => expect(screen.getByText(/สตรีค 3 วัน/)).toBeInTheDocument());
+    expect(screen.queryByText("จะบันทึกเมื่อออนไลน์")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /บทถัดไป/ })).toHaveAttribute("href", "/day/2");
+    const [first, second] = sink.completeLesson.mock.calls as unknown as [[{ day: number; sessionId: string }], [{ day: number; sessionId: string }]];
+    expect(second[0]).toMatchObject({ day: first[0].day, sessionId: first[0].sessionId });
+  });
+
+  it("stops listening to the sink when it unmounts while queued", async () => {
+    const listeners = new Set<() => void>();
+    const sink = {
+      sendAttempt: vi.fn(),
+      completeLesson: vi.fn(async () => ({ status: "queued" }) as CompleteResult),
+      pendingCount: () => 1,
+      subscribe: (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb); }; },
+    } satisfies SyncSink;
+    const view = renderWithAudio(<LessonPlayer lesson={lessonOf(["d001-listen-01"])} vocab={{}} sink={sink} />, fakeAudio());
+    await answerListen01(true);
+    await next();
+    await screen.findByText("จะบันทึกเมื่อออนไลน์");
+    expect(listeners.size).toBe(1);
+    view.unmount();
+    expect(listeners.size).toBe(0);
+  });
+
+  it("calls onDone once, and only for a done result", async () => {
+    const onDone = vi.fn();
+    setup(["d001-listen-01"], DONE, { onDone });
+    await answerListen01(true);
+    await next();
+    await screen.findByText(/สตรีค 3 วัน/);
+    expect(onDone).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onDone when the result is queued", async () => {
+    const onDone = vi.fn();
+    setup(["d001-listen-01"], { status: "queued" }, { onDone });
+    await answerListen01(true);
+    await next();
+    await screen.findByText("จะบันทึกเมื่อออนไลน์");
+    expect(onDone).not.toHaveBeenCalled();
   });
 
   it("completion rejected: shows a clear Thai error", async () => {
@@ -280,6 +364,44 @@ describe("LessonPlayer", () => {
     expect(await screen.findByText("กำลังบันทึก…")).toBeInTheDocument();
     await act(async () => resolve(DONE));
     await waitFor(() => expect(screen.getByText(/สตรีค 3 วัน/)).toBeInTheDocument());
+  });
+});
+
+describe("LessonPlayer action bar", () => {
+  const bar = () => screen.getByTestId("action-bar");
+
+  it("keeps the single live region in a sticky bottom bar, mounted before any answer", () => {
+    setup(["d001-listen-01"]);
+    expect(bar()).toContainElement(screen.getByRole("status"));
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect(bar().className).toMatch(/\bsticky\b/);
+    expect(bar().className).toMatch(/\bbottom-0\b/);
+    expect(bar().className).toMatch(/\bborder-t\b/);
+    expect(bar().className).toMatch(/\bbg-white\b/); // opaque, so content scrolls under it
+    expect(bar().className).toMatch(/safe-area-inset-bottom/);
+  });
+
+  it("holds the feedback and ถัดไป together, and the component's ตรวจคำตอบ stays in the content", async () => {
+    setup(["d001-listen-01"]);
+    await choose("Sam");
+    expect(bar()).not.toContainElement(screen.getByRole("button", { name: "ตรวจคำตอบ" }));
+    await check();
+    expect(bar()).toContainElement(screen.getByRole("button", { name: "ถัดไป" }));
+    expect(bar()).toHaveTextContent("ถูกต้อง");
+  });
+
+  it("lets a long correct-answer list scroll inside the bar instead of pushing the button away", async () => {
+    setup(["d001-listen-01"]);
+    await answerListen01(false);
+    expect(bar()).toHaveTextContent("คำตอบที่ถูกต้อง");
+    expect(screen.getByRole("status").className).toMatch(/overflow-y-auto/);
+    expect(screen.getByRole("status").className).toMatch(/max-h-/);
+  });
+
+  it("has no bar chrome for an exercise with nothing to confirm (phoneme_intro)", () => {
+    setup(["d001-pron-01"]);
+    expect(bar()).toContainElement(screen.getByRole("status"));
+    expect(bar().className).not.toMatch(/\bborder-t\b/);
   });
 });
 

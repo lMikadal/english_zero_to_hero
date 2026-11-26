@@ -1,7 +1,8 @@
 "use client";
 import { AudioFallback, BUTTON, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
-import { Instruction } from "./sound-ui";
+import { Instruction } from "./ui/Instruction";
+import { MixedText } from "./ui/MixedText";
 
 /** Teaching card, no question: it never calls `onAnswer`, only `onContinue`. */
 export function PhonemeIntro({ exercise, onContinue }: ExerciseProps<"phoneme_intro">) {
@@ -9,8 +10,8 @@ export function PhonemeIntro({ exercise, onContinue }: ExerciseProps<"phoneme_in
   return (
     <section className="flex flex-col gap-4">
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <p className="text-center text-5xl font-bold">{exercise.ipa}</p>
-      <p className="rounded-lg bg-amber-50 p-3 text-base">{exercise.tipTh}</p>
+      <p lang="en-fonipa" className="text-center text-5xl font-bold">{exercise.ipa}</p>
+      <p className="rounded-lg bg-amber-50 p-3 text-base"><MixedText text={exercise.tipTh} /></p>
       <AudioFallback audio={audio} />
       <ul className="flex flex-col gap-3">
         {exercise.examples.map((word) => (
