@@ -1,5 +1,6 @@
 // POST /api/attempts: parse -> look up in content -> grade -> store, all on the server (docs/ARCHITECTURE.md 5.1).
 // One bad item never fails the batch: it is answered `rejected` and the rest is stored.
+import { getDayStatus } from "@/db/queries/practice";
 import { findStoredGrade, getProfileShared, insertAttempt, markInProgress, refreshDoneScore } from "@/db/queries/attempts";
 import { isDataError, withTransactionRetry } from "@/db/queries/tx";
 import type { Db } from "@/db/types";
@@ -8,6 +9,7 @@ import { parseAttemptBatch, type AttemptInput, type AttemptResult, type PostAtte
 import { attemptSkill, deriveTags, findExercise } from "@/lib/attempts/derive";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
 import { getLesson, getTaughtWords } from "@/lib/content/repo";
+import { hasRole } from "@/lib/progress/sources";
 import type { Lesson } from "@/lib/content/schema";
 import { clampTimestamp, timestampFloor } from "./clamp";
 
@@ -84,6 +86,12 @@ export async function handlePostAttempts(body: unknown, { db, userId, now }: Han
         out[w.index] = { id: a.id, status: "rejected", reason: "locked_day" };
         continue;
       }
+      // A source that never touches progress (practice) replays finished days only (plan U2). No lock: a done day
+      // never stops being done.
+      if (!hasRole(a.source, "touchesProgress") && (await getDayStatus(tx, userId, day)) !== "done") {
+        out[w.index] = { id: a.id, status: "rejected", reason: "not_finished" };
+        continue;
+      }
       const grade = gradeExercise(found.exercise, a.answer);
       if ("error" in grade) {
         out[w.index] = { id: a.id, status: "rejected", reason: grade.error };
@@ -119,7 +127,7 @@ export async function handlePostAttempts(body: unknown, { db, userId, now }: Han
           // the id exists: report what was stored, never the grade of this (possibly different) payload
           return { id: a.id, status: "duplicate" as const, ...(await findStoredGrade(sp, userId, a.id)) };
         });
-        if (out[w.index]!.status === "created") {
+        if (out[w.index]!.status === "created" && hasRole(a.source, "touchesProgress")) {
           const prev = firstCreated.get(day);
           if (!prev || createdAt < prev) firstCreated.set(day, createdAt);
         }
