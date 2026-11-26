@@ -1,6 +1,6 @@
 # แผน: เล่นบทที่เรียนจบแล้วซ้ำ (ทั้งบท และทีละทักษะ)
 
-สถานะ: แผนของ architect (2026-11-26) ยังไม่ได้เริ่มทำ อ่านคู่กับ `docs/ARCHITECTURE.md` §5/§5.1, `docs/PROGRESS.md` §1/§3/§5, `design/README.md` (ui-v2 "การตัดสินใจของผู้ใช้" และ "สิ่งที่การตัดสินใจนี้กระทบ")
+สถานะ: ทำครบทุก PR แล้ว (2026-11-26): PR 1 #21 contract, PR 2 #22 server, PR 3a #23 player, PR 3b #24 list, PR 4 (E2E, ในแผนนี้คือหัวข้อ "PR 4") ทำเป็น PR ที่ 5 ของงาน `test/replay-e2e` (ดูหัวข้อ PR 4 ด้านล่าง) แผนของ architect (2026-11-26) อ่านคู่กับ `docs/ARCHITECTURE.md` §5/§5.1, `docs/PROGRESS.md` §1/§3/§5, `design/README.md` (ui-v2 "การตัดสินใจของผู้ใช้" และ "สิ่งที่การตัดสินใจนี้กระทบ")
 
 คำขอของผู้ใช้: "ทำบทเรียนแบบ ฟัง พูด อ่าน เขียน ทั้งหมด ให้สามารถย้อนมาทำกี่ครั้งก็ได้" แล้วเลือกว่าเล่นซ้ำได้ทั้ง **ทั้งบท** และ **ส่วนทักษะเดียวของบท** (ออกเสียง / ฟัง / พูด / อ่าน / เขียน เท่าที่บทนั้นมี)
 
@@ -194,12 +194,12 @@ PR 2 กับ 3a/3b ทำคู่ขนานได้หลัง PR 1 merge
 
 ทุก PR: เขียนเทสต์ที่ล้มก่อนแล้ว commit ก่อนโค้ด, ผ่าน `make check`, integration test รันจาก main checkout ทีละตัว (decisions ข้อ 7)
 
-### PR 1 `feat/replay-contract` — สัญญา, migration, การจัดประเภท source
+### PR 1 `feat/replay-contract` — สัญญา, migration, การจัดประเภท source (ทำแล้ว: #21)
 - เทสต์ก่อน: `contract.test.ts` (array/type ใหม่, `completePracticeRequestSchema` รับ/ปฏิเสธ: `skill` `"vocabulary"`, ขาด `kind`, ฟิลด์เกิน), `sources.test.ts` (type test `AttemptSourceLike` = `AttemptSource`; `DETECTION_SOURCES` ยังเป็น `["lesson","checkpoint"]`), `weakness.test.ts`/`drills.test.ts` ("practice ไม่เปลี่ยน `groupStats`/`weakPoints`/`evaluateWeakness`/`recommendDrills`": ชุดเดิม + practice ผิดทั้งหมด ผลต้อง `toEqual` ชุดเดิม), `replay.test.ts` (วันที่ 1: 5 ทักษะ จำนวนข้อ 3/2/2/1/2; `parseReplaySkill` กับ `"Listening"`, `["a","b"]`, `""`), `http-sink.test.ts` (completePractice: FIFO หลัง attempt, 409 → rejected, 5xx → queued, กันซ้ำด้วย sessionId, response รูปผิด → retry), `practice.int.test.ts` (`listDoneDays` เรียงใหม่สุดก่อน ไม่รวม in_progress; `getDayStatus` ไม่มีแถว = `not_started`), schema int test: insert attempt `source='practice'` ได้, `'foo'` → 23514, activity_days `'foo'` → 23514
 - ตรวจด้วยเครื่อง: `Record<AttemptSourceLike, …>` (compile), type tests, CHECK constraint
 - ตรวจกับแอปจริง: `make db-migrate` แล้ว `psql -c "\d+ attempts"` เห็น `attempts_source_valid` มี `'practice'` และ index `attempts_user_id_session_id_idx`; `\d+ activity_days` เห็น `activity_days_source_valid` แอปเดิมยังเล่น `/day/1` ได้เหมือนเดิม
 
-### PR 2 `feat/replay-server` — server
+### PR 2 `feat/replay-server` — server (ทำแล้ว: #22)
 - เทสต์ก่อน (int):
   - `attempts-handler.int.test.ts`: practice ของวันที่ไม่ done → `rejected/not_finished`; ของวันที่ done → `created` แถว `source='practice'`, `attempt_no` ตามที่ส่ง; batch ปน lesson+practice ได้ผลต่อรายการถูก
   - **guard หลัก "practice ไม่แตะ progress/profiles"** (`practice-guard.int.test.ts`): จบวันที่ 1 แบบปกติ, snapshot ทุกแถวของ `progress` และ `profiles` แล้วส่ง attempt practice (ถูก/ผิด, `attemptNo` 2, `createdAt` ก่อน `completed_at`) + complete practice ทั้งบทและทีละทักษะ + complete ซ้ำ → snapshot ต้อง `toEqual` เดิม
@@ -212,7 +212,7 @@ PR 2 กับ 3a/3b ทำคู่ขนานได้หลัง PR 1 merge
   - `curl -s -XPOST localhost:3000/api/practice/complete -H 'content-type: application/json' -d '{"kind":"replay","day":1,"skill":null,"sessionId":"<uuid>","completedAt":"<ISO>"}'` ก่อนจบวันที่ 1 → 409 `{"error":"not_replayable"}`; หลังจบ → 200 มี `session.score`, `lessonScore`, `streak`, `countedForStreak:true`
   - POST `/api/attempts` item `source:"practice"` วันที่ 1 ที่ done → `created`; `select source, attempt_no, session_id from attempts order by created_at desc limit 3` เห็น `practice`; `select score, completed_at from progress where day=1` ไม่เปลี่ยนก่อน/หลัง
 
-### PR 3a `feat/replay-player` — ตัวเล่นโหมด practice + หน้า `/day/N`
+### PR 3a `feat/replay-player` — ตัวเล่นโหมด practice + หน้า `/day/N` (ทำแล้ว: #23)
 - เทสต์ก่อน:
   - `player-state.test.ts`: `createPlayerState({ lesson, sections })` ใช้เฉพาะส่วนที่ให้; รอบทวนยังสร้างในโหมด practice
   - `LessonPlayer.test.tsx`: โหมด practice ส่งทุก attempt `source:"practice"` (รวมรอบทวน), เรียก `completePractice` ด้วย `{kind:"replay", day, skill, sessionId}` ไม่เรียก `completeLesson`; โหมด lesson ส่ง `lesson` และไม่เรียก `completePractice`
@@ -222,12 +222,12 @@ PR 2 กับ 3a/3b ทำคู่ขนานได้หลัง PR 1 merge
 - ตรวจด้วยเครื่อง: `source` ใน `LessonPlayer` มาจาก `mode` ผ่านฟังก์ชันเดียว (`attemptSourceFor(mode)`) ไม่ hardcode; เทสต์ guard refresh
 - ตรวจกับแอปจริง (ต้องมี PR 2 แล้ว): จบวันที่ 1 → เปิด `/day/1` เห็นป้าย "เล่นซ้ำ" เล่นจนจบ → h1 "จบการเล่นซ้ำแล้ว", "คะแนนรอบนี้", "คะแนนเดิมของบท … (ไม่เปลี่ยน)", ไม่มี "ไปบทถัดไป"; `/day/1?skill=reading` → "ข้อ 1 / 1" จบแล้วเห็น "ฝึกแยกส่วนไม่นับสตรีค"; DB: `select source, count(*) from attempts group by 1` มี `practice`, `progress` วันที่ 1 ไม่เปลี่ยน; `/day/1?skill=vocabulary` → 404; ที่ 360px ไม่มี horizontal scroll
 
-### PR 3b `feat/practice-replay-list` — หน้า `/practice`
+### PR 3b `feat/practice-replay-list` — หน้า `/practice` (ทำแล้ว: #24)
 - เทสต์ก่อน (`practice/page.test.tsx` แทนเทสต์ placeholder เดิม): ข้อ 30–36 (mock `listDoneDays`, `getLesson`); ลำดับใหม่สุดก่อน; ลิงก์ของวันที่ 1 = `/day/1` + 5 ลิงก์ `?skill=`; empty state; ไฟล์บทหาย; DB error; ไม่มีข้อความ "ทวนคำศัพท์"/"จุดอ่อน"/"10 ข้อ"; `layout.test.tsx` mock query ใหม่และยังผ่าน
 - ตรวจด้วยเครื่อง: `touch-targets.test.tsx` ครอบลิงก์ใหม่ (ถ้าไม่ครอบ เพิ่ม), color scan
 - ตรวจกับแอปจริง: ฐานข้อมูลใหม่ `/practice` → "ยังไม่มีบทที่เรียนจบ"; จบวันที่ 1 → แถว "1 … M%" กางแล้วเห็น "เล่นทั้งบท", "ออกเสียง", "ฟัง", "พูด", "อ่าน", "เขียน"; แตะ "ฟัง" → URL `/day/1?skill=listening` ไม่มีเมนูหลัก
 
-### PR 4 `test/replay-e2e` — E2E และปิดงาน
+### PR 4 `test/replay-e2e` — E2E และปิดงาน (ทำแล้ว: PR ที่ 5 ของงานนี้ branch `test/replay-e2e`; ต่างจากแผน: จบวันที่ 1 ผ่าน API พร้อม attempt อ่าน 1 ข้อ เพื่อให้บทมีคะแนนเดิม, helper อยู่ที่ `e2e/helpers/day1.ts`)
 - `e2e/replay.spec.ts` (360px, ใช้ helper ตอบข้อจาก `lesson.spec.ts` ที่แยกออกมา): จบวันที่ 1 ผ่าน `request.post('/api/lessons/complete')` (จบได้โดยไม่มี attempt, ARCHITECTURE §5.1) → `/practice` → กางวันที่ 1 → "อ่าน" → ตอบ → "จบการเล่นซ้ำแล้ว"; กลับ `/practice` → "เล่นทั้งบท" → เล่นจนจบ (ข้ามข้อเสียงได้) → เห็นบรรทัดสตรีค; ตรวจผ่าน API/หน้าแรกว่าคะแนนเดิมไม่เปลี่ยน ใช้ส่วนอ่านเป็นหลักเพราะไม่ต้องใช้เสียง (ลดผลของ `docs/PLAN.md:71`)
 - เอกสาร: คอลัมน์เทสต์ใน FEATURE_MAP, ติ๊ก/ปิดข้อ `docs/PLAN.md:76`, ขีดข้อที่ทำแล้วใน `design/README.md` "สิ่งที่การตัดสินใจนี้กระทบ" (source ใหม่, เล่นซ้ำไม่เปลี่ยนคะแนน, จุดอ่อนไม่นับ practice) และย้าย "เล่นซ้ำ 28" ไป "ทำแล้ว"
 
