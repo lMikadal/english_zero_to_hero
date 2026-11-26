@@ -116,3 +116,52 @@ describe("font tokens in globals.css", () => {
     expect(read("src/app/layout.tsx")).toMatch(/import\s+["']\.\/fonts\.css["']/);
   });
 });
+
+describe("IPA coverage", () => {
+  // Every character used in an `ipa` field under content/ must be inside the unicode-range of a self-hosted face of
+  // the IPA family (or of the Latin face it falls back to), otherwise the phone draws it with whatever system font it
+  // has and one glyph looks different from the rest. θ (U+03B8) is Greek, not IPA Extensions, so it needs its own face.
+  const ranges = (family: string) =>
+    [...fontsCss.matchAll(/@font-face\s*\{([^}]*)\}/g)]
+      .map((m) => m[1])
+      .filter((f) => f.includes(family))
+      .flatMap((f) => (f.match(/unicode-range:\s*([^;]+);/)?.[1] ?? "").split(","))
+      .map((r) => r.trim().replace(/^U\+/i, ""))
+      .filter(Boolean)
+      .map((r) => {
+        const [a, b] = r.split("-");
+        return [parseInt(a, 16), parseInt(b ?? a, 16)] as const;
+      });
+  const covered = (cp: number, rs: readonly (readonly [number, number])[]) => rs.some(([a, b]) => cp >= a && cp <= b);
+
+  const ipaStrings: string[] = [];
+  // `ipa` is a string in lessons and `{ us, uk }` in the vocabulary files
+  const strings = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v).flatMap(strings) : []);
+  const collect = (v: unknown) => {
+    if (Array.isArray(v)) v.forEach(collect);
+    else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) (k === "ipa" ? ipaStrings.push(...strings(x)) : collect(x));
+  };
+  const walk = (dir: string) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (e.name.endsWith(".json")) collect(JSON.parse(fs.readFileSync(p, "utf8")));
+    }
+  };
+  walk(path.join(root, "content"));
+
+  it("finds IPA strings in the content", () => {
+    expect(ipaStrings.length).toBeGreaterThan(20);
+  });
+
+  it("every IPA character in content is drawn by a self-hosted Noto Sans face", () => {
+    const noto = ranges("Noto Sans Variable");
+    const missing = new Set<string>();
+    for (const s of ipaStrings) for (const ch of s) if (!covered(ch.codePointAt(0)!, noto)) missing.add(`${ch} U+${ch.codePointAt(0)!.toString(16).toUpperCase().padStart(4, "0")}`);
+    expect([...missing].sort()).toEqual([]);
+  });
+
+  it("the check is not vacuous: a Cyrillic letter is not covered", () => {
+    expect(covered("я".codePointAt(0)!, ranges("Noto Sans Variable"))).toBe(false);
+  });
+});
