@@ -33,12 +33,14 @@ export const ACCENTS = ["us", "uk"] as const;
 export const PROGRESS_STATUSES = ["not_started", "in_progress", "done"] as const;
 export const SRS_DIRECTIONS = ["en_th", "th_en", "listen_spell", "speak"] as const;
 export const SKILLS = ["pronunciation", "listening", "speaking", "reading", "writing", "vocabulary"] as const;
-export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint"] as const;
+export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint", "practice"] as const;
+export const ACTIVITY_SOURCES = ["lesson", "practice"] as const; // the SRS PR adds "review"
 export type Accent = (typeof ACCENTS)[number];
 export type ProgressStatus = (typeof PROGRESS_STATUSES)[number];
 export type SrsDirection = (typeof SRS_DIRECTIONS)[number];
 export type Skill = (typeof SKILLS)[number];
 export type AttemptSource = (typeof ATTEMPT_SOURCES)[number];
+export type ActivitySource = (typeof ACTIVITY_SOURCES)[number];
 
 const inList = (column: unknown, values: readonly string[]) =>
   sql`${column} IN (${sql.raw(values.map((v) => `'${v}'`).join(", "))})`;
@@ -111,6 +113,7 @@ export const attempts = pgTable(
     index("attempts_user_id_skill_created_at_idx").on(t.userId, t.skill, t.createdAt),
     index("attempts_user_id_source_created_at_idx").on(t.userId, t.source, t.createdAt),
     index("attempts_user_id_day_idx").on(t.userId, t.day),
+    index("attempts_user_id_session_id_idx").on(t.userId, t.sessionId),
     index("attempts_tags_gin_idx").using("gin", t.tags),
     check("attempts_day_range", sql`${t.day} BETWEEN 1 AND 365`),
     check("attempts_skill_valid", inList(t.skill, SKILLS)),
@@ -217,9 +220,9 @@ export const activityDays = pgTable(
   {
     userId: userId(),
     localDate: date("local_date").notNull(),
-    source: text("source").notNull().default("lesson"),
+    source: text("source").$type<ActivitySource>().notNull().default("lesson"),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.localDate] })],
+  (t) => [primaryKey({ columns: [t.userId, t.localDate] }), check("activity_days_source_valid", inList(t.source, ACTIVITY_SOURCES))],
 );
 
 export const pushSubscriptions = pgTable("push_subscriptions", {

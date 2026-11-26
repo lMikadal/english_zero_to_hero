@@ -31,6 +31,7 @@ function setup(ids: string[]) {
   const sink = {
     sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
     completeLesson: vi.fn(async () => ({ status: "queued" as const })),
+    completePractice: vi.fn(async () => ({ status: "queued" as const })),
     pendingCount: () => 0,
     subscribe: () => () => {},
   } satisfies SyncSink;

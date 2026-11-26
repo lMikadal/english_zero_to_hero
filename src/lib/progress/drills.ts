@@ -2,6 +2,7 @@
 // single list of weak points the UI shows.
 import { DAY_MS, MAX_DRILLS_PER_DAY, MIN_RETEST_GRADED_ATTEMPTS, RETEST_PASS_RATE, RETEST_PASSES_TO_FIX, TOP_WEAKNESSES_PER_ANGLE, WEAKNESS_WINDOW_DAYS } from "./config";
 import { localDate, resolveTimeZone } from "./dates";
+import { hasRole } from "./sources";
 import {
   ANGLES,
   compareRates,
@@ -31,8 +32,8 @@ export type SessionResult = {
   passed: boolean;
 };
 
-const isLessonSource = (a: AttemptLike) => a.source === "lesson" || a.source === "checkpoint";
-const isDrillSource = (a: AttemptLike) => a.source === "drill" || a.source === "retest";
+const isLessonSource = (a: AttemptLike) => hasRole(a.source, "detection");
+const isDrillSource = (a: AttemptLike) => hasRole(a.source, "drillActivity");
 
 /**
  * Does the attempt count for this weakness? Drill and retest attempts match ONLY by their

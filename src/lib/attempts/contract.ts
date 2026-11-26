@@ -6,9 +6,9 @@ import type { Grade } from "@/lib/answers/grade";
 import { EXERCISE_ID_PATTERN } from "@/lib/content/schema";
 
 /** Kept equal to `AttemptSource` in src/db/schema.ts by a type test (contract.test.ts). */
-export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint"] as const;
+export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint", "practice"] as const;
 
-export const API = { attempts: "/api/attempts", completeLesson: "/api/lessons/complete" } as const;
+export const API = { attempts: "/api/attempts", completeLesson: "/api/lessons/complete", completePractice: "/api/practice/complete" } as const;
 
 const exerciseId = z.string().regex(EXERCISE_ID_PATTERN);
 const index = z.number().int().min(0).max(1000);
@@ -95,7 +95,7 @@ export function parseAttemptBatch(body: unknown): ParsedAttemptBatch {
   };
 }
 
-export type RejectedReason = "unknown_exercise" | "kind_mismatch" | "unsupported" | "locked_day" | "invalid";
+export type RejectedReason = "unknown_exercise" | "kind_mismatch" | "unsupported" | "locked_day" | "not_finished" | "invalid";
 export type AttemptResult =
   | ({ id: string; status: "created" } & Grade)
   | ({ id: string; status: "duplicate" } & Partial<Grade>)
@@ -123,3 +123,23 @@ export function newId(): string {
   const h = Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
+
+/** Section skills a replay can pick (same values as SKILLS in src/lib/content/schema.ts; a type test keeps them equal). */
+export const REPLAY_SKILLS = ["pronunciation", "listening", "speaking", "reading", "writing"] as const;
+export type ReplaySkill = (typeof REPLAY_SKILLS)[number];
+
+export const completePracticeRequestSchema = z.strictObject({
+  kind: z.literal("replay"), // the future 10-question set will be another kind of this union
+  day: z.number().int().min(1).max(365),
+  skill: z.enum(REPLAY_SKILLS).nullable(), // null = the whole lesson
+  sessionId: z.uuid(),
+  completedAt: isoTimestamp,
+});
+export type CompletePracticeRequest = z.infer<typeof completePracticeRequestSchema>;
+export type CompletePracticeResponse = {
+  session: { sessionId: string; day: number; skill: ReplaySkill | null; score: number | null; graded: number };
+  /** The stored `progress.score` of the lesson (read only), for display. */
+  lessonScore: number | null;
+  streak: { current: number; longest: number };
+  countedForStreak: boolean;
+};

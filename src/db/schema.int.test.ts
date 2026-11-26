@@ -178,7 +178,7 @@ describe("attempts", () => {
     for (const skill of ["pronunciation", "listening", "speaking", "reading", "writing", "vocabulary"] as const) {
       await db.insert(attempts).values(attemptRow(id, { skill }));
     }
-    for (const source of ["lesson", "drill", "retest", "checkpoint"] as const) {
+    for (const source of ["lesson", "drill", "retest", "checkpoint", "practice"] as const) {
       await db.insert(attempts).values(attemptRow(id, { source }));
     }
   });
@@ -192,6 +192,14 @@ describe("attempts", () => {
     expect(has(/\(user_id, source, created_at\)/)).toBe(true);
     expect(has(/USING gin \(tags\)/)).toBe(true);
     expect(has(/\(user_id, day\)/)).toBe(true);
+    expect(has(/\(user_id, session_id\)/)).toBe(true);
+  });
+
+  it("accepts source 'practice' and rejects other values with a CHECK violation", async () => {
+    const id = await newUser();
+    const [row] = await db.insert(attempts).values(attemptRow(id, { source: "practice" })).returning();
+    expect(row.source).toBe("practice");
+    expect(await pgErrorCode(db.execute(dsql`INSERT INTO attempts (user_id, exercise_id, day, skill, exercise_type, correct, source) VALUES (${id}, 'e', 1, 'reading', 't', true, 'foo')`))).toBe(CHECK);
   });
 });
 
@@ -365,9 +373,11 @@ describe("activity_days", () => {
     await db.insert(activityDays).values({ userId: id, localDate: "2026-11-25" });
     await db.insert(activityDays).values({ userId: id, localDate: "2026-11-25" }).onConflictDoNothing();
     expect(await pgErrorCode(db.insert(activityDays).values({ userId: id, localDate: "2026-11-25" }))).toBe(UNIQUE);
-    await db.insert(activityDays).values({ userId: id, localDate: "2026-11-26", source: "srs" });
+    await db.insert(activityDays).values({ userId: id, localDate: "2026-11-26", source: "practice" });
     const rows = await db.select().from(activityDays).orderBy(activityDays.localDate);
-    expect(rows.map((r) => [r.localDate, r.source])).toEqual([["2026-11-25", "lesson"], ["2026-11-26", "srs"]]);
+    expect(rows.map((r) => [r.localDate, r.source])).toEqual([["2026-11-25", "lesson"], ["2026-11-26", "practice"]]);
+    expect(await pgErrorCode(db.execute(dsql`INSERT INTO activity_days (user_id, local_date, source) VALUES (${id}, '2026-11-27', 'foo')`))).toBe(CHECK);
+    expect(await pgErrorCode(db.execute(dsql`INSERT INTO activity_days (user_id, local_date, source) VALUES (${id}, '2026-11-27', 'srs')`))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(activityDays).values({ userId: "nobody", localDate: "2026-11-25" }))).toBe(FK);
     await db.delete(user).where(eq(user.id, id));
     expect(await db.select().from(activityDays)).toHaveLength(0);

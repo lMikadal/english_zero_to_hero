@@ -1,6 +1,12 @@
 // The seam between the lesson player and the offline queue. Types only (client-safe).
 // The HTTP implementation (IndexedDB queue, retries) is built in a later PR; tests use fakes.
-import type { AttemptInput, CompleteLessonRequest, CompleteLessonResponse } from "@/lib/attempts/contract";
+import type {
+  AttemptInput,
+  CompleteLessonRequest,
+  CompleteLessonResponse,
+  CompletePracticeRequest,
+  CompletePracticeResponse,
+} from "@/lib/attempts/contract";
 
 /**
  * - `done`: the server answered 200.
@@ -8,8 +14,8 @@ import type { AttemptInput, CompleteLessonRequest, CompleteLessonResponse } from
  *   it will be sent later, in order.
  * - `rejected`: 400 or 409 (locked day). Dropped; resending gives the same answer.
  */
-export type CompleteResult =
-  | { status: "done"; response: CompleteLessonResponse }
+export type CompleteResult<R = CompleteLessonResponse> =
+  | { status: "done"; response: R }
   | { status: "queued" }
   | { status: "rejected"; code: 400 | 409 };
 
@@ -21,6 +27,8 @@ export interface SyncSink {
   /** Never throws; keeps the item if sending fails. */
   sendAttempt(a: AttemptInput): void;
   completeLesson(c: CompleteLessonRequest): Promise<CompleteResult>;
+  /** Same FIFO rules as `completeLesson`, to POST /api/practice/complete (never touches progress). */
+  completePractice(c: CompletePracticeRequest): Promise<CompleteResult<CompletePracticeResponse>>;
   pendingCount(): number;
   subscribe(cb: () => void): () => void;
 }

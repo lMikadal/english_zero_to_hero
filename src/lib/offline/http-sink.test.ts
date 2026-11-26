@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { API, type AttemptInput, type CompleteLessonRequest, type CompleteLessonResponse } from "@/lib/attempts/contract";
+import { API, type AttemptInput, type CompleteLessonRequest, type CompleteLessonResponse, type CompletePracticeRequest, type CompletePracticeResponse } from "@/lib/attempts/contract";
 import { createHttpSink, getSyncSink } from "./http-sink";
 
 type Reply = { status: number; body?: unknown; retryAfter?: string; notJson?: boolean } | Error | "hang";
-type Call = { url: string; body: { attempts?: AttemptInput[] } & Partial<CompleteLessonRequest> };
+type Call = { url: string; body: { attempts?: AttemptInput[] } & Partial<CompleteLessonRequest> & Partial<CompletePracticeRequest> };
 
 function uuid(n: number): string {
   return `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
@@ -18,6 +18,11 @@ const completion: CompleteLessonRequest = { day: 1, sessionId: uuid(9999), compl
 const completeResponse: CompleteLessonResponse = {
   progress: { day: 1, status: "done", score: 1, completedAt: completion.completedAt },
   streak: { current: 1, longest: 1 }, currentDay: 2,
+};
+const practiceReq: CompletePracticeRequest = { kind: "replay", day: 1, skill: null, sessionId: uuid(7777), completedAt: "2026-11-26T10:05:00.000Z" };
+const practiceResponse: CompletePracticeResponse = {
+  session: { sessionId: practiceReq.sessionId, day: 1, skill: null, score: 0.5, graded: 4 },
+  lessonScore: 1, streak: { current: 1, longest: 1 }, countedForStreak: true,
 };
 const created = (n: number) => ({ id: uuid(n), status: "created", correct: true, score: 1 });
 
@@ -489,5 +494,84 @@ describe("createHttpSink: S4-S6", () => {
   it("S4: getSyncSink returns one shared instance", () => {
     expect(getSyncSink()).toBe(getSyncSink());
     getSyncSink().dispose();
+  });
+});
+
+describe("createHttpSink: completePractice", () => {
+  const practiceAttempt = (n: number): AttemptInput => ({ ...attempt(n), source: "practice", sessionId: practiceReq.sessionId });
+
+  it("flushes earlier attempts first (FIFO), then posts to API.completePractice and resolves done", async () => {
+    const t = setup([okFor(1, 2), { status: 200, body: practiceResponse }]);
+    t.sink.sendAttempt(practiceAttempt(1));
+    t.sink.sendAttempt(practiceAttempt(2));
+    const result = await t.sink.completePractice(practiceReq);
+    expect(result).toEqual({ status: "done", response: practiceResponse });
+    expect(t.calls.map((c) => c.url)).toEqual([API.attempts, API.completePractice]);
+    expect(t.calls[1].body).toEqual(practiceReq);
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("does not send attempts queued after it before it", async () => {
+    const t = setup([new TypeError("offline"), okFor(1), { status: 200, body: practiceResponse }, okFor(3)]);
+    t.sink.sendAttempt(practiceAttempt(1));
+    expect(await t.sink.completePractice(practiceReq)).toEqual({ status: "queued" });
+    t.sink.sendAttempt(practiceAttempt(3));
+    await t.runTimer();
+    expect(t.calls.map((c) => c.url)).toEqual([API.attempts, API.attempts, API.completePractice, API.attempts]);
+  });
+
+  it("409 settles rejected 409 and 400 settles rejected 400 (dropped from the queue)", async () => {
+    const a = setup([{ status: 409, body: { error: "not_replayable" } }]);
+    expect(await a.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 409 });
+    expect(a.sink.pendingCount()).toBe(0);
+    const b = setup([{ status: 400 }]);
+    expect(await b.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 400 });
+  });
+
+  it("5xx resolves queued and keeps it pending until a retry succeeds", async () => {
+    const t = setup([{ status: 500 }, { status: 200, body: practiceResponse }]);
+    expect(await t.sink.completePractice(practiceReq)).toEqual({ status: "queued" });
+    expect(t.sink.pendingCount()).toBe(1);
+    await t.runTimer();
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("a 200 with the wrong shape (a lesson completion body) is retried, not accepted", async () => {
+    const t = setup([{ status: 200, body: completeResponse }, { status: 200, body: practiceResponse }]);
+    expect(await t.sink.completePractice(practiceReq)).toEqual({ status: "queued" });
+    expect(t.sink.pendingCount()).toBe(1);
+    await t.runTimer();
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("a lesson completion body shape check is not loosened: a practice body is not a lesson completion", async () => {
+    const t = setup([{ status: 200, body: practiceResponse }]);
+    expect(await t.sink.completeLesson(completion)).toEqual({ status: "queued" });
+  });
+
+  it("a second completePractice for the same session returns the same promise and sends once", async () => {
+    const t = setup([{ status: 200, body: practiceResponse }]);
+    const p1 = t.sink.completePractice(practiceReq);
+    const p2 = t.sink.completePractice({ ...practiceReq });
+    expect(p2).toBe(p1);
+    await p1;
+    expect(t.calls.filter((c) => c.url === API.completePractice)).toHaveLength(1);
+  });
+
+  it("a lesson completion and a practice completion with the same sessionId are different entries", async () => {
+    const t = setup([{ status: 200, body: completeResponse }, { status: 200, body: practiceResponse }]);
+    const shared = practiceReq.sessionId;
+    const p1 = t.sink.completeLesson({ ...completion, sessionId: shared });
+    const p2 = t.sink.completePractice(practiceReq);
+    expect(p2).not.toBe(p1);
+    await Promise.all([p1, p2]);
+    expect(t.calls.map((c) => c.url)).toEqual([API.completeLesson, API.completePractice]);
+  });
+
+  it("401 pauses without dropping it", async () => {
+    const t = setup([{ status: 401 }]);
+    expect(await t.sink.completePractice(practiceReq)).toEqual({ status: "queued" });
+    expect(t.sink.getState().status).toBe("paused");
+    expect(t.sink.pendingCount()).toBe(1);
   });
 });

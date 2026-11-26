@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import type { AttemptSource } from "@/db/schema"; // type-only: erased, no runtime import of src/db
+import type { Section } from "@/lib/content/schema";
 import {
   API,
   ATTEMPT_SOURCES,
@@ -8,12 +9,17 @@ import {
   attemptBatchEnvelopeSchema,
   clampDurationMs,
   completeLessonRequestSchema,
+  completePracticeRequestSchema,
   newId,
   parseAttemptBatch,
   type AttemptInput,
   type AttemptResult,
   type CompleteLessonResponse,
+  type CompletePracticeResponse,
   type PostAttemptsResponse,
+  type RejectedReason,
+  REPLAY_SKILLS,
+  type ReplaySkill,
 } from "./contract";
 
 const uuid = "7b0f6f4e-5c1b-4f55-9a43-0d1c2e3f4a5b";
@@ -28,13 +34,20 @@ const valid = {
 describe("types stay in sync with the DB schema", () => {
   it("ATTEMPT_SOURCES equals AttemptSource", () => {
     expectTypeOf<(typeof ATTEMPT_SOURCES)[number]>().toEqualTypeOf<AttemptSource>();
-    expect([...ATTEMPT_SOURCES]).toEqual(["lesson", "drill", "retest", "checkpoint"]);
+    expect([...ATTEMPT_SOURCES]).toEqual(["lesson", "drill", "retest", "checkpoint", "practice"]);
+  });
+  it("ReplaySkill equals the skill of a lesson section", () => {
+    expectTypeOf<ReplaySkill>().toEqualTypeOf<Section["skill"]>();
+    expect([...REPLAY_SKILLS]).toEqual(["pronunciation", "listening", "speaking", "reading", "writing"]);
+  });
+  it("RejectedReason has not_finished", () => {
+    expectTypeOf<"not_finished">().toExtend<RejectedReason>();
   });
 });
 
 describe("API", () => {
-  it("names the two endpoints", () => {
-    expect(API).toEqual({ attempts: "/api/attempts", completeLesson: "/api/lessons/complete" });
+  it("names the three endpoints", () => {
+    expect(API).toEqual({ attempts: "/api/attempts", completeLesson: "/api/lessons/complete", completePractice: "/api/practice/complete" });
   });
 });
 
@@ -273,5 +286,35 @@ describe("timestamps", () => {
   });
   it("accepts the epoch, 1900 and 2100 (they are clamped by the server, not rejected)", () => {
     for (const t of ["1970-01-01T00:00:00Z", "1900-01-01T00:00:00Z", "2100-12-31T00:00:00Z"]) expect(items(t)).toBe(true);
+  });
+});
+
+describe("completePracticeRequestSchema", () => {
+  const ok = { kind: "replay", day: 1, skill: null, sessionId: uuid, completedAt: "2026-11-26T10:00:00.000Z" };
+  it("accepts a whole-lesson replay (skill null) and each replay skill", () => {
+    expect(completePracticeRequestSchema.safeParse(ok).success).toBe(true);
+    for (const skill of REPLAY_SKILLS) expect(completePracticeRequestSchema.safeParse({ ...ok, skill }).success).toBe(true);
+  });
+  it("rejects vocabulary or any other skill, a missing skill, a missing or other kind, and extra fields", () => {
+    expect(completePracticeRequestSchema.safeParse({ ...ok, skill: "vocabulary" }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, skill: "Listening" }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, skill: undefined }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, kind: undefined }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, kind: "drill" }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, extra: 1 }).success).toBe(false);
+  });
+  it("validates day, sessionId and completedAt like the lesson completion", () => {
+    for (const day of [0, 366, 1.5]) expect(completePracticeRequestSchema.safeParse({ ...ok, day }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, sessionId: "nope" }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, completedAt: "yesterday" }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, completedAt: "1800-01-01T00:00:00Z" }).success).toBe(false);
+  });
+  it("the response type carries the session score, the stored lesson score and the streak", () => {
+    expectTypeOf<CompletePracticeResponse>().toEqualTypeOf<{
+      session: { sessionId: string; day: number; skill: ReplaySkill | null; score: number | null; graded: number };
+      lessonScore: number | null;
+      streak: { current: number; longest: number };
+      countedForStreak: boolean;
+    }>();
   });
 });

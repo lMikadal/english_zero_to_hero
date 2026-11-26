@@ -3,7 +3,7 @@ import { and, asc, eq, lte, sql } from "drizzle-orm";
 import { lessonScore } from "@/lib/progress/lesson-score";
 import { COURSE_DAYS } from "@/lib/progress/config";
 import { computeStreak } from "@/lib/progress/streak";
-import { activityDays, attempts, profiles, progress, streaks } from "../schema";
+import { activityDays, type ActivitySource, attempts, profiles, progress, streaks } from "../schema";
 import type { DbOrTx } from "../types";
 
 export type StreakValue = { current: number; longest: number };
@@ -27,7 +27,7 @@ export async function getStreak(db: DbOrTx, userId: string): Promise<StreakValue
  * does not depend on arrival order (a past day that syncs late joins its run). `current` is the run of consecutive
  * days ending at the latest active day. The streak row is locked, so concurrent calls serialise.
  */
-export async function touchStreak(db: DbOrTx, userId: string, localDate: string, source = "lesson"): Promise<StreakValue> {
+export async function touchStreak(db: DbOrTx, userId: string, localDate: string, source: ActivitySource = "lesson"): Promise<StreakValue> {
   await db.insert(streaks).values({ userId }).onConflictDoNothing();
   await db.select({ userId: streaks.userId }).from(streaks).where(eq(streaks.userId, userId)).for("update");
   await db.insert(activityDays).values({ userId, localDate, source }).onConflictDoNothing();

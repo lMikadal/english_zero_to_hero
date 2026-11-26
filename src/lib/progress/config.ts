@@ -1,3 +1,6 @@
+import { sourcesWith } from "./sources";
+import type { AttemptSourceLike } from "./types";
+
 // Every threshold from docs/PROGRESS.md in one place. Tune here only.
 
 export const DAY_MS = 86_400_000;
@@ -21,7 +24,7 @@ export const WEAK_ERROR_RATE = 0.3;
 export const RECOVERED_ERROR_RATE = 0.15;
 export const TOP_WEAKNESSES_PER_ANGLE = 5;
 /** Attempt sources that count as evidence of a weakness. drill/retest are excluded (3.1). */
-export const DETECTION_SOURCES = ["lesson", "checkpoint"] as const;
+export const DETECTION_SOURCES: readonly AttemptSourceLike[] = sourcesWith("detection");
 
 // 3.1 Drills
 export const RETEST_PASS_RATE = 0.8;
