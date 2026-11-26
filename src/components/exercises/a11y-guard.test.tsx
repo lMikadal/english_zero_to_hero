@@ -73,6 +73,19 @@ export function missingLangEn(root: HTMLElement): string[] {
   return out;
 }
 
+/** Thai text that sits under an element with lang="en*" (a screen reader would read it with an English voice). */
+export function thaiUnderEn(root: HTMLElement): string[] {
+  const out: string[] = [];
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const text = (n.textContent ?? "").trim();
+    if (!/[\u0E00-\u0E7F]/.test(text)) continue;
+    const lang = n.parentElement?.closest("[lang]")?.getAttribute("lang") ?? "";
+    if (lang.startsWith("en")) out.push(text);
+  }
+  return out;
+}
+
 const cases = weekOne.flatMap((lesson) => {
   const vocab = getVocabLookup(vocabIdsFor(lesson));
   return lesson.sections.flatMap((s) => s.exercises.map((e) => ({ day: lesson.day, e, vocab })));
@@ -90,6 +103,16 @@ describe("accessibility guards on every week-1 exercise", () => {
     for (const ok of [true, false]) {
       view.rerender(show(e, vocab, grade(e, ok)));
       expect(missingLangEn(view.container).join(" | "), `${e.id} ${ok ? "right" : "wrong"} result`).toBe("");
+    }
+  });
+
+  it.each(cases.map((c) => [c.e.id, c] as const))("%s: Thai is never under lang=en", (_id, { e, vocab }) => {
+    const view = renderWithAudio(show(e, vocab));
+    expect(thaiUnderEn(view.container).join(" | "), `${e.id} before result`).toBe("");
+    pairAll(e, vocab);
+    for (const ok of [true, false]) {
+      view.rerender(show(e, vocab, grade(e, ok)));
+      expect(thaiUnderEn(view.container).join(" | "), `${e.id} ${ok ? "right" : "wrong"} result`).toBe("");
     }
   });
 
@@ -112,6 +135,8 @@ describe("accessibility guards on every week-1 exercise", () => {
     );
     expect(colourOnlyProblems(container)).toHaveLength(1);
     expect(missingLangEn(container)).toEqual(["Hello there"]);
+    const thai = render(<ul lang="en"><li>cat</li><li>ถูก</li><li lang="th">ผิด</li></ul>);
+    expect(thaiUnderEn(thai.container)).toEqual(["ถูก"]);
   });
 
   it("sees right/wrong states at all (marks exist on the real components)", () => {
