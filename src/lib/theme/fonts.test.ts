@@ -139,7 +139,12 @@ describe("IPA coverage", () => {
   const strings = (v: unknown): string[] => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v).flatMap(strings) : []);
   const collect = (v: unknown) => {
     if (Array.isArray(v)) v.forEach(collect);
-    else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) (k === "ipa" ? ipaStrings.push(...strings(x)) : collect(x));
+    else if (v && typeof v === "object") {
+      for (const [k, x] of Object.entries(v)) {
+        if (k === "ipa") ipaStrings.push(...strings(x));
+        else collect(x);
+      }
+    }
   };
   const walk = (dir: string) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
