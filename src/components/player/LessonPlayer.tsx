@@ -139,7 +139,8 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
     if (mode === "practice") {
       return (
         <PracticeCompletionScreen
-          day={lesson.day} skill={skill} result={practiceCompletion} localScore={firstAttemptScore(state)} onRetry={complete} onReplay={onReplay}
+          day={lesson.day} skill={skill} result={practiceCompletion} localScore={firstAttemptScore(state)}
+          selfRated={Object.values(state.answers).some((r) => r.answer.kind === "self")} onRetry={complete} onReplay={onReplay}
         />
       );
     }

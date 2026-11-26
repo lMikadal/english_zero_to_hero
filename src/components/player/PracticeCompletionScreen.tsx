@@ -13,11 +13,12 @@ export type PracticeCompletion = CompleteResult<CompletePracticeResponse> | { st
 /**
  * End of a replay (docs/plans/replay-plan.md 3.6). `result` is null while completePractice is in flight; `localScore`
  * (0..1, first attempts) is the fallback until the server answers. No "next lesson": a replay never moves the learner on.
+ * `selfRated`: the learner self-rated an answer in this session (known locally; the server only reports scored ones).
  * `onReplay` lets the player start a fresh session in place (the link alone would not remount it).
  */
 export function PracticeCompletionScreen({
-  day, skill, result, localScore, onRetry, onReplay,
-}: { day: number; skill: ReplaySkill | null; result: PracticeCompletion | null; localScore: number | null; onRetry(): void; onReplay?(): void }) {
+  day, skill, result, localScore, selfRated = false, onRetry, onReplay,
+}: { day: number; skill: ReplaySkill | null; result: PracticeCompletion | null; localScore: number | null; selfRated?: boolean; onRetry(): void; onReplay?(): void }) {
   const done = result?.status === "done" ? result.response : null;
   const score = done ? done.session.score : localScore;
   // Whole lesson, nothing scored and the server did not count it: no answer was stored at all (a self-rated answer would have counted).
@@ -30,7 +31,9 @@ export function PracticeCompletionScreen({
       </div>
       <Card pad="px-4 py-1" className="divide-y divide-line">
         {score !== null && <p className="py-3 text-lg font-bold">คะแนนรอบนี้ {Math.round(score * 100)}%</p>}
-        {score === null && skill !== null && <p className="py-3 text-base font-bold">ส่วนนี้ประเมินตัวเอง ไม่มีคะแนน</p>}
+        {score === null && skill !== null && (
+          <p className="py-3 text-base font-bold">{selfRated ? "ส่วนนี้ประเมินตัวเอง ไม่มีคะแนน" : "ส่วนนี้ไม่มีข้อที่ให้คะแนน"}</p>
+        )}
         {score === null && skill === null && (noAnswers
           ? <p className="py-3 text-base font-bold">ไม่มีคำตอบที่บันทึกในรอบนี้ จึงไม่นับสตรีค</p>
           : <p className="py-3 text-base font-bold">รอบนี้ไม่มีข้อที่ให้คะแนน</p>)}
