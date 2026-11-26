@@ -239,3 +239,12 @@ describe("compareStats", () => {
     expect([s("a", 0.5), s("b", 0.51)].sort(compareStats).map((x) => x.key)).toEqual(["b", "a"]);
   });
 });
+
+describe("practice attempts are not evidence (U4)", () => {
+  it("adding all-wrong practice attempts leaves groupStats and detectWeaknesses unchanged", () => {
+    const base = [...batch("dictation", 10, 2, { tags: ["phoneme:ae"] }), ...batch("cloze", 6, 0)];
+    const practice = batch("dictation", 30, 30, { source: "practice", tags: ["phoneme:ae"], skill: "listening" });
+    expect(groupStats([...base, ...practice], NOW)).toEqual(groupStats(base, NOW));
+    expect(detectWeaknesses([...base, ...practice], NOW)).toEqual(detectWeaknesses(base, NOW));
+  });
+});

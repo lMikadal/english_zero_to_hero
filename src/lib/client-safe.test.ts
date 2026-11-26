@@ -17,6 +17,7 @@ const CLIENT_SAFE = [
   "lib/attempts/unlock.ts",
   "lib/offline/sink.ts",
   "lib/offline/http-sink.ts",
+  "lib/practice/replay.ts",
   "components/exercises/ui/radio.ts",
   "components/exercises/ui/tone.ts",
   "lib/audio/source.ts",

@@ -421,3 +421,28 @@ describe("scan performance and equivalence", () => {
     expect(elapsed).toBeLessThan(10_000);
   });
 });
+
+describe("practice attempts change nothing (U4)", () => {
+  const base = [
+    ...lesson(4, 10, daysAgo(2)),
+    ...session("r1", "retest", 8, 8, daysAgo(1)),
+    ...session("d1", "drill", 3, 5, daysAgo(1)),
+  ];
+  const practice = [
+    ...lesson(20, 20, daysAgo(0), { source: "practice", skill: "listening" }),
+    ...session("p1", "retest", 0, 8, daysAgo(0)).map((a) => ({ ...a, source: "practice" as const })),
+  ];
+  const all = [...base, ...practice];
+
+  it("evaluateWeakness, weakPoints and recommendDrills ignore practice", () => {
+    expect(weaknessStatus(all, W, NOW, TZ)).toEqual(weaknessStatus(base, W, NOW, TZ));
+    expect(weakPoints(all, NOW, TZ)).toEqual(weakPoints(base, NOW, TZ));
+    expect(recommendDrills(weakPoints(all, NOW, TZ), "2026-06-15")).toEqual(recommendDrills(weakPoints(base, NOW, TZ), "2026-06-15"));
+  });
+
+  it("practice alone opens no drill cycle and counts for no retest session", () => {
+    expect(weaknessStatus(practice, W, NOW, TZ).status).toBe("not_started");
+    expect(weakPoints(practice, NOW, TZ)).toEqual([]);
+    expect(sessionResults(practice, W, TZ)).toEqual([]);
+  });
+});

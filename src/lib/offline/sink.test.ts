@@ -1,11 +1,14 @@
 import { expect, expectTypeOf, it } from "vitest";
-import type { AttemptInput, CompleteLessonRequest, CompleteLessonResponse } from "@/lib/attempts/contract";
+import type { AttemptInput, CompleteLessonRequest, CompleteLessonResponse, CompletePracticeRequest, CompletePracticeResponse } from "@/lib/attempts/contract";
 import type { CompleteResult, SyncSink } from "./sink";
 
 it("SyncSink has the documented shape and can be faked", async () => {
   expectTypeOf<SyncSink["sendAttempt"]>().toEqualTypeOf<(a: AttemptInput) => void>();
   expectTypeOf<SyncSink["completeLesson"]>().toEqualTypeOf<
     (c: CompleteLessonRequest) => Promise<CompleteResult>
+  >();
+  expectTypeOf<SyncSink["completePractice"]>().toEqualTypeOf<
+    (c: CompletePracticeRequest) => Promise<CompleteResult<CompletePracticeResponse>>
   >();
   expectTypeOf<SyncSink["pendingCount"]>().toEqualTypeOf<() => number>();
   expectTypeOf<SyncSink["subscribe"]>().toEqualTypeOf<(cb: () => void) => () => void>();
@@ -14,6 +17,7 @@ it("SyncSink has the documented shape and can be faked", async () => {
   const fake: SyncSink = {
     sendAttempt: (a) => void sent.push(a),
     completeLesson: async () => ({ status: "queued" }),
+    completePractice: async () => ({ status: "queued" }),
     pendingCount: () => sent.length,
     subscribe: () => () => {},
   };
@@ -23,6 +27,14 @@ it("SyncSink has the documented shape and can be faked", async () => {
 it("CompleteResult is done | queued | rejected(400|409)", () => {
   expectTypeOf<CompleteResult>().toEqualTypeOf<
     | { status: "done"; response: CompleteLessonResponse }
+    | { status: "queued" }
+    | { status: "rejected"; code: 400 | 409 }
+  >();
+});
+
+it("CompleteResult is generic over the response and defaults to the lesson one", () => {
+  expectTypeOf<CompleteResult<CompletePracticeResponse>>().toEqualTypeOf<
+    | { status: "done"; response: CompletePracticeResponse }
     | { status: "queued" }
     | { status: "rejected"; code: 400 | 409 }
   >();
