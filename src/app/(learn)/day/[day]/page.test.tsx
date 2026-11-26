@@ -147,6 +147,23 @@ describe("day page robustness", () => {
     error.mockRestore();
   });
 
+  it("keeps ?skill in the retry link when the current day cannot be read", async () => {
+    getCurrentDay.mockRejectedValue(new Error("down"));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    await show("1", { skill: "reading" });
+    expect(screen.getByRole("link", { name: "ลองใหม่" })).toHaveAttribute("href", "/day/1?skill=reading");
+    error.mockRestore();
+  });
+
+  it("keeps ?skill in the retry link when the day status cannot be read", async () => {
+    getCurrentDay.mockResolvedValue(365);
+    getDayStatus.mockRejectedValue(new Error("down"));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    await show("1", { skill: "reading" });
+    expect(screen.getByRole("link", { name: "ลองใหม่" })).toHaveAttribute("href", "/day/1?skill=reading");
+    error.mockRestore();
+  });
+
   it("still answers 404 for a malformed day when the database is down", async () => {
     getCurrentDay.mockRejectedValue(new Error("down"));
     await expect(DayPage({ params: params("007") })).rejects.toMatchObject({ digest: expect.stringContaining("404") });
