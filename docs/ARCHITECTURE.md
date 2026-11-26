@@ -296,8 +296,9 @@ Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", s
 Response `200` (`CompletePracticeResponse`): `{ session: { sessionId, day, skill, score, graded }, lessonScore, streak: { current, longest }, countedForStreak }`
 - `session.score` = ค่าเฉลี่ยตามสูตรคะแนนบท (`lessonScore`) ของ attempt `source = 'practice'`, `attempt_no = 1`, `score` ไม่ null ของ `sessionId` นี้ และของข้อที่อยู่ในส่วนที่เลือก; `null` เมื่อไม่มีข้อให้คะแนน (`graded` = 0)
 - `lessonScore` = `progress.score` เดิม อ่านอย่างเดียว; handler นี้ไม่เขียน `progress`, `profiles`, `attempts` (ไฟล์ `practice-*.ts` import ตัวเขียนเหล่านั้นไม่ได้: ESLint `no-restricted-imports`, ทดสอบด้วย `practice-imports.test.ts`)
-- สตรีค: เฉพาะ `skill: null` เรียก `touchStreak(..., "practice")` (วันที่ตาม `completedAt` ที่ตัดเข้า `[floor, now]` แล้วแปลงเป็นวันที่ตามเขตเวลา); วันที่มีกิจกรรมอยู่แล้วไม่เพิ่มแถวและ `source` เดิมคงอยู่; ทีละทักษะได้ `countedForStreak: false`
+- สตรีค: เฉพาะ `skill: null` **และ** session นี้มี attempt `practice` ที่เก็บแล้ว ≥ 1 (ของวัน/ข้อในบทนั้น ทุก `attempt_no`, `score` null ได้) จึงเรียก `touchStreak(..., "practice")`; ไม่มี attempt = `200` `countedForStreak: false` ไม่เรียก `touchStreak` วันที่ตาม `completedAt` ที่ตัดเข้า `[max(floor, progress.completed_at ของวันนั้น), now]` แล้วแปลงเป็นวันที่ตามเขตเวลา (เล่นซ้ำจบได้หลายครั้งจึงเติมวันย้อนหลังไม่ได้); วันที่มีกิจกรรมอยู่แล้วไม่เพิ่มแถวและ `source` เดิมคงอยู่; ทีละทักษะได้ `countedForStreak: false`
 - เรียกซ้ำด้วย body เดิม (`sessionId`, `completedAt` เดิม) ได้ผลเดิมและไม่เพิ่มวัน ไม่มีตาราง session; สองคำขอพร้อมกันถูกจัดลำดับด้วยล็อกแถว `streaks` ใน `touchStreak`
+- query ของ handler นี้อยู่ใน `src/db/queries/practice.ts` ทั้งหมด (`practice-*.ts` import `@/db/schema` เป็นค่าไม่ได้ ESLint บังคับ)
 - `409` `not_replayable`: วันยังไม่ done, ไม่มีบท/โหลดไม่ได้ หรือบทไม่มีส่วนของ `skill` นั้น; `400` body ผิด; `413`/`415` เหมือน endpoint อื่น
 
 #### รายละเอียดฝั่ง server (`src/lib/server/`)
