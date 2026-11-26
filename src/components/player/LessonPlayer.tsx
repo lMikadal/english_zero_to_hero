@@ -233,7 +233,17 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
       >
         <Feedback type={exercise.type} grade={record?.grade} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />
         {graded && record && (
-          <button ref={nextButton} type="button" disabled={!canAdvance(state)} onClick={goNext} className={buttonClass("primary")}>
+          <button
+            ref={nextButton}
+            type="button"
+            disabled={!canAdvance(state)}
+            onClick={goNext}
+            // the focus announcement carries the result (iOS VoiceOver often drops the polite live-region text that changes at the same moment)
+            aria-describedby={FEEDBACK_ID}
+            // Enter submitted the form, focus moved here inside the same keydown: a held key repeats onto this button and must not skip the feedback
+            onKeyDown={(e) => { if (e.repeat && (e.key === "Enter" || e.key === " ")) e.preventDefault(); }}
+            className={buttonClass("primary")}
+          >
             ถัดไป
           </button>
         )}
@@ -241,6 +251,8 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
     </main>
   );
 }
+
+const FEEDBACK_ID = "step-feedback";
 
 /** One live region, always mounted, so screen readers announce the text when it changes. */
 function Feedback({ type, grade, lines }: { type: ExerciseType; grade: Grade | undefined; lines: string[] }) {
@@ -266,5 +278,5 @@ function Feedback({ type, grade, lines }: { type: ExerciseType; grade: Grade | u
     );
     tone = "text-bad-fg";
   }
-  return <div role="status" className={`max-h-[30dvh] overflow-y-auto ${body ? tone : ""}`}>{body}</div>;
+  return <div id={FEEDBACK_ID} role="status" className={`max-h-[30dvh] overflow-y-auto ${body ? tone : ""}`}>{body}</div>;
 }
