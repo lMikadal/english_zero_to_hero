@@ -58,9 +58,28 @@ describe("design tokens (src/app/globals.css)", () => {
     expect(darkViaMedia).toEqual(dark);
   });
 
-  it("sets color-scheme for each theme", () => {
-    expect(css).toMatch(/color-scheme:\s*light\s*;/);
-    expect(css).toMatch(/color-scheme:\s*dark\s*;/);
+  it("sets color-scheme in every theme block (light, system-dark media block, explicit dark)", () => {
+    expect(ruleBody(":root {")).toMatch(/color-scheme:\s*light\s*;/);
+    expect(ruleBody(':root:not([data-theme="light"]) {')).toMatch(/color-scheme:\s*dark\s*;/);
+    expect(ruleBody(':root[data-theme="dark"] {')).toMatch(/color-scheme:\s*dark\s*;/);
+  });
+
+  it("keeps the global :focus-visible rule inside @layer base, so Tailwind utilities (outline-none) can override it", () => {
+    const layer = css.indexOf("@layer base {");
+    expect(layer).toBeGreaterThanOrEqual(0);
+    let depth = 0;
+    let end = -1;
+    for (let i = css.indexOf("{", layer); i < css.length; i++) {
+      if (css[i] === "{") depth++;
+      if (css[i] === "}" && --depth === 0) {
+        end = i;
+        break;
+      }
+    }
+    const rule = css.indexOf(":focus-visible");
+    expect(rule).toBeGreaterThan(layer);
+    expect(rule).toBeLessThan(end);
+    expect(css.indexOf(":focus-visible", rule + 1)).toBe(-1); // exactly one such rule
   });
 
   it("exposes every token as a Tailwind theme colour", () => {

@@ -16,6 +16,19 @@ describe("ThemePicker", () => {
     for (const name of ["สว่าง", "มืด", "ตามเครื่อง"]) expect(screen.getByRole("radio", { name })).toBeInTheDocument();
   });
 
+  it("has a single accessible name for the group (one visible label, no duplicate aria-label)", () => {
+    render(<ThemePicker initial="system" />);
+    expect(screen.getAllByText("ธีม")).toHaveLength(1);
+    const group = screen.getByRole("radiogroup", { name: "ธีม" });
+    expect(group).not.toHaveAttribute("aria-label");
+    expect(group).toHaveAttribute("aria-labelledby");
+  });
+
+  it("offsets the focus outline so it stays visible on the checked (accent) option", () => {
+    render(<ThemePicker initial="light" />);
+    expect(screen.getByRole("radio", { name: "สว่าง" }).closest("label")!.className).toContain("has-[:focus-visible]:outline-offset-2");
+  });
+
   it("checks the stored choice", () => {
     render(<ThemePicker initial="dark" />);
     expect(screen.getByRole("radio", { name: "มืด" })).toBeChecked();
