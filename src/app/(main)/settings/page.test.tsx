@@ -12,11 +12,11 @@ describe("Settings page", () => {
     jar.value = undefined;
   });
 
-  it("has the title as h1, the theme picker, and a link back home", async () => {
+  it("has the title as h1, the theme picker, and no redundant back link (the main nav is in the layout)", async () => {
     render(await SettingsPage());
     expect(screen.getByRole("heading", { level: 1, name: "ตั้งค่า" })).toBeInTheDocument();
     expect(screen.getByRole("radiogroup", { name: "ธีม" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /กลับหน้าแรก/ })).toHaveAttribute("href", "/");
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
   it("defaults to ตามเครื่อง without a cookie", async () => {

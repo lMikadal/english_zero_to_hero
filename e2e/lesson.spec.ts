@@ -171,7 +171,7 @@ test("a learner plays day 1 to the end, day 2 opens, day 3 stays locked", async 
   // home: now day 2, streak 1
   await page.goto("/");
   await expect(page.getByText("วันที่ 2 / 365")).toBeVisible(SLOW);
-  await expect(page.getByText(/สตรีค 1 วัน/)).toBeVisible();
+  await expect(page.getByText("สตรีคต่อเนื่อง").locator("..")).toContainText("1 วัน");
   await expectNoHorizontalScroll(page, "home after day 1");
 
   // day 3 is locked until day 2 is done
