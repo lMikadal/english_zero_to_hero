@@ -165,11 +165,11 @@ describe("the other paths keep a single action", () => {
     expect(nextButtons()).toHaveLength(1);
   });
 
-  it("no audio: ข้าม is the only way on and neither ตรวจคำตอบ nor ถัดไป is shown", async () => {
+  it("no audio: ข้าม (a chip in the content) is the way on; ถัดไป is not shown and ตรวจคำตอบ stays disabled", async () => {
     render(1, [get("d001-listen-01")], false);
     await screen.findByRole("button", { name: "ข้าม" });
-    expect(checkButtons()).toHaveLength(0);
     expect(nextButtons()).toHaveLength(0);
+    expect(checkButtons().every((b) => (b as HTMLButtonElement).disabled)).toBe(true);
   });
 
   it("after ถัดไป the next exercise gets the heading focus, not the button", async () => {

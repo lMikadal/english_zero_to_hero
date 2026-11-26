@@ -52,9 +52,9 @@ describe("LessonPlayer", () => {
     expect(screen.getByText("ฟังแล้วตอบว่าเขาชื่ออะไร")).toBeInTheDocument();
   });
 
-  it("locks the next button until the exercise is answered", async () => {
+  it("has no next button until the exercise is answered (ตรวจคำตอบ is the only primary action until then)", async () => {
     setup(["d001-listen-01", "d001-listen-02"]);
-    expect(screen.getByRole("button", { name: "ถัดไป" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "ถัดไป" })).not.toBeInTheDocument();
     await answerListen01(true);
     expect(screen.getByRole("button", { name: "ถัดไป" })).toBeEnabled();
   });

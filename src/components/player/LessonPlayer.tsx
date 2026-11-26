@@ -60,6 +60,7 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
   const doneNotified = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const shownKey = useRef<string | null>(null);
+  const nextButton = useRef<HTMLButtonElement>(null);
 
   const { sessionId } = state;
   const complete = useCallback(() => {
@@ -134,6 +135,13 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
     }
     shownKey.current = stepKey;
   }, [stepKey]);
+
+  const hasRecord = stepKey !== null && stepKey in state.answers;
+  useEffect(() => {
+    // The button that was just pressed (ตรวจคำตอบ, or a rating) is gone or disabled once the answer is recorded: move
+    // focus on to ถัดไป on purpose so it does not fall back to <body> (keyboard and screen-reader users keep their place).
+    if (hasRecord) nextButton.current?.focus();
+  }, [hasRecord, stepKey]);
 
   if (state.phase === "complete") {
     if (mode === "practice") {
@@ -213,8 +221,10 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
       )}
 
       {/* Sticky bottom bar: the feedback and ถัดไป stay on screen however long the exercise is. mt-auto keeps it at
-          the bottom of a short page. The component-owned ตรวจคำตอบ button stays in the content above (at the
-          bottom of the step). Once there is feedback the bar becomes a card-coloured panel with a top border. */}
+          the bottom of a short page. Only one primary action is shown at a time: the component-owned ตรวจคำตอบ (or
+          rating buttons) in the content above (at the bottom of the step) until the answer is recorded, then ถัดไป
+          here (guard: LessonPlayer.one-action.test.tsx). Once there is feedback the bar becomes a card-coloured
+          panel with a top border. */}
       <div
         data-testid="action-bar"
         className={`sticky bottom-0 mt-auto -mx-5 flex flex-col gap-3 px-5 ${
@@ -222,8 +232,8 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
         } pb-[max(1.5rem,env(safe-area-inset-bottom))]`}
       >
         <Feedback type={exercise.type} grade={record?.grade} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />
-        {graded && (
-          <button type="button" disabled={!canAdvance(state)} onClick={goNext} className={buttonClass("primary")}>
+        {graded && record && (
+          <button ref={nextButton} type="button" disabled={!canAdvance(state)} onClick={goNext} className={buttonClass("primary")}>
             ถัดไป
           </button>
         )}
