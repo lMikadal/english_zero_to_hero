@@ -93,7 +93,8 @@ describe("MainNav", () => {
       const rule = /\.nav-ring\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
       expect(rule).toMatch(/background(-color)?:\s*var\(--line\)/);
       expect(rule).toMatch(/mask-image:\s*radial-gradient\([^;]*var\(--cx\)/);
-      expect(rule).not.toMatch(/#[0-9a-f]{3,8}\b|rgb|hsl/i);
+      // #000 inside mask-image is alpha only (as in .nav-notch), not a colour that is painted
+      expect(rule.replaceAll("#000", "")).not.toMatch(/#[0-9a-f]{3,8}\b|rgb|hsl/i);
     });
 
     it("sits inside the bar box (same rounded corners), under the links", () => {

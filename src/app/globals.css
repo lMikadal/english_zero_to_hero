@@ -131,4 +131,14 @@
 /* IPA (transcriptions are marked lang="en-fonipa") uses Noto Sans, which has the phonetic letters. */
 :lang(en-fonipa) {
   font-family: var(--font-ipa);
+/*
+ * Outline of the notch (MainNav.tsx): the same circle as .nav-notch, drawn as a 1px band between radius 32 and 33
+ * (the mask above is transparent up to 32 and opaque from 33, so the band sits on its edge). The layer is the size
+ * of the bar and has its rounded corners, so the part of the band above the bar's top edge is clipped away and the
+ * ring joins the bar's own border. Colour is the --line token, so both themes follow.
+ */
+.nav-ring {
+  background: var(--line);
+  -webkit-mask-image: radial-gradient(circle 40px at var(--cx) 4px, transparent 31.5px, #000 32.25px, #000 32.75px, transparent 33.5px);
+  mask-image: radial-gradient(circle 40px at var(--cx) 4px, transparent 31.5px, #000 32.25px, #000 32.75px, transparent 33.5px);
 }
