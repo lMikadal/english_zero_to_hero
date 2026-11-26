@@ -9,6 +9,9 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   // the dev server compiles pages on first request
   timeout: 60_000,
+  // One worker: the tests share one learner and one dev server. A second worker opening routes the dev server has not
+  // compiled yet is suspected of making the lesson page reload mid-test (docs/PLAN.md, "E2E ไม่นิ่ง").
+  workers: 1,
   use: {
     baseURL: process.env.BASE_URL ?? "http://localhost:3000",
     trace: "retain-on-failure",
