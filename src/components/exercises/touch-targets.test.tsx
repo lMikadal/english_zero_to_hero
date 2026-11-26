@@ -49,10 +49,10 @@ describe("touch targets", () => {
     const { container } = render(
       <div>
         <button className="px-2 text-sm">x</button>
-        <a href="/" className="h-6">y</a>
+        <a href="#x" className="h-6">y</a>
         <input className="h-10" />
         <textarea className="w-full" />
-        <span role="radio" className="min-h-8" />
+        <span role="radio" aria-checked="false" className="min-h-8" />
         <button className="min-h-11">ok</button>
         <button className="h-12">ok</button>
         <button className="min-h-1 px-2">small</button>

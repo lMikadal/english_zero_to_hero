@@ -2,12 +2,13 @@
 import { useMemo, useState } from "react";
 import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction } from "./ui/Instruction";
 import { Mark } from "./ui/Mark";
 import { shuffleSeeded } from "./ui/shuffle";
 import { rightWrong, toneClass, type Tone } from "./ui/tone";
 
-const OPTION = "relative flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border-2 px-3 py-2 text-left text-base";
+const OPTION = "relative flex min-h-12 w-full items-center justify-between gap-2 rounded-[11px] border px-3 py-3 text-left text-[15px] font-medium";
 
 export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<"vocab_match">) {
   const ids = exercise.pairs.map((p) => p.vocabId);
@@ -59,7 +60,7 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
   }
 
   const badge = (leftId: string) => (
-    <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-fg text-sm text-bg">
+    <span aria-hidden="true" className="flex size-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-on-accent">
       {ids.indexOf(leftId) + 1}
     </span>
   );
@@ -71,10 +72,10 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
   );
 
   return (
-    <section>
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <p className="mb-3 text-sm text-muted">แตะคำภาษาอังกฤษ แล้วแตะความหมายภาษาไทย แตะคู่ที่จับแล้วเพื่อยกเลิก</p>
-      <div className="grid grid-cols-2 gap-3">
+      <p className="text-xs text-muted">แตะคำภาษาอังกฤษ แล้วแตะความหมายภาษาไทย แตะคู่ที่จับแล้วเพื่อยกเลิก</p>
+      <div className="grid grid-cols-2 gap-2.5">
         <div role="group" aria-label="คำภาษาอังกฤษ" className="flex flex-col gap-2">
           {ids.map((id) => {
             const partner = pairs[id];
@@ -90,7 +91,7 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
                   aria-label={partner !== undefined ? `${wordOf(id)} จับคู่กับ ${meaningOf(partner)}` : undefined}
                   data-state={tone}
                   onClick={() => tapWord(id)}
-                  className={`${OPTION} ${toneClass(tone)} ${selected === id ? "ring-4 ring-ring" : ""}`}
+                  className={`${OPTION} ${toneClass(tone)}`}
                 >
                   <span>{wordOf(id)}</span>
                   {partner !== undefined ? trailing(id) : null}
@@ -126,6 +127,6 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
         </div>
       </div>
       <CheckButton hidden={result !== undefined} disabled={locked || !complete} onClick={check} />
-    </section>
+    </ExerciseShell>
   );
 }

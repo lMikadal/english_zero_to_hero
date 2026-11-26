@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
-import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { AudioFallback, useExerciseAudio } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
+import { AudioCard } from "./ui/AudioCard";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction } from "./ui/Instruction";
 import { SelfRating } from "./ui/SelfRating";
 
@@ -17,15 +19,14 @@ export function RepeatAfterMe({ exercise, onAnswer, onContinue, result }: Exerci
   };
 
   return (
-    <section className="flex flex-col gap-4">
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <div className="rounded-lg bg-surface p-4">
-        <p lang="en" className="text-xl font-semibold">{exercise.text}</p>
-        {exercise.ipa && <p lang="en-fonipa" className="mt-1 text-base text-muted">{exercise.ipa}</p>}
-      </div>
-      <PlayButtons audio={audio} text={exercise.text} />
+      <AudioCard audio={audio} text={exercise.text}>
+        <p lang="en" className="break-words text-[22px] font-bold leading-snug">{exercise.text}</p>
+        {exercise.ipa && <p lang="en-fonipa" className="break-words text-sm text-muted">{exercise.ipa}</p>}
+      </AudioCard>
       <AudioFallback audio={audio} onSkip={onContinue} />
       <SelfRating chosen={chosen} locked={locked} onRate={rate} />
-    </section>
+    </ExerciseShell>
   );
 }

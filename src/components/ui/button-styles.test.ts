@@ -9,7 +9,7 @@ describe("buttonClass", () => {
   it("primary is the accent button with a disabled look; secondary is outlined", () => {
     expect(buttonClass("primary")).toMatch(/\bbg-accent\b/);
     expect(buttonClass("primary")).toMatch(/\btext-on-accent\b/);
-    expect(buttonClass("primary")).toMatch(/disabled:bg-surface/);
+    expect(buttonClass("primary")).toContain("disabled:bg-surface");
     expect(buttonClass("secondary")).toMatch(/\bborder-line\b/);
   });
 });

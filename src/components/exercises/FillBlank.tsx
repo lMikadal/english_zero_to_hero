@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
 import type { ExerciseProps } from "./types";
+import { Card } from "./ui/Card";
 import { CheckButton } from "./ui/CheckButton";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction } from "./ui/Instruction";
 import { Mark } from "./ui/Mark";
 import { rightWrong, fieldToneClass, type Tone } from "./ui/tone";
@@ -39,14 +41,9 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        check();
-      }}
-    >
+    <ExerciseShell onSubmit={check}>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <p lang="en" className="my-3 text-lg leading-[3rem] text-fg">
+      <Card pad="px-4 py-5"><p lang="en" className="text-lg font-medium leading-[3rem] text-fg">
         {segments.map((seg, i) => (
           <span key={i}>
             {seg.middle}
@@ -68,7 +65,7 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
                   aria-invalid={toneOf(i) === "wrong" || undefined}
                   data-state={toneOf(i)}
                   onChange={(e) => setTexts(texts.map((t, j) => (j === i ? e.target.value : t)))}
-                  className={`mx-1 inline-block min-h-11 w-28 max-w-full rounded-lg border-2 px-2 text-center align-middle ${fieldToneClass(toneOf(i))}`}
+                  className={`mx-1 inline-block min-h-11 w-28 max-w-full rounded-[9px] border px-2 text-center align-middle font-medium ${fieldToneClass(toneOf(i))}`}
                 />
                 {result ? <Mark ok={toneOf(i) === "right"} /> : null}
                 {segments[i + 1].lead}
@@ -76,8 +73,8 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
             ) : null}
           </span>
         ))}
-      </p>
+      </p></Card>
       <CheckButton type="submit" hidden={result !== undefined} disabled={locked || !complete} />
-    </form>
+    </ExerciseShell>
   );
 }

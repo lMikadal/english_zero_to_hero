@@ -3,6 +3,7 @@ import { useState } from "react";
 import { countWords } from "@/lib/answers/grade";
 import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction, Prompt } from "./ui/Instruction";
 
 // No AI grading yet: never styled right/wrong. The player shows the "saved" status for non-retryable exercises.
@@ -20,7 +21,7 @@ export function FreeWrite({ exercise, onAnswer, result }: ExerciseProps<"free_wr
   }
 
   return (
-    <section>
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <Prompt lang="en">{exercise.prompt}</Prompt>
       <textarea
@@ -34,12 +35,12 @@ export function FreeWrite({ exercise, onAnswer, result }: ExerciseProps<"free_wr
         readOnly={locked}
         aria-readonly={locked || undefined}
         onChange={(e) => setText(e.target.value)}
-        className="w-full rounded-xl border-2 border-control bg-card p-3 text-lg text-fg read-only:bg-surface"
+        className="min-h-36 w-full rounded-xl border border-control bg-surface p-3.5 text-base leading-normal text-fg read-only:bg-card"
       />
-      <p data-testid="word-count" className={`mt-1 text-sm ${enough ? "text-good-fg" : "text-muted"}`}>
+      <p data-testid="word-count" className={`-mt-2 text-[13px] font-medium ${enough ? "text-good-fg" : "text-muted"}`}>
         {words} / {exercise.minWords} คำ
       </p>
       <CheckButton hidden={result !== undefined} disabled={locked || !enough} onClick={check} />
-    </section>
+    </ExerciseShell>
   );
 }

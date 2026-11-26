@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
-import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { AudioFallback, useExerciseAudio } from "@/components/audio/AudioControls";
 import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
 import type { ExerciseProps } from "./types";
+import { AudioCard } from "./ui/AudioCard";
 import { CheckButton } from "./ui/CheckButton";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { Mark } from "./ui/Mark";
 import { Instruction } from "./ui/Instruction";
-import { rightWrong, fieldToneClass, type Tone } from "./ui/tone";
+import { rightWrong, fieldToneClass, FIELD, type Tone } from "./ui/tone";
 
 export function Dictation({ exercise, onAnswer, onContinue, result }: ExerciseProps<"dictation">) {
   const audio = useExerciseAudio(exercise.audioText);
@@ -23,9 +25,9 @@ export function Dictation({ exercise, onAnswer, onContinue, result }: ExercisePr
   };
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); check(); }}>
+    <ExerciseShell onSubmit={check}>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <PlayButtons audio={audio} text={exercise.audioText} />
+      <AudioCard audio={audio} text={exercise.audioText} />
       <AudioFallback audio={audio} onSkip={onContinue} note={GRADED_NO_AUDIO_NOTE} />
       <input
         type="text"
@@ -40,10 +42,10 @@ export function Dictation({ exercise, onAnswer, onContinue, result }: ExercisePr
         autoCorrect="off"
         autoComplete="off"
         spellCheck={false}
-        className={`min-h-12 w-full rounded-xl border-2 px-3 text-lg ${fieldToneClass(tone)}`}
+        className={`${FIELD} ${fieldToneClass(tone)}`}
       />
-      {result ? <p className="text-sm font-semibold"><Mark ok={result.correct} /></p> : null}
+      {result ? <p className="text-[13px] font-medium"><Mark ok={result.correct} /></p> : null}
       <CheckButton type="submit" hidden={result !== undefined} disabled={empty || sent} />
-    </form>
+    </ExerciseShell>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
-import { AudioFallback, BUTTON, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { buttonClass } from "@/components/ui/button-styles";
 import type { ExerciseProps } from "./types";
+import { Card, CardList } from "./ui/Card";
+import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction } from "./ui/Instruction";
 import { MixedText } from "./ui/MixedText";
 
@@ -8,20 +11,22 @@ import { MixedText } from "./ui/MixedText";
 export function PhonemeIntro({ exercise, onContinue }: ExerciseProps<"phoneme_intro">) {
   const audio = useExerciseAudio(exercise.examples[0]);
   return (
-    <section className="flex flex-col gap-4">
+    <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <p lang="en-fonipa" className="text-center text-5xl font-bold">{exercise.ipa}</p>
-      <p className="rounded-lg bg-hint-soft p-3 text-base text-hint-fg"><MixedText text={exercise.tipTh} /></p>
+      <Card pad="px-4 py-6" className="text-center">
+        <p lang="en-fonipa" className="text-5xl font-bold">{exercise.ipa}</p>
+      </Card>
+      <p className="rounded-xl border border-hint/40 bg-hint-soft p-3.5 text-[13px] leading-relaxed text-hint-fg"><MixedText text={exercise.tipTh} /></p>
       <AudioFallback audio={audio} />
-      <ul className="flex flex-col gap-3">
+      <CardList>
         {exercise.examples.map((word) => (
-          <li key={word} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface p-3">
-            <span lang="en" className="text-xl font-semibold">{word}</span>
+          <li key={word} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+            <span lang="en" className="text-[17px] font-medium">{word}</span>
             <PlayButtons audio={audio} text={word} />
           </li>
         ))}
-      </ul>
-      <button type="button" className={`${BUTTON} w-full bg-accent text-on-accent`} onClick={onContinue}>ถัดไป</button>
-    </section>
+      </CardList>
+      <button type="button" className={buttonClass("primary", "mt-auto")} onClick={onContinue}>ถัดไป</button>
+    </ExerciseShell>
   );
 }
