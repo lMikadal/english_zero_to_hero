@@ -25,6 +25,7 @@ describe("DayPlayer", () => {
     shared.sink = {
       sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
       completeLesson: vi.fn(async () => ({ status: "done" as const, response })),
+      completePractice: async () => ({ status: "queued" as const }),
       pendingCount: () => 0,
       subscribe: () => () => {},
       getState: () => ({ pending: 0, pendingAttempts: 0, status: "idle" as const }),

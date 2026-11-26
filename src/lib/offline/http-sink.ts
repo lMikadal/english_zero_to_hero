@@ -17,6 +17,8 @@ import {
   type AttemptInput,
   type CompleteLessonRequest,
   type CompleteLessonResponse,
+  type CompletePracticeRequest,
+  type CompletePracticeResponse,
 } from "@/lib/attempts/contract";
 import type { CompleteResult, SyncSink } from "./sink";
 
@@ -50,9 +52,18 @@ export type HttpSink = SyncSink & {
   dispose(): void;
 };
 
-type Entry =
-  | { kind: "attempt"; item: AttemptInput }
-  | { kind: "complete"; req: CompleteLessonRequest; settle: (r: CompleteResult) => void; promise: Promise<CompleteResult> };
+// A completion entry carries its own endpoint and response check, so lesson and practice share the queue rules.
+// `key` dedups inside the queue (the endpoint plus day and session).
+type CompleteEntry = {
+  kind: "complete";
+  url: string;
+  key: string;
+  req: CompleteLessonRequest | CompletePracticeRequest;
+  isResponse: (v: unknown) => boolean;
+  settle: (r: CompleteResult<never>) => void;
+  promise: Promise<CompleteResult<never>>;
+};
+type Entry = { kind: "attempt"; item: AttemptInput } | CompleteEntry;
 
 type Outcome = { next: "continue" } | { next: "retry"; afterMs?: number } | { next: "pause" };
 
@@ -60,6 +71,8 @@ const DROP_STATUSES = new Set(["created", "duplicate", "rejected"]);
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;
 const isCompleteResponse = (v: unknown): v is CompleteLessonResponse =>
   isObject(v) && isObject(v.progress) && isObject(v.streak) && typeof v.currentDay === "number";
+const isPracticeResponse = (v: unknown): v is CompletePracticeResponse =>
+  isObject(v) && isObject(v.session) && isObject(v.streak) && typeof v.countedForStreak === "boolean" && !("progress" in v);
 
 export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
   const doFetch: SinkFetch = options.fetch ?? ((url, init) => globalThis.fetch(url, init));
@@ -150,12 +163,12 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
   async function step(): Promise<Outcome> {
     const head = queue[0];
     if (head.kind === "complete") {
-      const res = await request(API.completeLesson, head.req);
+      const res = await request(head.url, head.req);
       if (res.status === 200) {
         const response = await res.json();
-        if (!isCompleteResponse(response)) return { next: "retry" };
+        if (!head.isResponse(response)) return { next: "retry" };
         dropHead(1);
-        head.settle({ status: "done", response });
+        head.settle({ status: "done", response: response as never });
         return { next: "continue" };
       }
       if (res.status === 401 || res.status === 403) return { next: "pause" };
@@ -255,6 +268,29 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
   const target = options.eventTarget === undefined ? (typeof window !== "undefined" ? window : null) : options.eventTarget;
   target?.addEventListener("online", onOnline);
 
+  function enqueueComplete(
+    url: string,
+    key: string,
+    req: CompleteLessonRequest | CompletePracticeRequest,
+    isResponse: (v: unknown) => boolean,
+  ): Promise<CompleteResult<never>> {
+    const existing = queue.find((e): e is CompleteEntry => e.kind === "complete" && e.key === key);
+    if (existing) return existing.promise;
+    let settle!: (r: CompleteResult<never>) => void;
+    const promise = new Promise<CompleteResult<never>>((resolve) => {
+      settle = resolve;
+    });
+    resume();
+    queue.push({ kind: "complete", url, key, req, isResponse, settle, promise });
+    notify();
+    // one flush attempt now, even if a backoff timer is waiting
+    void Promise.resolve().then(() => {
+      clearTimer();
+      return flush();
+    });
+    return promise;
+  }
+
   return {
     sendAttempt(a) {
       try {
@@ -267,23 +303,12 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
         console.error("sendAttempt failed", e);
       }
     },
-    completeLesson(c) {
-      const existing = queue.find((e) => e.kind === "complete" && e.req.day === c.day && e.req.sessionId === c.sessionId);
-      if (existing && existing.kind === "complete") return existing.promise;
-      let settle!: (r: CompleteResult) => void;
-      const promise = new Promise<CompleteResult>((resolve) => {
-        settle = resolve;
-      });
-      resume();
-      queue.push({ kind: "complete", req: c, settle, promise });
-      notify();
-      // one flush attempt now, even if a backoff timer is waiting
-      void Promise.resolve().then(() => {
-        clearTimer();
-        return flush();
-      });
-      return promise;
-    },
+    completeLesson: (c) =>
+      enqueueComplete(API.completeLesson, `${API.completeLesson}|${c.day}|${c.sessionId}`, c, isCompleteResponse) as Promise<CompleteResult>,
+    completePractice: (c) =>
+      enqueueComplete(API.completePractice, `${API.completePractice}|${c.day}|${c.sessionId}`, c, isPracticeResponse) as Promise<
+        CompleteResult<CompletePracticeResponse>
+      >,
     /** Attempts plus completions still queued. */
     pendingCount: () => queue.length,
     getState: () => ({ pending: queue.length, pendingAttempts: queue.filter((e) => e.kind === "attempt").length, status: status() }),

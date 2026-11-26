@@ -18,6 +18,7 @@ function fakeSink(result: CompleteResult = { status: "queued" }) {
   const sink = {
     sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
     completeLesson: vi.fn(async () => result),
+    completePractice: async () => ({ status: "queued" as const }),
     pendingCount: () => 0,
     subscribe: () => () => {},
   } satisfies SyncSink;
@@ -252,6 +253,7 @@ describe("LessonPlayer", () => {
     const sink = {
       sendAttempt: vi.fn(),
       completeLesson: vi.fn(async () => answers.shift() ?? DONE),
+      completePractice: async () => ({ status: "queued" as const }),
       pendingCount: () => pending,
       subscribe: (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb); }; },
     } satisfies SyncSink;
@@ -278,6 +280,7 @@ describe("LessonPlayer", () => {
     const sink = {
       sendAttempt: vi.fn(),
       completeLesson: vi.fn(async () => ({ status: "queued" }) as CompleteResult),
+      completePractice: async () => ({ status: "queued" as const }),
       pendingCount: () => 1,
       subscribe: (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb); }; },
     } satisfies SyncSink;

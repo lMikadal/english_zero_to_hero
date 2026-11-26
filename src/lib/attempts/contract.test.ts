@@ -298,10 +298,8 @@ describe("completePracticeRequestSchema", () => {
   it("rejects vocabulary or any other skill, a missing skill, a missing or other kind, and extra fields", () => {
     expect(completePracticeRequestSchema.safeParse({ ...ok, skill: "vocabulary" }).success).toBe(false);
     expect(completePracticeRequestSchema.safeParse({ ...ok, skill: "Listening" }).success).toBe(false);
-    const { skill: _s, ...noSkill } = ok;
-    expect(completePracticeRequestSchema.safeParse(noSkill).success).toBe(false);
-    const { kind: _k, ...noKind } = ok;
-    expect(completePracticeRequestSchema.safeParse(noKind).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, skill: undefined }).success).toBe(false);
+    expect(completePracticeRequestSchema.safeParse({ ...ok, kind: undefined }).success).toBe(false);
     expect(completePracticeRequestSchema.safeParse({ ...ok, kind: "drill" }).success).toBe(false);
     expect(completePracticeRequestSchema.safeParse({ ...ok, extra: 1 }).success).toBe(false);
   });
