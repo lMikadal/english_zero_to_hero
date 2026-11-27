@@ -70,3 +70,30 @@ describe("simulateLoad", () => {
     expect(m).toBeLessThan(120);
   });
 });
+
+// The numbers quoted in docs/plans/vocab-review-plan.md 2.7. Seed 1, Again 10%, then Hard 15% / Good 65% / Easy 20% of
+// the rest, 10 seconds a press, ts-fsrs 6.0.1 with SRS_CONFIG. If the library or the configuration changes, these move
+// and the plan must be updated with them.
+describe("simulateLoad: the numbers in the plan (Again 10%, seed 1)", () => {
+  const again = 0.1;
+  it("backfill of 36 words: day 1 has 36 new en_th cards, day 2 the 36 th_en cards", () => {
+    const r = simulateLoad({ wordsPerLessonDay: 0, days: 14, againRate: again, backfillWords: 36 });
+    expect(r.days.slice(0, 3).map((d) => [d.due, d.newCards, d.presses])).toEqual([[36, 36, 84], [42, 36, 104], [27, 0, 29]]);
+  });
+  it.each([
+    [5, 52.8, 37.9],
+    [8, 83.8, 61.0],
+    [11, 113.5, 82.8],
+  ])("steady state, %i new words per lesson: mean %d presses a day over days 60 to 90 (%d cards due)", (words, presses, due) => {
+    const r = simulateLoad({ wordsPerLessonDay: words, days: 90, againRate: again });
+    expect(r.meanPresses(60, 90)).toBeCloseTo(presses, 0);
+    const rows = r.days.filter((d) => d.day >= 60);
+    expect(rows.reduce((s, d) => s + d.due, 0) / rows.length).toBeCloseTo(due, 0);
+  });
+  it("a week off (days 61 to 67) at 5 words per lesson: 155 cards due and 198 presses on the first day back", () => {
+    const r = simulateLoad({ wordsPerLessonDay: 5, days: 80, againRate: again, offDays: { from: 61, to: 67 } });
+    expect([r.days[67].due, r.days[67].presses]).toEqual([155, 198]);
+    expect(r.days.slice(68, 72).map((d) => d.presses)).toEqual([39, 52, 26, 39]);
+  });
+});
+
