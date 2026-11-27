@@ -496,13 +496,21 @@ describe("getReviewSummary", () => {
     expect(await agree()).toEqual({ due: 10, withCard: 5 });
   });
 
-  it("only the given user's cards count", async () => {
+  it("only the given user's cards count: another learner's due cards do not change this learner's number", async () => {
     await db.insert(user).values({ id: "other", name: "O", email: "o@example.com" });
     await db.insert(profiles).values({ userId: "other", startDate: "2026-11-25" });
-    await markDone(1);
-    await db.update(srsCards).set({ due: NOW }).where(eq(srsCards.userId, userId));
-    expect(await getReviewSummary(db, "other", NOW, repoContent)).toEqual({ due: 0, withCard: 0 });
-    expect(await agree()).toMatchObject({ withCard: 5 });
+    // both finished day 1 an hour ago, so both have 10 cards that are NOT due yet (en_th tomorrow, th_en the day after)
+    const completedAt = new Date(NOW.getTime() - 3_600_000);
+    await markDone(1, completedAt);
+    await markDone(1, completedAt, "other");
+    await reconcile(NOW, BKK, { completed: { day: 1, completedAt } });
+    await reconcileCards(db, "other", NOW, BKK, { completed: { day: 1, completedAt } });
+    expect(await cards("other")).toHaveLength(10);
+    expect(await agree()).toEqual({ due: 0, withCard: 5 });
+    // only the other learner's cards become due
+    await db.update(srsCards).set({ due: new Date(NOW.getTime() - 3_600_000) }).where(eq(srsCards.userId, "other"));
+    expect(await getReviewSummary(db, "other", NOW, repoContent)).toEqual({ due: 10, withCard: 5 });
+    expect(await agree()).toEqual({ due: 0, withCard: 5 }); // unchanged
   });
 
   it("a card that was just reviewed and is due later today still counts, like the queue", async () => {
