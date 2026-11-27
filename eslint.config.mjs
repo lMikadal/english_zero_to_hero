@@ -59,5 +59,26 @@ export default defineConfig([
       ],
     },
   },
+  {
+    // A review only touches the review tables and the streak (docs/plans/vocab-review-plan.md PR 3): the review handlers
+    // may not import the progress writers or the attempts queries, like the practice handlers.
+    files: ["src/lib/server/review-*.ts"],
+    ignores: ["src/lib/server/review-*.test.ts", "src/lib/server/review-*.int.test.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            TS_FSRS_ONLY_IN_ADAPTER, // this block replaces the general no-restricted-imports rule for these files, so repeat it
+            // tables come only through query functions (the review tables only through queries/srs); types may come from the schema
+            { group: ["@/db/schema", "**/db/schema"], allowTypeImports: true, message: "A review handler reads tables through @/db/queries/srs (and the read-only practice/progress queries) only." },
+            // namespace imports are rejected whenever allowImportNames is used
+            { group: ["@/db/queries/progress", "**/db/queries/progress"], allowImportNames: ["getProfile", "getStreak", "touchStreak"], message: "A review handler must not write progress or profiles." },
+            { group: ["@/db/queries/attempts", "**/db/queries/attempts"], message: "A review handler must not write progress." },
+          ],
+        },
+      ],
+    },
+  },
   globalIgnores([".next/**", "out/**", "coverage/**", "playwright-report/**", "test-results/**", "next-env.d.ts", ".claude/**"]),
 ]);
