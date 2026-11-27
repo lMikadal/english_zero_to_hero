@@ -2,19 +2,29 @@ import Link from "next/link";
 import { getDb } from "@/db/client";
 import { getLearnerHome, type LearnerHome } from "@/db/queries/home";
 import { UnsavedNote } from "@/components/player/UnsavedNote";
+import { HomeReviewLink, type ReviewNumbers } from "@/components/review/ReviewEntry";
 import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
 import { getCurrentUserId } from "@/lib/server/current-user";
 import { getLesson } from "@/lib/content/repo";
 import type { Lesson } from "@/lib/content/schema";
 import { COURSE_DAYS } from "@/lib/progress/config";
+import { getReviewSummary } from "@/lib/srs/cards";
 
 // Today's day and streak depend on the learner and the clock: never cache.
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   let home: LearnerHome;
+  let review: ReviewNumbers = null;
   try {
-    home = await getLearnerHome(getDb(), await getCurrentUserId());
+    const userId = await getCurrentUserId();
+    home = await getLearnerHome(getDb(), userId);
+    try {
+      // The server's clock decides "today" (in the learner's zone, inside getReviewSummary); the same definition as /review.
+      review = await getReviewSummary(getDb(), userId, new Date());
+    } catch (e) {
+      console.error("Cannot read the review summary:", e); // the tile and the link are left out, nothing is invented
+    }
   } catch (e) {
     console.error("Cannot read the learner's home data:", e);
     return <DbErrorScreen retryHref="/" underNav />;
@@ -81,14 +91,16 @@ export default async function Home() {
           </Link>
         </section>
       )}
-      <dl className="grid grid-cols-2 gap-3">
+      <HomeReviewLink summary={review} />
+      <dl className={`grid gap-3 ${review ? "grid-cols-3" : "grid-cols-2"}`}>
         {[
-          { label: "สตรีคต่อเนื่อง", days: home.streak.current },
-          { label: "สตรีคนานที่สุด", days: home.streak.longest },
+          { label: "สตรีคต่อเนื่อง", value: `${home.streak.current} วัน` },
+          { label: "สตรีคนานที่สุด", value: `${home.streak.longest} วัน` },
+          ...(review ? [{ label: "คำที่เรียนแล้ว", value: String(review.withCard) }] : []),
         ].map((s) => (
-          <div key={s.label} className="flex flex-col-reverse gap-1 rounded-2xl border border-line bg-card p-4">
+          <div key={s.label} className="flex flex-col-reverse gap-1 rounded-2xl border border-line bg-card p-3">
             <dt className="text-xs text-muted">{s.label}</dt>
-            <dd className="m-0 text-lg font-bold">{s.days} วัน</dd>
+            <dd className="m-0 text-lg font-bold">{s.value}</dd>
           </div>
         ))}
       </dl>

@@ -116,3 +116,16 @@ export async function countDueAt(
     );
   return row.n;
 }
+
+/**
+ * How many of the user's cards, of the given words and directions, are due before `end` (any state, whenever created).
+ * The count on /practice and the home page; the review queue applies the same filter in memory, so the two cannot differ.
+ */
+export async function countDueCards(db: DbOrTx, userId: string, end: Date, vocabIds: readonly string[], directions: readonly SrsDirection[]): Promise<number> {
+  if (vocabIds.length === 0 || directions.length === 0) return 0;
+  const [row] = await db
+    .select({ n: count() })
+    .from(srsCards)
+    .where(and(eq(srsCards.userId, userId), lt(srsCards.due, end), inArray(srsCards.vocabId, [...vocabIds]), inArray(srsCards.direction, [...directions])));
+  return row.n;
+}

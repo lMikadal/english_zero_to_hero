@@ -44,7 +44,14 @@ export type HttpSinkOptions = {
 };
 
 export type SinkStatus = "idle" | "sending" | "retrying" | "paused";
-export type SinkState = { pending: number; pendingAttempts: number; pendingReviews: number; status: SinkStatus };
+export type SinkState = {
+  pending: number;
+  pendingAttempts: number;
+  pendingReviews: number;
+  /** Completions of a vocabulary review session still queued (the UI names what is unsaved from the counts alone). */
+  pendingReviewCompletions: number;
+  status: SinkStatus;
+};
 
 /** A SyncSink plus what a UI needs to show the wait ("กำลังรอสัญญาณ"). Not part of the SyncSink interface. */
 export type HttpSink = SyncSink & {
@@ -370,6 +377,7 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       pending: queue.length,
       pendingAttempts: queue.filter((e) => e.kind === "attempt").length,
       pendingReviews: queue.filter((e) => e.kind === "review").length,
+      pendingReviewCompletions: queue.filter((e) => e.kind === "complete" && e.url === API_SRS.completeReview).length,
       status: status(),
     }),
     onReviewResult(cb) {

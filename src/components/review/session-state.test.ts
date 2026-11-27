@@ -56,14 +56,17 @@ describe("session state", () => {
     expect(Math.abs(at("v-country|en_th") - at("v-country|th_en"))).toBeGreaterThanOrEqual(SIBLING_GAP);
   });
 
-  it("the end of today is the one the server sent, not recomputed", () => {
-    // Due 3 minutes before the server's end of today: still due today. One minute after: not.
+  it("the payload's end of today decides until the first answer; from then on the end of that answer's day does (plan 2.4)", () => {
+    // Due 3 minutes before the payload's end of today: still due today. A server card one minute after it: not, before any answer.
     const near = reviewState("2026-11-27T03:00:00Z");
     const rated = applyRating(near, 3, NOW, TZ);
-    const same = createSession(makeQueue([["country", "en_th"], ["friend", "en_th"]], { endOfToday: new Date(rated.due.getTime() + 60_000).toISOString() }));
-    expect(keys(run(same, 3))).toContain("v-country|en_th");
-    const later = createSession(makeQueue([["country", "en_th"], ["friend", "en_th"]], { endOfToday: new Date(rated.due.getTime() - 60_000).toISOString() }));
-    expect(keys(run(later, 3))).not.toContain("v-country|en_th");
+    const endBefore = new Date(rated.due.getTime() - 60_000).toISOString();
+    const q = makeQueue([["country", "en_th"], ["friend", "en_th"]], { endOfToday: endBefore });
+    const beforeAnswer = sessionReducer(createSession(q), { type: "server", key: "v-friend|en_th", card: toWire(newState(rated.due.toISOString())) });
+    expect(keys(beforeAnswer)).not.toContain("v-friend|en_th");
+    expect(keys(run(createSession(q), 3))).not.toContain("v-country|en_th"); // Good moves it by days: gone in both rules
+    // after the first answer (12:00 on 27 Nov in Bangkok) the day ends at 17:00Z, whatever the payload said
+    expect(keys(run(createSession(q), 1))).toContain("v-country|en_th");
   });
 
   it("remembers what the last rating did, for the live region", () => {
@@ -164,5 +167,60 @@ describe("the zone and the server's card", () => {
   it("a notice is cleared by the next rating", () => {
     const s = sessionReducer(createSession(makeQueue([["country", "en_th"], ["friend", "en_th"], ["water", "en_th"]])), { type: "drop", key: "v-country|en_th" });
     expect(run(s, 3).notice).toBeNull();
+  });
+});
+
+// docs/plans/vocab-review-plan.md 2.4 (PR 5): "still due today" is decided against the local day of the session's FIRST answer.
+describe("the midnight edge", () => {
+  // Bangkok: loaded 23:58 on 27 Nov (16:58Z), the payload's end of today is 00:00 on 28 Nov (17:00Z)
+  const LOAD_END = "2026-11-27T17:00:00.000Z";
+  const earlyDue = () => reviewState("2026-11-27T10:00:00Z");
+  const at = (iso: string) => new Date(iso);
+  const answer = (s: SessionState, rating: Rating, now: Date) => sessionReducer(sessionReducer(s, { type: "reveal", now }), { type: "rate", rating, now });
+
+  it("loaded before midnight, first answer after it: a card that was forgotten comes back (the server's day is the new day)", () => {
+    const s = createSession(makeQueue([["country", "en_th", earlyDue()], ["friend", "en_th", earlyDue()]], { endOfToday: LOAD_END }));
+    const t = answer(s, 1, at("2026-11-27T17:01:00Z")); // 00:01 on 28 Nov, +10 minutes is after the payload's end
+    expect(keys(t)).toContain("v-country|en_th");
+    expect(t.phase).toBe("playing");
+  });
+
+  it("the normal case is unchanged: a forgotten card comes back, a card that passed today's end does not", () => {
+    const s = createSession(makeQueue([["country", "en_th", earlyDue()], ["friend", "en_th", earlyDue()]], { endOfToday: LOAD_END }));
+    expect(keys(answer(s, 1, at("2026-11-27T10:05:00Z")))).toContain("v-country|en_th");
+    expect(keys(answer(s, 3, at("2026-11-27T10:05:00Z")))).not.toContain("v-country|en_th");
+  });
+
+  it("the day is fixed by the FIRST answer: a later answer after midnight does not move it", () => {
+    const s = createSession(makeQueue([["country", "en_th", earlyDue()], ["friend", "en_th", earlyDue()], ["water", "en_th", earlyDue()]], { endOfToday: LOAD_END }));
+    const t = answer(answer(s, 3, at("2026-11-27T10:00:00Z")), 1, at("2026-11-27T17:01:00Z")); // second answer is on the next day
+    expect(keys(t)).not.toContain("v-friend|en_th"); // its next due (00:11 on the 28th) is past the end of the FIRST answer's day (27th)
+  });
+
+  it("the end of the day uses ReviewQueue.timeZone, not UTC or the device's", () => {
+    // Auckland (+13 in November): loaded at 23:58 on the 27th (10:58Z), the first answer at 00:05 on the 28th (11:05Z).
+    // Its day ends at 11:00Z on the 28th; in UTC the same instant's day would end at 00:00Z on the 28th.
+    const s = createSession(makeQueue([["country", "en_th", earlyDue()], ["friend", "en_th", earlyDue()], ["water", "en_th", earlyDue()]], { timeZone: "Pacific/Auckland", endOfToday: "2026-11-27T11:00:00.000Z" }));
+    const t = answer(s, 3, at("2026-11-27T11:05:00Z"));
+    const fromServer = sessionReducer(t, { type: "server", key: "v-friend|en_th", card: toWire(newState("2026-11-28T05:00:00Z")) }); // 18:00 on the 28th in Auckland
+    expect(keys(fromServer)).toContain("v-friend|en_th");
+    expect(keys(sessionReducer(t, { type: "server", key: "v-friend|en_th", card: toWire(newState("2026-11-28T11:30:00Z")) }))).not.toContain("v-friend|en_th"); // past that day's end
+  });
+
+  it("before the first answer the payload's end of today decides (a server card)", () => {
+    const s = createSession(makeQueue([["country", "en_th", earlyDue()], ["friend", "en_th", earlyDue()]], { endOfToday: LOAD_END }));
+    const due = toWire(newState("2026-11-27T17:30:00Z"));
+    const t = sessionReducer(s, { type: "server", key: "v-country|en_th", card: due });
+    expect(keys(t)).not.toContain("v-country|en_th");
+  });
+});
+
+describe("a dropped card", () => {
+  it("asks for focus on the heading only when the dropped card was on screen with its back showing", () => {
+    const s = createSession(makeQueue([["country", "en_th"], ["friend", "en_th"]]));
+    const back = sessionReducer(s, { type: "reveal", now: NOW });
+    expect(sessionReducer(back, { type: "drop", key: "v-country|en_th" }).refocus).toBe(back.refocus + 1);
+    expect(sessionReducer(s, { type: "drop", key: "v-country|en_th" }).refocus).toBe(s.refocus); // front: the reveal button is still there
+    expect(sessionReducer(back, { type: "drop", key: "v-friend|en_th" }).refocus).toBe(back.refocus); // not on screen
   });
 });

@@ -4,7 +4,7 @@ import type { HttpSink, SinkState } from "@/lib/offline/http-sink";
 import { UnsavedGuard, UnsavedNote } from "./UnsavedNote";
 
 function fakeSink(initial: Partial<SinkState> = {}) {
-  let state: SinkState = { pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle", ...initial };
+  let state: SinkState = { pending: 0, pendingAttempts: 0, pendingReviews: 0, pendingReviewCompletions: 0, status: "idle", ...initial };
   const listeners = new Set<() => void>();
   const sink = {
     getState: () => state,
@@ -51,6 +51,18 @@ describe("UnsavedNote", () => {
     render(<UnsavedNote kind="review" sink={fakeSink({ pending: 1, pendingAttempts: 0, pendingReviews: 0 }).sink} />);
     expect(screen.getByRole("status")).toHaveTextContent("ผลการทวนคำศัพท์ที่ยังไม่ได้บันทึก อย่าปิดหน้านี้");
     expect(screen.getByRole("status")).not.toHaveTextContent("บทเรียน");
+  });
+
+  it("on any page (no kind given), a lone waiting review completion uses the review wording, taken from the sink state", () => {
+    render(<UnsavedNote sink={fakeSink({ pending: 1, pendingAttempts: 0, pendingReviews: 0, pendingReviewCompletions: 1 }).sink} />);
+    const note = screen.getByRole("status");
+    expect(note).toHaveTextContent("มีผลการทวนคำศัพท์ที่ยังไม่ได้บันทึก อย่าปิดหน้านี้");
+    expect(note).not.toHaveTextContent("บทเรียน");
+  });
+
+  it("a lesson completion waiting next to a review completion keeps the generic wording only for the lesson", () => {
+    render(<UnsavedNote sink={fakeSink({ pending: 2, pendingAttempts: 0, pendingReviews: 0, pendingReviewCompletions: 1 }).sink} />);
+    expect(screen.getByRole("status")).toHaveTextContent("มีผลบทเรียนที่ยังไม่ได้บันทึก");
   });
 
   it("the lesson wording is unchanged when no kind is given", () => {

@@ -21,6 +21,7 @@ vi.mock("@/db/queries/home", () => ({
 }));
 vi.mock("@/db/queries/practice", () => ({ listDoneDays: async () => [{ day: 1, score: 0.9, completedAt: new Date("2026-11-25T10:00:00Z") }] }));
 vi.mock("@/lib/content/repo", () => ({ getLesson: () => null }));
+vi.mock("@/lib/srs/cards", () => ({ getReviewSummary: async () => ({ due: 3, withCard: 5 }) }));
 vi.mock("@/app/(learn)/access", () => ({ getAccent: async () => "us" }));
 
 const pages = import.meta.glob<{ default: () => Promise<ReactNode> | ReactNode }>("./**/page.tsx");

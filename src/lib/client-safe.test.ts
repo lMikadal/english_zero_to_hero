@@ -27,6 +27,9 @@ const CLIENT_SAFE = [
   "lib/srs/queue.ts",
   "lib/srs/initial.ts",
   "lib/srs/simulate.ts",
+  // the review screen is bundled into the browser: the card loader and the queries must not leak into it
+  "components/review/ReviewApp.tsx",
+  "components/review/ReviewSession.tsx",
   "components/exercises/ui/radio.ts",
   "components/exercises/ui/tone.ts",
   "lib/audio/source.ts",

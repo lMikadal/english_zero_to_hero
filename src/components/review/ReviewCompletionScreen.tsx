@@ -15,11 +15,13 @@ export function ReviewCompletionScreen({
   total, counts, result, onRetry, onContinue,
 }: { total: number; counts: Record<Rating, number>; result: ReviewCompletion | null; onRetry(): void; onContinue(): void }) {
   const done = result?.status === "done" ? result.response : null;
+  // Something is still due (a card the server did not store, or one that fell due meanwhile): "ทวนครบแล้ว" would contradict the line below.
+  const leftOver = done !== null && done.remainingDue > 0;
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-16">
       <div className="flex flex-col gap-3">
         <span aria-hidden="true" className="flex size-11 items-center justify-center rounded-full border border-good/40 bg-good-soft text-xl font-bold text-good-fg">✓</span>
-        <h1 className="text-2xl font-bold leading-snug">ทวนครบแล้ว</h1>
+        <h1 className="text-2xl font-bold leading-snug">{leftOver ? "จบรอบนี้แล้ว" : "ทวนครบแล้ว"}</h1>
       </div>
       <Card pad="px-4 py-1" className="divide-y divide-line">
         <p className="py-3 text-lg font-bold">{`ทวน ${total} ใบ`}</p>
@@ -42,7 +44,7 @@ export function ReviewCompletionScreen({
       )}
       <UnsavedNote kind="review" />
       <div className="mt-auto flex flex-col gap-2.5 pt-3">
-        {done && !done.countedForStreak && done.remainingDue > 0 && (
+        {done && !done.countedForStreak && leftOver && (
           <Link href="/review" onClick={(e) => { e.preventDefault(); onContinue(); }} className={buttonClass("primary")}>ทวนต่อ</Link>
         )}
         <Link href="/practice" className={buttonClass("secondary")}>กลับไปหน้าฝึกเพิ่ม</Link>

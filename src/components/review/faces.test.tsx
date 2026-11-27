@@ -74,21 +74,38 @@ describe("touch targets", () => {
 });
 
 describe("no direction branching outside the face table", () => {
-  const dir = import.meta.dirname;
-  const files = fs.readdirSync(dir).filter((f) => /\.tsx?$/.test(f) && !/\.test\.|test-helpers|^faces\.ts$/.test(f));
-  it("finds the components to check", () => {
-    expect(files).toEqual(expect.arrayContaining(["ReviewCard.tsx", "ReviewSession.tsx", "RatingBar.tsx", "session-state.ts"]));
+  const roots = [import.meta.dirname, path.resolve(import.meta.dirname, "../../app/(learn)/review")];
+  /** Every source file under `dir`, subfolders included, except tests, test helpers and the face table itself. */
+  const walk = (dir: string): string[] =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) return walk(full);
+      return /\.tsx?$/.test(e.name) && !/\.test\.|test-helpers|^faces\.ts$/.test(e.name) ? [full] : [];
+    });
+  const files = roots.flatMap(walk);
+  it("finds the components to check, in subfolders and in the review page too", () => {
+    const names = files.map((f) => path.basename(f));
+    expect(names).toEqual(expect.arrayContaining(["ReviewCard.tsx", "ReviewSession.tsx", "RatingBar.tsx", "session-state.ts", "page.tsx"]));
+    expect(files.some((f) => f.includes(`${path.sep}review${path.sep}page.tsx`))).toBe(true);
   });
-  it.each([
+  const PATTERNS: [string, RegExp][] = [
     ["direction compared", /direction\s*[!=]==?/],
     ["switch on direction", /switch\s*\(\s*[\w.]*direction/i],
     ["direction literal", /["']en_th["']|["']th_en["']/],
     ["REVIEW_DIRECTIONS includes", /REVIEW_DIRECTIONS\s*\.\s*(includes|indexOf)/],
-  ])("no file has: %s", (_n, re) => {
-    for (const f of files) expect(fs.readFileSync(path.join(dir, f), "utf8"), f).not.toMatch(re);
+    ["direction string method", /direction\s*\??\.\s*(startsWith|endsWith|includes|indexOf|match|test|slice|split)\s*\(/],
+    ["direction in a regex test", /\.test\s*\(\s*[\w.]*direction/],
+  ];
+  it.each(PATTERNS)("no file has: %s", (_n, re) => {
+    for (const f of files) expect(fs.readFileSync(f, "utf8"), f).not.toMatch(re);
   });
   it("self-test: the patterns catch a branch", () => {
-    expect('if (item.direction === "th_en") x()').toMatch(/direction\s*[!=]==?/);
-    expect("switch (c.direction) {").toMatch(/switch\s*\(\s*[\w.]*direction/i);
+    const caught = (code: string) => PATTERNS.some(([, re]) => re.test(code));
+    expect(caught('if (item.direction === "th_en") x()')).toBe(true);
+    expect(caught("switch (c.direction) {")).toBe(true);
+    expect(caught("switch (direction) {")).toBe(true);
+    expect(caught('if (card.direction.startsWith("th")) x()')).toBe(true);
+    expect(caught('const isMirror = direction?.endsWith("en")')).toBe(true);
+    expect(caught("const face = CARD_FACES[card.direction];")).toBe(false);
   });
 });

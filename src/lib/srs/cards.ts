@@ -4,7 +4,7 @@
 // Time and zone come in as parameters (nothing here reads the clock). Due dates of new cards come ONLY from initialDues.
 import { getProfile } from "@/db/queries/progress";
 import { listDoneDays } from "@/db/queries/practice";
-import { insertMissingCards, listCards, type CardRow, type NewCard } from "@/db/queries/srs";
+import { countDueCards, insertMissingCards, listCards, type CardRow, type NewCard } from "@/db/queries/srs";
 import type { Db, DbOrTx } from "@/db/types";
 import { getLesson, vocabReader } from "@/lib/content/repo";
 import { localDate, resolveTimeZone } from "@/lib/progress/dates";
@@ -156,4 +156,18 @@ export async function loadReviewQueue(db: Db, userId: string, now: Date, source:
     return v ? [{ vocabId: c.vocabId, direction: c.direction, state: toWire(c.state), word: v.word, ipa: v.ipa[profile.accent], th: v.th, example: v.example }] : [];
   });
   return { today: localDate(now, tz), endOfToday: end.toISOString(), timeZone: tz, cards };
+}
+
+/**
+ * The numbers for /practice and the home page: `due` = cards (both directions) due today, the n of the "x / n" counter
+ * of the session that would start now (same zone, same end of today, same set of words); `withCard` = words with cards
+ * = the distinct words of the finished lessons. Creates missing cards first, like the loader, so a learner who finished
+ * lessons before the feature sees the right numbers on the first visit. Pure counting in SQL: no card is read into memory.
+ */
+export async function getReviewSummary(db: Db, userId: string, now: Date, source: CardContent = repoContent): Promise<{ due: number; withCard: number }> {
+  const content = snapshotContent(source);
+  const tz = resolveTimeZone((await getProfile(db, userId)).timezone);
+  const { expected } = await reconcileCards(db, userId, now, tz, { content });
+  const due = await countDueCards(db, userId, endOfToday(now, tz), expected.map((w) => w.vocabId), REVIEW_DIRECTIONS);
+  return { due, withCard: expected.length };
 }
