@@ -1,0 +1,323 @@
+{
+  "day": 11,
+  "phase": 1,
+  "week": 2,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Are you a student? Numbers 20–100. Long vowel /ɜː/",
+    "th": "Are you a student? ตัวเลข 20–100 และเสียงสระยาว /ɜː/"
+  },
+  "objectives": [
+    {
+      "en": "Ask 'Are you…?' and answer 'Yes, I am' or 'No, I am not'",
+      "th": "ถาม 'Are you…?' และตอบ 'Yes, I am' หรือ 'No, I am not' ได้"
+    },
+    {
+      "en": "Tell -teen numbers (13) from -ty numbers (30)",
+      "th": "แยกเลข -teen (13) กับเลข -ty (30) ได้ตอนฟัง"
+    },
+    {
+      "en": "Say the jobs student, teacher and doctor",
+      "th": "บอกอาชีพ student, teacher และ doctor ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-student",
+    "v-teacher",
+    "v-doctor",
+    "v-girl",
+    "v-boy",
+    "v-work",
+    "v-hundred"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The long vowel /ɜː/ and tens",
+        "th": "เสียงสระยาว /ɜː/ และเลขหลักสิบ"
+      },
+      "exercises": [
+        {
+          "id": "d011-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "er",
+          "ipa": "/ɜː/",
+          "tipTh": "เสียง 'เออ' ยาว ริมฝีปากผ่อนคลาย ไม่ห่อและไม่ยิ้ม ลิ้นอยู่กลางปาก สำเนียงอเมริกันมีเสียง r ติดท้าย (girl, work) ส่วนสำเนียงอังกฤษไม่มี คนไทยมักออกเป็น 'ออ' (work เป็น 'วอก') ซึ่งเป็นอีกเสียงที่เรียนไปในวันที่ 10 ให้ออกเป็น 'เวิร์ก' และ 'เกิร์ล' แทน และอย่าลืมปิดเสียง k ใน work และ l ใน girl",
+          "examples": [
+            "girl",
+            "work",
+            "thirty",
+            "her"
+          ]
+        },
+        {
+          "id": "d011-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "work",
+              "b": "walk",
+              "answer": "a"
+            },
+            {
+              "a": "shirt",
+              "b": "short",
+              "answer": "b"
+            },
+            {
+              "a": "bird",
+              "b": "bed",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d011-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม เลข -teen เน้นที่ teen (thirTEEN) ส่วนเลข -ty เน้นที่พยางค์แรก (THIRty) และเสียงท้าย -ty สั้นและเบา"
+          },
+          "text": "Thirteen, thirty. Fourteen, forty. Fifteen, fifty.",
+          "ipa": "/ˌθɜːrˈtiːn ˈθɜːrti ˌfɔːrˈtiːn ˈfɔːrti ˌfɪfˈtiːn ˈfɪfti/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: jobs and ages",
+        "th": "ฟัง: อาชีพและอายุ"
+      },
+      "exercises": [
+        {
+          "id": "d011-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเพื่อนของผู้พูดทำอาชีพอะไร"
+          },
+          "audioText": "I am a teacher. My friend is a doctor.",
+          "question": {
+            "en": "What is the speaker's friend?",
+            "th": "เพื่อนของผู้พูดทำอาชีพอะไร"
+          },
+          "choices": [
+            "A teacher",
+            "A doctor",
+            "A student"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d011-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าผู้พูดอายุเท่าไร (ระวัง thirteen กับ thirty)"
+          },
+          "audioText": "I am thirty.",
+          "question": {
+            "en": "How old is the speaker?",
+            "th": "ผู้พูดอายุเท่าไร"
+          },
+          "choices": [
+            "Thirteen",
+            "Thirty",
+            "Sixty"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d011-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Are you a student? No, I am not.",
+          "accept": [
+            "Are you a student? No, I'm not"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Ask and answer: are you…?",
+        "th": "ถามและตอบ: Are you…?"
+      },
+      "exercises": [
+        {
+          "id": "d011-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Are you a student?",
+            "No, I am not. I am a teacher.",
+            "Is he a doctor?",
+            "Yes, he is.",
+            "Is she a teacher?",
+            "No, she is not. She is a student."
+          ]
+        },
+        {
+          "id": "d011-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียงตามความจริงของคุณ"
+          },
+          "prompt": "Are you a student? Do you work?",
+          "sampleAnswer": "No, I am not a student. I work.",
+          "keywords": [
+            "am"
+          ]
+        },
+        {
+          "id": "d011-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตามเลขหลักสิบ ระวังปิดเสียง t ท้ายคำใน eighty และออกเสียง hundred ให้มีเสียง d ท้ายคำ"
+          },
+          "text": "Thirty, forty, fifty, sixty, seventy, eighty, ninety, a hundred.",
+          "ipa": "/ˈθɜːrti ˈfɔːrti ˈfɪfti ˈsɪksti ˈsevnti ˈeɪti ˈnaɪnti ə ˈhʌndrəd/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Mai, Ben and Ann",
+        "th": "ไหม เบน และแอน"
+      },
+      "exercises": [
+        {
+          "id": "d011-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Mai: Hi, Ben! Are you a student?\nBen: No, I am not. I am a doctor. And you?\nMai: I am a teacher. This is my friend, Ann. She is a student.\nBen: Hello, Ann. Are you twenty?\nAnn: No, I am not. I am thirty.",
+          "questions": [
+            {
+              "question": {
+                "en": "Is Ben a student?",
+                "th": "เบนเป็นนักเรียนไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What is Mai?",
+                "th": "ไหมทำอาชีพอะไร"
+              },
+              "choices": [
+                "A doctor",
+                "A teacher",
+                "A student"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "How old is Ann?",
+                "th": "แอนอายุเท่าไร"
+              },
+              "choices": [
+                "Twenty",
+                "Thirty"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: I am not…",
+        "th": "เขียน: I am not…"
+      },
+      "exercises": [
+        {
+          "id": "d011-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "doctor",
+            "I",
+            "not",
+            "a",
+            "am"
+          ],
+          "answer": "I am not a doctor"
+        },
+        {
+          "id": "d011-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "Are you a student? No, I ___ not.",
+          "answer": [
+            "am"
+          ]
+        },
+        {
+          "id": "d011-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันไม่ใช่ครู",
+          "accept": [
+            "I am not a teacher",
+            "I'm not a teacher"
+          ]
+        },
+        {
+          "id": "d011-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-student"
+            },
+            {
+              "vocabId": "v-teacher"
+            },
+            {
+              "vocabId": "v-doctor"
+            },
+            {
+              "vocabId": "v-girl"
+            },
+            {
+              "vocabId": "v-work"
+            },
+            {
+              "vocabId": "v-hundred"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

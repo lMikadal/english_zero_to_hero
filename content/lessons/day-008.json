@@ -1,0 +1,321 @@
+{
+  "day": 8,
+  "phase": 1,
+  "week": 2,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "I am, you are! Numbers 1–5. Long vowel /iː/",
+    "th": "I am, you are! ตัวเลข 1–5 และเสียงสระยาว /iː/"
+  },
+  "objectives": [
+    {
+      "en": "Say 'I am…' and 'You are…' about yourself and a friend",
+      "th": "พูด 'I am…' และ 'You are…' เกี่ยวกับตัวเองและเพื่อนได้"
+    },
+    {
+      "en": "Hear the difference between /ɪ/ (ship) and /iː/ (sheep)",
+      "th": "แยกเสียงสั้น /ɪ/ (ship) กับเสียงยาว /iː/ (sheep) ได้ตอนฟัง"
+    },
+    {
+      "en": "Say and understand the numbers one to five",
+      "th": "พูดและเข้าใจตัวเลข one ถึง five ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-be",
+    "v-number",
+    "v-one",
+    "v-two",
+    "v-three",
+    "v-four",
+    "v-five",
+    "v-tea"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The long vowel /iː/ and numbers 1–5",
+        "th": "เสียงสระยาว /iː/ และตัวเลข 1–5"
+      },
+      "exercises": [
+        {
+          "id": "d008-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "ee",
+          "ipa": "/iː/",
+          "tipTh": "เสียง 'อี' ยาว ยิ้มกว้างเล็กน้อยแล้วยืดเสียงให้นานประมาณสองจังหวะ ต่างจาก /ɪ/ ที่เรียนไปในวันที่ 3 ซึ่งสั้นและผ่อนคลายกว่า คนไทยมักออกเสียงสองเสียงนี้เหมือนกัน ทำให้ sheep (แกะ) ฟังเป็น ship (เรือ) และ seat (ที่นั่ง) ฟังเป็น sit (นั่ง) สะกดได้หลายแบบ เช่น ee, ea ใน meet, tea และ three อย่าลืมปิดเสียง t ท้ายคำใน meet ให้ชัด",
+          "examples": [
+            "three",
+            "tea",
+            "see",
+            "meet"
+          ]
+        },
+        {
+          "id": "d008-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "ship",
+              "b": "sheep",
+              "answer": "b"
+            },
+            {
+              "a": "live",
+              "b": "leave",
+              "answer": "a"
+            },
+            {
+              "a": "it",
+              "b": "eat",
+              "answer": "b"
+            },
+            {
+              "a": "feel",
+              "b": "fill",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d008-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง three ให้ปลายลิ้นแตะระหว่างฟัน (ไม่ใช่ 'ทรี') และ five ต้องมีเสียง v ท้ายคำ คือฟันบนแตะริมฝีปากล่าง (ไม่ใช่ 'ไฟว์' เสียงว ลอย ๆ)"
+          },
+          "text": "One, two, three, four, five.",
+          "ipa": "/wʌn tuː θriː fɔːr faɪv/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: I am, you are",
+        "th": "ฟัง: I am, you are"
+      },
+      "exercises": [
+        {
+          "id": "d008-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "audioText": "Tea, please.",
+          "question": {
+            "en": "What do you hear?",
+            "th": "ได้ยินคำว่าอะไร"
+          },
+          "choices": [
+            "Tea, please.",
+            "Three, please.",
+            "See, please."
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d008-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเป็นหมายเลขอะไร"
+          },
+          "audioText": "Number four, please. Come and sit.",
+          "question": {
+            "en": "Which number do you hear?",
+            "th": "ได้ยินหมายเลขอะไร"
+          },
+          "choices": [
+            "Number three",
+            "Number four",
+            "Number five"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d008-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "You are my friend.",
+          "accept": [
+            "You are my friend",
+            "You're my friend"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say who you are",
+        "th": "พูดว่าคุณเป็นใคร"
+      },
+      "exercises": [
+        {
+          "id": "d008-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Hi! I am Mai.",
+            "You are Sam.",
+            "I am fine, thank you.",
+            "You are my friend.",
+            "One, two, three, four, five."
+          ]
+        },
+        {
+          "id": "d008-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียง บอกว่าคุณสบายดีไหม"
+          },
+          "prompt": "How are you?",
+          "sampleAnswer": "I am fine, thank you.",
+          "keywords": [
+            "fine"
+          ]
+        },
+        {
+          "id": "d008-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /iː/ ใน tea และ three"
+          },
+          "text": "Three teas, please.",
+          "ipa": "/θriː tiːz pliːz/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Meet Mai and friends",
+        "th": "พบกับไหมและเพื่อน ๆ"
+      },
+      "exercises": [
+        {
+          "id": "d008-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Sam: Hi! I am Sam. This is my friend, Ben.\nMai: Hello, Sam. Hello, Ben. I am Mai.\nBen: Nice to meet you, Mai. Tea, please.\nMai: Come and sit. You are number three.",
+          "glossary": {
+            "Number three": "หมายเลขสาม (ใช้เรียกลำดับหรือที่นั่ง)"
+          },
+          "questions": [
+            {
+              "question": {
+                "en": "Who is Sam's friend?",
+                "th": "ใครเป็นเพื่อนของแซม"
+              },
+              "choices": [
+                "Ben",
+                "Mai"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What number is Ben?",
+                "th": "เบนเป็นหมายเลขอะไร"
+              },
+              "choices": [
+                "Number two",
+                "Number three",
+                "Number five"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: I am, you are",
+        "th": "เขียน: I am, you are"
+      },
+      "exercises": [
+        {
+          "id": "d008-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "friend",
+            "You",
+            "are",
+            "my"
+          ],
+          "answer": "You are my friend"
+        },
+        {
+          "id": "d008-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "I ___ Ann. You ___ Sam.",
+          "answer": [
+            "am",
+            "are"
+          ]
+        },
+        {
+          "id": "d008-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "คุณเป็นเพื่อนของฉัน",
+          "accept": [
+            "You are my friend",
+            "You're my friend"
+          ]
+        },
+        {
+          "id": "d008-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-be"
+            },
+            {
+              "vocabId": "v-number"
+            },
+            {
+              "vocabId": "v-one"
+            },
+            {
+              "vocabId": "v-three"
+            },
+            {
+              "vocabId": "v-five"
+            },
+            {
+              "vocabId": "v-tea"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

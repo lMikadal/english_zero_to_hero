@@ -1,0 +1,326 @@
+{
+  "day": 10,
+  "phase": 1,
+  "week": 2,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Is it a door? Numbers 11–20. Long vowel /ɔː/",
+    "th": "Is it a door? ตัวเลข 11–20 และเสียงสระยาว /ɔː/"
+  },
+  "objectives": [
+    {
+      "en": "Ask 'Is it…?' and answer 'Yes, it is' or 'No, it is not'",
+      "th": "ถาม 'Is it…?' และตอบ 'Yes, it is' หรือ 'No, it is not' ได้"
+    },
+    {
+      "en": "Hear and say the long vowel /ɔː/ in four, door and water",
+      "th": "ฟังและออกเสียงสระยาว /ɔː/ ในคำว่า four, door, water ได้"
+    },
+    {
+      "en": "Say the numbers 11 to 20",
+      "th": "พูดตัวเลข 11 ถึง 20 ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-twenty",
+    "v-door",
+    "v-window",
+    "v-table",
+    "v-book",
+    "v-water",
+    "v-yes",
+    "v-no",
+    "v-not"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The long vowel /ɔː/ and numbers 11–15",
+        "th": "เสียงสระยาว /ɔː/ และตัวเลข 11–15"
+      },
+      "exercises": [
+        {
+          "id": "d010-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "or",
+          "ipa": "/ɔː/",
+          "tipTh": "เสียง 'ออ' ยาว ห่อปากกลมเล็กน้อยและยืดเสียงให้นาน สำเนียงอเมริกันมีเสียง r ท้ายคำ เช่น four, door (ม้วนลิ้นเบา ๆ) ส่วนสำเนียงอังกฤษไม่มี r ต่างจาก /ɑː/ ใน hot ที่อ้าปากกว้างโดยไม่ห่อปาก คนไทยมักออกเป็น 'โอ' (เช่น door เป็น 'โดร์') ให้คงเสียง 'ออ' ไว้",
+          "examples": [
+            "four",
+            "door",
+            "water",
+            "morning"
+          ]
+        },
+        {
+          "id": "d010-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "ball",
+              "b": "bell",
+              "answer": "a"
+            },
+            {
+              "a": "shot",
+              "b": "short",
+              "answer": "b"
+            },
+            {
+              "a": "tall",
+              "b": "tell",
+              "answer": "b"
+            }
+          ]
+        },
+        {
+          "id": "d010-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม คำที่ลงท้ายด้วย -teen ให้เน้นเสียง teen ยาว ๆ (/iː/ ที่เรียนไปในวันที่ 8) และ twelve ต้องมีเสียง v ท้ายคำ"
+          },
+          "text": "Eleven, twelve, thirteen, fourteen, fifteen.",
+          "ipa": "/ɪˈlevn twelv ˌθɜːrˈtiːn ˌfɔːrˈtiːn ˌfɪfˈtiːn/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: is it…?",
+        "th": "ฟัง: Is it…?"
+      },
+      "exercises": [
+        {
+          "id": "d010-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามันคืออะไร"
+          },
+          "audioText": "Is it a door? No, it is not. It is a window.",
+          "question": {
+            "en": "What is it?",
+            "th": "มันคืออะไร"
+          },
+          "choices": [
+            "A door",
+            "A window",
+            "A table"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d010-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแอนอายุเท่าไร"
+          },
+          "audioText": "Ben is thirteen. Ann is fifteen.",
+          "question": {
+            "en": "How old is Ann?",
+            "th": "แอนอายุเท่าไร"
+          },
+          "choices": [
+            "Thirteen",
+            "Fourteen",
+            "Fifteen"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "d010-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Is it a book? Yes, it is."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say what things are",
+        "th": "บอกว่าสิ่งของคืออะไร"
+      },
+      "exercises": [
+        {
+          "id": "d010-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "What is it?",
+            "Is it a door?",
+            "No, it is not. It is a window.",
+            "Is it big?",
+            "Yes, it is."
+          ]
+        },
+        {
+          "id": "d010-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "มองสิ่งของใกล้ตัวหนึ่งอย่าง แล้วตอบว่ามันคืออะไร และใหญ่ไหม"
+          },
+          "prompt": "Look at a thing near you. What is it? Is it big?",
+          "sampleAnswer": "It is a table. Yes, it is big.",
+          "keywords": [
+            "it"
+          ]
+        },
+        {
+          "id": "d010-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ตัวเลข 16–20 ระวังเน้นเสียง teen และออกเสียง twenty เป็น 'ทเว็นที' (ไม่ใช่ 'ทเวนตี้' ยาว ๆ)"
+          },
+          "text": "Sixteen, seventeen, eighteen, nineteen, twenty.",
+          "ipa": "/ˌsɪksˈtiːn ˌsevnˈtiːn ˌeɪˈtiːn ˌnaɪnˈtiːn ˈtwenti/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Is it a door?",
+        "th": "นั่นคือประตูหรือเปล่า"
+      },
+      "exercises": [
+        {
+          "id": "d010-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Ann: What is it? Is it a door?\nSam: No, it is not. It is a window.\nAnn: Is it big?\nSam: Yes, it is.\nAnn: And this? Is it a book?\nSam: Yes, it is. The book is on the table.",
+          "glossary": {
+            "on": "บน"
+          },
+          "questions": [
+            {
+              "question": {
+                "en": "What is it?",
+                "th": "สิ่งแรกที่แอนถามถึงคืออะไร"
+              },
+              "choices": [
+                "A door",
+                "A window"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Is the window big?",
+                "th": "หน้าต่างใหญ่ไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is the book?",
+                "th": "หนังสืออยู่ที่ไหน"
+              },
+              "choices": [
+                "On the table",
+                "On the door"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: is it…?",
+        "th": "เขียน: Is it…?"
+      },
+      "exercises": [
+        {
+          "id": "d010-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "No,",
+            "it",
+            "is",
+            "not",
+            "a",
+            "door"
+          ],
+          "answer": "No, it is not a door"
+        },
+        {
+          "id": "d010-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "___ it a book? ___, it is.",
+          "answer": [
+            "Is",
+            "Yes"
+          ]
+        },
+        {
+          "id": "d010-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "มันคือหน้าต่าง",
+          "accept": [
+            "It is a window",
+            "It's a window",
+            "This is a window"
+          ]
+        },
+        {
+          "id": "d010-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-twenty"
+            },
+            {
+              "vocabId": "v-door"
+            },
+            {
+              "vocabId": "v-window"
+            },
+            {
+              "vocabId": "v-table"
+            },
+            {
+              "vocabId": "v-water"
+            },
+            {
+              "vocabId": "v-no"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

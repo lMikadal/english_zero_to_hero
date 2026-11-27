@@ -421,5 +421,1233 @@
     "topics": ["greetings", "communication"],
     "examples": [{"en": "Yes, please.", "th": "ขอด้วยค่ะ/ครับ"}],
     "collocations": ["yes, please"]
+  },
+  {
+    "id": "v-be",
+    "word": "be",
+    "pos": "verb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/biː/",
+      "uk": "/biː/"
+    },
+    "th": "เป็น, อยู่, คือ (am / is / are)",
+    "topics": [
+      "function_words",
+      "communication"
+    ],
+    "examples": [
+      {
+        "en": "I am Ann.",
+        "th": "ฉันคือแอน"
+      },
+      {
+        "en": "You are my friend.",
+        "th": "คุณเป็นเพื่อนของฉัน"
+      },
+      {
+        "en": "He is nine.",
+        "th": "เขาอายุเก้าขวบ"
+      }
+    ],
+    "collocations": [
+      "be happy",
+      "be a student"
+    ],
+    "forms": {
+      "present": "am / is / are",
+      "past": "was / were",
+      "pastParticiple": "been"
+    }
+  },
+  {
+    "id": "v-number",
+    "word": "number",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈnʌmbər/",
+      "uk": "/ˈnʌmbə/"
+    },
+    "th": "ตัวเลข, หมายเลข",
+    "topics": [
+      "numbers_money",
+      "communication"
+    ],
+    "examples": [
+      {
+        "en": "Number five, please.",
+        "th": "ขอหมายเลขห้าครับ/ค่ะ"
+      },
+      {
+        "en": "What number is it?",
+        "th": "นี่คือเลขอะไร"
+      }
+    ],
+    "collocations": [
+      "phone number",
+      "number one"
+    ],
+    "forms": {
+      "plural": "numbers"
+    }
+  },
+  {
+    "id": "v-one",
+    "word": "one",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/wʌn/",
+      "uk": "/wʌn/"
+    },
+    "th": "หนึ่ง (1)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "I am one of the students.",
+        "th": "ฉันเป็นหนึ่งในนักเรียน"
+      },
+      {
+        "en": "One, two, three!",
+        "th": "หนึ่ง สอง สาม"
+      }
+    ],
+    "collocations": [
+      "one by one"
+    ]
+  },
+  {
+    "id": "v-two",
+    "word": "two",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/tuː/",
+      "uk": "/tuː/"
+    },
+    "th": "สอง (2)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "Two cups of tea, please.",
+        "th": "ขอชาสองถ้วยครับ/ค่ะ"
+      }
+    ],
+    "collocations": [
+      "two of us"
+    ]
+  },
+  {
+    "id": "v-three",
+    "word": "three",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/θriː/",
+      "uk": "/θriː/"
+    },
+    "th": "สาม (3)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My friend is three.",
+        "th": "เพื่อนของฉันอายุสามขวบ"
+      },
+      {
+        "en": "Three, please.",
+        "th": "ขอสามครับ/ค่ะ"
+      }
+    ]
+  },
+  {
+    "id": "v-four",
+    "word": "four",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/fɔːr/",
+      "uk": "/fɔː/"
+    },
+    "th": "สี่ (4)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "It is four in the afternoon.",
+        "th": "ตอนนี้สี่โมงเย็น"
+      },
+      {
+        "en": "Number four is big.",
+        "th": "หมายเลขสี่ใหญ่"
+      }
+    ]
+  },
+  {
+    "id": "v-five",
+    "word": "five",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/faɪv/",
+      "uk": "/faɪv/"
+    },
+    "th": "ห้า (5)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "I am five.",
+        "th": "ฉันอายุห้าขวบ"
+      },
+      {
+        "en": "Five cups are on the table.",
+        "th": "ถ้วยห้าใบอยู่บนโต๊ะ"
+      }
+    ]
+  },
+  {
+    "id": "v-tea",
+    "word": "tea",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/tiː/",
+      "uk": "/tiː/"
+    },
+    "th": "ชา (เครื่องดื่ม)",
+    "topics": [
+      "food_drink"
+    ],
+    "examples": [
+      {
+        "en": "Tea, please.",
+        "th": "ขอชาหน่อยครับ/ค่ะ"
+      },
+      {
+        "en": "The tea is hot.",
+        "th": "ชาร้อน"
+      }
+    ],
+    "collocations": [
+      "a cup of tea",
+      "hot tea"
+    ]
+  },
+  {
+    "id": "v-six",
+    "word": "six",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/sɪks/",
+      "uk": "/sɪks/"
+    },
+    "th": "หก (6)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "Six cats are in the house.",
+        "th": "แมวหกตัวอยู่ในบ้าน"
+      }
+    ]
+  },
+  {
+    "id": "v-seven",
+    "word": "seven",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈsevn/",
+      "uk": "/ˈsevn/"
+    },
+    "th": "เจ็ด (7)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "She is seven.",
+        "th": "เธออายุเจ็ดขวบ"
+      }
+    ],
+    "collocations": [
+      "seven days"
+    ]
+  },
+  {
+    "id": "v-eight",
+    "word": "eight",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/eɪt/",
+      "uk": "/eɪt/"
+    },
+    "th": "แปด (8)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "It is eight in the morning.",
+        "th": "ตอนนี้แปดโมงเช้า"
+      },
+      {
+        "en": "He is eight.",
+        "th": "เขาอายุแปดขวบ"
+      }
+    ]
+  },
+  {
+    "id": "v-nine",
+    "word": "nine",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/naɪn/",
+      "uk": "/naɪn/"
+    },
+    "th": "เก้า (9)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My friend is nine.",
+        "th": "เพื่อนของฉันอายุเก้าขวบ"
+      }
+    ]
+  },
+  {
+    "id": "v-ten",
+    "word": "ten",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ten/",
+      "uk": "/ten/"
+    },
+    "th": "สิบ (10)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "Ten, nine, eight, seven!",
+        "th": "สิบ เก้า แปด เจ็ด"
+      }
+    ],
+    "collocations": [
+      "ten minutes"
+    ]
+  },
+  {
+    "id": "v-old",
+    "word": "old",
+    "pos": "adjective",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/oʊld/",
+      "uk": "/əʊld/"
+    },
+    "th": "อายุ...ปี, แก่, เก่า",
+    "topics": [
+      "time_dates",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "How old are you?",
+        "th": "คุณอายุเท่าไร"
+      },
+      {
+        "en": "My bus is old.",
+        "th": "รถเมล์ของฉันเก่า"
+      }
+    ],
+    "collocations": [
+      "how old",
+      "an old friend"
+    ],
+    "forms": {
+      "comparative": "older",
+      "superlative": "oldest"
+    }
+  },
+  {
+    "id": "v-he",
+    "word": "he",
+    "pos": "pronoun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/hiː/",
+      "uk": "/hiː/"
+    },
+    "th": "เขา (ผู้ชาย)",
+    "topics": [
+      "function_words",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "He is my friend.",
+        "th": "เขาเป็นเพื่อนของฉัน"
+      },
+      {
+        "en": "He is from England.",
+        "th": "เขามาจากอังกฤษ"
+      }
+    ],
+    "forms": {
+      "object": "him",
+      "possessive": "his"
+    }
+  },
+  {
+    "id": "v-she",
+    "word": "she",
+    "pos": "pronoun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ʃiː/",
+      "uk": "/ʃiː/"
+    },
+    "th": "เธอ (ผู้หญิง)",
+    "topics": [
+      "function_words",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "She is a good friend.",
+        "th": "เธอเป็นเพื่อนที่ดี"
+      },
+      {
+        "en": "She is from Thailand.",
+        "th": "เธอมาจากประเทศไทย"
+      }
+    ],
+    "forms": {
+      "object": "her",
+      "possessive": "her"
+    }
+  },
+  {
+    "id": "v-school",
+    "word": "school",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/skuːl/",
+      "uk": "/skuːl/"
+    },
+    "th": "โรงเรียน",
+    "topics": [
+      "work_study",
+      "places_city"
+    ],
+    "examples": [
+      {
+        "en": "This is my school.",
+        "th": "นี่คือโรงเรียนของฉัน"
+      },
+      {
+        "en": "The school is big.",
+        "th": "โรงเรียนหลังนี้ใหญ่"
+      }
+    ],
+    "collocations": [
+      "go to school",
+      "a big school"
+    ],
+    "forms": {
+      "plural": "schools"
+    }
+  },
+  {
+    "id": "v-twenty",
+    "word": "twenty",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈtwenti/",
+      "uk": "/ˈtwenti/"
+    },
+    "th": "ยี่สิบ (20)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "I am twenty.",
+        "th": "ฉันอายุยี่สิบปี"
+      },
+      {
+        "en": "Twenty students are in the school.",
+        "th": "นักเรียนยี่สิบคนอยู่ในโรงเรียน"
+      }
+    ]
+  },
+  {
+    "id": "v-door",
+    "word": "door",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/dɔːr/",
+      "uk": "/dɔː/"
+    },
+    "th": "ประตู",
+    "topics": [
+      "home",
+      "places_city"
+    ],
+    "examples": [
+      {
+        "en": "The door is big.",
+        "th": "ประตูบานนี้ใหญ่"
+      },
+      {
+        "en": "Is it a door?",
+        "th": "นี่คือประตูหรือเปล่า"
+      }
+    ],
+    "collocations": [
+      "open the door"
+    ],
+    "forms": {
+      "plural": "doors"
+    }
+  },
+  {
+    "id": "v-window",
+    "word": "window",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈwɪndoʊ/",
+      "uk": "/ˈwɪndəʊ/"
+    },
+    "th": "หน้าต่าง",
+    "topics": [
+      "home",
+      "places_city"
+    ],
+    "examples": [
+      {
+        "en": "It is not a door. It is a window.",
+        "th": "นั่นไม่ใช่ประตู แต่เป็นหน้าต่าง"
+      }
+    ],
+    "collocations": [
+      "a big window"
+    ],
+    "forms": {
+      "plural": "windows"
+    }
+  },
+  {
+    "id": "v-table",
+    "word": "table",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈteɪbl/",
+      "uk": "/ˈteɪbl/"
+    },
+    "th": "โต๊ะ",
+    "topics": [
+      "home",
+      "food_drink"
+    ],
+    "examples": [
+      {
+        "en": "The book is on the table.",
+        "th": "หนังสืออยู่บนโต๊ะ"
+      }
+    ],
+    "collocations": [
+      "on the table",
+      "a big table"
+    ],
+    "forms": {
+      "plural": "tables"
+    }
+  },
+  {
+    "id": "v-book",
+    "word": "book",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/bʊk/",
+      "uk": "/bʊk/"
+    },
+    "th": "หนังสือ",
+    "topics": [
+      "work_study",
+      "home"
+    ],
+    "examples": [
+      {
+        "en": "Is it a book?",
+        "th": "นั่นคือหนังสือหรือเปล่า"
+      },
+      {
+        "en": "My book is on the table.",
+        "th": "หนังสือของฉันอยู่บนโต๊ะ"
+      }
+    ],
+    "collocations": [
+      "a good book"
+    ],
+    "forms": {
+      "plural": "books"
+    }
+  },
+  {
+    "id": "v-water",
+    "word": "water",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈwɔːtər/",
+      "uk": "/ˈwɔːtə/"
+    },
+    "th": "น้ำ, น้ำดื่ม",
+    "topics": [
+      "food_drink"
+    ],
+    "examples": [
+      {
+        "en": "Water, please.",
+        "th": "ขอน้ำหน่อยครับ/ค่ะ"
+      },
+      {
+        "en": "The water is hot.",
+        "th": "น้ำร้อน"
+      }
+    ],
+    "collocations": [
+      "a cup of water",
+      "hot water"
+    ]
+  },
+  {
+    "id": "v-yes",
+    "word": "yes",
+    "pos": "exclamation",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/jes/",
+      "uk": "/jes/"
+    },
+    "th": "ใช่, ครับ/ค่ะ (ตอบรับ)",
+    "topics": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "en": "Yes, I am.",
+        "th": "ใช่ ฉันเป็น"
+      },
+      {
+        "en": "Yes, it is.",
+        "th": "ใช่ ถูกแล้ว"
+      }
+    ]
+  },
+  {
+    "id": "v-no",
+    "word": "no",
+    "pos": "exclamation",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/noʊ/",
+      "uk": "/nəʊ/"
+    },
+    "th": "ไม่ใช่ (ตอบปฏิเสธ)",
+    "topics": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "en": "No, it is not.",
+        "th": "ไม่ใช่ มันไม่ใช่"
+      }
+    ]
+  },
+  {
+    "id": "v-not",
+    "word": "not",
+    "pos": "adverb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/nɑːt/",
+      "uk": "/nɒt/"
+    },
+    "th": "ไม่ (วางหลัง am / is / are เพื่อปฏิเสธ)",
+    "topics": [
+      "function_words",
+      "communication"
+    ],
+    "examples": [
+      {
+        "en": "I am not a doctor.",
+        "th": "ฉันไม่ใช่หมอ"
+      },
+      {
+        "en": "It is not big.",
+        "th": "มันไม่ใหญ่"
+      }
+    ],
+    "collocations": [
+      "is not",
+      "am not"
+    ]
+  },
+  {
+    "id": "v-student",
+    "word": "student",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈstuːdnt/",
+      "uk": "/ˈstjuːdnt/"
+    },
+    "th": "นักเรียน, นักศึกษา",
+    "topics": [
+      "work_study",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "Are you a student?",
+        "th": "คุณเป็นนักเรียนหรือเปล่า"
+      },
+      {
+        "en": "She is a student.",
+        "th": "เธอเป็นนักเรียน"
+      }
+    ],
+    "collocations": [
+      "a good student"
+    ],
+    "forms": {
+      "plural": "students"
+    }
+  },
+  {
+    "id": "v-teacher",
+    "word": "teacher",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈtiːtʃər/",
+      "uk": "/ˈtiːtʃə/"
+    },
+    "th": "ครู, อาจารย์",
+    "topics": [
+      "work_study",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "My friend is a teacher.",
+        "th": "เพื่อนของฉันเป็นครู"
+      },
+      {
+        "en": "He is a good teacher.",
+        "th": "เขาเป็นครูที่ดี"
+      }
+    ],
+    "collocations": [
+      "a good teacher"
+    ],
+    "forms": {
+      "plural": "teachers"
+    }
+  },
+  {
+    "id": "v-doctor",
+    "word": "doctor",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈdɑːktər/",
+      "uk": "/ˈdɒktə/"
+    },
+    "th": "หมอ, แพทย์",
+    "topics": [
+      "body_health",
+      "work_study"
+    ],
+    "examples": [
+      {
+        "en": "He is a doctor.",
+        "th": "เขาเป็นหมอ"
+      },
+      {
+        "en": "Is she a doctor?",
+        "th": "เธอเป็นหมอหรือเปล่า"
+      }
+    ],
+    "collocations": [
+      "see a doctor"
+    ],
+    "forms": {
+      "plural": "doctors"
+    }
+  },
+  {
+    "id": "v-girl",
+    "word": "girl",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ɡɜːrl/",
+      "uk": "/ɡɜːl/"
+    },
+    "th": "เด็กผู้หญิง, สาว",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "The girl is nine.",
+        "th": "เด็กผู้หญิงคนนั้นอายุเก้าขวบ"
+      }
+    ],
+    "collocations": [
+      "a little girl"
+    ],
+    "forms": {
+      "plural": "girls"
+    }
+  },
+  {
+    "id": "v-boy",
+    "word": "boy",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/bɔɪ/",
+      "uk": "/bɔɪ/"
+    },
+    "th": "เด็กผู้ชาย",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "The boy is my friend.",
+        "th": "เด็กผู้ชายคนนั้นเป็นเพื่อนของฉัน"
+      }
+    ],
+    "collocations": [
+      "a little boy"
+    ],
+    "forms": {
+      "plural": "boys"
+    }
+  },
+  {
+    "id": "v-work",
+    "word": "work",
+    "pos": "verb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/wɜːrk/",
+      "uk": "/wɜːk/"
+    },
+    "th": "ทำงาน",
+    "topics": [
+      "work_study",
+      "daily_routine"
+    ],
+    "examples": [
+      {
+        "en": "I work in a school.",
+        "th": "ฉันทำงานในโรงเรียน"
+      },
+      {
+        "en": "Do you work in a shop?",
+        "th": "คุณทำงานในร้านค้าหรือเปล่า"
+      }
+    ],
+    "collocations": [
+      "work in a school",
+      "work hard"
+    ],
+    "forms": {
+      "past": "worked",
+      "pastParticiple": "worked"
+    }
+  },
+  {
+    "id": "v-hundred",
+    "word": "hundred",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈhʌndrəd/",
+      "uk": "/ˈhʌndrəd/"
+    },
+    "th": "ร้อย (100)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "A hundred students are in the school.",
+        "th": "นักเรียนหนึ่งร้อยคนอยู่ในโรงเรียน"
+      }
+    ],
+    "collocations": [
+      "a hundred"
+    ]
+  },
+  {
+    "id": "v-we",
+    "word": "we",
+    "pos": "pronoun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/wiː/",
+      "uk": "/wiː/"
+    },
+    "th": "พวกเรา, เรา",
+    "topics": [
+      "function_words",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "We are friends.",
+        "th": "พวกเราเป็นเพื่อนกัน"
+      },
+      {
+        "en": "We are in the park.",
+        "th": "พวกเราอยู่ในสวนสาธารณะ"
+      }
+    ],
+    "forms": {
+      "object": "us",
+      "possessive": "our"
+    }
+  },
+  {
+    "id": "v-they",
+    "word": "they",
+    "pos": "pronoun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ðeɪ/",
+      "uk": "/ðeɪ/"
+    },
+    "th": "พวกเขา",
+    "topics": [
+      "function_words",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "They are my friends.",
+        "th": "พวกเขาเป็นเพื่อนของฉัน"
+      },
+      {
+        "en": "They are not in the shop.",
+        "th": "พวกเขาไม่ได้อยู่ในร้าน"
+      }
+    ],
+    "forms": {
+      "object": "them",
+      "possessive": "their"
+    }
+  },
+  {
+    "id": "v-car",
+    "word": "car",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/kɑːr/",
+      "uk": "/kɑː/"
+    },
+    "th": "รถยนต์, รถเก๋ง",
+    "topics": [
+      "travel_transport"
+    ],
+    "examples": [
+      {
+        "en": "The car is in the park.",
+        "th": "รถยนต์จอดอยู่ในสวน"
+      },
+      {
+        "en": "My car is not big.",
+        "th": "รถของฉันไม่ใหญ่"
+      }
+    ],
+    "collocations": [
+      "a big car"
+    ],
+    "forms": {
+      "plural": "cars"
+    }
+  },
+  {
+    "id": "v-park",
+    "word": "park",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/pɑːrk/",
+      "uk": "/pɑːk/"
+    },
+    "th": "สวนสาธารณะ",
+    "topics": [
+      "places_city",
+      "hobbies_sport"
+    ],
+    "examples": [
+      {
+        "en": "We are in the park.",
+        "th": "พวกเราอยู่ในสวนสาธารณะ"
+      },
+      {
+        "en": "The park is big.",
+        "th": "สวนสาธารณะแห่งนี้ใหญ่"
+      }
+    ],
+    "collocations": [
+      "a big park"
+    ],
+    "forms": {
+      "plural": "parks"
+    }
+  },
+  {
+    "id": "v-house",
+    "word": "house",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/haʊs/",
+      "uk": "/haʊs/"
+    },
+    "th": "บ้าน (ตัวอาคาร)",
+    "topics": [
+      "home",
+      "places_city"
+    ],
+    "examples": [
+      {
+        "en": "My house is not big.",
+        "th": "บ้านของฉันไม่ใหญ่"
+      },
+      {
+        "en": "This is my house.",
+        "th": "นี่คือบ้านของฉัน"
+      }
+    ],
+    "collocations": [
+      "a big house"
+    ],
+    "forms": {
+      "plural": "houses"
+    }
+  },
+  {
+    "id": "v-shop",
+    "word": "shop",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ʃɑːp/",
+      "uk": "/ʃɒp/"
+    },
+    "th": "ร้านค้า, ร้าน",
+    "topics": [
+      "shopping",
+      "places_city"
+    ],
+    "examples": [
+      {
+        "en": "The shop is big.",
+        "th": "ร้านนั้นใหญ่"
+      },
+      {
+        "en": "They are not in the shop.",
+        "th": "พวกเขาไม่ได้อยู่ในร้าน"
+      }
+    ],
+    "collocations": [
+      "a big shop"
+    ],
+    "forms": {
+      "plural": "shops"
+    }
+  },
+  {
+    "id": "v-happy",
+    "word": "happy",
+    "pos": "adjective",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈhæpi/",
+      "uk": "/ˈhæpi/"
+    },
+    "th": "มีความสุข, ดีใจ",
+    "topics": [
+      "feelings"
+    ],
+    "examples": [
+      {
+        "en": "We are happy.",
+        "th": "พวกเรามีความสุข"
+      },
+      {
+        "en": "Ann is happy in the park.",
+        "th": "แอนมีความสุขในสวนสาธารณะ"
+      }
+    ],
+    "collocations": [
+      "happy day"
+    ],
+    "forms": {
+      "comparative": "happier",
+      "superlative": "happiest"
+    }
   }
 ]
