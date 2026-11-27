@@ -1,7 +1,7 @@
 // Rules "taught-words" and "vocab-used": learner-facing English only uses words taught by that day (or allowlisted),
 // and every word a lesson teaches is used in that lesson. Word handling: lexicon.ts. Allowlists: allowlists.ts.
 import type { Problem } from "../loader";
-import { ALWAYS_ALLOWED } from "./allowlists";
+import { ALWAYS_ALLOWED, USED_BEFORE_TAUGHT } from "./allowlists";
 import type { RuleContext } from "./context";
 import { glossedWords, learnerEnglish } from "./learner-text";
 import { surfaceForms, tokenize, usageForms } from "./lexicon";
@@ -28,7 +28,8 @@ function unknown(text: string, day: number, firstDay: Map<string, number>, extra
   const seen = new Set<string>();
   for (const t of tokenize(text)) {
     const d = firstDay.get(t);
-    if (!ALWAYS_ALLOWED.has(t) && !extra.has(t) && (d === undefined || d > day)) seen.add(t);
+    const until = USED_BEFORE_TAUGHT[t];
+    if (!ALWAYS_ALLOWED.has(t) && !extra.has(t) && (until === undefined || day > until) && (d === undefined || d > day)) seen.add(t);
   }
   return [...seen];
 }
@@ -87,4 +88,24 @@ export function checkVocabUsedOnItsDay(ctx: RuleContext): Problem[] {
     });
   }
   return problems;
+}
+
+/** Days on which `token` appears in checked learner-facing text before its entry is taught (or when it never is). Used by the allowlist tests. */
+export function untaughtUses(ctx: RuleContext, token: string): number[] {
+  const firstDay = firstDayOfForms(ctx);
+  const first = firstDay.get(token);
+  const days = new Set<number>();
+  const visit = (text: string, day: number) => {
+    if (tokenize(text).includes(token) && (first === undefined || first > day)) days.add(day);
+  };
+  for (const [id, { item }] of ctx.bank) {
+    const taught = ctx.taughtIn.get(id);
+    if (taught) for (const ex of item.examples) visit(ex.en, taught.day);
+  }
+  for (const { lesson } of ctx.lessons) {
+    for (const section of lesson.sections) {
+      for (const ex of section.exercises) for (const f of learnerEnglish(ex)) if (!f.drill && !f.bilingual) visit(f.text, lesson.day);
+    }
+  }
+  return [...days].sort((a, b) => a - b);
 }

@@ -1715,5 +1715,17 @@
     "collocations": [
       "in the park"
     ]
+  },
+  {
+    "id": "v-box",
+    "word": "box",
+    "pos": "noun",
+    "oxford": {"list": "3000", "level": "A1"},
+    "ipa": {"us": "/bɑːks/", "uk": "/bɒks/"},
+    "th": "กล่อง",
+    "topics": ["home"],
+    "examples": [{"en": "The box is hot.", "th": "กล่องร้อน"}],
+    "collocations": ["a big box"],
+    "forms": {"plural": "boxes"}
   }
 ]

@@ -1,37 +1,43 @@
 // The ONLY place where words are allowed in learner-facing English without being taught (rule "taught-words").
-// Both lists must SHRINK over time: when a word gets a vocab entry, delete it here (the entry's day then governs).
+// Every list here must SHRINK over time; tests (allowlists.stale.test.ts) fail when an entry makes an item redundant.
 // Adding a word here is a decision, not a fix: prefer teaching the word earlier or rewriting the sentence.
 //
 // Everything is lower case except PROPER_NAMES (which also drives the arrange_words rule, see arrange-words.ts).
 
 /**
- * Function words and other very frequent words that have no vocab entry yet. They are not "new vocabulary" for the
- * learner: the course introduces them through patterns (My name is..., This is a..., I have...) rather than as cards.
+ * Closed-class words with no entry (and none planned): they are not "new vocabulary", the course introduces them
+ * through patterns (My name is..., This is a...). A test fails if one of these gets a vocab entry.
  */
 export const FUNCTION_WORDS: readonly string[] = [
   "a", "an", "the", // articles
   "and", "or", "but", // conjunctions
   "of", "to", "at", // prepositions
-  "i", "you", "it", "this", "that", "my", "your", // pronouns and determiners used from day 1
-  "what", // question word of the day-1 patterns
-  "have", // "I have a cat" (v-cat example); no entry yet
-  "who", // question word (Who is your friend?); no entry yet
-  "baht", // the currency of the learner's country, used in the number lessons
-  "too", // "Nice to meet you, too" (glossed on day 1, used again on day 7)
-  // Forms of "be" are used as chunks from day 1 (My name IS Sam, I AM Ann, You ARE...). The entry v-be is taught on
-  // day 8; delete these three when the course teaches "be" earlier.
-  "am", "is", "are",
+  "baht", // the currency of the learner's country, used in the number lessons (a loanword, not an Oxford word)
 ];
 
 /**
- * Words that HAVE an entry, but the entry is taught later than the reviewed lessons already use the word.
- * Recommended fix for the content writer: move the entry to an earlier day, then delete the word from this list.
+ * Oxford A1 words that are used from day 1 but have no vocab entry yet. Known gap: give each an entry, then delete it
+ * here. A test fails as soon as an entry exists, so this list cannot rot.
  */
-export const USED_BEFORE_TAUGHT: readonly string[] = [
-  "in", // v-in is taught on day 12, but days 8, 9 and 11 already use it ("Ann is in my school", "I work in a school")
-  "yes", "no", // answer choices (Yes / No) in the day-3 and day-4 reading questions; v-yes and v-no are taught on day 10
-  "box", // the /ɑː/ example word, used in repeat_after_me sentences on days 4 and 6; no entry exists
+export const A1_WORDS_WITHOUT_ENTRY_YET: readonly string[] = [
+  "i", "you", "it", "this", "that", "my", "your", // pronouns and determiners of the day-1 patterns
+  "what", "who", // question words
+  "have", // "I have a cat"
+  "too", // "Nice to meet you, too"
 ];
+
+/**
+ * Words that HAVE an entry, but the reviewed lessons use them before the entry's day. word -> the LATEST lesson day
+ * on which it may still be used untaught (always before the entry's day). Fix for the content writer: teach the entry
+ * earlier, then delete the word here. A test fails when the entry is missing, the word is no longer used untaught,
+ * or the limit is not before the teaching day.
+ */
+export const USED_BEFORE_TAUGHT: Readonly<Record<string, number>> = {
+  // forms of "be" are used as chunks from day 1 (My name IS Sam, I AM Ann); v-be is taught on day 8
+  am: 7, is: 7, are: 7,
+  in: 11, // v-in is taught on day 12; "Ann is in my school" (day 9), "I work in a school" (day 11)
+  yes: 9, no: 9, // Yes / No answer choices in the day-3 and day-4 reading questions; v-yes, v-no are taught on day 10
+};
 
 /**
  * Number words with no entry of their own: 11-19 and the tens are taught as a pattern (-teen / -ty) in the pronunciation
@@ -55,5 +61,5 @@ export const LETTERS: readonly string[] = "abcdefghijklmnopqrstuvwxyz".split("")
 
 /** Lower-case set used by the taught-words rule. */
 export const ALWAYS_ALLOWED: ReadonlySet<string> = new Set([
-  ...FUNCTION_WORDS, ...USED_BEFORE_TAUGHT, ...NUMBER_WORDS_WITHOUT_ENTRY, ...PROPER_NAMES.map((n) => n.toLowerCase()), ...LETTERS,
+  ...FUNCTION_WORDS, ...A1_WORDS_WITHOUT_ENTRY_YET, ...NUMBER_WORDS_WITHOUT_ENTRY, ...PROPER_NAMES.map((n) => n.toLowerCase()), ...LETTERS,
 ]);
