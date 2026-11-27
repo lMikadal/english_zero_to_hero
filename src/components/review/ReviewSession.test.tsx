@@ -371,3 +371,78 @@ describe("the server's card replaces the local one (plan 4.4 item 13)", () => {
     expect(off).toHaveBeenCalled();
   });
 });
+
+describe("a card the server dropped (PR 4 review follow-up)", () => {
+  const TWO: CardSpec[] = [["country", "en_th"], ["friend", "th_en"]];
+  async function setup(specs: CardSpec[] = TWO) {
+    let push: (r: ResultOf) => void = () => {};
+    const sink = fakeSink({ status: "done", response: DONE });
+    show(specs, { serverCards: (cb) => { push = cb; return () => {}; } }, sink);
+    return { sink, push: (r: ResultOf) => act(() => push(r)) };
+  }
+  type ResultOf = ReviewResult;
+
+  it("shows a visible note (not only a screen-reader one) until the next rating, and does not block", async () => {
+    const { sink, push } = await setup([...TWO, ["water", "en_th"]]);
+    await reveal(); await rate("จำไม่ได้");
+    push({ id: reviewsSent(sink)[0].id, status: "rejected", reason: "invalid" });
+    const note = screen.getByRole("status");
+    expect(note).toHaveTextContent("บันทึกใบนี้ไม่ได้ จึงข้ามไป");
+    expect(note.className).not.toMatch(/\bsr-only\b/);
+    expect(screen.getByRole("button", { name: /^ดู/ })).toBeEnabled();
+    await reveal(); await rate("ง่าย");
+    expect(screen.getByRole("status")).not.toHaveTextContent("ข้ามไป");
+  });
+
+  it("without a drop the status region stays screen-reader only", async () => {
+    show(TWO);
+    expect(screen.getByRole("status").className).toMatch(/\bsr-only\b/);
+  });
+
+  it("moves focus to the step heading when the dropped card was on screen with its back revealed", async () => {
+    const { sink, push } = await setup();
+    await reveal(); await rate("จำไม่ได้"); // friend next, country back after it
+    await reveal(); await rate("จำไม่ได้"); // country is on screen again
+    await reveal();
+    expect(screen.getByRole("button", { name: /^ได้/ })).toHaveFocus();
+    push({ id: reviewsSent(sink)[0].id, status: "rejected", reason: "not_taught" }); // the first review of country
+    expect(screen.queryByRole("button", { name: /^ได้/ })).toBeNull();
+    expect(screen.getByRole("heading", { level: 1, name: "ทวนคำศัพท์" })).toHaveFocus();
+  });
+
+  it("a rejection that arrives after the session finished does not make the completion screen contradictory", async () => {
+    const sink = fakeSink({ status: "done", response: { ...DONE, countedForStreak: false, remainingDue: 1, streak: { current: 0, longest: 7 } } });
+    show([["country", "en_th"]], {}, sink);
+    await reveal(); await rate("ง่าย");
+    expect(await screen.findByText("ยังมีคำถึงกำหนดอีก 1 ใบ")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "จบรอบนี้แล้ว" })).toBeInTheDocument();
+    expect(screen.queryByText("ทวนครบแล้ว")).toBeNull();
+    expect(screen.getByRole("link", { name: "ทวนต่อ" })).toBeInTheDocument();
+  });
+
+  it("when nothing is left over the heading still says ทวนครบแล้ว", async () => {
+    show([["country", "en_th"]], {}, fakeSink({ status: "done", response: { ...DONE, countedForStreak: false, remainingDue: 0 } }));
+    await reveal(); await rate("ง่าย");
+    expect(await screen.findByText("รอบนี้ไม่ได้นับเพิ่มในสตรีค")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "ทวนครบแล้ว" })).toBeInTheDocument();
+  });
+});
+
+describe("the interval labels follow ReviewQueue.timeZone (plan 4.4 item 13)", () => {
+  // Reviewed at 18:00 on 1 January in Auckland (+13) / 12:00 in Bangkok; asked at 11:30Z = 00:30 on the 2nd in Auckland (1 day later)
+  // but 18:30 on the 1st in Bangkok (the same day). FSRS counts calendar days, so the two zones give different intervals.
+  const last = new Date("2026-01-01T05:00:00Z");
+  const card = { ...reviewState("2026-01-01T05:00:00Z"), stability: 3, difficulty: 5, scheduledDays: 3, elapsedDays: 3, reps: 4, lastReview: last };
+  const at = new Date("2026-01-01T11:30:00Z");
+  const NAMES = [["จำไม่ได้", 1], ["ยาก", 2], ["ได้", 3], ["ง่าย", 4]] as const;
+  const labelsShown = () => Object.fromEntries(NAMES.map(([n, r]) => [r, screen.getByRole("button", { name: new RegExp(`^${n} `) }).textContent!.replace(n, "").trim()]));
+
+  it.each(["Pacific/Auckland", "America/Los_Angeles"])("shows the labels computed for %s, and they differ from the default zone's", async (zone) => {
+    const queue = makeQueue([["country", "en_th", card]], { timeZone: zone, endOfToday: "2026-01-02T23:59:00.000Z" });
+    renderWithAudio(<ReviewSession queue={queue} sink={fakeSink()} now={() => at} />, fakeAudio());
+    await reveal();
+    const expected = ratingIntervalLabels(card, at, zone);
+    expect(labelsShown()).toEqual(expected);
+    expect(ratingIntervalLabels(card, at, TZ)).not.toEqual(expected);
+  });
+});

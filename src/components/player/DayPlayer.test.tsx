@@ -30,7 +30,7 @@ describe("DayPlayer", () => {
       completeReview: async () => ({ status: "queued" as const }),
       pendingCount: () => 0,
       subscribe: () => () => {},
-      getState: () => ({ pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle" as const }),
+      getState: () => ({ pending: 0, pendingAttempts: 0, pendingReviews: 0, pendingReviewCompletions: 0, status: "idle" as const }),
       dispose: () => {},
       onReviewResult: () => () => {},
     };
