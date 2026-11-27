@@ -12,7 +12,7 @@ APP_UP = $(shell docker ps -q --filter status=running --filter label=com.docker.
 	--filter "label=com.docker.compose.project.working_dir=$(CURDIR)" 2>/dev/null)
 RUN = $(if $(APP_UP),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
 
-.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod
+.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod prod-init prod-check prod-build prod-up prod-down prod-logs prod-status prod-migrate prod-backup prod-restore
 
 help: ## List targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -82,4 +82,56 @@ db-reset: ## DEV ONLY: drop + recreate the *_dev database, then migrate (needs C
 
 # Not implemented yet: fail loudly instead of faking success.
 audio:       ; @echo "make $@: not implemented yet (PR 7: audio-tts)" >&2; exit 1
-prod:        ; @echo "make $@: not implemented yet (PR 13: selfhost-deploy)" >&2; exit 1
+
+# ---- Production (the real app on this machine; see docs/DEPLOYMENT.md) --------------------------------------------
+# A separate compose file and project (ezh_prod) with its own database volume: it never shares anything with the
+# dev stack above and can run at the same time (dev: 127.0.0.1:3000, prod: 127.0.0.1:3100). PROD_ENV / PROD_PROJECT
+# can be overridden to run a throwaway copy, e.g. for testing: make prod-up PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
+PROD_ENV ?= .env.prod
+PROD_PROJECT ?= ezh_prod
+PROD := $(COMPOSE) -p $(PROD_PROJECT) -f docker-compose.prod.yml --env-file $(PROD_ENV)
+prod_var = $(or $(shell sed -n 's/^$(1)=//p' $(PROD_ENV) 2>/dev/null | tail -n 1),$(2))
+PROD_DB = $(call prod_var,POSTGRES_DB,english_zero_to_hero)
+PROD_USER = $(call prod_var,POSTGRES_USER,ezh)
+PROD_PORT = $(call prod_var,APP_PORT,3100)
+PROD_BIND = $(call prod_var,APP_BIND,127.0.0.1)
+PROD_KEEP = $(call prod_var,BACKUP_KEEP,14)
+PROD_SCRIPT_ENV = COMPOSE_CMD='$(PROD)' DB_NAME='$(PROD_DB)' DB_USER='$(PROD_USER)' BACKUP_DIR=backups KEEP='$(PROD_KEEP)'
+
+prod: prod-init prod-build prod-up ## Production, one command: create .env.prod if missing, build the image, start it
+
+prod-init: ## Create .env.prod with a random database password (does nothing if it already exists)
+	@if [ -f '$(PROD_ENV)' ]; then echo "$(PROD_ENV) already exists, leaving it alone"; else \
+	  pw=$$(head -c 48 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32); \
+	  sed "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$$pw/" .env.prod.example > '$(PROD_ENV)' && chmod 600 '$(PROD_ENV)' \
+	  && echo "created $(PROD_ENV) with a random database password"; fi
+
+prod-check:
+	@sh scripts/prod/check-env.sh '$(PROD_ENV)'
+
+prod-build: prod-check ## Build the production image (run after git pull)
+	$(PROD) build
+
+prod-up: prod-check ## Start production (postgres + migrations + app); open http://127.0.0.1:3100
+	$(PROD) up -d --wait
+	@echo "production is up: http://$(PROD_BIND):$(PROD_PORT)"
+
+prod-down: ## Stop production (containers are removed, the database volume is kept)
+	$(PROD) down
+
+prod-logs: ## Follow production logs
+	$(PROD) logs -f --tail=100
+
+prod-status: ## Is production running and healthy?
+	$(PROD) ps -a
+	@curl -fsS --max-time 5 http://127.0.0.1:$(PROD_PORT)/api/health && echo " <- /api/health" || echo "app did not answer on port $(PROD_PORT)"
+
+prod-migrate: prod-check ## Apply pending database migrations by hand (prod-up already does this)
+	$(PROD) up -d --wait postgres
+	$(PROD) run --rm migrate
+
+prod-backup: prod-check ## Dump the production database to backups/ (keeps the newest BACKUP_KEEP)
+	@$(PROD_SCRIPT_ENV) sh scripts/prod/backup.sh
+
+prod-restore: prod-check ## Restore backups/<file> (needs FILE=... CONFIRM=<database name>); takes a safety backup first
+	@$(PROD_SCRIPT_ENV) sh scripts/prod/restore.sh '$(FILE)' '$(CONFIRM)'

@@ -1,0 +1,57 @@
+# Production stack (the user's own machine). Separate from docker-compose.yml on purpose:
+#  - its own project name, network and volume, so it can never touch the dev database or run into dev containers
+#  - no source bind mount, no dev tooling: everything the app needs is inside the image
+# Always used through make (make prod-up ...), which passes --env-file .env.prod and -p ezh_prod.
+name: ezh_prod
+
+x-app-build: &app-build
+  build:
+    context: .
+    target: prod
+  image: ${PROD_IMAGE:-ezh-prod-app:latest}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    # Not published to the host at all: only the app (same compose network) and `make prod-backup` (docker exec) reach it.
+    # restart: unless-stopped = containers come back when Docker is started again (docker-on) if they were running when
+    # Docker stopped. It does NOT start anything at boot: Docker itself is not enabled at boot. `make prod-down` removes
+    # the containers, so they stay off until the next `make prod-up`.
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ezh}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run make prod-init}
+      POSTGRES_DB: ${POSTGRES_DB:-english_zero_to_hero}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ezh} -d ${POSTGRES_DB:-english_zero_to_hero}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # one-shot: applies pending migrations (idempotent, never destructive), then exits 0
+  migrate:
+    <<: *app-build
+    restart: "no"
+    command: ["node", "migrate.mjs"]
+    environment:
+      DATABASE_URL: &db-url postgres://${POSTGRES_USER:-ezh}:${POSTGRES_PASSWORD:?run make prod-init}@postgres:5432/${POSTGRES_DB:-english_zero_to_hero}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    <<: *app-build
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: *db-url
+    ports:
+      # 127.0.0.1 by default: reached from the phone through `tailscale serve` (HTTPS), see docs/DEPLOYMENT.md
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3100}:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
