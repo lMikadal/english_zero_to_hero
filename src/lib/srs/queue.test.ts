@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { REQUEUE_GAP, SIBLING_GAP } from "./config";
 import { REVIEW_DIRECTIONS, type ReviewDirection } from "./contract";
 import {
-  cardKey, endOfToday, isDueToday, orderQueue, requeue, separateSiblings, sessionCounter, type QueueCard,
+  cardKey, endOfToday, isDueBefore, isDueToday, orderQueue, requeue, separateSiblings, sessionCounter, type QueueCard,
 } from "./queue";
 import { applyRating, newCardState, type CardState } from "./scheduler";
 
@@ -37,6 +37,19 @@ describe("isDueToday / endOfToday", () => {
   });
   it("a card due later today (the evening) is due even though now is noon", () => {
     expect(isDueToday(new Date("2026-11-26T15:00:00Z"), NOW, BKK)).toBe(true);
+  });
+});
+
+describe("isDueBefore (the boundary computed once per queue, not once per card)", () => {
+  it("is exactly `due < end`", () => {
+    expect(isDueBefore(new Date(END.getTime() - 1), END)).toBe(true);
+    expect(isDueBefore(END, END)).toBe(false);
+    expect(isDueBefore(new Date(END.getTime() + 1), END)).toBe(false);
+  });
+  it("agrees with isDueToday for the same moment and zone", () => {
+    for (const due of ["2026-11-26T16:59:59.999Z", "2026-11-26T17:00:00.000Z", "2020-01-01T00:00:00.000Z", "2026-12-01T00:00:00.000Z"]) {
+      expect(isDueBefore(new Date(due), END)).toBe(isDueToday(new Date(due), NOW, BKK));
+    }
   });
 });
 
@@ -202,9 +215,9 @@ describe("requeue (after a rating, a card that is still due today comes back)", 
   });
   it("uses the real scheduler: forgetting a Review card puts it back, easy on a new card does not", () => {
     const rev = review("v-a", "en_th", 5);
-    const forgot = applyRating(rev.state, 1, NOW);
+    const forgot = applyRating(rev.state, 1, NOW, "UTC");
     expect(requeue(rest("v-b", "v-c", "v-d", "v-e"), rev, forgot.due, END)).toHaveLength(5);
-    const easy = applyRating(newCardState(NOW), 4, NOW);
+    const easy = applyRating(newCardState(NOW), 4, NOW, "UTC");
     expect(requeue(rest("v-b", "v-c"), card("v-a", "en_th"), easy.due, END)).toHaveLength(2);
   });
 });

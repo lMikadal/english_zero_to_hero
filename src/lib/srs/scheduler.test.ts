@@ -87,27 +87,27 @@ describe("newCardState", () => {
 /** Cards in each state, built by playing real reviews: [label, card, a review time]. */
 function cards(): [string, CardState, Date][] {
   const fresh = newCardState(NOW);
-  const learning = applyRating(fresh, 3, NOW);
-  const review = applyRating(learning, 3, learning.due);
-  const relearning = applyRating(review, 1, review.due);
+  const learning = applyRating(fresh, 3, NOW, "UTC");
+  const review = applyRating(learning, 3, learning.due, "UTC");
+  const relearning = applyRating(review, 1, review.due, "UTC");
   const out: [string, CardState, Date][] = [];
   for (const [label, c] of [["new", fresh], ["learning", learning], ["review", review], ["relearning", relearning]] as const) {
     out.push([`${label}, on time`, c, new Date(Math.max(c.due.getTime(), c.lastReview?.getTime() ?? 0))]);
     out.push([`${label}, 3 days late`, c, new Date(c.due.getTime() + 3 * DAY)]);
   }
-  const mature = applyRating(applyRating(review, 3, review.due), 3, new Date(review.due.getTime() + 2 * DAY + 3600_000 * 0));
+  const mature = applyRating(applyRating(review, 3, review.due), 3, new Date(review.due.getTime() + 2 * DAY + 3600_000 * 0), "UTC");
   out.push(["mature, 8 hours early", mature, new Date(mature.due.getTime() - 8 * 3600_000)]);
   return out;
 }
 
 describe("applyRating and previewRatings", () => {
   it.each(cards().map(([label, c, t]) => [label, c, t] as const))("applyRating == previewRatings[r] for every rating (%s)", (_l, card, now) => {
-    const preview = previewRatings(card, now);
-    for (const r of RATINGS) expect(applyRating(card, r, now)).toEqual(preview[r]);
+    const preview = previewRatings(card, now, "UTC");
+    for (const r of RATINGS) expect(applyRating(card, r, now, "UTC")).toEqual(preview[r]);
   });
 
   it("previewRatings has exactly the four ratings", () => {
-    const p = previewRatings(newCardState(NOW), NOW);
+    const p = previewRatings(newCardState(NOW), NOW, "UTC");
     expect(Object.keys(p).map(Number)).toEqual([1, 2, 3, 4]);
   });
 
@@ -117,38 +117,38 @@ describe("applyRating and previewRatings", () => {
       const frozenNow = deepFreeze(new Date(now));
       const before = structuredClone(frozen);
       for (const r of RATINGS) {
-        expect(applyRating(frozen, r, frozenNow)).toEqual(applyRating(frozen, r, frozenNow));
+        expect(applyRating(frozen, r, frozenNow, "UTC")).toEqual(applyRating(frozen, r, frozenNow, "UTC"));
       }
-      expect(previewRatings(frozen, frozenNow)).toEqual(previewRatings(frozen, frozenNow));
+      expect(previewRatings(frozen, frozenNow, "UTC")).toEqual(previewRatings(frozen, frozenNow, "UTC"));
       expect(frozen).toEqual(before);
     }
   });
 
   it("previewRatings does not change what applyRating returns afterwards", () => {
     const [, card, now] = cards()[2];
-    const first = applyRating(card, 3, now);
-    previewRatings(card, now);
-    expect(applyRating(card, 3, now)).toEqual(first);
+    const first = applyRating(card, 3, now, "UTC");
+    previewRatings(card, now, "UTC");
+    expect(applyRating(card, 3, now, "UTC")).toEqual(first);
   });
 
   it("returns new Date objects (mutating a result cannot change the card)", () => {
     const [, card, now] = cards()[2];
-    const next = applyRating(card, 3, now);
+    const next = applyRating(card, 3, now, "UTC");
     expect(next.due).not.toBe(card.due);
     expect(next.lastReview).not.toBe(card.lastReview);
   });
 
   it("the card id of the library never leaks: the result has exactly the CardState keys", () => {
-    const next = applyRating(newCardState(NOW), 3, NOW);
+    const next = applyRating(newCardState(NOW), 3, NOW, "UTC");
     expect(Object.keys(next).sort()).toEqual(
       ["difficulty", "due", "elapsedDays", "lapses", "lastReview", "learningSteps", "reps", "scheduledDays", "stability", "state"],
     );
   });
 
   it("elapsedDays is the whole days since the last review at the time of this review", () => {
-    const card = applyRating(newCardState(NOW), 4, NOW); // Easy: due in 8 days
-    expect(applyRating(card, 3, new Date(NOW.getTime() + 8 * DAY)).elapsedDays).toBe(8);
-    expect(applyRating(card, 3, new Date(NOW.getTime() + 8 * DAY - 3600_000)).elapsedDays).toBe(7);
+    const card = applyRating(newCardState(NOW), 4, NOW, "UTC"); // Easy: due in 8 days
+    expect(applyRating(card, 3, new Date(NOW.getTime() + 8 * DAY), "UTC").elapsedDays).toBe(8);
+    expect(applyRating(card, 3, new Date(NOW.getTime() + 8 * DAY - 3600_000), "UTC").elapsedDays).toBe(7);
   });
 
   it("never schedules past the maximum interval (36500 days)", () => {
@@ -156,14 +156,14 @@ describe("applyRating and previewRatings", () => {
       due: NOW, stability: 36000, difficulty: 1, scheduledDays: 36000, learningSteps: 0, elapsedDays: 36000, reps: 30, lapses: 0, state: 2,
       lastReview: new Date(NOW.getTime() - 36000 * DAY),
     };
-    for (const r of [2, 3, 4] as const) expect(applyRating(old, r, NOW).scheduledDays).toBeLessThanOrEqual(36500);
-    expect(applyRating(old, 4, NOW).scheduledDays).toBe(36500);
+    for (const r of [2, 3, 4] as const) expect(applyRating(old, r, NOW, "UTC").scheduledDays).toBeLessThanOrEqual(36500);
+    expect(applyRating(old, 4, NOW, "UTC").scheduledDays).toBe(36500);
   });
 
   it("is deterministic with no fuzz: 100 reviews of the same card on the same day agree", () => {
     const [, card, now] = cards()[4];
-    const first = applyRating(card, 3, now);
-    for (let i = 0; i < 100; i++) expect(applyRating(card, 3, now)).toEqual(first);
+    const first = applyRating(card, 3, now, "UTC");
+    for (let i = 0; i < 100; i++) expect(applyRating(card, 3, now, "UTC")).toEqual(first);
   });
 });
 
@@ -184,7 +184,7 @@ describe("toStoredState (the jsonb of srs_reviews.state_before / state_after, do
     });
   });
   it("survives JSON", () => {
-    const s = toStoredState(applyRating(newCardState(NOW), 3, NOW));
+    const s = toStoredState(applyRating(newCardState(NOW), 3, NOW, "UTC"));
     expect(JSON.parse(JSON.stringify(s))).toEqual(s);
   });
 });

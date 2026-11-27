@@ -117,12 +117,12 @@ describe("completeReviewRequestSchema", () => {
 describe("toWire / fromWire", () => {
   const NOW = new Date("2026-01-01T01:00:00.000Z");
   it("round-trips every state exactly", () => {
-    const cards: CardState[] = [newCardState(NOW), applyRating(newCardState(NOW), 3, NOW)];
-    cards.push(applyRating(cards[1], 3, cards[1].due));
+    const cards: CardState[] = [newCardState(NOW), applyRating(newCardState(NOW), 3, NOW, "UTC")];
+    cards.push(applyRating(cards[1], 3, cards[1].due, "UTC"));
     for (const c of cards) expect(fromWire(toWire(c))).toEqual(c);
   });
   it("uses ISO strings and survives JSON", () => {
-    const c = applyRating(newCardState(NOW), 3, NOW);
+    const c = applyRating(newCardState(NOW), 3, NOW, "UTC");
     const w = toWire(c);
     expect(w.due).toBe("2026-01-01T01:10:00.000Z");
     expect(w.lastReview).toBe("2026-01-01T01:00:00.000Z");

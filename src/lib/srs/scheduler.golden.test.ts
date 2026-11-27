@@ -3,13 +3,13 @@
 // changes, and this test fails loudly. Regenerate only after reading the diff and deciding the change is wanted.
 import { describe, expect, it } from "vitest";
 import { applyRating, newCardState, type Rating } from "./scheduler";
-import { GOLDEN_SEQUENCES, GOLDEN_START } from "./scheduler.golden.vectors";
+import { GOLDEN_SEQUENCES } from "./scheduler.golden.vectors";
 
 describe("scheduler golden vectors", () => {
   it.each(GOLDEN_SEQUENCES.map((s) => [s.name, s] as const))("%s", (_name, seq) => {
-    let card = newCardState(new Date(GOLDEN_START));
+    let card = newCardState(new Date(seq.start));
     seq.steps.forEach((step, i) => {
-      card = applyRating(card, step.rating as Rating, new Date(step.now));
+      card = applyRating(card, step.rating as Rating, new Date(step.now), seq.tz);
       const at = `step ${i + 1} (rating ${step.rating})`;
       expect({ at, due: card.due.toISOString() }).toEqual({ at, due: step.due });
       expect({ at, stability: Number(card.stability.toFixed(4)) }).toEqual({ at, stability: step.stability });
@@ -22,6 +22,10 @@ describe("scheduler golden vectors", () => {
       });
       expect(card.lastReview?.toISOString()).toBe(step.now);
     });
+  });
+
+  it("includes the learner's local day cases: a UTC zone, Bangkok before and after 07:00 local, a DST zone, one east of UTC+12", () => {
+    expect(new Set(GOLDEN_SEQUENCES.map((s) => s.tz))).toEqual(new Set(["UTC", "Asia/Bangkok", "America/Los_Angeles", "Pacific/Auckland"]));
   });
 
   it("covers every state and a lapse", () => {
