@@ -63,6 +63,9 @@ services:
       # Not http://app: ".app" is on Chromium's HSTS preload list, so a bare host named "app"
       # is silently upgraded to https and fails with ERR_SSL_PROTOCOL_ERROR.
       BASE_URL: http://e2e-target:3000
+      # Only e2e/helpers/due.ts reads this (to make review cards due, see docs/TESTING.md). Same database the app uses in
+      # this stack; the helper refuses any name that does not end in _dev, so the real english_zero_to_hero cannot be hit.
+      E2E_DATABASE_URL: postgres://${POSTGRES_USER:-ezh}:${POSTGRES_PASSWORD:-ezh}@postgres:5432/${POSTGRES_DB:-english_zero_to_hero}_dev
     volumes:
       - .:/app
       - node_modules:/app/node_modules
