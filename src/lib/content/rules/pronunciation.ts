@@ -1,6 +1,6 @@
 // Rule "pronunciation": consistency of pronunciation items.
 //  (a) repeat_after_me: the IPA has as many words as the text (catches IPA copied from another sentence).
-//  (b) minimal_pair: no heteronyms, which text-to-speech reads unpredictably.
+//  (b) minimal_pair: no heteronyms, which TTS voices read unpredictably.
 //  (c) an IPA symbol named between slashes in an instruction must occur in the item's own IPA.
 // Escape hatch: none. Change the text, the IPA or the instruction.
 import type { Problem } from "../loader";
@@ -42,7 +42,7 @@ export function checkPronunciation(ctx: RuleContext): Problem[] {
           ex.pairs.forEach((p, n) => {
             for (const w of [p.a, p.b]) {
               if (HETERONYMS.includes(w.trim().toLowerCase())) {
-                add(`pairs[${n}]: "${w.toLowerCase()}" is a heteronym (its pronunciation depends on meaning), so text-to-speech may read it wrongly. Choose another word.`);
+                add(`pairs[${n}]: "${w.toLowerCase()}" is a heteronym (its pronunciation depends on meaning), so TTS voices may read it wrongly. Choose another word.`);
               }
             }
           });

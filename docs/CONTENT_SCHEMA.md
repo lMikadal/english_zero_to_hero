@@ -49,11 +49,18 @@
 5. ลบ `.` `!` `?` `,` ทุกตำแหน่ง (แทนด้วยช่องว่าง)
 6. ยุบช่องว่างซ้ำและตัดหัวท้าย
 
-ตัวอย่าง: `"B, U, S"` กับ `"b u s"` ตรงกัน, `"Nice to meet you…"` ตรงกับ `"Nice to meet you."` แต่ `"B-U-S"` ไม่ตรงกับ `"B U S"` (ขีดกลางไม่ถูกลบ) และ `"I am"` ไม่ตรงกับ `"I'm"`
+7. (เฉพาะตอนเทียบ ไม่ใช่ตอนแสดงผล) พับรูปที่ผู้เรียนเลือกเขียนได้อิสระให้เป็นรูปเดียว ทั้งสองฝั่ง (`src/lib/answers/equivalents.ts`):
+   - **คำย่อ = คำเต็ม:** `he's` = `he is`, `I'm` = `I am`, `don't` = `do not`, `can't` = `cannot` ฯลฯ (ตารางเดียวที่ `CONTRACTIONS`); `'s` ที่อาจเป็น `has` ไม่ถูกขยายเมื่อตามด้วย `got`; `its`/`his`/`Sam's` ไม่ถูกแตะ
+   - **ตัวเลข = คำ:** `10` = `ten`, `20` = `twenty`, `100` = `a hundred` = `one hundred` (ตารางเดียวที่ `NUMBER_WORDS`: 1–20, 30–90, 100) เทียบทีละคำเต็ม ๆ `110` จึงไม่เท่ากับ `ten`
+
+ตัวอย่าง: `"B, U, S"` กับ `"b u s"` ตรงกัน, `"Nice to meet you…"` ตรงกับ `"Nice to meet you."`, `"He's 10"` ตรงกับ `"He is ten"` แต่ `"B-U-S"` ไม่ตรงกับ `"B U S"` (ขีดกลางไม่ถูกลบ) และ `"Its a door"` ไม่ตรงกับ `"It's a door"`
+
+ใช้กับ `dictation`, `translate_th_en`, `fill_blank` และ `arrange_words` (ผ่านฟังก์ชันเดียวกันที่ client และ server)
 
 **แนวทางเขียน `accept`**
 - ไม่ต้องใส่รูปที่ต่างกันแค่ตัวพิมพ์ใหญ่เล็ก หรือเครื่องหมาย `. ! ? ,` (`"Nice to meet you"` ครอบคลุม `"nice to meet you!"`)
-- ต้องใส่รูปที่ต่างจริง: คำย่อกับคำเต็ม (`"I'm from Bangkok"` และ `"I am from Bangkok"`) คำพ้อง (`"Pleased to meet you"`) และขีดกลาง (`"b-u-s"`)
+- **ไม่ต้องใส่** คำย่อกับคำเต็ม (`I'm` / `I am`) หรือเลขกับคำ (`10` / `ten`) ตัวตรวจคำตอบพับให้เอง (ข้อ 7 ข้างบน) เขียนรูปเดียวพอ
+- ต้องใส่รูปที่ต่างจริง: คำพ้อง (`"Pleased to meet you"`) ลำดับคำที่ถูกอีกแบบ และขีดกลาง (`"b-u-s"`)
 - `dictation`: `audioText` ถือเป็นคำตอบที่รับเสมอ จึงไม่ต้องซ้ำใน `accept` และถ้าไม่มี `accept` จะใช้ `audioText` อย่างเดียว
 - `arrange_words`: ถ้าแผ่นป้ายต่อเป็นประโยคถูกต้องได้มากกว่าหนึ่งแบบ ให้ใส่แบบอื่นใน `accept` (เช่น `answer: "My name is Sam"`, `accept: ["Sam is my name"]`) validator ตรวจว่าทุกรายการใช้แผ่นป้ายครบพอดี เทียบตัวพิมพ์เล็กใหญ่แบบไม่สนใจ เพราะตัวพิมพ์ของแผ่นป้ายตามประโยคใน `answer` (เช่น ป้าย `This` กับคำตอบ `Is this my pen`) และต้องเว้นวรรคเดียวระหว่างคำ ตอนแสดงผล player แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กเสมอ เพื่อไม่ให้ตัวพิมพ์ใหญ่บอกใบ้คำแรก ยกเว้น `I` (และ `I'm` ฯลฯ) และคำที่ขึ้นต้นด้วยตัวพิมพ์ใหญ่กลางประโยคใน `answer` หรือ `accept` ข้อใดข้อหนึ่ง (ชื่อเฉพาะ เช่น `Sam`) แผ่นแรกในแถวคำตอบแสดงตัวพิมพ์ใหญ่ เป็นการแสดงผลเท่านั้น: ข้อความที่ส่งตรวจใช้คำตามต้นฉบับใน `words` และการตรวจไม่สนตัวพิมพ์ ดังนั้นใน `words` ใส่ตัวพิมพ์ตามที่ขึ้นต้นประโยคใน `answer` ได้ตามเดิม
 - `fill_blank`: ช่องหนึ่งรับคำตอบที่ถูกได้หนึ่งสตริง (ข้อจำกัดที่ทราบแล้ว)
@@ -77,6 +84,57 @@
 - ไฟล์คำศัพท์ตรวจทีละคำ: คำที่ผิดจะถูกรายงานด้วยชื่อไฟล์ ลำดับ และ id ส่วนคำอื่นในไฟล์ยังถูกใช้ตรวจต่อ
 - รันกับสำเนาอื่นได้ด้วย `pnpm content:validate <dir>` (ค่าเริ่มต้น `./content`)
 - กฎเรื่องคำศัพท์ทั้งหมดอยู่ที่ [VOCABULARY.md หัวข้อ 6](VOCABULARY.md#6-กฎการตรวจ-pnpm-contentvalidate)
+
+## กฎที่ตัวตรวจบังคับ
+
+กฎชุดนี้อยู่ที่ `src/lib/content/rules/` (หนึ่งไฟล์ต่อหนึ่งกลุ่มกฎ) รันพร้อม `make validate` และบล็อก CI ตัวตรวจพิมพ์ปัญหาเป็นกลุ่มตามชื่อกฎ (`== rule taught-words (3) ==`) แต่ละบรรทัดบอกไฟล์ และ `[exercise id หรือ vocab id]` อ่านกฎเหล่านี้ก่อนเขียนบทเรียน
+
+### `taught-words`: ใช้เฉพาะคำที่สอนแล้ว
+- **ประโยคตัวอย่างของคำ (`examples[].en`)** ใช้ได้เฉพาะคำที่สอนแล้ว *ภายในวันเดียวกับที่คำนั้นถูกสอน* หรือก่อนหน้า
+- **ข้อความอังกฤษที่ผู้เรียนเห็น/ได้ยินใน exercise** (`text`, `audioText`, `lines`, `prompt`, `sampleAnswer`, `choices`, `answer`, เฉลยแรกของ `translate_th_en`) ใช้ได้เฉพาะคำที่สอนภายในวันของบทนั้นหรือก่อนหน้า
+- รูปผันถือเป็นคำเดียวกัน: พหูพจน์/`-s`/`-es`/`-ing`/`-ed` ปกติ รูปใน `forms` ของคำ (`am / is / are` ของ `be`) และคำย่อ (`I'm` = I + am) `Sam's` นับเป็น `Sam`
+- **ได้รับยกเว้น:** คำใน `src/lib/content/rules/allowlists.ts` (คำหน้าที่ ชื่อ ตัวอักษร ตัวเลข 11–19/สิบ และรายการ `USED_BEFORE_TAUGHT`) คำที่อธิบายไทยไว้ใน `glossary` ของบทอ่านนั้น ข้อความ `{ en, th }` ที่มีไทยกำกับ (`question`, `scenario`, `goals`), `prompt` ของ `free_write`/`use_in_sentence` (instruction ไทยบอกงานซ้ำอยู่แล้ว) และคำฝึกเสียงล้วน (`phoneme_intro.examples`, `minimal_pair`)
+- รายการใน `allowlists.ts` ต้อง **หดลง** เมื่อคำนั้นมี entry ในคลัง ห้ามเพิ่มคำเพื่อให้ผ่านโดยไม่คิด: สอนคำก่อน หรือเขียนประโยคใหม่
+
+```
+ERROR content/lessons/day-009.json [d009-speak-02]: uses words not taught by day 9: "count" in prompt. Teach the word earlier, rewrite the text, or (names, function words) add it to src/lib/content/rules/allowlists.ts.
+ERROR content/vocab/oxford-3000/a1.json [v-fine]: examples[1] "My dog is fine." uses words not taught by day 2 (the day v-fine is first taught): "dog". ...
+```
+
+### `vocab-used`: คำใหม่ต้องถูกใช้ในวันนั้น
+ทุก id ใน `vocab` ของบทต้องปรากฏ (รวมรูปผัน) ในข้อความอังกฤษที่ผู้เรียนเห็นของ exercise อย่างน้อยหนึ่งข้อในบทเดียวกัน (นับรวมคำฝึกเสียง แต่ไม่นับ `vocab_match` ที่แสดงแค่คู่คำ) คำหลายพยางค์เช่น `wake up` ถือว่าใช้เมื่อคำแรกปรากฏ
+
+```
+ERROR content/lessons/day-005.json [v-letter]: vocab[1]: "letter" is taught on day 5 but no exercise of this lesson uses it (looked for "letter" or an inflected form in the learner-facing English). Use it in an exercise or move it to the day that does.
+```
+
+### `gloss-unique`: คำแปลบนแฟลชการ์ดต้องไม่ซ้ำ
+การ์ดไทย→อังกฤษแสดง `th` ทั้งสตริง ถ้าสองคำที่สอนแล้วมี *รายการ* คำแปลเหมือนกันเป๊ะ (แยกด้วยจุลภาค ไม่นับข้อความในวงเล็บ) การ์ดจะแยกสองคำไม่ได้ ไม่มีทางหนี: แก้คำแปลให้ต่างกัน
+
+```
+ERROR content/vocab/oxford-3000/a1.json [v-not]: th "ไม่ (วางหลัง am / is / are)": the gloss item "ไม่" is also a gloss item of v-no ("ไม่ (คำตอบ ตรงข้ามกับ ใช่)"); the Thai->English flashcards cannot tell them apart. Rewrite one gloss to disambiguate it ...
+```
+
+### `pronunciation`: ความสอดคล้องของข้อฝึกออกเสียง
+- `repeat_after_me` ที่มี `ipa`: จำนวนคำใน `ipa` ต้องเท่ากับจำนวนคำใน `text` (กัน IPA ของประโยคอื่น)
+- `minimal_pair`: ห้ามใช้คำที่ออกเสียงได้หลายแบบตามความหมาย (`HETERONYMS` ใน `pronunciation.ts`: live, read, lead, wind, tear, close, bow, row, use, present, record, object, minute ...) เพราะ TTS อ่านไม่แน่นอน
+- ถ้า `instruction` ของ `repeat_after_me`/`phoneme_intro` เอ่ยสัญลักษณ์ IPA ระหว่างเครื่องหมาย `/ /` (เช่น `/ɔː/`) สัญลักษณ์นั้นต้องอยู่ใน `ipa` ของข้อนั้น (หรือของคำตัวอย่างใน `examples` ที่มีในคลัง) `tipTh` ของ `phoneme_intro` เอ่ยเสียงอื่นเพื่อเทียบได้ จึงไม่ถูกตรวจ ข้อ `repeat_after_me` ที่เอ่ยสัญลักษณ์แต่ไม่มี `ipa` ก็ผิด
+
+```
+ERROR content/lessons/day-010.json [d010-pron-03]: ipa "/ɪˈlevn twelv/" has 2 word(s) but text "Eleven, twelve, thirteen, fourteen, fifteen." has 5 word(s); the IPA probably belongs to another sentence.
+ERROR content/lessons/day-010.json [d010-speak-03]: the instruction names /ɔː/ but the item's ipa "/ˌsɪksˈtiːn .../" does not contain it. Practise the sound ...
+```
+
+### `arrange-words`: ชื่อเฉพาะต้องตรงกับที่ UI แสดง
+UI (`tile-label.ts`) แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กทั้งหมด ยกเว้น `I` และคำที่ขึ้นต้นตัวใหญ่ *กลางประโยค* ใน `answer` หรือ `accept` กฎจึงบังคับว่า
+- คำขึ้นต้นตัวใหญ่กลางประโยค (ไม่ใช่ `I`) ต้องอยู่ใน `PROPER_NAMES` (`allowlists.ts`)
+- ชื่อใน `PROPER_NAMES` ที่ขึ้นต้นประโยคอย่างเดียวในทุกประโยคที่รับ จะถูกแสดงเป็นตัวเล็ก (`sam`) ให้เพิ่ม `accept` ที่ชื่ออยู่กลางประโยค (เช่น `"My friend is Sam"`) หรือเรียบเรียงใหม่
+
+```
+ERROR content/lessons/day-001.json [d001-write-01]: "Sam" is a proper name that only starts a sentence here, so the tile UI shows it in lower case ("sam"). Add an accepted sentence with "Sam" in the middle ...
+```
+
+
 
 ## VocabItem
 

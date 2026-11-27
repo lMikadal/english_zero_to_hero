@@ -81,7 +81,7 @@ export function checkVocabUsedOnItsDay(ctx: RuleContext): Problem[] {
       if (![...forms].some((f) => used.has(f))) {
         problems.push({
           rule: VOCAB_USED_RULE, file, id,
-          message: `vocab[${i}]: "${entry.item.word}" is taught on day ${lesson.day} but no exercise of this lesson uses it (looked for ${quoted([...forms])} in the learner-facing English). Use it in an exercise or move it to the day that does.`,
+          message: `vocab[${i}]: "${entry.item.word}" is taught on day ${lesson.day} but no exercise of this lesson uses it (looked for "${entry.item.word}" or an inflected form in the learner-facing English). Use it in an exercise or move it to the day that does.`,
         });
       }
     });
