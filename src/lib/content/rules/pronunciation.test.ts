@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { formatProblem } from "../loader";
 import type { Exercise } from "../schema";
 import { buildContext } from "./context";
-import { HETERONYMS, checkPronunciation, namedIpaSymbols } from "./pronunciation";
+import { HETERONYMS, checkPronunciation, ipaContains, namedIpaSymbols } from "./pronunciation";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const check = (exercises: Exercise[], items = [vocabItem({ id: "v-cat", word: "cat" })]) =>
@@ -18,6 +18,10 @@ describe("namedIpaSymbols", () => {
     expect(namedIpaSymbols("(/iː/ ที่เรียนไป)")).toEqual(["iː"]);
     expect(namedIpaSymbols("am / is / are และ and/or/not")).toEqual([]);
     expect(namedIpaSymbols("ไม่มีเสียง")).toEqual([]);
+  });
+  it("finds a symbol written right after Thai text, but not Thai words between slashes", () => {
+    expect(namedIpaSymbols("เสียง/ɔː/ในคำ")).toEqual(["ɔː"]);
+    expect(namedIpaSymbols("เลือกหรือ/และ/ก็ได้")).toEqual([]);
   });
 });
 
@@ -66,5 +70,26 @@ describe("pronunciation: IPA symbols named in the instruction", () => {
     expect(out).toHaveLength(1);
     const items = [{ ...vocabItem({ id: "v-cat", word: "cat" }), ipa: { us: "/kɔːt/", uk: "/kɔːt/" } }];
     expect(check([intro("ฟังเสียง /ɔː/", "x")], items)).toEqual([]);
+  });
+});
+
+describe("ipaContains: whole phonemes, longest match", () => {
+  it("does not find /ɪ/ inside aɪ, /e/ inside eɪ, /ɔː/ inside ɔɪ, /t/ inside tʃ", () => {
+    expect(ipaContains("/maɪ/", "ɪ")).toBe(false);
+    expect(ipaContains("/eɪ/", "e")).toBe(false);
+    expect(ipaContains("/tʃɪn/", "t")).toBe(false);
+    expect(ipaContains("/dʒɪm/", "d")).toBe(false);
+  });
+  it("finds whole phonemes, including long vowels and stressed syllables", () => {
+    expect(ipaContains("/ðɪs ɪz/", "ɪ")).toBe(true);
+    expect(ipaContains("/ˌfɔːrˈtiːn/", "ɔː")).toBe(true);
+    expect(ipaContains("/ˌfɔːrˈtiːn/", "iː")).toBe(true);
+    expect(ipaContains("/maɪ/", "aɪ")).toBe(true);
+    expect(ipaContains("/pen/", "e")).toBe(true);
+    expect(ipaContains("/tʃiːz/", "tʃ")).toBe(true);
+  });
+  it("does not mistake a long vowel for its short one", () => {
+    expect(ipaContains("/siːt/", "ɪ")).toBe(false);
+    expect(ipaContains("/siːt/", "i")).toBe(false);
   });
 });
