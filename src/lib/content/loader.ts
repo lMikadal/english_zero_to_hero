@@ -106,7 +106,7 @@ export function readContent(root: string): ContentData & { problems: Problem[] }
   }
 
   if (isDir(dirs.lessons)) {
-    const entries = fs.readdirSync(dirs.lessons, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
+    const entries = fs.readdirSync(/*turbopackIgnore: true*/ dirs.lessons, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
     for (const e of entries) {
       const abs = path.join(dirs.lessons, e.name);
       const display = displayName(root, abs);
@@ -123,7 +123,7 @@ export function readContent(root: string): ContentData & { problems: Problem[] }
 
   if (isDir(dirs.vocab)) {
     const walk = (dir: string) => {
-      for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      for (const e of fs.readdirSync(/*turbopackIgnore: true*/ dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
         const abs = path.join(dir, e.name);
         if (e.isDirectory()) walk(abs);
         else if (!e.isFile() || !e.name.endsWith(".json")) {
