@@ -10,6 +10,8 @@ data
 .env
 .env.*
 !.env.example
+!.env.prod.example
+backups
 playwright-report
 test-results
 *.log
