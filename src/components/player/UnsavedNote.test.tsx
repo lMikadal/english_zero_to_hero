@@ -39,6 +39,25 @@ describe("UnsavedNote", () => {
     expect(screen.getByRole("status")).toHaveTextContent("ยังไม่ได้บันทึก อย่าปิดหน้านี้");
   });
 
+  it("says it is the vocabulary reviews, not the lesson result, when only reviews are waiting", () => {
+    const f = fakeSink({ pending: 3, pendingAttempts: 0, pendingReviews: 3 });
+    render(<UnsavedNote sink={f.sink} />);
+    const note = screen.getByRole("status");
+    expect(note).toHaveTextContent("มีผลการทวนคำศัพท์ 3 ใบที่ยังไม่ได้บันทึก อย่าปิดหน้านี้");
+    expect(note).not.toHaveTextContent("บทเรียน");
+  });
+
+  it("on the review page, a waiting completion (no answers pending) is about the review, never the lesson", () => {
+    render(<UnsavedNote kind="review" sink={fakeSink({ pending: 1, pendingAttempts: 0, pendingReviews: 0 }).sink} />);
+    expect(screen.getByRole("status")).toHaveTextContent("ผลการทวนคำศัพท์ที่ยังไม่ได้บันทึก อย่าปิดหน้านี้");
+    expect(screen.getByRole("status")).not.toHaveTextContent("บทเรียน");
+  });
+
+  it("the lesson wording is unchanged when no kind is given", () => {
+    render(<UnsavedNote sink={fakeSink({ pending: 1, pendingAttempts: 0, pendingReviews: 0 }).sink} />);
+    expect(screen.getByRole("status")).toHaveTextContent("มีผลบทเรียนที่ยังไม่ได้บันทึก");
+  });
+
   it("asks the browser to confirm leaving only while something is pending (no alert/confirm)", () => {
     const alert = vi.spyOn(window, "alert").mockImplementation(() => {});
     const confirm = vi.spyOn(window, "confirm").mockImplementation(() => true);
