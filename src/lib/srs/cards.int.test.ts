@@ -84,7 +84,7 @@ describe("expectedCardVocabIds (pure)", () => {
 });
 
 describe("content is read once per call", () => {
-  const vocabTreeReads = (spy: ReturnType<typeof vi.spyOn>) => spy.mock.calls.filter(([dir]) => String(dir) === path.join(process.cwd(), "content", "vocab")).length;
+  const vocabTreeReads = (spy: { mock: { calls: unknown[][] } }) => spy.mock.calls.filter(([dir]) => String(dir) === path.join(process.cwd(), "content", "vocab")).length;
   it("one reconcile of 7 finished days lists the vocabulary tree once (not once per word)", async () => {
     for (let d = 1; d <= 7; d++) await markDone(d);
     const spy = vi.spyOn(fs, "readdirSync");
