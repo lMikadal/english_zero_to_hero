@@ -12,7 +12,7 @@ export function vocabItem(spec: WordSpec): VocabItem {
     id: spec.id, word: spec.word ?? spec.id.slice(2), pos: spec.pos ?? "noun",
     oxford: { list: "3000", level: "A1" }, ipa: { us: "/x/", uk: "/x/" },
     th: spec.th ?? `คำ${spec.id}`, topics: ["greetings"],
-    examples: (spec.examples ?? ["Hi."]).map((en) => ({ en, th: "ตัวอย่าง" })),
+    examples: (spec.examples ?? ["A."]).map((en) => ({ en, th: "ตัวอย่าง" })),
     ...(spec.forms ? { forms: spec.forms } : {}),
   };
 }

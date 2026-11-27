@@ -28,8 +28,8 @@ describe("learnerEnglish", () => {
 
 describe("checkTaughtWords: vocab examples", () => {
   const items = [
-    vocabItem({ id: "v-hello", word: "hello", examples: ["Hello, I'm Ann."] }),
-    vocabItem({ id: "v-cat", word: "cat", examples: ["I have a cat.", "The cat is big."] }),
+    vocabItem({ id: "v-hello", word: "hello", examples: ["Hello, Ann."] }),
+    vocabItem({ id: "v-cat", word: "cat", examples: ["I have a cat.", "The cat is hello."] }),
     vocabItem({ id: "v-big", word: "big", pos: "adjective", examples: ["My cat is big."] }),
   ];
 
