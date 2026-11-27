@@ -65,9 +65,9 @@
               "answer": "a"
             },
             {
-              "a": "live",
-              "b": "leave",
-              "answer": "a"
+              "a": "chip",
+              "b": "cheap",
+              "answer": "b"
             }
           ],
           "phonemes": [
@@ -94,8 +94,8 @@
           "instruction": {
             "th": "ฟังแล้วพูดตาม ระวังเสียงยาว /iː/ /ɔː/ /ɜː/ และ /ɑː/"
           },
-          "text": "She is a teacher. He is a doctor. We are happy.",
-          "ipa": "/ʃi ɪz ə ˈtiːtʃər hi ɪz ə ˈdɑːktər wi ɑːr ˈhæpi/"
+          "text": "She is thirty. He is forty. We are in the park.",
+          "ipa": "/ʃiː ɪz ˈθɜːrti hiː ɪz ˈfɔːrti wiː ɑːr ɪn ðə pɑːrk/"
         }
       ]
     },

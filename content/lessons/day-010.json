@@ -32,7 +32,8 @@
     "v-water",
     "v-yes",
     "v-no",
-    "v-not"
+    "v-not",
+    "v-on"
   ],
   "sections": [
     {
@@ -142,7 +143,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "Is it a book? Yes, it is."
+          "audioText": "Is it a pen? Yes, it is. It is on the table."
         }
       ]
     },
@@ -163,8 +164,9 @@
             "What is it?",
             "Is it a door?",
             "No, it is not. It is a window.",
-            "Is it big?",
-            "Yes, it is."
+            "Is it a pen?",
+            "Yes, it is. It is on the table.",
+            "Is it a dog? No, it is not. It is a cat."
           ]
         },
         {
@@ -173,7 +175,7 @@
           "instruction": {
             "th": "มองสิ่งของใกล้ตัวหนึ่งอย่าง แล้วตอบว่ามันคืออะไร และใหญ่ไหม"
           },
-          "prompt": "Look at a thing near you. What is it? Is it big?",
+          "prompt": "What is it? Is it big?",
           "sampleAnswer": "It is a table. Yes, it is big.",
           "keywords": [
             "it"
@@ -183,7 +185,7 @@
           "id": "d010-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ตัวเลข 16–20 ระวังเน้นเสียง teen และออกเสียง twenty เป็น 'ทเว็นที' (ไม่ใช่ 'ทเวนตี้' ยาว ๆ)"
+            "th": "ฟังแล้วพูดตาม ตัวเลข 16–19 เน้นที่ teen ส่วน twenty เน้นพยางค์แรก TWEN-ty ต่างจาก -teen"
           },
           "text": "Sixteen, seventeen, eighteen, nineteen, twenty.",
           "ipa": "/ˌsɪksˈtiːn ˌsevnˈtiːn ˌeɪˈtiːn ˌnaɪnˈtiːn ˈtwenti/"
@@ -203,15 +205,15 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Ann: What is it? Is it a door?\nSam: No, it is not. It is a window.\nAnn: Is it big?\nSam: Yes, it is.\nAnn: And this? Is it a book?\nSam: Yes, it is. The book is on the table.",
+          "text": "Ann: What is it? Is it a door?\nSam: No, it is not. It is a window.\nAnn: Is it big?\nSam: Yes, it is.\nAnn: And this? Is it a pen?\nSam: No, it is not. It is a book. The book is on the table.\nAnn: Is it a good book?\nSam: Yes, it is.",
           "glossary": {
             "on": "บน"
           },
           "questions": [
             {
               "question": {
-                "en": "What is it?",
-                "th": "สิ่งแรกที่แอนถามถึงคืออะไร"
+                "en": "Ann asks \"Is it a door?\" What is it?",
+                "th": "แอนถามว่า 'Is it a door?' จริง ๆ แล้วมันคืออะไร"
               },
               "choices": [
                 "A door",
@@ -274,7 +276,7 @@
           "instruction": {
             "th": "เติมคำที่หายไป"
           },
-          "text": "___ it a book? ___, it is.",
+          "text": "___ it a cup? ___, it is.",
           "answer": [
             "Is",
             "Yes"
@@ -290,7 +292,9 @@
           "accept": [
             "It is a window",
             "It's a window",
-            "This is a window"
+            "This is a window",
+            "That is a window",
+            "That's a window"
           ]
         },
         {

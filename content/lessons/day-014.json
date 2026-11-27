@@ -48,7 +48,7 @@
             "th": "ฟังแล้วพูดตาม ระวัง /iː/ ใน he, she, we และ /ɑː/ ใน park"
           },
           "text": "He is my friend. She is happy. We are in the park.",
-          "ipa": "/hi ɪz maɪ frend ʃi ɪz ˈhæpi wi ɑːr ɪn ðə pɑːrk/"
+          "ipa": "/hiː ɪz maɪ frend ʃiː ɪz ˈhæpi wiː ɑːr ɪn ðə pɑːrk/"
         }
       ]
     },
@@ -103,7 +103,13 @@
           },
           "audioText": "This is my friend. He is a doctor. He is thirty.",
           "accept": [
-            "This is my friend. He's a doctor. He's thirty"
+            "This is my friend. He is a doctor. He is 30",
+            "This is my friend. He is a doctor. He's thirty",
+            "This is my friend. He is a doctor. He's 30",
+            "This is my friend. He's a doctor. He is thirty",
+            "This is my friend. He's a doctor. He is 30",
+            "This is my friend. He's a doctor. He's thirty",
+            "This is my friend. He's a doctor. He's 30"
           ]
         }
       ]
@@ -162,7 +168,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! My name is Ann. I am twenty. I am a student. I am from Thailand. I am in a big city.\nThis is my friend, Tom. He is forty. He is a teacher. He is from England.\nWe are in the park. We are happy.",
+          "text": "Hello! My name is Ann. I am twenty. I am a student. I am from Bangkok. It is a big city.\nThis is my friend, Tom. He is forty. He is a teacher. He is from England.\nWe are in the park. We are happy.",
           "questions": [
             {
               "question": {
@@ -212,9 +218,9 @@
           "id": "d014-write-01",
           "type": "free_write",
           "instruction": {
-            "th": "เขียน 5–6 ประโยค: ชื่อของคุณ อายุ อาชีพ มาจากที่ไหน และเพื่อนของคุณ (ชื่อ อายุ อาชีพ)"
+            "th": "เขียน 5–6 ประโยค: ชื่อของคุณ อายุ มาจากที่ไหน เป็นนักเรียน ครู หรือหมอ แล้วเขียนเกี่ยวกับเพื่อนของคุณ"
           },
-          "prompt": "Write 5–6 sentences. Say your name, how old you are, what you are and where you are from. Then tell about a friend: his or her name, age and job.",
+          "prompt": "Write 5–6 sentences. Say your name, how old you are, where you are from and if you are a student, a teacher or a doctor. Then write about a friend.",
           "minWords": 20
         }
       ]

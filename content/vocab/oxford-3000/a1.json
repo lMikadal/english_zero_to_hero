@@ -5,7 +5,7 @@
     "pos": "exclamation",
     "oxford": { "list": "3000", "level": "A1" },
     "ipa": { "us": "/həˈloʊ/", "uk": "/həˈləʊ/" },
-    "th": "สวัสดี",
+    "th": "สวัสดี (ใช้ได้ทุกที่)",
     "topics": ["greetings"],
     "examples": [{ "en": "Hello, I'm Ann.", "th": "สวัสดี ฉันชื่อแอน" }],
     "collocations": ["say hello"]
@@ -28,7 +28,7 @@
     "pos": "adjective",
     "oxford": { "list": "3000", "level": "A1" },
     "ipa": { "us": "/naɪs/", "uk": "/naɪs/" },
-    "th": "ดี, น่ายินดี",
+    "th": "น่ายินดี, ดีจัง",
     "topics": ["greetings", "feelings"],
     "examples": [{ "en": "Nice to meet you.", "th": "ยินดีที่ได้รู้จัก" }],
     "collocations": ["nice to meet you", "a nice day"],
@@ -40,7 +40,7 @@
     "pos": "verb",
     "oxford": { "list": "3000", "level": "A1" },
     "ipa": { "us": "/miːt/", "uk": "/miːt/" },
-    "th": "พบ, เจอ, ได้รู้จัก",
+    "th": "ได้รู้จัก, พบ (ใครสักคน)",
     "topics": ["greetings", "communication"],
     "examples": [{ "en": "Nice to meet you, Ann.", "th": "ยินดีที่ได้รู้จักนะ แอน" }],
     "collocations": ["meet a friend", "nice to meet you"],
@@ -74,7 +74,7 @@
     "pos": "adjective",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/faɪn/", "uk": "/faɪn/"},
-    "th": "สบายดี, ไม่เป็นไร, ดี",
+    "th": "สบายดี, ไม่เป็นไร",
     "topics": ["greetings", "feelings"],
     "examples": [{"en": "I'm fine, thank you.", "th": "ฉันสบายดี ขอบคุณ"}, {"en": "My dog is fine.", "th": "หมาของฉันสบายดี"}],
     "collocations": ["I'm fine", "feel fine"],
@@ -157,7 +157,7 @@
     "pos": "preposition",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/frʌm/", "uk": "/frɒm/"},
-    "th": "จาก, มาจาก",
+    "th": "จาก",
     "topics": ["function_words", "places_city"],
     "examples": [{"en": "I'm from Thailand.", "th": "ฉันมาจากประเทศไทย"}],
     "collocations": ["come from", "be from"]
@@ -250,7 +250,7 @@
     "pos": "verb",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/siː/", "uk": "/siː/"},
-    "th": "เห็น, พบ, เจอ",
+    "th": "เห็น, มองเห็น",
     "topics": ["greetings", "communication"],
     "examples": [{"en": "See you!", "th": "แล้วเจอกันนะ"}, {"en": "I see a big dog.", "th": "ฉันเห็นหมาตัวใหญ่"}],
     "collocations": ["see you", "see a friend"],
@@ -286,7 +286,7 @@
     "pos": "noun",
     "oxford": {"list": "3000", "level": "A1"},
     "ipa": {"us": "/ˈiːvnɪŋ/", "uk": "/ˈiːvnɪŋ/"},
-    "th": "ตอนเย็น, ช่วงค่ำ",
+    "th": "ตอนเย็น",
     "topics": ["time_dates", "greetings"],
     "examples": [{"en": "Good evening, Ben!", "th": "สวัสดีตอนเย็นเบน"}],
     "collocations": ["good evening"],
@@ -434,7 +434,7 @@
       "us": "/biː/",
       "uk": "/biː/"
     },
-    "th": "เป็น, อยู่, คือ (am / is / are)",
+    "th": "เป็น, อยู่, คือ (รูปพื้นฐานของ am / is / are)",
     "topics": [
       "function_words",
       "communication"
@@ -449,8 +449,8 @@
         "th": "คุณเป็นเพื่อนของฉัน"
       },
       {
-        "en": "He is nine.",
-        "th": "เขาอายุเก้าขวบ"
+        "en": "It is number three.",
+        "th": "นั่นคือหมายเลขสาม"
       }
     ],
     "collocations": [
@@ -516,8 +516,8 @@
     ],
     "examples": [
       {
-        "en": "I am one of the students.",
-        "th": "ฉันเป็นหนึ่งในนักเรียน"
+        "en": "One tea, please.",
+        "th": "ขอชาหนึ่งที่ครับ/ค่ะ"
       },
       {
         "en": "One, two, three!",
@@ -572,8 +572,8 @@
     ],
     "examples": [
       {
-        "en": "My friend is three.",
-        "th": "เพื่อนของฉันอายุสามขวบ"
+        "en": "Three teas, please.",
+        "th": "ขอชาสามที่ครับ/ค่ะ"
       },
       {
         "en": "Three, please.",
@@ -630,8 +630,8 @@
         "th": "ฉันอายุห้าขวบ"
       },
       {
-        "en": "Five cups are on the table.",
-        "th": "ถ้วยห้าใบอยู่บนโต๊ะ"
+        "en": "Five, please.",
+        "th": "ขอห้าครับ/ค่ะ"
       }
     ]
   },
@@ -684,8 +684,12 @@
     ],
     "examples": [
       {
-        "en": "Six cats are in the house.",
-        "th": "แมวหกตัวอยู่ในบ้าน"
+        "en": "She is six.",
+        "th": "เธออายุหกขวบ"
+      },
+      {
+        "en": "Six, seven, eight.",
+        "th": "หก เจ็ด แปด"
       }
     ]
   },
@@ -814,8 +818,8 @@
         "th": "คุณอายุเท่าไร"
       },
       {
-        "en": "My bus is old.",
-        "th": "รถเมล์ของฉันเก่า"
+        "en": "This school is old.",
+        "th": "โรงเรียนนี้เก่า"
       }
     ],
     "collocations": [
@@ -948,8 +952,8 @@
         "th": "ฉันอายุยี่สิบปี"
       },
       {
-        "en": "Twenty students are in the school.",
-        "th": "นักเรียนยี่สิบคนอยู่ในโรงเรียน"
+        "en": "My friend is twenty.",
+        "th": "เพื่อนของฉันอายุยี่สิบ"
       }
     ]
   },
@@ -1152,14 +1156,14 @@
       "us": "/noʊ/",
       "uk": "/nəʊ/"
     },
-    "th": "ไม่ใช่ (ตอบปฏิเสธ)",
+    "th": "ไม่ (คำตอบ ตรงข้ามกับ ใช่)",
     "topics": [
       "communication"
     ],
     "examples": [
       {
         "en": "No, it is not.",
-        "th": "ไม่ใช่ มันไม่ใช่"
+        "th": "ไม่ใช่ครับ/ค่ะ"
       }
     ]
   },
@@ -1175,15 +1179,15 @@
       "us": "/nɑːt/",
       "uk": "/nɒt/"
     },
-    "th": "ไม่ (วางหลัง am / is / are เพื่อปฏิเสธ)",
+    "th": "ไม่ (วางหลัง am / is / are)",
     "topics": [
       "function_words",
       "communication"
     ],
     "examples": [
       {
-        "en": "I am not a doctor.",
-        "th": "ฉันไม่ใช่หมอ"
+        "en": "I am not ten. I am twenty.",
+        "th": "ฉันไม่ได้อายุสิบขวบ ฉันอายุยี่สิบ"
       },
       {
         "en": "It is not big.",
@@ -1378,8 +1382,8 @@
         "th": "ฉันทำงานในโรงเรียน"
       },
       {
-        "en": "Do you work in a shop?",
-        "th": "คุณทำงานในร้านค้าหรือเปล่า"
+        "en": "Do you work in a school?",
+        "th": "คุณทำงานในโรงเรียนหรือเปล่า"
       }
     ],
     "collocations": [
@@ -1409,8 +1413,8 @@
     ],
     "examples": [
       {
-        "en": "A hundred students are in the school.",
-        "th": "นักเรียนหนึ่งร้อยคนอยู่ในโรงเรียน"
+        "en": "It is a hundred baht.",
+        "th": "ราคาหนึ่งร้อยบาท"
       }
     ],
     "collocations": [
@@ -1503,8 +1507,8 @@
         "th": "รถยนต์จอดอยู่ในสวน"
       },
       {
-        "en": "My car is not big.",
-        "th": "รถของฉันไม่ใหญ่"
+        "en": "My car is old.",
+        "th": "รถของฉันเก่าแล้ว"
       }
     ],
     "collocations": [
@@ -1649,5 +1653,67 @@
       "comparative": "happier",
       "superlative": "happiest"
     }
+  },
+  {
+    "id": "v-on",
+    "word": "on",
+    "pos": "preposition",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ɑːn/",
+      "uk": "/ɒn/"
+    },
+    "th": "บน, อยู่บน",
+    "topics": [
+      "function_words",
+      "places_city"
+    ],
+    "examples": [
+      {
+        "en": "The book is on the table.",
+        "th": "หนังสืออยู่บนโต๊ะ"
+      },
+      {
+        "en": "The cup is on the table.",
+        "th": "ถ้วยอยู่บนโต๊ะ"
+      }
+    ],
+    "collocations": [
+      "on the table"
+    ]
+  },
+  {
+    "id": "v-in",
+    "word": "in",
+    "pos": "preposition",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ɪn/",
+      "uk": "/ɪn/"
+    },
+    "th": "ใน, อยู่ใน",
+    "topics": [
+      "function_words",
+      "places_city"
+    ],
+    "examples": [
+      {
+        "en": "We are in the park.",
+        "th": "พวกเราอยู่ในสวนสาธารณะ"
+      },
+      {
+        "en": "My friend is in the school.",
+        "th": "เพื่อนของฉันอยู่ในโรงเรียน"
+      }
+    ],
+    "collocations": [
+      "in the park"
+    ]
   }
 ]

@@ -30,7 +30,8 @@
     "v-park",
     "v-house",
     "v-shop",
-    "v-happy"
+    "v-happy",
+    "v-in"
   ],
   "sections": [
     {
@@ -48,7 +49,7 @@
           },
           "phoneme": "ar",
           "ipa": "/ɑː/",
-          "tipTh": "เสียง 'อา' ยาว อ้าปากกว้างและยืดเสียงให้นาน ไม่ยิ้ม สำเนียงอเมริกันมีเสียง r ท้ายคำ (car, park) ส่วนสำเนียงอังกฤษไม่มี r คนไทยมักออกเป็น 'แอ' (car เป็น 'แคร์') หรือ 'อะ' สั้น ๆ ให้อ้าปากแล้วลากเสียง 'อา' และปิดเสียง k ท้ายคำใน park ให้ชัด",
+          "tipTh": "เสียง 'อา' ยาว อ้าปากกว้างและยืดเสียงให้นาน ไม่ยิ้ม สัญลักษณ์นี้ตัวเดียวกับ hot ในวันที่ 4: สำเนียงอเมริกัน car ใช้สระเดียวกับ hot แล้วตามด้วย r ส่วนสำเนียงอังกฤษ hot เป็น /ɒ/ สั้น แต่ car เป็น /ɑː/ ยาวและไม่มี r ระวังอย่าให้สั้นจนเป็น 'แอ' แบบ pack (แพ็ค) และปิดเสียง k ใน park ให้ชัด",
           "examples": [
             "car",
             "park",
@@ -176,8 +177,8 @@
           "instruction": {
             "th": "ตอบคำถามด้วยเสียงตามความจริง"
           },
-          "prompt": "Are you at home? Are you happy?",
-          "sampleAnswer": "Yes, I am. I am at home. I am happy.",
+          "prompt": "Are you in the park? Are you happy?",
+          "sampleAnswer": "No, I am not. I am happy.",
           "keywords": [
             "happy"
           ]

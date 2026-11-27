@@ -18,8 +18,8 @@
       "th": "แยกเลข -teen (13) กับเลข -ty (30) ได้ตอนฟัง"
     },
     {
-      "en": "Say the jobs student, teacher and doctor",
-      "th": "บอกอาชีพ student, teacher และ doctor ได้"
+      "en": "Say if you are a student, a teacher or a doctor",
+      "th": "บอกได้ว่าตัวเองเป็นนักเรียน ครู หรือหมอ"
     }
   ],
   "estimatedMinutes": 30,
@@ -48,7 +48,7 @@
           },
           "phoneme": "er",
           "ipa": "/ɜː/",
-          "tipTh": "เสียง 'เออ' ยาว ริมฝีปากผ่อนคลาย ไม่ห่อและไม่ยิ้ม ลิ้นอยู่กลางปาก สำเนียงอเมริกันมีเสียง r ติดท้าย (girl, work) ส่วนสำเนียงอังกฤษไม่มี คนไทยมักออกเป็น 'ออ' (work เป็น 'วอก') ซึ่งเป็นอีกเสียงที่เรียนไปในวันที่ 10 ให้ออกเป็น 'เวิร์ก' และ 'เกิร์ล' แทน และอย่าลืมปิดเสียง k ใน work และ l ใน girl",
+          "tipTh": "เสียง 'เออ' ยาว ริมฝีปากผ่อนคลาย ไม่ห่อและไม่ยิ้ม ลิ้นอยู่กลางปาก สำเนียงอเมริกันม้วนลิ้นไปพร้อมกับสระตลอดเสียง (girl, work) ไม่ใช่ 'เออ' แล้วค่อยตามด้วย r ส่วนสำเนียงอังกฤษไม่ม้วนลิ้น คนไทยมักออกเป็น 'ออ' (work เป็น 'วอก') ซึ่งเป็นอีกเสียงที่เรียนไปในวันที่ 10 ให้ออกเป็น 'เวิร์ก' และ 'เกิร์ล' แทน และอย่าลืมปิดเสียง k ใน work และ l ใน girl",
           "examples": [
             "girl",
             "work",
@@ -166,7 +166,8 @@
             "Is he a doctor?",
             "Yes, he is.",
             "Is she a teacher?",
-            "No, she is not. She is a student."
+            "No, she is not. She is a student.",
+            "The boy is ten. The girl is nine."
           ]
         },
         {
@@ -185,7 +186,7 @@
           "id": "d011-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตามเลขหลักสิบ ระวังปิดเสียง t ท้ายคำใน eighty และออกเสียง hundred ให้มีเสียง d ท้ายคำ"
+            "th": "ฟังแล้วพูดตามเลขหลักสิบ ทุกตัวเน้นพยางค์แรก (THIR-ty, EIGH-ty) เสียง -ty ท้ายคำสั้นและเบา และ hundred ต้องมีเสียง d ท้ายคำ"
           },
           "text": "Thirty, forty, fifty, sixty, seventy, eighty, ninety, a hundred.",
           "ipa": "/ˈθɜːrti ˈfɔːrti ˈfɪfti ˈsɪksti ˈsevnti ˈeɪti ˈnaɪnti ə ˈhʌndrəd/"
@@ -205,7 +206,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Mai: Hi, Ben! Are you a student?\nBen: No, I am not. I am a doctor. And you?\nMai: I am a teacher. This is my friend, Ann. She is a student.\nBen: Hello, Ann. Are you twenty?\nAnn: No, I am not. I am thirty.",
+          "text": "Mai: Hi, Ben! Are you a student?\nBen: No, I am not. I am a doctor. And you?\nMai: I am a teacher. This is my friend, Ann. She is a student.\nBen: Hello, Ann. Are you twenty?\nAnn: No, I am not. I am thirty.\nMai: This is the boy, Tom. He is ten. This is the girl, Jen. She is nine.",
           "questions": [
             {
               "question": {

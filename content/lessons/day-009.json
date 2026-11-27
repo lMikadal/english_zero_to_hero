@@ -191,7 +191,7 @@
             "th": "ฟังแล้วพูดตาม ระวัง he, she ให้ยืดเสียง /iː/ และ she ใช้เสียง /ʃ/ (ชู ริมฝีปากเล็กน้อย)"
           },
           "text": "He is my friend. She is my friend, too.",
-          "ipa": "/hi ɪz maɪ frend ʃi ɪz maɪ frend tuː/"
+          "ipa": "/hiː ɪz maɪ frend ʃiː ɪz maɪ frend tuː/"
         }
       ]
     },
@@ -272,7 +272,7 @@
           "id": "d009-write-02",
           "type": "fill_blank",
           "instruction": {
-            "th": "เติมคำที่หายไป"
+            "th": "เติม He หรือ She"
           },
           "text": "Ann is ten. ___ is my friend. Ben is nine. ___ is my friend, too.",
           "answer": [
@@ -286,12 +286,16 @@
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
           },
-          "th": "เขาอายุสิบขวบ",
+          "th": "เขา (ผู้ชาย) อายุสิบขวบ",
           "accept": [
             "He is ten",
             "He's ten",
             "He is ten years old",
-            "He's ten years old"
+            "He's ten years old",
+            "He is 10",
+            "He's 10",
+            "He is 10 years old",
+            "He's 10 years old"
           ]
         },
         {

@@ -70,8 +70,8 @@
               "answer": "b"
             },
             {
-              "a": "live",
-              "b": "leave",
+              "a": "hit",
+              "b": "heat",
               "answer": "a"
             },
             {
@@ -118,7 +118,7 @@
           "choices": [
             "Tea, please.",
             "Three, please.",
-            "See, please."
+            "Two, please."
           ],
           "answer": 0
         },
@@ -168,7 +168,7 @@
             "th": "พูดตามทันทีทีละประโยค"
           },
           "lines": [
-            "Hi! I am Mai.",
+            "Good morning! I am Mai.",
             "You are Sam.",
             "I am fine, thank you.",
             "You are my friend.",
