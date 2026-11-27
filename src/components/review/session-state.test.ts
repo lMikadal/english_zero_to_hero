@@ -127,9 +127,42 @@ describe("the zone and the server's card", () => {
     expect(t.queue.filter((c) => c.vocabId !== "v-country")).toEqual(s.queue.filter((c) => c.vocabId !== "v-country"));
   });
 
-  it("a server card for a card that is no longer in the queue changes nothing", () => {
-    const s = run(createSession(makeQueue([["country", "en_th"], ["friend", "en_th"]])), 3);
-    const t = sessionReducer(s, { type: "server", key: "v-country|en_th", card: toWire(newState()) });
-    expect(t).toBe(s);
+  it("a server card that is due today for a card the client thought was finished puts it back (the server decides)", () => {
+    const s = run(createSession(makeQueue([["country", "en_th"], ["friend", "en_th"], ["water", "en_th"]])), 3);
+    expect(keys(s)).not.toContain("v-country|en_th");
+    const t = sessionReducer(s, { type: "server", key: "v-country|en_th", card: toWire(newState("2026-11-27T05:10:00Z")) });
+    expect(keys(t)).toContain("v-country|en_th");
+    expect(t.queue.find((c) => c.vocabId === "v-country")!.state.due).toEqual(new Date("2026-11-27T05:10:00Z"));
+    expect(t.total).toBe(3);
+  });
+
+  it("a server card that is not due today takes the card out; the last one completes the session", () => {
+    const s = run(createSession(makeQueue([["country", "en_th"]])), 1);
+    expect(s.phase).toBe("playing");
+    const t = sessionReducer(s, { type: "server", key: "v-country|en_th", card: toWire(newState("2026-12-05T05:00:00Z")) });
+    expect(t.queue).toEqual([]);
+    expect(t.phase).toBe("complete");
+  });
+
+  it("a server card for a card that is finished and not due today changes nothing; after completion nothing comes back", () => {
+    const s = run(createSession(makeQueue([["country", "en_th"]])), 4);
+    expect(s.phase).toBe("complete");
+    expect(sessionReducer(s, { type: "server", key: "v-country|en_th", card: toWire(newState("2026-11-27T05:10:00Z")) })).toBe(s);
+    expect(sessionReducer(s, { type: "server", key: "v-unknown|en_th", card: toWire(newState()) })).toBe(s);
+  });
+
+  it("drop removes a card for good, resets the side if it was on screen, and leaves a notice", () => {
+    const s = sessionReducer(createSession(makeQueue([["country", "en_th"], ["friend", "en_th"]])), { type: "reveal", now: NOW });
+    const t = sessionReducer(s, { type: "drop", key: "v-country|en_th" });
+    expect(keys(t)).toEqual(["v-friend|en_th"]);
+    expect(t.side).toBe("front");
+    expect(t.notice).toBe("บันทึกใบนี้ไม่ได้ จึงข้ามไป");
+    expect(sessionReducer(t, { type: "drop", key: "v-country|en_th" })).toBe(t);
+    expect(sessionReducer(t, { type: "drop", key: "v-friend|en_th" }).phase).toBe("complete");
+  });
+
+  it("a notice is cleared by the next rating", () => {
+    const s = sessionReducer(createSession(makeQueue([["country", "en_th"], ["friend", "en_th"], ["water", "en_th"]])), { type: "drop", key: "v-country|en_th" });
+    expect(run(s, 3).notice).toBeNull();
   });
 });

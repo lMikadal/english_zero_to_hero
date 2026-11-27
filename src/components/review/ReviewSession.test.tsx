@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { fakeAudio, renderWithAudio } from "@/components/exercises/test-helpers";
 import { NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
-import type { CompleteReviewResponse, ReviewInput, WireCardState } from "@/lib/srs/contract";
+import type { CompleteReviewResponse, ReviewInput, ReviewResult } from "@/lib/srs/contract";
 import { toWire } from "@/lib/srs/contract";
 import { ratingIntervalLabels } from "@/lib/srs/format";
 import { RATINGS } from "@/lib/srs/scheduler";
@@ -277,7 +277,7 @@ describe("nothing is due", () => {
 
 describe("the server's card replaces the local one (plan 4.4 item 13)", () => {
   it("a later preview is computed from the card the server answered, not from the local calculation", async () => {
-    let push: (r: { id: string; card: WireCardState }) => void = () => {};
+    let push: (r: ReviewResult) => void = () => {};
     const feed: ServerCardFeed = (cb) => { push = cb; return () => {}; };
     const { sink } = show(FIVE, { serverCards: feed });
     await reveal();
@@ -285,7 +285,7 @@ describe("the server's card replaces the local one (plan 4.4 item 13)", () => {
     const sent = reviewsSent(sink)[0];
     // The server's answer: a card that is not what the client calculated (here: a Learning card due in 10 min with other numbers).
     const server = { ...reviewState("2026-11-27T05:10:00Z"), stability: 40, scheduledDays: 12 };
-    act(() => push({ id: sent.id, card: toWire(server) }));
+    act(() => push({ id: sent.id, status: "created", card: toWire(server) }));
     for (let i = 0; i < 3; i++) { await reveal(); await rate("ง่าย"); }
     expect(screen.getByText("country")).toBeInTheDocument(); // the card is back
     await reveal();
@@ -295,11 +295,73 @@ describe("the server's card replaces the local one (plan 4.4 item 13)", () => {
   });
 
   it("an answer for an unknown review id is ignored", async () => {
-    let push: (r: { id: string; card: WireCardState }) => void = () => {};
+    let push: (r: ReviewResult) => void = () => {};
     show(FIVE, { serverCards: (cb) => { push = cb; return () => {}; } });
     await reveal();
-    act(() => push({ id: "00000000-0000-4000-8000-000000000000", card: toWire(newState()) }));
+    act(() => push({ id: "00000000-0000-4000-8000-000000000000", status: "created", card: toWire(newState()) }));
     expect(screen.getByRole("button", { name: /^จำไม่ได้/ })).toBeInTheDocument();
+  });
+
+  it("a duplicate answer replaces the card in the same way", async () => {
+    let push: (r: ReviewResult) => void = () => {};
+    const { sink } = show(FIVE, { serverCards: (cb) => { push = cb; return () => {}; } });
+    await reveal();
+    await rate("จำไม่ได้");
+    const server = { ...reviewState("2026-11-27T05:10:00Z"), stability: 40 };
+    act(() => push({ id: reviewsSent(sink)[0].id, status: "duplicate", card: toWire(server) }));
+    for (let i = 0; i < 3; i++) { await reveal(); await rate("ง่าย"); }
+    await reveal();
+    expect(screen.getByRole("button", { name: /^ง่าย/ })).toHaveTextContent(ratingIntervalLabels(server, NOW, TZ)[4]);
+  });
+
+  it("an answer for an older review of a card that was rated again meanwhile does not overwrite the newer local state", async () => {
+    let push: (r: ReviewResult) => void = () => {};
+    const { sink } = show([["country", "en_th"], ["friend", "en_th"], ["water", "en_th"], ["hello", "en_th"]], { serverCards: (cb) => { push = cb; return () => {}; } });
+    await reveal(); await rate("จำไม่ได้");
+    for (let i = 0; i < 3; i++) { await reveal(); await rate("ง่าย"); }
+    await reveal(); await rate("จำไม่ได้"); // country again: a second review of the same card
+    const [first] = reviewsSent(sink);
+    act(() => push({ id: first.id, status: "created", card: toWire({ ...reviewState("2026-11-27T05:10:00Z"), stability: 99 }) }));
+    expect(screen.getByText("country")).toBeInTheDocument(); // still in the session, not replaced by the stale answer
+    await reveal();
+    expect(screen.getByRole("button", { name: /^ง่าย/ })).not.toHaveTextContent(ratingIntervalLabels({ ...reviewState("2026-11-27T05:10:00Z"), stability: 99 }, NOW, TZ)[4]);
+  });
+
+  it("a server card that is not due today any more takes the card out of the session (the server decides)", async () => {
+    let push: (r: ReviewResult) => void = () => {};
+    const { sink } = show(FIVE, { serverCards: (cb) => { push = cb; return () => {}; } });
+    await reveal();
+    await rate("จำไม่ได้");
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
+    act(() => push({ id: reviewsSent(sink)[0].id, status: "created", card: toWire({ ...reviewState("2026-12-30T05:00:00Z") }) }));
+    expect(screen.getByText("2 / 5")).toBeInTheDocument(); // the card passed
+  });
+
+  it("a rejected review takes its card out, says so in the status region, and the session still finishes", async () => {
+    let push: (r: ReviewResult) => void = () => {};
+    const sink = fakeSink({ status: "done", response: DONE });
+    show([["country", "en_th"], ["friend", "th_en"]], { serverCards: (cb) => { push = cb; return () => {}; } }, sink);
+    await reveal();
+    await rate("จำไม่ได้");
+    act(() => push({ id: reviewsSent(sink)[0].id, status: "rejected", reason: "not_taught" }));
+    expect(screen.getByRole("status")).toHaveTextContent("บันทึกใบนี้ไม่ได้ จึงข้ามไป");
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    await reveal(); await rate("ง่าย"); // friend, the only card left
+    expect(await screen.findByRole("heading", { level: 1, name: "ทวนครบแล้ว" })).toBeInTheDocument();
+    expect(sink.completeReview).toHaveBeenCalledTimes(1);
+  });
+
+  it("a rejected review of the card on screen moves on to the next card", async () => {
+    let push: (r: ReviewResult) => void = () => {};
+    const sink = fakeSink({ status: "done", response: DONE });
+    show([["country", "en_th"], ["friend", "th_en"]], { serverCards: (cb) => { push = cb; return () => {}; } }, sink);
+    await reveal(); await rate("จำไม่ได้"); // country goes back, friend is next
+    await reveal(); await rate("จำไม่ได้"); // friend goes back; country is next (the queue has two cards)
+    expect(screen.getByText("country")).toBeInTheDocument();
+    act(() => push({ id: reviewsSent(sink)[0].id, status: "rejected", reason: "invalid" }));
+    expect(screen.queryByText("country")).toBeNull();
+    expect(screen.getByText("เพื่อน")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^ดู/ })).toBeInTheDocument();
   });
 
   it("unsubscribes on unmount", () => {
