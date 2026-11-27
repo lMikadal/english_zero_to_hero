@@ -26,9 +26,11 @@ describe("DayPlayer", () => {
       sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
       completeLesson: vi.fn(async () => ({ status: "done" as const, response })),
       completePractice: async () => ({ status: "queued" as const }),
+      sendReview: () => {},
+      completeReview: async () => ({ status: "queued" as const }),
       pendingCount: () => 0,
       subscribe: () => () => {},
-      getState: () => ({ pending: 0, pendingAttempts: 0, status: "idle" as const }),
+      getState: () => ({ pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle" as const }),
       dispose: () => {},
     };
     const day1 = readLesson(1);

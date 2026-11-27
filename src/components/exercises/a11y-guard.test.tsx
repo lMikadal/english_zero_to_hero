@@ -148,7 +148,7 @@ describe("accessibility guards on every week-1 exercise", () => {
   it("the player's feedback after a wrong answer is lang=en for the correct answer and Thai elsewhere", async () => {
     const listen = cases.find((c) => c.e.id === "d001-listen-01")!;
     const lesson = { ...weekOne[0], sections: [{ ...weekOne[0].sections[0], exercises: [listen.e] }] };
-    const sink = { sendAttempt: () => {}, completeLesson: async () => ({ status: "queued" as const }), completePractice: async () => ({ status: "queued" as const }), pendingCount: () => 0, subscribe: () => () => {} };
+    const sink = { sendAttempt: () => {}, completeLesson: async () => ({ status: "queued" as const }), completePractice: async () => ({ status: "queued" as const }), sendReview: () => {}, completeReview: async () => ({ status: "queued" as const }), pendingCount: () => 0, subscribe: () => () => {} };
     const view = renderWithAudio(<LessonPlayer lesson={lesson} vocab={listen.vocab} sink={sink} />, fakeAudio());
     fireEvent.click(screen.getByRole("radio", { name: "Ann" }));
     fireEvent.click(screen.getByRole("button", { name: "ตรวจคำตอบ" }));

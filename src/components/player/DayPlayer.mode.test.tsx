@@ -23,9 +23,11 @@ function makeSink() {
     sendAttempt: vi.fn<(a: AttemptInput) => void>(),
     completeLesson: vi.fn(async () => ({ status: "done" as const, response })),
     completePractice: vi.fn(async () => ({ status: "queued" as const })),
+    sendReview: () => {},
+    completeReview: async () => ({ status: "queued" as const }),
     pendingCount: () => 0,
     subscribe: () => () => {},
-    getState: () => ({ pending: 0, pendingAttempts: 0, status: "idle" as const }),
+    getState: () => ({ pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle" as const }),
     dispose: () => {},
   } satisfies HttpSink;
 }

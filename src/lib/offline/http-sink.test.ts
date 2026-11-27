@@ -469,13 +469,13 @@ describe("createHttpSink: S4-S6", () => {
 
   it("S6: getState reports pending counts and the status through the whole cycle", async () => {
     const t = setup([{ status: 500 }, okFor(1)]);
-    expect(t.sink.getState()).toEqual({ pending: 0, pendingAttempts: 0, status: "idle" });
+    expect(t.sink.getState()).toEqual({ pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle" });
     const seen: string[] = [];
     t.sink.subscribe(() => seen.push(t.sink.getState().status));
     t.sink.sendAttempt(attempt(1));
     void t.sink.completeLesson(completion);
     await settle();
-    expect(t.sink.getState()).toEqual({ pending: 2, pendingAttempts: 1, status: "retrying" });
+    expect(t.sink.getState()).toEqual({ pending: 2, pendingAttempts: 1, pendingReviews: 0, status: "retrying" });
     expect(seen).toContain("sending");
     expect(seen).toContain("retrying");
   });

@@ -31,6 +31,8 @@ function setup(ids: string[], opts: { skill?: ReplaySkill | null; result?: Compl
     sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
     completeLesson: vi.fn(async () => ({ status: "queued" as const })),
     completePractice: vi.fn(async () => opts.result ?? ({ status: "queued" as const })),
+    sendReview: () => {},
+    completeReview: async () => ({ status: "queued" as const }),
     pendingCount: () => 0,
     subscribe: () => () => {},
   } satisfies SyncSink;
@@ -171,6 +173,8 @@ describe("LessonPlayer in lesson mode (unchanged)", () => {
       sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
       completeLesson: vi.fn(async () => ({ status: "queued" as const })),
       completePractice: vi.fn(async () => ({ status: "queued" as const })),
+      sendReview: () => {},
+      completeReview: async () => ({ status: "queued" as const }),
       pendingCount: () => 0,
       subscribe: () => () => {},
     } satisfies SyncSink;

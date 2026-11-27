@@ -7,6 +7,7 @@ import type {
   CompletePracticeRequest,
   CompletePracticeResponse,
 } from "@/lib/attempts/contract";
+import type { CompleteReviewRequest, CompleteReviewResponse, ReviewInput } from "@/lib/srs/contract";
 
 /**
  * - `done`: the server answered 200.
@@ -29,6 +30,10 @@ export interface SyncSink {
   completeLesson(c: CompleteLessonRequest): Promise<CompleteResult>;
   /** Same FIFO rules as `completeLesson`, to POST /api/practice/complete (never touches progress). */
   completePractice(c: CompletePracticeRequest): Promise<CompleteResult<CompletePracticeResponse>>;
+  /** A vocabulary review (docs/plans/vocab-review-plan.md 5.3). Never throws; deduplicated in the queue by id. */
+  sendReview(r: ReviewInput): void;
+  /** Same FIFO rules as `completeLesson`, to POST /api/reviews/complete (only touches the streak). */
+  completeReview(c: CompleteReviewRequest): Promise<CompleteResult<CompleteReviewResponse>>;
   pendingCount(): number;
   subscribe(cb: () => void): () => void;
 }

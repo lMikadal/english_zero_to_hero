@@ -2,8 +2,8 @@
 // IndexedDB persistence is added later behind the same interface.
 //
 // Scheduling: one request in flight at a time, each with a timeout. Entries are strictly first in, first out.
-// A pass takes the attempts at the head of the queue (up to the batch size, 50 at most, never past a completion)
-// and sends them as one batch; a completion at the head is posted on its own. A pass keeps going while requests
+// A pass takes the items of one kind (attempts, or vocabulary reviews) at the head of the queue (up to the batch size,
+// 50 at most, never past a completion or an item of the other kind) and sends them as one batch; a completion at the head is posted on its own. A pass keeps going while requests
 // succeed and stops on the first failure.
 //
 // How answers are handled (attempts / completion):
@@ -20,6 +20,7 @@ import {
   type CompletePracticeRequest,
   type CompletePracticeResponse,
 } from "@/lib/attempts/contract";
+import { API_SRS, type CompleteReviewRequest, type CompleteReviewResponse, type ReviewInput } from "@/lib/srs/contract";
 import type { CompleteResult, SyncSink } from "./sink";
 
 /** The part of `Response` the sink reads, so tests can fake it. */
@@ -43,7 +44,7 @@ export type HttpSinkOptions = {
 };
 
 export type SinkStatus = "idle" | "sending" | "retrying" | "paused";
-export type SinkState = { pending: number; pendingAttempts: number; status: SinkStatus };
+export type SinkState = { pending: number; pendingAttempts: number; pendingReviews: number; status: SinkStatus };
 
 /** A SyncSink plus what a UI needs to show the wait ("กำลังรอสัญญาณ"). Not part of the SyncSink interface. */
 export type HttpSink = SyncSink & {
@@ -58,12 +59,12 @@ type CompleteEntry = {
   kind: "complete";
   url: string;
   key: string;
-  req: CompleteLessonRequest | CompletePracticeRequest;
+  req: CompleteLessonRequest | CompletePracticeRequest | CompleteReviewRequest;
   isResponse: (v: unknown) => boolean;
   settle: (r: CompleteResult<never>) => void;
   promise: Promise<CompleteResult<never>>;
 };
-type Entry = { kind: "attempt"; item: AttemptInput } | CompleteEntry;
+type Entry = { kind: "attempt"; item: AttemptInput } | { kind: "review"; item: ReviewInput } | CompleteEntry;
 
 type Outcome = { next: "continue" } | { next: "retry"; afterMs?: number } | { next: "pause" };
 
@@ -73,6 +74,9 @@ const isCompleteResponse = (v: unknown): v is CompleteLessonResponse =>
   isObject(v) && isObject(v.progress) && isObject(v.streak) && typeof v.currentDay === "number";
 const isPracticeResponse = (v: unknown): v is CompletePracticeResponse =>
   isObject(v) && isObject(v.session) && isObject(v.streak) && typeof v.countedForStreak === "boolean" && !("progress" in v);
+
+const isReviewResponse = (v: unknown): v is CompleteReviewResponse =>
+  isObject(v) && typeof v.sessionDate === "string" && typeof v.reviewed === "number" && typeof v.remainingDue === "number" && isObject(v.streak) && typeof v.countedForStreak === "boolean";
 
 export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
   const doFetch: SinkFetch = options.fetch ?? ((url, init) => globalThis.fetch(url, init));
@@ -181,12 +185,14 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       return { next: "retry" };
     }
 
-    const batch: AttemptInput[] = [];
+    const kind = head.kind;
+    const url = kind === "attempt" ? API.attempts : API_SRS.reviews;
+    const batch: (AttemptInput | ReviewInput)[] = [];
     for (const e of queue) {
-      if (e.kind !== "attempt" || batch.length >= batchSize) break;
+      if (e.kind !== kind || batch.length >= batchSize) break;
       batch.push(e.item);
     }
-    const res = await request(API.attempts, { attempts: batch });
+    const res = await request(url, kind === "attempt" ? { attempts: batch } : { reviews: batch });
 
     if (res.status === 200) {
       const body = await res.json();
@@ -198,7 +204,7 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       if (!aligned) {
         if (!loggedMismatch) {
           loggedMismatch = true;
-          console.error("POST /api/attempts answered 200 but the results do not match the batch; keeping all items");
+          console.error(`POST ${url} answered 200 but the results do not match the batch; keeping all items`);
         }
         return { next: "retry" };
       }
@@ -214,13 +220,13 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
         batchSize = Math.max(1, Math.floor(batch.length / 2));
         return { next: "continue" };
       }
-      console.error("POST /api/attempts answered 413 for a single attempt; dropping it", batch[0].id);
+      console.error(`POST ${url} answered 413 for a single item; dropping it`, batch[0].id);
       dropHead(1);
       return { next: "continue" };
     }
     if (res.status === 408 || res.status === 429 || res.status >= 500) return { next: "retry", afterMs: retryAfterMs(res) };
     if (res.status >= 400 && res.status < 500) {
-      console.error(`POST /api/attempts answered ${res.status}; dropping the batch`, batch.map((a) => a.id));
+      console.error(`POST ${url} answered ${res.status}; dropping the batch`, batch.map((a) => a.id));
       dropHead(batch.length);
       return { next: "continue" };
     }
@@ -271,7 +277,7 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
   function enqueueComplete(
     url: string,
     key: string,
-    req: CompleteLessonRequest | CompletePracticeRequest,
+    req: CompleteLessonRequest | CompletePracticeRequest | CompleteReviewRequest,
     isResponse: (v: unknown) => boolean,
   ): Promise<CompleteResult<never>> {
     const existing = queue.find((e): e is CompleteEntry => e.kind === "complete" && e.key === key);
@@ -303,6 +309,19 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
         console.error("sendAttempt failed", e);
       }
     },
+    sendReview(r) {
+      try {
+        if (queue.some((e) => e.kind === "review" && e.item.id === r.id)) return;
+        resume();
+        queue.push({ kind: "review", item: r });
+        notify();
+        start();
+      } catch (e) {
+        console.error("sendReview failed", e);
+      }
+    },
+    completeReview: (c) =>
+      enqueueComplete(API_SRS.completeReview, `${API_SRS.completeReview}|${c.sessionId}`, c, isReviewResponse) as Promise<CompleteResult<CompleteReviewResponse>>,
     completeLesson: (c) =>
       enqueueComplete(API.completeLesson, `${API.completeLesson}|${c.day}|${c.sessionId}`, c, isCompleteResponse) as Promise<CompleteResult>,
     completePractice: (c) =>
@@ -311,7 +330,12 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       >,
     /** Attempts plus completions still queued. */
     pendingCount: () => queue.length,
-    getState: () => ({ pending: queue.length, pendingAttempts: queue.filter((e) => e.kind === "attempt").length, status: status() }),
+    getState: () => ({
+      pending: queue.length,
+      pendingAttempts: queue.filter((e) => e.kind === "attempt").length,
+      pendingReviews: queue.filter((e) => e.kind === "review").length,
+      status: status(),
+    }),
     subscribe(cb) {
       listeners.add(cb);
       return () => void listeners.delete(cb);
