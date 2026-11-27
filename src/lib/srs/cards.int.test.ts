@@ -1,6 +1,6 @@
 // @vitest-environment node
 // Cards are created from finished lessons by ONE idempotent function (docs/plans/vocab-review-plan.md 2.1, PR 2).
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { attempts, profiles, progress, srsCards, user } from "@/db/schema";
 import { cleanDatabase, connectTestDb } from "@/db/test-utils";
@@ -43,7 +43,7 @@ function fakeContent(lessons: Record<number, string[]>, vocab: string[]): CardCo
     lessons,
     vocab: v,
     getLesson: (d) => (lessons[d] ? { vocab: lessons[d] } : null),
-    getVocab: (id) => (v.has(id) ? { word: id.slice(2), ipa: { us: `us-${id}`, uk: `uk-${id}` }, th: `th-${id}`, example: { en: `en ${id}`, th: `ex ${id}` } } : null),
+    getVocab: (id) => (v.has(id) ? { word: id, ipa: { us: `us-${id}`, uk: `uk-${id}` }, th: `th-${id}`, example: { en: `en ${id}`, th: `ex ${id}` } } : null),
   };
 }
 
@@ -278,15 +278,16 @@ describe("loadReviewQueue", () => {
     expect(keys(q)).toEqual(DAY1.map((w) => `${w}/en_th`));
   });
 
-  it("sibling gap: both cards of every word due the same day are kept at least SIBLING_GAP apart", async () => {
+  it("sibling gap: both cards of four words due the same day are kept at least SIBLING_GAP apart (sorted, they would be adjacent)", async () => {
     await markDone(1);
     await reconcile();
-    await db.update(srsCards).set({ due: NOW }).where(eq(srsCards.userId, userId)); // every card of day 1 due now
+    const four = DAY1.slice(0, 4);
+    await db.update(srsCards).set({ due: NOW }).where(and(eq(srsCards.userId, userId), inArray(srsCards.vocabId, four))); // both directions of 4 words due now
     const q = await load();
-    expect(q.cards).toHaveLength(10);
-    expect(new Set(keys(q)).size).toBe(10);
+    expect(keys(q).sort()).toEqual(four.flatMap((w) => [`${w}/en_th`, `${w}/th_en`]).concat(["v-cat/en_th"]).sort());
+    expect(keys(q).slice(0, 4).every((k) => k.endsWith("en_th"))).toBe(true);
     const at = new Map(q.cards.map((c, i) => [cardKey(c), i]));
-    for (const w of DAY1) expect(Math.abs(at.get(`${w}|en_th`)! - at.get(`${w}|th_en`)!)).toBeGreaterThanOrEqual(SIBLING_GAP);
+    for (const w of four) expect(Math.abs(at.get(`${w}|en_th`)! - at.get(`${w}|th_en`)!)).toBeGreaterThanOrEqual(SIBLING_GAP);
   });
 
   it("content comes from the content source: word, IPA by the profile's accent, Thai, first example", async () => {
