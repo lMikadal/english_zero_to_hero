@@ -1,6 +1,6 @@
 // Tests for the shell scripts behind `make prod-*` (POSIX sh, run on the host by make).
 // The scripts talk to Docker through $COMPOSE_CMD, so the tests swap in a fake command that records its
-// arguments and prints canned bytes instead of running pg_dump.
+// arguments and prints canned output instead of running pg_dump / psql.
 // @vitest-environment node
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -34,6 +34,26 @@ function envFile(content: string): string {
 
 const GOOD = "POSTGRES_PASSWORD=abcdEFGH1234ijklMNOP5678\nPOSTGRES_DB=english_zero_to_hero\n";
 
+describe("env-get.sh (the one parser for .env.prod values)", () => {
+  const get = (content: string, key: string, def = "") => run("env-get.sh", [envFile(content), key, def]).out;
+
+  it("returns the last assignment, trimmed", () => {
+    expect(get("A=1\nA=  2  \n", "A")).toBe("2");
+  });
+  it("strips quotes and carriage returns the same way everywhere", () => {
+    expect(get('A="abc"\r\n', "A")).toBe("abc");
+    expect(get("A='abc'\n", "A")).toBe("abc");
+    expect(get("A=abc\r\n", "A")).toBe("abc");
+  });
+  it("ignores comments and falls back to the default", () => {
+    expect(get("# A=1\n", "A", "dflt")).toBe("dflt");
+    expect(get("A=\n", "A", "dflt")).toBe("dflt");
+  });
+  it("does not treat a longer key as the key", () => {
+    expect(get("APP_PORT_X=1\n", "APP_PORT", "3100")).toBe("3100");
+  });
+});
+
 describe("check-env.sh", () => {
   it("accepts a strong password", () => {
     expect(run("check-env.sh", [envFile(GOOD)]).code).toBe(0);
@@ -46,8 +66,7 @@ describe("check-env.sh", () => {
   });
 
   it("refuses the value shipped in .env.prod.example", () => {
-    const example = path.join(repoRoot, ".env.prod.example");
-    const r = run("check-env.sh", [example]);
+    const r = run("check-env.sh", [path.join(repoRoot, ".env.prod.example")]);
     expect(r.code).not.toBe(0);
     expect(r.err).toMatch(/POSTGRES_PASSWORD/);
   });
@@ -59,8 +78,19 @@ describe("check-env.sh", () => {
     ["a repetitive password", "POSTGRES_PASSWORD=ezhezhezhezhezhezhezh\n"],
     ["a placeholder", "POSTGRES_PASSWORD=change-me-please-change-me\n"],
     ["characters that break the connection URL", "POSTGRES_PASSWORD=abcdEFGH1234ijkl@MNOP5678\n"],
+    ["BACKUP_KEEP=00", GOOD + "BACKUP_KEEP=00\n"],
+    ["BACKUP_KEEP=0", GOOD + "BACKUP_KEEP=0\n"],
+    ["BACKUP_KEEP=abc", GOOD + "BACKUP_KEEP=abc\n"],
+    ["a POSTGRES_USER with odd characters", GOOD + "POSTGRES_USER=ezh;drop\n"],
+    ["a POSTGRES_DB with odd characters", "POSTGRES_PASSWORD=abcdEFGH1234ijklMNOP5678\nPOSTGRES_DB=a/b\n"],
+    ["a POSTGRES_DB with upper case", "POSTGRES_PASSWORD=abcdEFGH1234ijklMNOP5678\nPOSTGRES_DB=Prod\n"],
+    ["a non-numeric APP_PORT", GOOD + "APP_PORT=abc\n"],
   ])("refuses %s", (_name, content) => {
     expect(run("check-env.sh", [envFile(content)]).code).not.toBe(0);
+  });
+
+  it("accepts BACKUP_KEEP=14", () => {
+    expect(run("check-env.sh", [envFile(GOOD + "BACKUP_KEEP=14\n")]).code).toBe(0);
   });
 
   it("refuses a database name that belongs to dev", () => {
@@ -77,7 +107,10 @@ describe("check-env.sh", () => {
   });
 });
 
-/** A stand-in for `docker compose ...`: logs every call; `pg_dump` prints bytes, `pg_restore -l` succeeds. */
+/**
+ * A stand-in for `docker compose ...`: logs every call and prints canned output.
+ * FAKE_FAIL=<text> makes only the calls whose arguments contain <text> fail.
+ */
 function fakeCompose(): { cmd: string; log: string } {
   const log = path.join(tmp, "calls.log");
   const bin = path.join(tmp, "fake-compose");
@@ -85,70 +118,126 @@ function fakeCompose(): { cmd: string; log: string } {
     bin,
     `#!/bin/sh
 echo "$*" >> "${log}"
+if [ -n "\${FAKE_FAIL:-}" ]; then
+  case "$*" in *"$FAKE_FAIL"*) echo "fake failure" >&2; exit 1 ;; esac
+fi
 case "$*" in
   *pg_dump*) printf 'PGDMP-fake-dump-bytes' ;;
+  *"pg_restore -l"*) echo "; dbname: \${FAKE_DBNAME:-english_zero_to_hero}" ;;
+  *"pg_restore --data-only"*) printf 'COPY drizzle.__drizzle_migrations (id, hash, created_at) FROM stdin;\\n1\\tabc\\t%s\\n\\\\.\\n' "\${FAKE_DUMP_MAX:-1000}" ;;
+  *"pg_restore --no-owner -f -"*) echo "SELECT 1;" ;;
+  *_journal.json*) printf '{"entries":[{"idx":0,"when":1},{"idx":1,"when":%s}]}' "\${FAKE_JOURNAL_MAX:-2000}" ;;
+  *to_regclass*) echo "\${FAKE_HAS_TABLE-drizzle.__drizzle_migrations}" ;;
+  *"max(created_at)"*) echo "\${FAKE_DB_MAX:-2000}" ;;
+  *"count(*)"*) echo "7" ;;
 esac
-exit \${FAKE_EXIT:-0}
+exit 0
 `,
     { mode: 0o755 },
   );
   return { cmd: bin, log };
 }
 
+const calls = (log: string) => (fs.existsSync(log) ? fs.readFileSync(log, "utf8").trim().split("\n") : []);
+const DB = "english_zero_to_hero";
+const name = (stamp: string, label = "") => `ezh-${DB}-${stamp}${label ? `-${label}` : ""}.dump`;
+
 describe("backup.sh", () => {
+  const base = (cmd: string, extra: Record<string, string> = {}) => ({
+    COMPOSE_CMD: cmd,
+    BACKUP_DIR: path.join(tmp, "backups"),
+    DB_NAME: DB,
+    DB_USER: "ezh",
+    ...extra,
+  });
+
   it("writes a timestamped non-empty dump, prints its path and leaves no partial file", () => {
     const { cmd } = fakeCompose();
-    const backups = path.join(tmp, "backups");
-    const r = run("backup.sh", [], { COMPOSE_CMD: cmd, BACKUP_DIR: backups, DB_NAME: "english_zero_to_hero", DB_USER: "ezh" });
+    const r = run("backup.sh", [], base(cmd));
     expect(r.code).toBe(0);
     const file = r.out.trim().split("\n").pop()!;
     expect(file).toMatch(/ezh-english_zero_to_hero-\d{8}-\d{6}\.dump$/);
     expect(fs.readFileSync(file, "utf8")).toBe("PGDMP-fake-dump-bytes");
-    expect(fs.readdirSync(backups).filter((n) => n.includes("partial"))).toEqual([]);
+    expect(fs.readdirSync(path.join(tmp, "backups")).filter((n) => n.includes("partial"))).toEqual([]);
+  });
+
+  it("makes the folder 700 and the dump 600 (it holds all the learner's data)", () => {
+    const { cmd } = fakeCompose();
+    const r = run("backup.sh", [], base(cmd));
+    const file = r.out.trim().split("\n").pop()!;
+    expect((fs.statSync(path.dirname(file)).mode & 0o777).toString(8)).toBe("700");
+    expect((fs.statSync(file).mode & 0o777).toString(8)).toBe("600");
   });
 
   it("deletes nothing and leaves no file when pg_dump fails", () => {
     const { cmd } = fakeCompose();
     const backups = path.join(tmp, "backups");
     fs.mkdirSync(backups);
-    fs.writeFileSync(path.join(backups, "ezh-english_zero_to_hero-20200101-000000.dump"), "old");
-    const r = run("backup.sh", [], { COMPOSE_CMD: cmd, BACKUP_DIR: backups, DB_NAME: "english_zero_to_hero", DB_USER: "ezh", FAKE_EXIT: "1", KEEP: "1" });
+    fs.writeFileSync(path.join(backups, name("20200101-000000")), "old");
+    const r = run("backup.sh", [], base(cmd, { FAKE_FAIL: "pg_dump", KEEP: "1" }));
     expect(r.code).not.toBe(0);
-    expect(fs.readdirSync(backups)).toEqual(["ezh-english_zero_to_hero-20200101-000000.dump"]);
+    expect(fs.readdirSync(backups)).toEqual([name("20200101-000000")]);
   });
 
   it("keeps only the newest KEEP backups of this database", () => {
     const { cmd } = fakeCompose();
     const backups = path.join(tmp, "backups");
     fs.mkdirSync(backups);
-    for (const d of ["20200101", "20200102", "20200103"]) {
-      fs.writeFileSync(path.join(backups, `ezh-english_zero_to_hero-${d}-000000.dump`), "x");
-    }
+    for (const d of ["20200101", "20200102", "20200103"]) fs.writeFileSync(path.join(backups, name(`${d}-000000`)), "x");
     fs.writeFileSync(path.join(backups, "ezh-other_db-20190101-000000.dump"), "x");
-    const r = run("backup.sh", [], { COMPOSE_CMD: cmd, BACKUP_DIR: backups, DB_NAME: "english_zero_to_hero", DB_USER: "ezh", KEEP: "2" });
-    expect(r.code).toBe(0);
+    expect(run("backup.sh", [], base(cmd, { KEEP: "2" })).code).toBe(0);
     const left = fs.readdirSync(backups).sort();
-    expect(left).toHaveLength(3); // 2 of ours + the other database's file, untouched
+    expect(left).toHaveLength(3);
     expect(left).toContain("ezh-other_db-20190101-000000.dump");
-    expect(left).not.toContain("ezh-english_zero_to_hero-20200101-000000.dump");
+    expect(left).not.toContain(name("20200101-000000"));
   });
 
-  it("refuses a KEEP that is not a positive number", () => {
+  it.each(["0", "00", "000", "-1", "1.5", "abc", " ", "08x"])("refuses KEEP=%s (and deletes nothing)", (keep) => {
     const { cmd } = fakeCompose();
-    const r = run("backup.sh", [], { COMPOSE_CMD: cmd, BACKUP_DIR: path.join(tmp, "b"), DB_NAME: "x", DB_USER: "ezh", KEEP: "0" });
+    const backups = path.join(tmp, "backups");
+    fs.mkdirSync(backups);
+    fs.writeFileSync(path.join(backups, name("20200101-000000")), "x");
+    const r = run("backup.sh", [], base(cmd, { KEEP: keep }));
     expect(r.code).not.toBe(0);
+    expect(fs.readdirSync(backups)).toEqual([name("20200101-000000")]);
+  });
+
+  it("keeps labelled safety backups in their own window of 5 and never evicts normal backups for them", () => {
+    const { cmd } = fakeCompose();
+    const backups = path.join(tmp, "backups");
+    fs.mkdirSync(backups);
+    const normal = ["20200101", "20200102"].map((d) => name(`${d}-000000`));
+    normal.forEach((n) => fs.writeFileSync(path.join(backups, n), "x"));
+    for (let i = 1; i <= 7; i++) fs.writeFileSync(path.join(backups, name(`2020020${i}-000000`, "pre-update")), "x");
+    expect(run("backup.sh", [], base(cmd, { KEEP: "2", LABEL: "pre-update" })).code).toBe(0);
+    const left = fs.readdirSync(backups);
+    expect(left.filter((n) => n.includes("pre-update"))).toHaveLength(5);
+    expect(normal.every((n) => left.includes(n))).toBe(true);
+  });
+
+  it("does not prune at all when PRUNE=0", () => {
+    const { cmd } = fakeCompose();
+    const backups = path.join(tmp, "backups");
+    fs.mkdirSync(backups);
+    for (const d of ["20200101", "20200102", "20200103"]) fs.writeFileSync(path.join(backups, name(`${d}-000000`)), "x");
+    expect(run("backup.sh", [], base(cmd, { KEEP: "1", PRUNE: "0" })).code).toBe(0);
+    expect(fs.readdirSync(backups)).toHaveLength(4);
   });
 });
 
 describe("restore.sh", () => {
-  const base = (cmd: string) => ({
+  const backups = () => path.join(tmp, "backups");
+  const base = (cmd: string, extra: Record<string, string> = {}) => ({
     COMPOSE_CMD: cmd,
-    BACKUP_DIR: path.join(tmp, "backups"),
-    DB_NAME: "english_zero_to_hero",
+    BACKUP_DIR: backups(),
+    DB_NAME: DB,
     DB_USER: "ezh",
+    ...extra,
   });
-  const dump = () => {
-    const f = path.join(tmp, "in.dump");
+  /** a dump inside BACKUP_DIR (so pruning could reach it), named like make prod-backup names it */
+  const dump = (stamp = "20200101-000000") => {
+    fs.mkdirSync(backups(), { recursive: true });
+    const f = path.join(backups(), name(stamp));
     fs.writeFileSync(f, "PGDMP-something");
     return f;
   };
@@ -157,42 +246,261 @@ describe("restore.sh", () => {
     const { cmd, log } = fakeCompose();
     const r = run("restore.sh", [dump(), ""], base(cmd));
     expect(r.code).not.toBe(0);
-    expect(r.err).toContain("CONFIRM=english_zero_to_hero");
-    expect(fs.existsSync(log)).toBe(false);
+    expect(r.err).toContain(`CONFIRM=${DB}`);
+    expect(calls(log)).toEqual([]);
   });
 
   it("refuses the wrong CONFIRM", () => {
     const { cmd, log } = fakeCompose();
     expect(run("restore.sh", [dump(), "english_zero_to_hero_dev"], base(cmd)).code).not.toBe(0);
-    expect(fs.existsSync(log)).toBe(false);
+    expect(calls(log)).toEqual([]);
   });
 
   it("refuses a missing or empty file", () => {
     const { cmd, log } = fakeCompose();
-    expect(run("restore.sh", [path.join(tmp, "missing.dump"), "english_zero_to_hero"], base(cmd)).code).not.toBe(0);
-    const empty = path.join(tmp, "empty.dump");
+    expect(run("restore.sh", [path.join(tmp, "missing.dump"), DB], base(cmd)).code).not.toBe(0);
+    const empty = path.join(tmp, name("20200101-000000"));
     fs.writeFileSync(empty, "");
-    expect(run("restore.sh", [empty, "english_zero_to_hero"], base(cmd)).code).not.toBe(0);
-    expect(fs.existsSync(log)).toBe(false);
+    expect(run("restore.sh", [empty, DB], base(cmd)).code).not.toBe(0);
+    expect(calls(log)).toEqual([]);
   });
 
-  it("takes a fresh backup BEFORE it restores, with the app stopped in between", () => {
+  it("says postgres is not running (not 'invalid backup') when it cannot be reached", () => {
     const { cmd, log } = fakeCompose();
-    const r = run("restore.sh", [dump(), "english_zero_to_hero"], base(cmd));
-    expect(r.code).toBe(0);
-    const calls = fs.readFileSync(log, "utf8").trim().split("\n");
-    const at = (needle: string) => calls.findIndex((c) => c.includes(needle));
-    expect(at("pg_dump")).toBeGreaterThan(-1);
-    expect(at("pg_restore --clean")).toBeGreaterThan(at("pg_dump"));
-    expect(at("stop app")).toBeLessThan(at("pg_restore --clean"));
-    expect(at("start app")).toBeGreaterThan(at("pg_restore --clean"));
-    expect(fs.readdirSync(path.join(tmp, "backups")).some((n) => n.includes("pre-restore"))).toBe(true);
-  });
-
-  it("does not restore when the safety backup fails", () => {
-    const { cmd, log } = fakeCompose();
-    const r = run("restore.sh", [dump(), "english_zero_to_hero"], { ...base(cmd), FAKE_EXIT: "1" });
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "pg_isready" }));
     expect(r.code).not.toBe(0);
-    expect(fs.readFileSync(log, "utf8")).not.toContain("pg_restore --clean");
+    expect(r.err).toMatch(/not running/i);
+    expect(r.err).not.toMatch(/not a valid backup/i);
+    expect(calls(log).some((c) => c.includes("stop app"))).toBe(false);
+  });
+
+  it("takes a fresh backup BEFORE it restores; restores in one transaction; ends with the normal up path (migrations)", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd));
+    expect(r.code).toBe(0);
+    const c = calls(log);
+    const at = (needle: string) => c.findIndex((x) => x.includes(needle));
+    const restoreIdx = c.findIndex((x) => x.includes("psql") && x.includes("--single-transaction"));
+    expect(at("pg_dump")).toBeGreaterThan(-1);
+    expect(restoreIdx).toBeGreaterThan(at("pg_dump"));
+    expect(at("stop app")).toBeLessThan(restoreIdx);
+    expect(c[c.length - 1]).toContain("up -d --wait");
+    expect(c.some((x) => x.includes("start app"))).toBe(false);
+    expect(c[restoreIdx]).toContain("ON_ERROR_STOP=1");
+    expect(fs.readdirSync(backups()).some((n) => n.includes("pre-restore"))).toBe(true);
+  });
+
+  it("drops and recreates the app schemas in the same transaction as the restore (true replace)", () => {
+    const { cmd } = fakeCompose();
+    const sent = path.join(tmp, "psql-stdin");
+    // capture what is piped into psql
+    const wrap = path.join(tmp, "wrap");
+    fs.writeFileSync(wrap, `#!/bin/sh\ncase "$*" in *--single-transaction*) cat > "${sent}" ;; esac\nexec "${cmd}" "$@"\n`, { mode: 0o755 });
+    expect(run("restore.sh", [dump(), DB], base(wrap)).code).toBe(0);
+    const sql = fs.readFileSync(sent, "utf8");
+    expect(sql).toMatch(/DROP SCHEMA IF EXISTS public CASCADE/);
+    expect(sql).toMatch(/DROP SCHEMA IF EXISTS drizzle CASCADE/);
+    expect(sql).toMatch(/CREATE SCHEMA public/);
+    expect(sql.indexOf("DROP SCHEMA")).toBeLessThan(sql.indexOf("SELECT 1;"));
+  });
+
+  it("A1: restoring the OLDEST backup of KEEP files works and the file survives", () => {
+    const { cmd } = fakeCompose();
+    const oldest = dump("20200101-000000");
+    dump("20200102-000000");
+    dump("20200103-000000");
+    const r = run("restore.sh", [oldest, DB], base(cmd, { KEEP: "3" }));
+    expect(r.code).toBe(0);
+    expect(fs.existsSync(oldest)).toBe(true);
+    expect(fs.readdirSync(backups()).filter((n) => !n.includes("pre-restore"))).toHaveLength(3);
+  });
+
+  it("A1: the safety backup never evicts normal backups", () => {
+    const { cmd } = fakeCompose();
+    const files = ["20200101", "20200102", "20200103"].map((d) => dump(`${d}-000000`));
+    expect(run("restore.sh", [files[0], DB], base(cmd, { KEEP: "1" })).code).toBe(0);
+    expect(files.every((f) => fs.existsSync(f))).toBe(true);
+  });
+
+  it("does not restore when the safety backup fails (only pg_dump fails)", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "pg_dump" }));
+    expect(r.code).not.toBe(0);
+    const c = calls(log);
+    expect(c.some((x) => x.includes("pg_dump"))).toBe(true);
+    expect(c.some((x) => x.includes("--single-transaction"))).toBe(false);
+    expect(c[c.length - 1]).toContain("up -d --wait");
+  });
+
+  it("when pg_restore fails: non-zero exit, nothing applied, data-unchanged message with the safety backup path, app restarted", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "pg_restore --no-owner -f -" }));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/unchanged/i);
+    expect(r.err).toContain("pre-restore.dump");
+    const c = calls(log);
+    expect(c.some((x) => x.includes("--single-transaction"))).toBe(false);
+    expect(c[c.length - 1]).toContain("up -d --wait");
+  });
+
+  it("when the transaction fails: non-zero exit, says it was rolled back and the data is unchanged", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "--single-transaction" }));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/unchanged/i);
+    expect(calls(log)[calls(log).length - 1]).toContain("up -d --wait");
+  });
+
+  it("B2: refuses a dump whose newest migration is newer than this code, unless ALLOW_NEWER=1", () => {
+    const { cmd, log } = fakeCompose();
+    const env = { FAKE_DUMP_MAX: "3000", FAKE_JOURNAL_MAX: "2000" };
+    const r = run("restore.sh", [dump(), DB], base(cmd, env));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/ALLOW_NEWER=1/);
+    expect(r.err).toMatch(/[ก-๙]/); // Thai as well as English
+    expect(calls(log).some((x) => x.includes("stop app"))).toBe(false);
+    expect(run("restore.sh", [dump(), DB], base(cmd, { ...env, ALLOW_NEWER: "1" })).code).toBe(0);
+  });
+
+  it("B2: an older or equal dump is fine", () => {
+    const { cmd } = fakeCompose();
+    expect(run("restore.sh", [dump(), DB], base(cmd, { FAKE_DUMP_MAX: "2000", FAKE_JOURNAL_MAX: "2000" })).code).toBe(0);
+  });
+
+  it("B4: refuses a file named for another database, unless ALLOW_OTHER_DB=1", () => {
+    const { cmd, log } = fakeCompose();
+    fs.mkdirSync(backups(), { recursive: true });
+    const other = path.join(backups(), "ezh-other_db-20200101-000000.dump");
+    fs.writeFileSync(other, "PGDMP");
+    const r = run("restore.sh", [other, DB], base(cmd));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toContain("ALLOW_OTHER_DB=1");
+    expect(calls(log).some((x) => x.includes("stop app"))).toBe(false);
+    expect(run("restore.sh", [other, DB], base(cmd, { ALLOW_OTHER_DB: "1" })).code).toBe(0);
+  });
+
+  it("B4: refuses a dump whose own header names another database (even with the right file name)", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_DBNAME: "english_zero_to_hero_dev" }));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toContain("english_zero_to_hero_dev");
+    expect(calls(log).some((x) => x.includes("stop app"))).toBe(false);
+    expect(run("restore.sh", [dump(), DB], base(cmd, { FAKE_DBNAME: "english_zero_to_hero_dev", ALLOW_OTHER_DB: "1" })).code).toBe(0);
+  });
+
+  it("refuses a file that is not a valid backup", () => {
+    const { cmd } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "pg_restore -l" }));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/not a valid backup/i);
+  });
+});
+
+describe("pre-update.sh (backup before migrations)", () => {
+  const base = (cmd: string, mode: string, extra: Record<string, string> = {}) => ({
+    COMPOSE_CMD: cmd,
+    BACKUP_DIR: path.join(tmp, "backups"),
+    DB_NAME: DB,
+    DB_USER: "ezh",
+    MODE: mode,
+    ...extra,
+  });
+  const labelled = () => (fs.existsSync(path.join(tmp, "backups")) ? fs.readdirSync(path.join(tmp, "backups")).filter((n) => n.includes("-pre-update")) : []);
+
+  it("always: backs up when the database already has data", () => {
+    const { cmd } = fakeCompose();
+    expect(run("pre-update.sh", [], base(cmd, "always")).code).toBe(0);
+    expect(labelled()).toHaveLength(1);
+  });
+
+  it("always: first install (no migrations table) takes no backup", () => {
+    const { cmd } = fakeCompose();
+    expect(run("pre-update.sh", [], base(cmd, "always", { FAKE_HAS_TABLE: "" })).code).toBe(0);
+    expect(labelled()).toHaveLength(0);
+  });
+
+  it("if-pending: backs up when the image has a migration the database lacks", () => {
+    const { cmd } = fakeCompose();
+    expect(run("pre-update.sh", [], base(cmd, "if-pending", { FAKE_JOURNAL_MAX: "3000", FAKE_DB_MAX: "2000" })).code).toBe(0);
+    expect(labelled()).toHaveLength(1);
+  });
+
+  it("if-pending: no backup when the database is up to date", () => {
+    const { cmd } = fakeCompose();
+    expect(run("pre-update.sh", [], base(cmd, "if-pending", { FAKE_JOURNAL_MAX: "2000", FAKE_DB_MAX: "2000" })).code).toBe(0);
+    expect(labelled()).toHaveLength(0);
+  });
+
+  it("fails (so the update stops) when the backup fails", () => {
+    const { cmd } = fakeCompose();
+    expect(run("pre-update.sh", [], base(cmd, "always", { FAKE_FAIL: "pg_dump" })).code).not.toBe(0);
+  });
+
+  it("SKIP=1 does nothing", () => {
+    const { cmd, log } = fakeCompose();
+    expect(run("pre-update.sh", [], base(cmd, "if-pending", { SKIP: "1" })).code).toBe(0);
+    expect(calls(log)).toEqual([]);
+  });
+});
+
+describe("verify.sh (is this backup restorable?)", () => {
+  const base = (cmd: string, extra: Record<string, string> = {}) => ({ COMPOSE_CMD: cmd, DB_NAME: DB, DB_USER: "ezh", ...extra });
+  const dump = () => {
+    const f = path.join(tmp, name("20200101-000000"));
+    fs.writeFileSync(f, "PGDMP-something");
+    return f;
+  };
+
+  it("restores into a scratch database (never the real one), prints counts and drops the scratch database", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("verify.sh", [dump()], base(cmd));
+    expect(r.code).toBe(0);
+    expect(r.out).toMatch(/ok/i);
+    const c = calls(log);
+    const create = c.findIndex((x) => /CREATE DATABASE ezh_verify_/.test(x));
+    const drop = c.findIndex((x) => /DROP DATABASE .*ezh_verify_/.test(x));
+    expect(create).toBeGreaterThan(-1);
+    expect(drop).toBeGreaterThan(create);
+    expect(c.filter((x) => x.includes("pg_restore")).every((x) => !x.includes(`-d ${DB}`) || x.includes("ezh_verify_"))).toBe(true);
+    expect(c.some((x) => x.includes("stop app"))).toBe(false);
+  });
+
+  it("drops the scratch database and fails when the restore fails", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("verify.sh", [dump()], base(cmd, { FAKE_FAIL: "--exit-on-error" }));
+    expect(r.code).not.toBe(0);
+    expect(calls(log).some((x) => /DROP DATABASE .*ezh_verify_/.test(x))).toBe(true);
+  });
+
+  it("refuses a missing file", () => {
+    const { cmd } = fakeCompose();
+    expect(run("verify.sh", [path.join(tmp, "nope.dump")], base(cmd)).code).not.toBe(0);
+  });
+});
+
+describe("Makefile guards", () => {
+  const makefile = fs.readFileSync(path.join(repoRoot, "Makefile"), "utf8");
+
+  it("C6: no target passes -v / --volumes (or removes a volume) for the production project", () => {
+    const bad = makefile.split("\n").filter((l) => {
+      const touchesVolumes = /(\s-v\b|--volumes|volume\s+(rm|prune)|system\s+prune)/.test(l) && !/^\s*#/.test(l);
+      return touchesVolumes && !l.includes("-p ezh_stage");
+    });
+    expect(bad).toEqual([]);
+  });
+
+  it("A3: the dev app lookup is limited to the dev compose project, so a running prod/stage app is never picked", () => {
+    const appUp = makefile.slice(makefile.indexOf("APP_UP ="), makefile.indexOf("RUN ="));
+    expect(appUp).toContain("com.docker.compose.project=");
+  });
+
+  it("C4: prod-status does not hard-code 127.0.0.1", () => {
+    const status = makefile.slice(makefile.indexOf("prod-status:"), makefile.indexOf("prod-migrate:"));
+    expect(status).not.toContain("127.0.0.1");
+  });
+
+  it("every prod-* env value comes from the one parser", () => {
+    expect(makefile).toContain("scripts/prod/env-get.sh");
+    expect(makefile).not.toMatch(/sed -n 's\/\^\$\(1\)=/);
   });
 });
