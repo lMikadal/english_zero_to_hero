@@ -66,6 +66,24 @@ describe("orderQueue", () => {
     expect(keys(q).slice(0, 3)).toEqual(["v-c|th_en", "v-e|en_th", "v-d|en_th"]);
     expect(new Set(keys(q).slice(3))).toEqual(new Set(["v-a|en_th", "v-a|th_en", "v-b|en_th", "v-b|th_en"]));
   });
+  it("new cards: every en_th in teaching order, then every th_en in teaching order (siblings are far apart by construction)", () => {
+    const q = orderQueue(
+      ["v-c", "v-a", "v-b"].flatMap((w) => [card(w, "th_en"), card(w, "en_th")]),
+      TEACH,
+    );
+    expect(keys(q)).toEqual(["v-a|en_th", "v-b|en_th", "v-c|en_th", "v-a|th_en", "v-b|th_en", "v-c|th_en"]);
+  });
+  it("5 words x 2 directions, all new (a missed day): no two siblings are adjacent and every gap is >= SIBLING_GAP", () => {
+    const words = ["v-a", "v-b", "v-c", "v-d", "v-e"];
+    const q = orderQueue(words.flatMap((w) => REVIEW_DIRECTIONS.map((d) => card(w, d))), TEACH);
+    expect(q).toHaveLength(10);
+    const at = new Map(q.map((c, i) => [cardKey(c), i]));
+    for (const w of words) expect(Math.abs(at.get(`${w}|en_th`)! - at.get(`${w}|th_en`)!), w).toBeGreaterThanOrEqual(SIBLING_GAP);
+  });
+  it("reviews still come before new cards, and the new cards after them keep the direction-first order", () => {
+    const q = orderQueue([card("v-a", "en_th"), card("v-a", "th_en"), card("v-b", "en_th"), card("v-b", "th_en"), review("v-c", "en_th", 5)], TEACH);
+    expect(keys(q)).toEqual(["v-c|en_th", "v-a|en_th", "v-b|en_th", "v-a|th_en", "v-b|th_en"]);
+  });
   it("new cards follow teaching order when there are no sibling conflicts", () => {
     const q = orderQueue([card("v-c", "en_th"), card("v-a", "en_th"), card("v-b", "en_th")], TEACH);
     expect(keys(q)).toEqual(["v-a|en_th", "v-b|en_th", "v-c|en_th"]);
@@ -117,6 +135,11 @@ describe("siblings are kept apart (SIBLING_GAP)", () => {
   it("a short queue sends the second sibling to the end (not an endless loop)", () => {
     const q = separateSiblings([card("v-a", "en_th"), card("v-a", "th_en"), card("v-b", "en_th")]);
     expect(keys(q)).toEqual(["v-a|en_th", "v-b|en_th", "v-a|th_en"]);
+  });
+  it("when every remaining card conflicts, the one whose sibling is furthest back is taken (not simply the first)", () => {
+    // after a, b, c the rest are b2 (sibling 1 back), a2 (sibling 3 back): a2 is the better choice
+    const q = separateSiblings([card("v-a", "en_th"), card("v-b", "en_th"), card("v-c", "en_th"), card("v-b", "th_en"), card("v-a", "th_en")]);
+    expect(keys(q)).toEqual(["v-a|en_th", "v-b|en_th", "v-c|en_th", "v-a|th_en", "v-b|th_en"]);
   });
   it("a queue of only one pair is shown as it is (it cannot be avoided)", () => {
     const q = separateSiblings([card("v-a", "en_th"), card("v-a", "th_en")]);
