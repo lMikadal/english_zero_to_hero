@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { surfaceForms, tokenize } from "./lexicon";
+import { surfaceForms, tokenize, usageForms } from "./lexicon";
 import { vocabItem } from "./test-support";
 
 describe("tokenize", () => {
@@ -60,5 +60,52 @@ describe("surfaceForms", () => {
     const s = forms("wake up", "verb");
     expect(s.has("wake")).toBe(true);
     expect(s.has("up")).toBe(true);
+  });
+});
+
+describe("surfaceForms: no unrelated words", () => {
+  const f = (word: string, pos: string, forms?: Record<string, string>) => surfaceForms(vocabItem({ id: `v-${word}`, word, pos, forms }));
+  it.each([
+    ["be", "verb", { past: "was / were", pastParticiple: "been" }, ["bed", "bes", "bee"]],
+    ["go", "verb", { past: "went", pastParticiple: "gone" }, ["god", "goed", "gos"]],
+    ["see", "verb", { past: "saw", pastParticiple: "seen" }, ["seed", "sees!"]],
+    ["plan", "noun", undefined, ["planes", "plane"]],
+    ["car", "noun", undefined, ["cares", "care"]],
+  ] as const)("%s does not match %j", (word, pos, forms, bad) => {
+    const s = f(word, pos, forms as Record<string, string> | undefined);
+    for (const b of bad) expect(s.has(b), b).toBe(false);
+  });
+  it("accepts real forms", () => {
+    expect(f("cat", "noun").has("cats")).toBe(true);
+    expect(f("bus", "noun").has("buses")).toBe(true);
+    expect(f("go", "verb", { past: "went" }).has("goes")).toBe(true);
+    expect(f("go", "verb", { past: "went" }).has("going")).toBe(true);
+    expect(f("study", "verb").has("studies")).toBe(true);
+    expect(f("like", "verb").has("liked")).toBe(true);
+    expect(f("like", "verb").has("liking")).toBe(true);
+    expect(f("stop", "verb", { past: "stopped" }).has("stopped")).toBe(true);
+    expect(f("watch", "verb").has("watches")).toBe(true);
+    expect(f("see", "verb", { past: "saw" }).has("seeing")).toBe(true);
+  });
+  it("does not add -ed to a verb whose entry lists its own past", () => {
+    expect(f("come", "verb", { past: "came", pastParticiple: "come" }).has("commed")).toBe(false);
+    expect(f("come", "verb", { past: "came" }).has("comed")).toBe(false);
+  });
+  it("gives adjectives only their listed forms", () => {
+    expect(f("big", "adjective", { comparative: "bigger" }).has("bigs")).toBe(false);
+    expect(f("big", "adjective", { comparative: "bigger" }).has("bigger")).toBe(true);
+  });
+});
+
+describe("multi-word entries", () => {
+  const wake = vocabItem({ id: "v-wake-up", word: "wake up", pos: "verb", forms: { past: "woke up" } });
+  it("inflects the head word of a phrasal verb", () => {
+    const s = surfaceForms(wake);
+    for (const w of ["wakes", "waking", "woke", "up"]) expect(s.has(w), w).toBe(true);
+  });
+  it("counts as used by the head word's forms, never by the bare particle", () => {
+    const u = usageForms(wake);
+    for (const w of ["wake", "wakes", "waking", "woke"]) expect(u.has(w), w).toBe(true);
+    expect(u.has("up")).toBe(false);
   });
 });
