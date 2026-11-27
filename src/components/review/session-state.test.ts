@@ -101,9 +101,12 @@ describe("the zone and the server's card", () => {
     }
   });
 
-  it("the zone matters: the same card previews differently in another zone (so the test above has teeth)", () => {
-    const state = reviewState("2026-11-27T03:00:00Z");
-    expect(applyRating(state, 3, NOW, "Asia/Bangkok").due).not.toEqual(applyRating(state, 3, NOW, "America/Los_Angeles").due);
+  it("the zone matters: a review at 06:30 Bangkok is the next day there but the same UTC day (so the test above has teeth)", () => {
+    const last = new Date("2026-01-01T05:00:00Z"); // 12:00 in Bangkok
+    const state = { ...reviewState("2026-01-01T05:00:00Z"), stability: 3, difficulty: 5, scheduledDays: 3, elapsedDays: 3, reps: 4, lastReview: last };
+    const at = new Date("2026-01-01T23:30:00Z");
+    expect(applyRating(state, 3, at, "Asia/Bangkok").elapsedDays).toBe(1);
+    expect(applyRating(state, 3, at, "UTC").elapsedDays).toBe(0);
   });
 
   it("the labels use ReviewQueue.timeZone", () => {

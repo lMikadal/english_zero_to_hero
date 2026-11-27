@@ -1,5 +1,5 @@
 // Test support only: a fixed clock, fake review queues and a fake sink shared by the review page tests.
-import { vi } from "vitest";
+import { vi, type Mock } from "vitest";
 import type { ReviewDirection, ReviewQueue } from "@/lib/srs/contract";
 import { toWire } from "@/lib/srs/contract";
 import { applyRating, newCardState, type CardState } from "@/lib/srs/scheduler";
@@ -43,8 +43,8 @@ export function makeQueue(specs: CardSpec[], over: Partial<ReviewQueue> = {}): R
 }
 
 export type FakeSink = SyncSink & {
-  sendReview: ReturnType<typeof vi.fn>;
-  completeReview: ReturnType<typeof vi.fn>;
+  sendReview: Mock<SyncSink["sendReview"]>;
+  completeReview: Mock<SyncSink["completeReview"]>;
   setPending(n: number): void;
 };
 /** `result` is what completeReview answers (a fresh object per call). */
@@ -55,8 +55,8 @@ export function fakeSink(result: CompleteResult<CompleteReviewResponse> = { stat
     sendAttempt: vi.fn(),
     completeLesson: vi.fn(async () => ({ status: "queued" as const })),
     completePractice: vi.fn(async () => ({ status: "queued" as const })),
-    sendReview: vi.fn(),
-    completeReview: vi.fn(async () => result),
+    sendReview: vi.fn<SyncSink["sendReview"]>(),
+    completeReview: vi.fn<SyncSink["completeReview"]>(async () => result),
     pendingCount: () => pending,
     subscribe: (cb) => { listeners.add(cb); return () => { listeners.delete(cb); }; },
     setPending(n) { pending = n; listeners.forEach((cb) => cb()); },

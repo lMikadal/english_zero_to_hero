@@ -53,6 +53,7 @@
 - [ ] สคริปต์สร้างเสียง TTS (`pnpm audio:generate`)
 - [ ] อัดเสียงด้วย MediaRecorder แล้วฟังเทียบกับต้นฉบับ
 - [ ] Vocabulary SRS (FSRS)
+  - [x] PR 4 `feat/srs-review-page`: หน้า `/review` (ภาพ 23–24 + กระจก `th_en`) ทำแล้วฝั่งหน้าจอ ทดสอบด้วยเทสต์หน่วยกับ sink ปลอมเท่านั้น **ยังไม่ได้ทดสอบ:** กับ API จริง (`POST /api/reviews`, `/api/reviews/complete` อยู่ PR 3), ในเบราว์เซอร์จริงที่ 360px, เสียงจริง, และภาพหน้าจอ `th_en` ที่ต้องให้ผู้ใช้อนุมัติ; ยังไม่มีทางเข้าจาก `/practice` และหน้าแรก (PR 5) และ sink ยังไม่ส่งการ์ดของ server กลับมาให้หน้า (หน้ารับผ่าน prop `serverCards` ไว้แล้ว)
 - [ ] คลังคำศัพท์ Oxford 3000 ระดับ A1 พร้อมคำแปลไทย ตัวอย่างประโยค และเสียง
 - [ ] หน้า Word Bank + หน้ารายละเอียดคำ
 - [ ] เก็บความคืบหน้า, attempts, SRS และ streak ลง PostgreSQL (attempts, progress, streak และการล็อกบทต่อกับ UI แล้ว: player ส่งผ่านคิว HTTP ไป `POST /api/attempts` และ `/api/lessons/complete`, หน้าแรกอ่าน `current_day`/streak จาก DB; **ยังขาด:** SRS/`srs_cards` และการนับ streak จากการทบทวนคำ, คิว IndexedDB ออฟไลน์ (ตอนนี้คิวอยู่ในหน่วยความจำ), จึงยังไม่ติ๊ก)

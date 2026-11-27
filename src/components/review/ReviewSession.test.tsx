@@ -138,7 +138,7 @@ describe("rating", () => {
     await reveal();
     await rate("จำไม่ได้");
     expect(screen.getByText("1 / 5")).toBeInTheDocument(); // nothing has passed yet
-    for (const word of ["เพื่อน", "น้ำ", "สวัสดี"]) {
+    for (const word of ["เพื่อน", "water", "สวัสดี"]) {
       expect(screen.getByText(word)).toBeInTheDocument();
       await reveal();
       await rate("ได้");
@@ -286,7 +286,7 @@ describe("the server's card replaces the local one (plan 4.4 item 13)", () => {
     // The server's answer: a card that is not what the client calculated (here: a Learning card due in 10 min with other numbers).
     const server = { ...reviewState("2026-11-27T05:10:00Z"), stability: 40, scheduledDays: 12 };
     act(() => push({ id: sent.id, card: toWire(server) }));
-    for (const _ of [1, 2, 3]) { await reveal(); await rate("ง่าย"); }
+    for (let i = 0; i < 3; i++) { await reveal(); await rate("ง่าย"); }
     expect(screen.getByText("country")).toBeInTheDocument(); // the card is back
     await reveal();
     const expected = ratingIntervalLabels({ ...server, due: new Date("2026-11-27T05:10:00Z") }, NOW, TZ);
