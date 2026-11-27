@@ -52,6 +52,12 @@ export function ReviewSession({ queue, sink, now, serverCards, onContinue }: Rev
   }, [steps]);
 
   const side = state.side;
+  const refocus = state.refocus;
+  useEffect(() => {
+    // The card on screen was dropped with its back showing: the rating buttons are gone, so focus would fall to <body>.
+    if (refocus > 0) heading.current?.focus();
+  }, [refocus]);
+
   useEffect(() => {
     // The reveal button is gone once the card is turned over: put focus on "ได้" so it does not fall back to <body>.
     if (side === "back") goodButton.current?.focus();
@@ -155,7 +161,10 @@ export function ReviewSession({ queue, sink, now, serverCards, onContinue }: Rev
         data-testid="action-bar"
         className={`sticky bottom-0 mt-auto -mx-5 flex flex-col gap-3 px-5 ${back ? "border-t border-line bg-card pt-3.5" : "bg-bg"} pb-[max(1.5rem,env(safe-area-inset-bottom))]`}
       >
-        <div role="status" className="sr-only">
+        <div
+          role="status"
+          className={state.notice ? "rounded-xl border border-hint/40 bg-hint-soft p-3 text-[13px] text-hint-fg" : "sr-only"}
+        >
           {state.notice ?? (last && `${RATING_LABEL_TH[last.rating]} · ทวนอีกใน ${last.interval}${last.again ? " · ใบนี้จะกลับมาอีกครั้งในรอบนี้" : ""}`)}
         </div>
         {back && labels ? (
