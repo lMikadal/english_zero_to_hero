@@ -5,7 +5,9 @@ import type { ZodType } from "zod";
 import { lessonSchema, vocabItemSchema, type Lesson, type VocabItem } from "./schema";
 
 /** `rule` names a content rule family (src/lib/content/rules/); the CLI groups problems by it. */
-export type Problem = { file: string; id?: string; message: string; rule?: string };
+export type Problem = { file: string; id?: string; message: string; rule?: string;
+  /** "warning" is printed but does not fail the validation; the default is an error. */
+  severity?: "warning" };
 export type LoadedLesson = { file: string; lesson: Lesson };
 export type LoadedVocab = { file: string; items: VocabItem[] };
 export type ContentData = { lessons: LoadedLesson[]; vocab: LoadedVocab[]; failedVocabIds?: string[] };

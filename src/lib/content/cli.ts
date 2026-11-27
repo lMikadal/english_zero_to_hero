@@ -8,10 +8,16 @@ export function contentRootFromArgs(args: string[], cwd: string): string {
 
 /** Validates `root`, prints a summary and one line per problem. Returns the process exit code. */
 export function runValidate(root: string, log: (line: string) => void): number {
-  const { problems, summary } = validateContentDir(root);
+  const { problems: all, summary } = validateContentDir(root);
+  const problems = all.filter((p) => p.severity !== "warning");
+  const warnings = all.filter((p) => p.severity === "warning");
   log(formatSummary(summary));
+  if (warnings.length) {
+    log(`\n== warnings (${warnings.length}, do not fail the check) ==`);
+    for (const w of warnings) log(`WARN ${formatProblem(w)}`);
+  }
   if (problems.length === 0) {
-    log("content: OK");
+    log(warnings.length ? `content: OK (${warnings.length} warning(s))` : "content: OK");
     return 0;
   }
   // structural problems first as before, then the content rules, grouped by rule
