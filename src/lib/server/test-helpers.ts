@@ -6,6 +6,10 @@ import type { AttemptAnswer, AttemptInput } from "@/lib/attempts/contract";
 import type { ReviewInput } from "@/lib/srs/contract";
 import { ensureLocalUser } from "./current-user";
 
+/** A content source with no lessons and no words: pass it as `content` to get "this day has no lesson file" without
+ * depending on which files exist in content/ (that folder grows to 365 days, so no day number is safe to call missing). */
+export const NO_LESSONS = { getLesson: () => null, getVocab: () => null } as const;
+
 export const NOW = new Date("2026-11-25T10:00:00.000Z");
 export const SESSION = "11111111-1111-4111-8111-111111111111";
 
