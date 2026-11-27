@@ -157,11 +157,11 @@ describe("which day, which cards", () => {
     expect((await complete()).remainingDue).toBe(1); // v-cat en_th only: v-how is not in the finished days
   });
 
-  it("the day cannot be earlier than the clamp allows (30 days back, never before the profile start)", async () => {
+  it("startedAt far in the past (2020) does not move the day back: the day is that of the session's reviews, and the flag is asserted", async () => {
     await reviewAll(4);
     const r = await complete({ startedAt: "2020-01-01T00:00:00.000Z" });
-    expect(r.sessionDate).toBe("2026-11-25"); // the profile's start date, not 2020
-    expect((await days()).every((d) => d.localDate >= "2026-11-25")).toBe(true);
+    expect(r).toMatchObject({ sessionDate: "2026-11-26", countedForStreak: true, remainingDue: 0 }); // the honest session still counts, for its own day
+    expect((await days()).map((d) => d.localDate)).toEqual(["2026-11-25", "2026-11-26"]);
   });
 
   it("a start in the future is cut to now", async () => {
@@ -185,6 +185,63 @@ describe("which day, which cards", () => {
     await db.update(srsCards).set({ createdAt: NOW }).where(eq(srsCards.userId, "other")); // their cards existed before the session began
     expect(await complete()).toMatchObject({ reviewed: 5, countedForStreak: true });
     expect((await complete({}, T1, "other")).countedForStreak).toBe(false); // the other user still has 4 due
+  });
+});
+
+describe("GUARD: a streak day cannot be earned without finishing that day's reviews", () => {
+  const T3 = new Date("2026-11-28T05:00:00.000Z"); // noon on 28 Nov: the learner missed the 26th and 27th
+  const rowsFor = async () => (await days()).map((d) => `${d.localDate}/${d.source}`);
+
+  it("A) back-fill: one stored review plus startedAt on a missed day does not fill that day (the day comes from the reviews, not the client)", async () => {
+    // today (28 Nov) the learner reviews everything: that session is honest for the 28th ...
+    await review(DAY1.flatMap((w) => [reviewItem(w, "en_th", 4, T3), reviewItem(w, "th_en", 4, T3)]), T3);
+    for (const startedAt of ["2026-11-26T05:00:00.000Z", "2026-11-27T05:00:00.000Z", "2026-11-12T05:00:00.000Z", "2020-01-01T00:00:00.000Z"]) {
+      const r = await complete({ startedAt }, T3);
+      expect(r.sessionDate).toBe("2026-11-28");
+    }
+    // ... and not one of the missed days got a row
+    expect(await rowsFor()).toEqual(["2026-11-25/lesson", "2026-11-28/review"]);
+  });
+
+  it("A) the same session completed with different startedAt values never adds a second day", async () => {
+    await review(DAY1.flatMap((w) => [reviewItem(w, "en_th", 4, T3), reviewItem(w, "th_en", 4, T3)]), T3);
+    await complete({ startedAt: new Date(T3.getTime() - 600_000).toISOString() }, T3);
+    const once = await rowsFor();
+    for (const startedAt of [T3.toISOString(), new Date(T3.getTime() + 20 * 3_600_000).toISOString(), "2026-11-26T05:00:00.000Z", "2026-10-30T05:00:00.000Z"]) await complete({ startedAt }, T3);
+    expect(await rowsFor()).toEqual(once);
+  });
+
+  it("B) one answer while most cards are due: a startedAt from before the cards existed does not hide them", async () => {
+    await review([reviewItem("v-hello", "en_th", 4, T1)]);
+    const r = await complete({ startedAt: "2020-01-01T00:00:00.000Z" });
+    expect(r).toMatchObject({ reviewed: 1, remainingDue: 4, countedForStreak: false });
+    expect(await rowsFor()).toEqual(["2026-11-25/lesson"]);
+  });
+
+  it("C) a day with nothing due: one early review does not count (zero-due days do not count)", async () => {
+    await db.update(srsCards).set({ due: new Date("2027-01-01T00:00:00.000Z") });
+    await review([reviewItem("v-hello", "en_th", 4, T1)]);
+    expect(await complete()).toMatchObject({ reviewed: 1, remainingDue: 0, countedForStreak: false });
+    expect(await rowsFor()).toEqual(["2026-11-25/lesson"]);
+  });
+
+  it("C) early reviews of cards that were not due do not count, even next to one that was", async () => {
+    await db.update(srsCards).set({ due: new Date("2027-01-01T00:00:00.000Z") }).where(eq(srsCards.direction, "th_en"));
+    await dueNow("v-cat", "en_th", new Date("2027-01-01T00:00:00.000Z")); // nothing is due at all
+    await review(DAY1.map((w) => reviewItem(w, "th_en", 4, T1)));
+    expect(await complete()).toMatchObject({ remainingDue: 0, countedForStreak: false });
+  });
+
+  it("the honest path counts: every due card reviewed today", async () => {
+    await reviewAll(4);
+    expect(await complete()).toMatchObject({ sessionDate: "2026-11-26", remainingDue: 0, countedForStreak: true });
+  });
+
+  it("a session that crosses midnight counts for the day it started (first answer 23:55, completion 00:10)", async () => {
+    const first = new Date("2026-11-26T16:55:00.000Z"); // 23:55 on the 26th in Bangkok
+    const end = new Date("2026-11-26T17:10:00.000Z");
+    await review(DAY1.map((w) => reviewItem(w, "en_th", 4, first)), end);
+    expect(await complete({ startedAt: new Date(first.getTime() - 300_000).toISOString() }, end)).toMatchObject({ sessionDate: "2026-11-26", countedForStreak: true });
   });
 });
 

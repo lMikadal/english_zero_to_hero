@@ -18,9 +18,9 @@ const TZ = "Asia/Bangkok";
 const T1 = new Date("2026-11-26T05:00:00.000Z"); // noon on 26 Nov in Bangkok, the day after day 1 was finished
 let userId: string;
 
-const post = (items: unknown[], now = T1, uid = userId) => handlePostReviews({ reviews: items }, { db, userId: uid, now });
-const results = async (items: unknown[], now = T1, uid = userId): Promise<ReviewResult[]> => {
-  const r = await post(items, now, uid);
+const post = (items: unknown[], now = T1, uid = userId, extra: { txRetries?: number } = {}) => handlePostReviews({ reviews: items }, { db, userId: uid, now, ...extra });
+const results = async (items: unknown[], now = T1, uid = userId, extra: { txRetries?: number } = {}): Promise<ReviewResult[]> => {
+  const r = await post(items, now, uid, extra);
   expect(r.status).toBe(200);
   return (r.body as PostReviewsResponse).results;
 };
@@ -191,13 +191,15 @@ describe("order", () => {
     expect((await card("v-hello", "en_th")).lastReview).toEqual(t1);
   });
 
-  it("two batches that touch the same cards in opposite orders both finish (locks in a fixed order, no deadlock)", async () => {
-    const words = ["v-hello", "v-name", "v-nice", "v-meet", "v-cat"];
-    const a = words.map((w) => item(w, "en_th", 3));
-    const b = [...words].reverse().map((w) => item(w, "en_th", 3));
-    const [ra, rb] = await Promise.all([results(a), results(b)]);
-    expect([...ra, ...rb].every((r) => r.status === "created")).toBe(true);
-    expect((await card("v-hello", "en_th")).reps).toBe(2);
+  it("two batches that touch the same cards in opposite orders never deadlock (retries are OFF here, so a 40P01 would fail the test instead of being retried silently)", async () => {
+    const ids = ["v-hello", "v-name", "v-nice", "v-meet", "v-cat"].flatMap((w) => [[w, "en_th"], [w, "th_en"]] as const);
+    for (let round = 0; round < 15; round++) {
+      const a = ids.map(([w, d]) => item(w, d, 3));
+      const b = [...ids].reverse().map(([w, d]) => item(w, d, 3));
+      const [ra, rb] = await Promise.all([results(a, T1, userId, { txRetries: 0 }), results(b, T1, userId, { txRetries: 0 })]);
+      expect([...ra, ...rb].every((r) => r.status === "created")).toBe(true);
+    }
+    expect((await card("v-hello", "en_th")).reps).toBe(30);
   });
 });
 
@@ -272,7 +274,8 @@ describe("the clock of the client", () => {
     await results([future, ancient]);
     const rows = await reviews();
     expect(rows.find((x) => x.id === future.id)!.reviewedAt).toEqual(T1);
-    expect(rows.find((x) => x.id === ancient.id)!.reviewedAt).toEqual(new Date("2026-11-24T17:00:00.000Z")); // 25 Nov 00:00 in Bangkok = profile start
+    // raised to the profile start (25 Nov 00:00 in Bangkok) and then to the card's own creation: a card cannot be reviewed before it existed
+    expect(rows.find((x) => x.id === ancient.id)!.reviewedAt).toEqual(NOW);
   });
 });
 
@@ -289,5 +292,53 @@ describe("GUARD: a review never touches the lesson side", () => {
     const done = await handleCompleteReview({ sessionId: REVIEW_SESSION, startedAt: new Date(T1.getTime() - 600_000).toISOString(), completedAt: T1.toISOString() }, { db, userId, now: T1 });
     expect(done.status).toBe(200);
     expect(await snap()).toEqual(before);
+  });
+});
+
+describe("a card cannot be reviewed before it existed", () => {
+  it("reviewedAt is raised to the card's created_at, not only to its last review", async () => {
+    const created = (await card("v-hello", "en_th")).createdAt;
+    const [res] = await results([item("v-hello", "en_th", 3, { reviewedAt: new Date(created.getTime() - 3_600_000).toISOString() })]);
+    expect(res.status).toBe("created");
+    expect((await reviews())[0].reviewedAt).toEqual(created);
+  });
+});
+
+describe("a stored state_after that cannot be read (poison pill)", () => {
+  it("the duplicate is answered with the card as it is now, the batch survives, nothing is rescheduled", async () => {
+    const it1 = item("v-hello", "en_th", 3);
+    await results([it1]);
+    await sql`UPDATE srs_reviews SET state_after = '{"broken":true}'::jsonb WHERE id = ${it1.id}`;
+    const other = item("v-name", "en_th", 3);
+    const before = md5(await cards());
+    const r = await results([it1, other]);
+    expect(r[0]).toEqual({ id: it1.id, status: "duplicate", card: toWire(rowToCardState(await card("v-hello", "en_th"))) });
+    expect(r[1].status).toBe("created");
+    expect((await card("v-hello", "en_th")).reps).toBe(1);
+    expect(md5(await cards())).not.toBe(before); // only v-name moved
+    expect(await reviews()).toHaveLength(2);
+  });
+});
+
+describe("one id for two different cards", () => {
+  it("a later request that reuses a review id for ANOTHER card is rejected as invalid, and that card is untouched", async () => {
+    const it1 = item("v-hello", "en_th", 3);
+    await results([it1]);
+    const before = md5(await cards());
+    const reused = { ...it1, vocabId: "v-name" };
+    expect(await results([reused])).toEqual([{ id: it1.id, status: "rejected", reason: "invalid" }]);
+    const sameWordOtherDirection = { ...it1, direction: "th_en" as const };
+    expect(await results([sameWordOtherDirection])).toEqual([{ id: it1.id, status: "rejected", reason: "invalid" }]);
+    expect(md5(await cards())).toBe(before);
+    expect(await reviews()).toHaveLength(1);
+  });
+  it("the same id twice in ONE batch for two cards: one is created, the other rejected, and only one card moves", async () => {
+    const a = item("v-hello", "en_th", 3);
+    const b = { ...a, vocabId: "v-name" };
+    const r = await results([a, b]);
+    expect(r.map((x) => x.status).sort()).toEqual(["created", "rejected"]);
+    expect(r.find((x) => x.status === "rejected")).toMatchObject({ reason: "invalid" });
+    expect((await cards()).filter((c) => c.reps > 0)).toHaveLength(1);
+    expect(await reviews()).toHaveLength(1);
   });
 });
