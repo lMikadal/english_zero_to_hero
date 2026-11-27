@@ -71,6 +71,8 @@ export function expectedCardVocabIds(doneDays: readonly number[], content: CardC
   return out;
 }
 
+const isReviewDirection = (d: string): d is ReviewDirection => (REVIEW_DIRECTIONS as readonly string[]).includes(d);
+
 const bound = (content: CardContent): CardContent => content.snapshot?.() ?? content;
 
 async function expectedForUser(db: DbOrTx, userId: string, content: CardContent): Promise<ExpectedWord[]> {
@@ -97,6 +99,7 @@ export async function reconcileCards(db: DbOrTx, userId: string, now: Date, time
   if (expected.length === 0) return { created: 0, expected };
   const have = new Map<string, Set<string>>();
   for (const c of await listCards(db, userId)) {
+    if (!isReviewDirection(c.direction)) continue; // a card of another direction (listen_spell...) says nothing about the review pair
     if (!have.has(c.vocabId)) have.set(c.vocabId, new Set());
     have.get(c.vocabId)!.add(c.direction);
   }
@@ -127,8 +130,6 @@ export function rowToCardState(r: CardRow): CardState {
     elapsedDays: r.elapsedDays, reps: r.reps, lapses: r.lapses, state: r.state, lastReview: r.lastReview,
   };
 }
-
-const isReviewDirection = (d: string): d is ReviewDirection => (REVIEW_DIRECTIONS as readonly string[]).includes(d);
 
 /**
  * The cards due today, ordered, with what the screen shows. Creates missing cards first (backfill and content repair).
