@@ -1,92 +1,172 @@
-# Deployment: Host บนเครื่องตัวเอง
+# Deployment: ใช้แอปจริงบนเครื่องตัวเอง
 
-แอปนี้ใช้เองคนเดียว และรันบนเครื่องของเราเองตลอด ไม่ใช้ cloud hosting
+แอปนี้ใช้คนเดียว รันบนเครื่อง Arch Linux ของเราเอง (Docker) แล้วเปิดจากมือถือผ่าน Tailscale ไม่ใช้ cloud
+เอกสารนี้เขียนให้ทำตามได้ทีละขั้น: ช่อง "พิมพ์" คือคำสั่งที่ต้องพิมพ์ ช่อง "ควรเห็น" คือสิ่งที่ต้องเห็นถ้าถูกต้อง
 
 ## 1. ภาพรวม
 
 ```
-มือถือ / คอม (PWA)
-      │  HTTPS ผ่าน Tailscale (https://<เครื่อง>.<tailnet>.ts.net)
-      ▼
-เครื่องตัวเอง (Arch Linux)
-  └── docker compose
-        ├── app       Next.js (production build) :3000
-        └── postgres  PostgreSQL 17             :5432 (เปิดเฉพาะใน Docker network)
-  └── data/
-        ├── recordings/   ไฟล์เสียงที่อัด
-        └── backups/      pg_dump รายวัน
+มือถือ ──(Tailscale)──► เครื่องเรา 127.0.0.1:3100 ──► app (Next.js, production) ──► postgres 17
+                                                         └─ ข้อมูลอยู่ใน Docker volume ezh_prod_pgdata
 ```
 
-## 2. ทำไมต้องใช้ Tailscale
+- **คนละชุดกับตอนพัฒนา:** ตอนพัฒนา (`make up`) ใช้ port 3000 และฐานข้อมูล `english_zero_to_hero_dev` ชุด production ใช้ project ชื่อ `ezh_prod`, port 3100, volume ของตัวเอง (`ezh_prod_pgdata`) และฐานข้อมูล `english_zero_to_hero` (ของจริง) เปิดพร้อมกันได้ ไม่ชนกัน และ `make db-reset` ใช้กับฐานข้อมูลจริงไม่ได้ (ยอมรับเฉพาะชื่อที่ลงท้าย `_dev`)
+- **ทำไมแยกไฟล์ `docker-compose.prod.yml`:** ถ้าอยู่ไฟล์เดียวกับ dev จะใช้ postgres และ volume ตัวเดียวกัน ข้อมูลจริงกับข้อมูลทดลองจะปนกัน ไฟล์แยกบังคับให้ network, volume และชื่อ container แยกขาดจากกัน
+- **Postgres ไม่เปิดออกนอก Docker เลย** (ไม่มี port บนเครื่อง) มีแต่แอปที่คุยกับมันได้ ส่วน backup ใช้ `docker exec`
+- **บทเรียนอยู่ในตัว image** (โฟลเดอร์ `content/`): เมื่อมีบทใหม่หลัง `git pull` ต้อง `make prod-build` ใหม่
 
-- **PWA และไมโครโฟนต้องใช้ HTTPS:** ถ้าเปิดผ่าน `http://192.168.x.x` จากมือถือ จะติดตั้งแอป อัดเสียง และใช้ service worker ไม่ได้
-- **`tailscale serve` มีใบรับรอง HTTPS ให้อัตโนมัติ:** ได้โดเมน `*.ts.net` โดยไม่ต้องซื้อโดเมนหรือเปิด port ที่ router
-- **ใช้นอกบ้านได้และปลอดภัย:** เข้าได้เฉพาะอุปกรณ์ใน tailnet ของเรา คนอื่นมองไม่เห็นแอป
+## 2. ติดตั้งครั้งแรก
 
-ทางเลือกอื่นคือ Cloudflare Tunnel (ต้องมีโดเมนของตัวเอง และแอปจะออกสู่อินเทอร์เน็ตสาธารณะ)
-
-## 3. ขั้นตอนติดตั้ง (ครั้งแรก)
-
-```bash
-# 1. ติดตั้ง Tailscale บนเครื่อง (รันเอง เพราะต้องใช้ sudo)
-sudo pacman -S tailscale
-sudo systemctl enable --now tailscaled
-sudo tailscale up
-# ติดตั้งแอป Tailscale บนมือถือ แล้ว login บัญชีเดียวกัน
-# เปิดใช้ MagicDNS และ HTTPS Certificates ในหน้า admin ของ Tailscale
-
-# 2. ตั้งค่า env
-cp .env.example .env   # กรอก secret และ API key
-#    DATABASE_URL ใช้ host `postgres` (ชื่อ service ใน Docker) และฐานข้อมูล `english_zero_to_hero`
-#    (ฐานข้อมูลจริง; dev ใช้ `english_zero_to_hero_dev` ใน Postgres ตัวเดียวกัน และ `make db-reset` แตะได้เฉพาะชื่อที่ลงท้าย `_dev`)
-#    BETTER_AUTH_URL=https://<เครื่อง>.<tailnet>.ts.net
-
-# 3. รันแอป
-make prod          # build แล้วรัน app + postgres
-make db-migrate
-
-# 4. เปิด HTTPS ผ่าน Tailscale
-sudo tailscale serve --bg 3000
-```
-
-จากนั้นเปิด `https://<เครื่อง>.<tailnet>.ts.net` บนมือถือแล้วกด "ติดตั้งแอป" หรือ "เพิ่มไปยังหน้าจอโฮม"
-
-## 3.1 เปิดและปิดแอปในแต่ละวัน
-
-Docker **ไม่ได้ตั้งให้เปิดเองตอนเปิดเครื่อง** ผู้ใช้เป็นคนเปิดเอง
+ต้องมี Docker กับ git บนเครื่อง (มีอยู่แล้ว) เปิด Docker ก่อน แล้วเข้าโฟลเดอร์โปรเจกต์
 
 ```bash
-# เปิด
-docker-on                      # = sudo systemctl start docker
-make prod                      # ครั้งแรกหลังเปิด Docker (ถ้า container ถูกลบไปแล้ว)
-
-# ปิด
-make down                      # หยุดและลบ container (ข้อมูลใน volume ยังอยู่)
-docker-off                     # = sudo systemctl stop docker.service docker.socket
-```
-
-`docker-on` และ `docker-off` เป็นสคริปต์ลัดของผู้ใช้ที่ `~/.local/bin/` (อยู่นอก repo)
-
-- ถ้าปิด Docker โดยไม่ได้สั่ง `make down` ก่อน เมื่อเปิด Docker ครั้งถัดไป แอปจะกลับมารันเองโดยไม่ต้องสั่ง `make prod` (เพราะ compose ตั้ง `restart: unless-stopped`)
-- ช่วงที่ Docker ปิดอยู่ ยังฝึกบทที่ดาวน์โหลดไว้ในมือถือได้ ผลการฝึกจะ sync เมื่อเปิดแอปบนเครื่องอีกครั้ง
-
-## 4. อัปเดตแอป
-
-```bash
-git pull
+docker-on
+cd ~/Documents/english_zero_to_hero
+git checkout main && git pull
 make prod
-make db-migrate
 ```
 
-## 5. Backup
+`make prod` ทำ 3 อย่างต่อกัน: สร้างไฟล์ `.env.prod` พร้อมรหัสผ่านฐานข้อมูลสุ่ม (ถ้ายังไม่มี) → build image → เริ่มระบบ (รัน migration ให้เองก่อนเริ่มแอป)
+ครั้งแรกใช้เวลาหลายนาที (โหลดแพ็กเกจ) ถ้าเน็ตช้าอาจนานกว่านี้ ปล่อยให้ทำงานจนจบ
 
-- cron/systemd timer รัน `pg_dump` ทุกวัน เก็บไฟล์ไว้ที่ `data/backups/` ย้อนหลัง 30 วัน
-- สำรอง `data/recordings/` ด้วย ถ้าต้องการเก็บเสียงที่อัดไว้
-- เนื้อหาบทเรียนอยู่ใน git อยู่แล้ว ไม่ต้อง backup แยก
+**ควรเห็น** บรรทัดสุดท้าย `production is up: http://127.0.0.1:3100`
 
-## 6. ข้อควรรู้
+ตรวจว่าใช้ได้:
 
-- **เครื่องปิดอยู่ก็ยังฝึกได้:** บทเรียน 7 วันถัดไปถูกดาวน์โหลดเก็บในมือถือ ผลการฝึกจะ sync ขึ้นเครื่องเมื่อเครื่องเปิด
-- **ช่วงที่เครื่องปิดจะใช้ไม่ได้:** การแจ้งเตือน (push) และฟีเจอร์ AI จะใช้ไม่ได้จนกว่าเครื่องจะเปิด รวมถึงช่วงที่เครื่องเปิดแต่ยังไม่ได้เปิด Docker ถ้าอยากให้เตือนตรงเวลาทุกวันโดยไม่ขึ้นกับเครื่อง ให้ตั้งนาฬิกาปลุกบนมือถือแทน
-- **Docker เปิดด้วยมือ:** ไม่ตั้งให้ Docker เปิดเองตอนบูต ผู้ใช้เป็นคนเปิดเองเมื่อจะใช้ (ดูหัวข้อ 3.1) ห้ามใช้ `systemctl enable docker`
-- **ผู้ใช้คนเดียว:** ปิดหน้าสมัครสมาชิกหลังสร้างบัญชีแรก (`ALLOW_SIGNUP=false`)
+```bash
+make prod-status
+```
+
+**ควรเห็น** `app-1 ... (healthy)`, `postgres-1 ... (healthy)`, `migrate-1 Exited (0)` (ปกติ: มันทำงานครั้งเดียวแล้วจบ) และบรรทัด `{"ok":true} <- /api/health`
+จากนั้นเปิดเบราว์เซอร์บนเครื่อง ไปที่ `http://127.0.0.1:3100` ควรเห็นหน้าแรก "English Zero to Hero"
+
+> ไฟล์ `.env.prod` มีรหัสผ่านฐานข้อมูล ห้าม commit (git ละเว้นให้อยู่แล้ว) ถ้าลบไฟล์นี้หลังสร้างฐานข้อมูลแล้ว รหัสใหม่จะเข้าฐานข้อมูลเดิมไม่ได้ ให้เก็บไฟล์นี้ไว้ (ใส่ใน backup ของไฟล์ส่วนตัวด้วย)
+> `make prod-up` จะไม่ยอมเริ่มถ้ารหัสผ่านยังเป็นค่าตัวอย่างหรือสั้นเกินไป
+
+## 3. เปิด–ปิดทุกวัน
+
+Docker **ไม่ได้เปิดเองตอนบูต** เราเปิดเอง
+
+```bash
+# เริ่มใช้
+docker-on
+make prod-up      # ถ้าตอนปิดครั้งก่อนไม่ได้สั่ง make prod-down และไม่ได้ลบ container จะไม่ต้องสั่ง (ดูข้างล่าง)
+
+# เลิกใช้
+make prod-down    # หยุดแอป (ข้อมูลยังอยู่ใน volume)
+docker-off
+```
+
+- **ถ้าปิด Docker (`docker-off`) โดยไม่ได้สั่ง `make prod-down`:** ครั้งหน้าที่ `docker-on` แอปและฐานข้อมูลจะกลับมารันเอง (ตั้ง `restart: unless-stopped`) เพราะ container เหล่านี้ยังอยู่ในสถานะ "กำลังรัน" ตอน Docker หยุด นี่ **ไม่ใช่การเปิดตอนบูต**: Docker เองไม่ได้ตั้งให้เปิดตอนบูต จึงไม่มีอะไรเริ่มเองจนกว่าเราจะสั่ง `docker-on`
+- **ถ้าสั่ง `make prod-down`:** container ถูกลบ ต้องสั่ง `make prod-up` เองครั้งหน้า (เร็ว ไม่ต้อง build ใหม่)
+- ทั้งสองแบบ **ข้อมูลไม่หาย** เพราะอยู่ใน volume `ezh_prod_pgdata` (`make prod-down` ไม่ลบ volume ห้ามเติม `-v`)
+- ตอนเครื่องหรือ Docker ปิด มือถือเปิดแอปไม่ได้ (ยังไม่มี PWA ออฟไลน์ ดูหัวข้อ 8)
+
+## 4. เปิดจากมือถือ (Tailscale) — **ขั้นตอนนี้คุณเป็นคนทำเอง**
+
+ผมไม่ได้รันคำสั่งเหล่านี้ให้ (ต้อง sudo และต้อง login บัญชีของคุณ) และยังไม่เคยลองเปิดจากมือถือจริง
+
+### 4.1 ติดตั้ง Tailscale บนเครื่อง
+
+```bash
+sudo pacman -S tailscale
+sudo systemctl start tailscaled      # เริ่มครั้งนี้เท่านั้น ไม่เปิดตอนบูต
+sudo tailscale up                    # จะพิมพ์ลิงก์ให้เปิดเพื่อ login
+```
+
+(ถ้าอยากให้ Tailscale เปิดเองตอนบูต ใช้ `sudo systemctl enable --now tailscaled` แทน: นี่คือบริการของ Tailscale ไม่เกี่ยวกับ Docker; เลือกเอง)
+
+### 4.2 มือถือ
+
+ติดตั้งแอป Tailscale แล้ว login ด้วยบัญชีเดียวกับเครื่อง จากนั้นเปิด https://login.tailscale.com/admin/dns เปิด **MagicDNS** และ **HTTPS Certificates**
+
+### 4.3 ทางเลือก ก: HTTPS ด้วย `tailscale serve` (แนะนำ: ได้ครบทุกฟีเจอร์)
+
+```bash
+sudo tailscale serve --bg 3100
+tailscale serve status        # แสดงที่อยู่ https://<ชื่อเครื่อง>.<tailnet>.ts.net
+```
+
+เปิดที่อยู่นั้นบนมือถือ ใช้งานได้เฉพาะอุปกรณ์ในบัญชี Tailscale ของเรา ไม่เปิดสู่อินเทอร์เน็ตสาธารณะ ไม่ต้องแก้ router
+(ตั้งไว้แล้วจะจำข้ามการรีสตาร์ท: ถ้าเครื่องเปิดแต่ Docker ปิด หน้าจะขึ้น error จนกว่าจะ `docker-on`; เลิกใช้ด้วย `sudo tailscale serve reset`)
+
+### 4.4 ทางเลือก ข: HTTP ธรรมดาผ่าน Tailscale (ไม่ต้องตั้ง HTTPS)
+
+```bash
+tailscale ip -4               # ได้เลขแบบ 100.x.y.z
+```
+
+แก้ `.env.prod` ให้ `APP_BIND=100.x.y.z` แล้ว `make prod-down && make prod-up` เปิด `http://100.x.y.z:3100` บนมือถือ
+ข้อควรรู้: Docker ต้องเริ่มหลัง Tailscale ขึ้นแล้ว ไม่งั้น container แอปจะเปิด port ไม่ได้ (ถ้าเป็นแบบนี้ ให้ `sudo tailscale up` แล้ว `make prod-up` อีกครั้ง)
+
+| | HTTPS (ก) | HTTP (ข) |
+|---|---|---|
+| เรียนบทเรียน, บันทึกผล, ทวนคำศัพท์ | ได้ | ได้ |
+| ติดตั้งเป็นแอป (PWA), service worker/ออฟไลน์ | ได้ (เมื่อฟีเจอร์เสร็จ) | **ไม่ได้** (เบราว์เซอร์ต้องการ HTTPS) |
+| ไมโครโฟน (ฝึกพูด/อัดเสียง) | ได้ (เมื่อฟีเจอร์เสร็จ) | **ไม่ได้** |
+
+การเข้ารหัสระหว่างมือถือกับเครื่องมีอยู่แล้วในทั้งสองแบบ (Tailscale เข้ารหัสทั้งเส้นทาง) ต่างกันที่เบราว์เซอร์ถือว่า HTTP เป็นหน้า "ไม่ปลอดภัย" และปิดฟีเจอร์บางอย่าง **คุณเป็นคนเลือกว่าจะใช้ทางไหน** ทางเลือก ก เป็นไปตามแผนเดิม
+
+## 5. อัปเดตเป็นเวอร์ชันใหม่
+
+```bash
+cd ~/Documents/english_zero_to_hero
+git pull
+make prod-build     # build image ใหม่ (รวมบทเรียนใหม่)
+make prod-up        # เริ่มด้วยเวอร์ชันใหม่; migration ฐานข้อมูลรันอัตโนมัติก่อนแอปเริ่ม
+```
+
+- Migration ปลอดภัย: รันซ้ำได้, ทำเฉพาะที่ยังไม่เคยทำ, ไม่ลบข้อมูล ถ้าล้มเหลว แอปใหม่จะไม่เริ่ม ดูสาเหตุด้วย `make prod-logs`
+- อยากรัน migration เองโดยไม่เปลี่ยนแอป: `make prod-migrate`
+- ก่อนอัปเดตครั้งใหญ่ สั่ง `make prod-backup` ไว้ก่อน
+
+## 6. Backup และ restore
+
+```bash
+make prod-backup
+```
+
+**ควรเห็น** ชื่อไฟล์ เช่น `backups/ezh-english_zero_to_hero-20261127-230734.dump` ไฟล์เป็น `pg_dump` แบบบีบอัด เก็บในโฟลเดอร์ `backups/` (git ละเว้น) เจ้าของคือเรา ไม่ใช่ root เก็บล่าสุด 14 ไฟล์ (แก้ได้ด้วย `BACKUP_KEEP` ใน `.env.prod`)
+
+ระบบ **ยังไม่ backup อัตโนมัติ** (ไม่ได้ตั้ง cron/systemd เพราะไม่แตะเครื่องเรา) แนะนำให้สั่ง `make prod-backup` ก่อน `make prod-down` ทุกครั้ง หรือถ้าอยากให้อัตโนมัติ บอกผมได้ จะเขียนวิธีตั้ง systemd timer ให้คุณรันเอง
+
+**เอา backup ออกจากเครื่อง** (กันฮาร์ดดิสก์เสีย) เช่นคัดลอกไป USB หรือเครื่องอื่น:
+
+```bash
+cp backups/ezh-english_zero_to_hero-*.dump /run/media/$USER/<ชื่อ USB>/
+# หรือไปอีกเครื่องใน Tailscale:
+scp backups/ezh-english_zero_to_hero-*.dump <ผู้ใช้>@<เครื่องอื่น>:~/ezh-backups/
+```
+
+**Restore** (แทนที่ข้อมูลทั้งหมดในฐานข้อมูลจริงด้วยข้อมูลในไฟล์):
+
+```bash
+ls backups/
+make prod-restore FILE=backups/ezh-english_zero_to_hero-20261127-230734.dump CONFIRM=english_zero_to_hero
+```
+
+ขั้นตอนอัตโนมัติ: ตรวจว่าไฟล์ใช้ได้ → หยุดแอป → **backup ข้อมูลปัจจุบันไว้ก่อน** (ไฟล์ชื่อลงท้าย `-pre-restore.dump`) → restore แบบ all-or-nothing (ล้มกลางทาง = ข้อมูลเดิมไม่เปลี่ยน) → เปิดแอปกลับ ถ้าไม่พิมพ์ `CONFIRM=` ให้ตรงชื่อฐานข้อมูล คำสั่งจะปฏิเสธ
+ย้ายไปเครื่องใหม่: ติดตั้งตามหัวข้อ 2, คัดลอกไฟล์ `.dump` กับ `.env.prod` ไป, แล้ว `make prod-restore ...`
+
+เนื้อหาบทเรียนอยู่ใน git อยู่แล้ว ไม่ต้อง backup แยก
+
+## 7. ถ้ามีอะไรผิดปกติ
+
+| อาการ | ทำอะไร |
+|---|---|
+| เปิดแอปไม่ได้ | `make prod-status` ดูว่า app เป็น `healthy` ไหม; ถ้าไม่มี container เลย แสดงว่าลืม `docker-on` หรือ `make prod-up` |
+| `make prod-up` บอกว่ารหัสผ่านไม่ผ่าน / ไม่มี `.env.prod` | ทำตามข้อความที่ขึ้น (`make prod-init` สร้างไฟล์ให้) |
+| สั่งแล้วค้าง/ล้มตอน build | เน็ตช้า: รอ หรือสั่ง `make prod-build` ซ้ำ (ใช้ cache ต่อจากเดิม) |
+| แอปเริ่มไม่ขึ้นหลังอัปเดต | `make prod-logs` ดู 100 บรรทัดล่าสุด; ส่งข้อความ error ให้ผม |
+| port 3100 ถูกใช้อยู่ | แก้ `APP_PORT` ใน `.env.prod` แล้ว `make prod-up` (และ `tailscale serve` ให้ตรงกัน) |
+| ข้อมูลเพี้ยน | `make prod-restore` จาก backup ล่าสุด (หัวข้อ 6) |
+
+## 8. สิ่งที่ยังไม่ได้ทำ / ยังไม่ได้ตรวจ
+
+- **PWA** (ติดตั้งลงหน้าจอโฮม, ใช้ออฟไลน์): ยังไม่ได้ทำ ตอนนี้ต้องเปิดเครื่องและ Docker ถึงจะใช้ได้ ตามที่เขียนใน [PLAN.md](PLAN.md)
+- **เสียงต้นฉบับ (audio)** และการอัดเสียง: ยังไม่ได้ทำ
+- **HTTPS:** ยังไม่ได้ตั้ง ต้องตั้งเองด้วยหัวข้อ 4.3 (ต้องมีเพื่อ PWA/ไมโครโฟน)
+- **Backup อัตโนมัติรายวัน:** ยังไม่ได้ตั้ง (สั่งเองด้วย `make prod-backup`)
+- **ยังไม่เคยตรวจจากมือถือจริงผ่าน Tailscale** (ตรวจแล้วเฉพาะบนเครื่อง ด้วย `curl` และ stack ทดลอง ดู [FEATURE_MAP.md](FEATURE_MAP.md) หัวข้อ "ตรวจ production stack")
+- **ผู้ใช้คนเดียว:** ยังไม่มีระบบ login; ปลอดภัยเพราะเข้าได้เฉพาะอุปกรณ์ใน Tailscale ของเรา อย่าเปิด port 3100 สู่อินเทอร์เน็ต (อย่าตั้ง `APP_BIND=0.0.0.0`)
+- การแจ้งเตือน (push) และฟีเจอร์ AI: ยังไม่มี

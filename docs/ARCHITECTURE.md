@@ -96,7 +96,7 @@ english_zero_to_hero/
 
 | Service | Image | หน้าที่ |
 |---|---|---|
-| `app` | สร้างจาก `Dockerfile` target `dev` (Node 26 LTS + pnpm 12) | Next.js: โหมด dev มี hot reload โดย mount โค้ดเข้าไป (`node_modules` และ `.next` อยู่ใน named volume, รันเป็น uid 1000, เปิด port ที่ `127.0.0.1:3000` เท่านั้น); target `prod` (standalone build) มีใน Dockerfile แล้ว แต่ compose profile `prod` ทำใน PR 13 |
+| `app` | สร้างจาก `Dockerfile` target `dev` (Node 26 LTS + pnpm 12) | Next.js: โหมด dev มี hot reload โดย mount โค้ดเข้าไป (`node_modules` และ `.next` อยู่ใน named volume, รันเป็น uid 1000, เปิด port ที่ `127.0.0.1:3000` เท่านั้น); production ใช้ `docker-compose.prod.yml` แยก (ดูข้างล่าง) |
 | `postgres` | `postgres:17-alpine` | ฐานข้อมูล (มีฐานข้อมูลแยกสำหรับเทสต์) |
 | `e2e` | `mcr.microsoft.com/playwright` (เวอร์ชันตรงกับ `@playwright/test`) | รัน E2E test (compose profile `e2e` เปิดเฉพาะตอนสั่งเทสต์) เข้าถึงแอปที่ `http://e2e-target:3000` ในเครือข่ายของ compose (ไม่ใช้ชื่อ `app` เพราะ Chromium บังคับ https กับชื่อนี้) |
 
@@ -116,22 +116,22 @@ english_zero_to_hero/
 | `make db-reset CONFIRM=<ชื่อ db>` | **dev เท่านั้น** drop + สร้างฐานข้อมูล dev ใหม่ แล้ว migrate ป้องกันด้วย 2 ชั้น: (1) ปฏิเสธทุกฐานข้อมูลที่ชื่อไม่ลงท้าย `_dev` (ไม่สนใจ host หรือ `NODE_ENV`) จึงแตะฐานข้อมูลจริง `english_zero_to_hero` ไม่ได้ (2) ต้องพิมพ์ชื่อฐานข้อมูลใน `CONFIRM=` ให้ตรง เช่น `make db-reset CONFIRM=english_zero_to_hero_dev` ถ้าไม่พิมพ์จะบอกว่าต้องพิมพ์อะไรแล้วออกด้วย exit code ไม่เป็นศูนย์ ตรวจก่อนเปิด Postgres (ฟังก์ชัน `assertResettable` ใน `src/db/admin.ts`) |
 | `make audio` | สร้างไฟล์เสียง TTS ที่ยังไม่มี |
 | `make sh` | เปิด shell ใน container `app` |
-| `make prod` | build และรันโหมดใช้งานจริง |
+| `make prod` | ใช้งานจริง: สร้าง `.env.prod` ถ้ายังไม่มี → build image → เริ่ม (หัวข้อ 3.3); คำสั่งย่อย: `prod-build`, `prod-up`, `prod-down`, `prod-logs`, `prod-status`, `prod-migrate`, `prod-backup`, `prod-restore` (ดู `make help`) |
 
-คำสั่งที่ฟีเจอร์ยังไม่มี (`audio`, `prod`) จะแจ้งว่า "not implemented yet (PR n)" และออกด้วย exit code ไม่เป็นศูนย์ จนกว่า PR นั้นจะ merge
+คำสั่งที่ฟีเจอร์ยังไม่มี (`audio`) จะแจ้งว่า "not implemented yet (PR n)" และออกด้วย exit code ไม่เป็นศูนย์ จนกว่า PR นั้นจะ merge
 
 ชื่อสคริปต์แบบ `pnpm xxx` ที่เอกสารอื่นพูดถึง คือสคริปต์ใน `package.json` ที่รัน**ภายใน container** เท่านั้น
 
 ## 3.1 Database (PostgreSQL)
 
 - **Dev:** `make up` จะรัน Postgres คู่กับแอป (เปิด port เฉพาะ `127.0.0.1:5432`) และสร้างฐานข้อมูล dev ให้ถ้ายังไม่มี
-- **แยกฐานข้อมูล dev กับของจริง:** ใน Postgres instance เดียว (compose project และ volume `pgdata` เดียวกัน ทั้ง dev และ prod) มี 3 ฐานข้อมูล: `english_zero_to_hero` = **ของจริง** (prod ใช้, dev ไม่แตะ), `english_zero_to_hero_dev` = dev, `english_zero_to_hero_dev_test` = integration test
+- **แยกฐานข้อมูล dev กับของจริง:** ชุด dev (Postgres + volume `pgdata` ของ project `english_zero_to_hero`) มี 2 ฐานข้อมูล: `english_zero_to_hero_dev` = dev, `english_zero_to_hero_dev_test` = integration test; **ของจริง `english_zero_to_hero` อยู่ในอีกชุดหนึ่ง** (project `ezh_prod`, volume `ezh_prod_pgdata`, ดูหัวข้อ 3.3) ชื่อ `english_zero_to_hero` ใน dev ถูกสงวนไว้และ `make db-reset` แตะได้เฉพาะชื่อลงท้าย `_dev`
 - **Connection:** dev ใน Docker ใช้ `DATABASE_URL=postgres://ezh:ezh@postgres:5432/english_zero_to_hero_dev` (ตั้งใน `docker-compose.yml` service `app`); prod ใช้ `.../english_zero_to_hero`
-- **Migrations:** แก้ `src/db/schema.ts` แล้วรัน `make db-generate` เพื่อสร้าง SQL จากนั้นรัน `make db-migrate` ห้ามแก้ตารางด้วยมือ ไฟล์ SQL อยู่ที่ `src/db/migrations/` (commit เข้า git) ตัวรัน migration คือ `src/db/migrate.ts` (`runMigrations(url)`) ใช้ซ้ำได้ทั้ง `make db-migrate`, เทสต์ และ production; รันซ้ำได้ปลอดภัย โฟลเดอร์ migration อ่านจาก `MIGRATIONS_DIR` (ค่าเริ่มต้น `src/db/migrations`) เส้นทาง migrate ของ prod (ไม่ใช้ tsx) ทำใน PR deploy
+- **Migrations:** แก้ `src/db/schema.ts` แล้วรัน `make db-generate` เพื่อสร้าง SQL จากนั้นรัน `make db-migrate` ห้ามแก้ตารางด้วยมือ ไฟล์ SQL อยู่ที่ `src/db/migrations/` (commit เข้า git) ตัวรัน migration คือ `src/db/migrate.ts` (`runMigrations(url)`) ใช้ซ้ำได้ทั้ง `make db-migrate`, เทสต์ และ production; รันซ้ำได้ปลอดภัย โฟลเดอร์ migration อ่านจาก `MIGRATIONS_DIR` (ค่าเริ่มต้น `src/db/migrations`) เส้นทาง migrate ของ prod: ดูหัวข้อ 3.3
 - **Client:** `src/db/client.ts` มี `getDb()` ตัวเดียวต่อ process (เก็บไว้บน `globalThis` กัน connection รั่วตอน hot reload) อ่าน `DATABASE_URL` และ throw ถ้าไม่ได้ตั้งค่า ใช้ได้ฝั่ง server เท่านั้น
 - **Integration test:** ใช้ฐานข้อมูล `english_zero_to_hero_dev_test` (ชื่อ dev + `_test`) ที่ global setup สร้างและ migrate ให้เอง ล้างข้อมูลก่อนทุกเทสต์ (`TRUNCATE` ทุกตารางใน schema `public`) และหลังจบ ไม่แตะฐานข้อมูล dev; Vitest แบ่งเป็น project `unit` (jsdom ไม่ใช้ DB) กับ `integration` (`*.int.test.ts`, node)
 - **ใช้งานจริง:** รันบนเครื่องของผู้ใช้เอง ดู [DEPLOYMENT.md](DEPLOYMENT.md)
-- **Backup:** `pg_dump` รายวันลง `data/backups/`
+- **Backup:** `make prod-backup` (`pg_dump` แบบบีบอัดลง `backups/`, git ละเว้น) ดู [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## 3.2 PWA
 
@@ -171,6 +171,24 @@ english_zero_to_hero/
 - อัดเสียง (MediaRecorder) ใน PWA ใช้ได้ทุกแพลตฟอร์ม แต่ iOS Safari จะได้ไฟล์ `audio/mp4` แทน `audio/webm` ฝั่ง server ต้องรองรับทั้งสองแบบ
 - Service Worker และไมโครโฟนต้องใช้ HTTPS (ยกเว้น `localhost`)
 - ทดสอบด้วย Lighthouse PWA audit ใน CI
+
+## 3.3 Production stack (self-host)
+
+ใช้งานจริงด้วย `docker-compose.prod.yml` (แยกจาก `docker-compose.yml` เพื่อให้ network, volume และชื่อ container ไม่ปนกับ dev) เรียกผ่าน `make prod-*` เท่านั้น (ดู [DEPLOYMENT.md](DEPLOYMENT.md) สำหรับวิธีใช้)
+
+| ส่วน | รายละเอียด |
+|---|---|
+| Image | `Dockerfile` target `prod`: build ด้วย `NODE_ENV=production` (`next build`, `output: "standalone"`) แล้วคัดลอกเฉพาะ standalone server + `.next/static` + `public/` + `content/` + `migrate.mjs` + `migrations/` ไม่มี pnpm/dev dependency รันเป็น user `node` (uid 1000) healthcheck `GET /api/health` |
+| เนื้อหาบทเรียน | อ่านจากดิสก์ที่ `<cwd>/content` (`src/lib/content/repo.ts`) standalone `server.js` รันด้วย cwd `/app` จึงใช้ `/app/content` ที่ฝังใน image; ฟอนต์ self-host ถูกคัดลอกไป `.next/static/media` ตามปกติ (ตรวจแล้วว่าใช้กับ standalone ได้) |
+| การเรียก `fs.readdirSync` ใน loader/repo | ใส่ `/*turbopackIgnore: true*/` กันคำเตือน "Dynamic filesystem access" (ไม่งั้น standalone จะ trace ทั้งโปรเจกต์เข้า image) |
+| Migration | service `migrate` (one-shot, image เดียวกัน) รัน `node migrate.mjs` = `scripts/db-migrate.ts` ที่ bundle ด้วย esbuild (รวม drizzle + postgres ไว้ในไฟล์เดียว ไม่ต้องใช้ tsx/node_modules) อ่าน SQL จาก `MIGRATIONS_DIR=/app/migrations` `app` มี `depends_on: migrate: service_completed_successfully` จึงรันก่อนแอปเริ่มทุกครั้ง; รันซ้ำได้ ไม่ทำลายข้อมูล (`make prod-migrate` รันเอง) |
+| ฐานข้อมูล | postgres:17 ของตัวเอง volume `ezh_prod_pgdata` ฐานข้อมูล `POSTGRES_DB` (ค่าเริ่มต้น `english_zero_to_hero`) ไม่เปิด port ออก host |
+| Config | `.env.prod` (git ละเว้น; `.env.prod.example` อยู่ใน git) `POSTGRES_PASSWORD` ต้องไม่ใช่ค่าตัวอย่าง ยาว ≥ 16 ตัวและใช้เฉพาะ `A-Za-z0-9_-` ตรวจโดย `scripts/prod/check-env.sh` ก่อนทุกคำสั่ง `make prod-*` ที่แตะ stack |
+| Port | `127.0.0.1:3100` (`APP_BIND`, `APP_PORT`) ผ่าน `tailscale serve` ตามแผนใน DEPLOYMENT.md; dev ใช้ 3000 จึงรันพร้อมกันได้ |
+| Restart | `restart: unless-stopped` บน app และ postgres: กลับมาเองเมื่อ Docker ถูกเปิด (ถ้ายังรันอยู่ตอน Docker หยุด) ไม่ใช่การเปิดตอนบูต เพราะ Docker เองไม่ได้ตั้ง enable; `make prod-down` ลบ container จึงไม่กลับมา |
+| Backup | `scripts/prod/backup.sh`, `restore.sh`, `prune-backups.sh` (POSIX sh, ทดสอบใน `scripts/prod/prod-scripts.test.ts`) |
+| CI | job `prod-image` ใน `.github/workflows/ci.yml`: build target `prod`, `make prod-up` กับ postgres ชั่วคราว, `scripts/prod/smoke.sh` |
+| ทดลองแบบไม่แตะของจริง | `make prod-up PROD_ENV=.env.stage PROD_PROJECT=ezh_stage` (ไฟล์ env, project, ฐานข้อมูล และ port แยก) แล้ว `make prod-down PROD_ENV=... PROD_PROJECT=...` |
 
 ## 4. Data Model (ข้อมูลผู้ใช้)
 

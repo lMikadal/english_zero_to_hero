@@ -77,6 +77,30 @@
 
 เทสต์: `src/app/layout.test.tsx` (cookie → `data-theme`), `src/lib/theme/theme.test.ts`, `src/lib/theme/tokens.test.ts` (ค่าสีตรงตาราง design, dark ใน media query ตรงกับ `[data-theme=dark]`, contrast WCAG AA ทุกคู่ตัวอักษร/พื้นทั้งสองธีม, ขอบช่องกรอก `control` >= 3:1)
 
+## ตรวจ production stack (`make prod-*`)
+
+ใช้ตรวจว่า image และ stack สำหรับใช้งานจริงทำงานครบ **โดยไม่แตะฐานข้อมูลจริง**: ใช้ project/ฐานข้อมูล/port ทดลองของตัวเอง
+
+```bash
+make prod-init PROD_ENV=.env.stage          # สร้างไฟล์ env ทดลอง (git ละเว้น) แล้วแก้ POSTGRES_DB=english_zero_to_hero_stage, APP_PORT=3190
+make prod-build PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
+make prod-up    PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
+sh scripts/prod/smoke.sh http://127.0.0.1:3190
+```
+
+| สิ่งที่ตรวจ | วิธี | ควรเห็น |
+|---|---|---|
+| migration รันก่อนแอป | `docker compose -p ezh_stage -f docker-compose.prod.yml --env-file .env.stage logs migrate` | `applied N migration(s)` (รันซ้ำ: `already up to date`); `migrate` สถานะ `Exited (0)` |
+| แอป healthy | `make prod-status ...` | app `(healthy)`; `{"ok":true}` |
+| หน้าหลัก | `curl` `/`, `/day/1`, `/practice`, `/review`, `/settings` | 200; `/` มี "English Zero to Hero"; `/day/1` มี "ข้อ 1 / 10" (บทเรียนอ่านจาก `content/` ใน image ได้) |
+| เป็น production build | `curl -s / \| grep -c hot-reloader` | 0 (ไม่มี dev HMR) |
+| ฟอนต์ self-host | ดึง `url(../media/*.woff2)` จาก CSS ที่ `/_next/static/media/` | 200 `Content-Type: font/woff2` |
+| ไม่รัน root | `docker exec <app> id` | `uid=1000(node)` |
+| backup/restore | จบบทวัน 1 ด้วย `POST /api/lessons/complete` → `make prod-backup ...` → ล้างตาราง → `make prod-restore FILE=... CONFIRM=<ชื่อ db>` | ไฟล์ `.dump` เจ้าของ uid 1000; `progress` done=1 และ `srs_cards`=10 กลับมา |
+| ล้างทดลอง | `make prod-down ...` แล้ว `docker volume rm ezh_stage_pgdata` | volume ของ dev (`english_zero_to_hero_pgdata`) และ prod (`ezh_prod_pgdata`) ไม่ถูกแตะ |
+
+เทสต์: `scripts/prod/prod-scripts.test.ts` (ตรวจรหัสผ่าน, backup/restore/prune, ต้องมี `CONFIRM`), job `prod-image` ใน CI
+
 ## ตรวจโดยเครื่อง (ไม่ต้องจำ)
 
 - `src/lib/theme/color-scan.test.ts`: ห้ามมีสี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]`, hex หรือ `rgb()/hsl()/oklch()` ใน `src/` นอก `src/app/globals.css` (มี self-test ว่าจับตัวอย่างผิดได้) ชุดสีเริ่มต้นของ Tailwind ถูกลบใน `@theme` (utility สีดิบอย่าง `bg-white` จึงไม่สร้าง CSS) แต่ค่า arbitrary (`bg-[#fff]`, `bg-[red]`) ยังแสดงผลได้ ตัวตรวจจึงเป็นสิ่งที่กันไว้ และตรวจอีกทิศด้วย: class สีทุกตัวต้องเป็น token จริงหรือ utility ที่ไม่ใช่สีที่ระบุไว้ชัด (กัน token ที่พิมพ์ผิด เช่น `text-primary`) รวม `style={{ color }}` และ `fill=`/`stroke=` ที่เป็นค่าตรงๆ ข้อจำกัด: class ที่ประกอบจากสตริง (`"bg-" + x`) และค่าที่เป็นตัวแปรตรวจไม่ได้
