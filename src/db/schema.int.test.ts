@@ -235,7 +235,8 @@ describe("srs_cards", () => {
     const base = { userId: id, vocabId: "w", direction: "speak" } as const;
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, reps: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, lapses: -1 }))).toBe(CHECK);
-    expect(await pgErrorCode(db.insert(srsCards).values({ ...base, state: 4 }))).toBe(CHECK);
+    // the TypeScript type is 0 | 1 | 2 | 3, so a state out of range can only be written with raw SQL (the CHECK still guards it)
+    expect(await pgErrorCode(db.execute(dsql`INSERT INTO srs_cards (user_id, vocab_id, direction, state) VALUES (${id}, 'w', 'speak', 4)`))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, scheduledDays: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, learningSteps: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, elapsedDays: -1 }))).toBe(CHECK);

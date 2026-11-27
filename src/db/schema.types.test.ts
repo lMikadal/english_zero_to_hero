@@ -2,7 +2,7 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { ReviewDirection } from "@/lib/srs/contract";
 import type { CardState } from "@/lib/srs/scheduler";
-import { ACTIVITY_SOURCES, SRS_DIRECTIONS, srsCards, type ActivitySource, type SrsDirection } from "./schema";
+import { ACTIVITY_SOURCES, SRS_DIRECTIONS, type ActivitySource, type SrsDirection, type srsCards } from "./schema";
 
 describe("schema types used by the vocabulary review", () => {
   it("activity_days.source accepts review", () => {

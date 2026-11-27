@@ -5,6 +5,7 @@ import {
   check,
   date,
   doublePrecision,
+  foreignKey,
   index,
   integer,
   jsonb,
@@ -34,7 +35,7 @@ export const PROGRESS_STATUSES = ["not_started", "in_progress", "done"] as const
 export const SRS_DIRECTIONS = ["en_th", "th_en", "listen_spell", "speak"] as const;
 export const SKILLS = ["pronunciation", "listening", "speaking", "reading", "writing", "vocabulary"] as const;
 export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint", "practice"] as const;
-export const ACTIVITY_SOURCES = ["lesson", "practice"] as const; // the SRS PR adds "review"
+export const ACTIVITY_SOURCES = ["lesson", "practice", "review"] as const;
 export type Accent = (typeof ACCENTS)[number];
 export type ProgressStatus = (typeof PROGRESS_STATUSES)[number];
 export type SrsDirection = (typeof SRS_DIRECTIONS)[number];
@@ -137,9 +138,11 @@ export const srsCards = pgTable(
     elapsedDays: integer("elapsed_days").notNull().default(0),
     reps: integer("reps").notNull().default(0),
     lapses: integer("lapses").notNull().default(0),
-    // ts-fsrs State: 0 New, 1 Learning, 2 Review, 3 Relearning
-    state: smallint("state").notNull().default(0),
+    // FSRS state: 0 New, 1 Learning, 2 Review, 3 Relearning (the CHECK below keeps it in range)
+    state: smallint("state").$type<0 | 1 | 2 | 3>().notNull().default(0),
     lastReview: tstz("last_review"),
+    // when the row was created (migration 0004; rows that existed then got the migration time)
+    createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [
@@ -151,6 +154,8 @@ export const srsCards = pgTable(
     check("srs_cards_scheduled_days_nonneg", sql`${t.scheduledDays} >= 0`),
     check("srs_cards_learning_steps_nonneg", sql`${t.learningSteps} >= 0`),
     check("srs_cards_elapsed_days_nonneg", sql`${t.elapsedDays} >= 0`),
+    check("srs_cards_stability_nonneg", sql`${t.stability} >= 0`),
+    check("srs_cards_difficulty_nonneg", sql`${t.difficulty} >= 0`),
     check("srs_cards_direction_valid", inList(t.direction, SRS_DIRECTIONS)),
   ],
 );
@@ -168,9 +173,18 @@ export const srsReviews = pgTable(
     durationMs: integer("duration_ms"),
     stateBefore: jsonb("state_before"),
     stateAfter: jsonb("state_after").notNull(),
+    // one review session (the client's id), so "reviewed at least once in this session" is a query; null for older rows
+    sessionId: uuid("session_id"),
     createdAt: createdAt(),
   },
   (t) => [
+    // a review always belongs to a card of the same user, word and direction (deleting the card deletes its reviews)
+    foreignKey({
+      name: "srs_reviews_card_fk",
+      columns: [t.userId, t.vocabId, t.direction],
+      foreignColumns: [srsCards.userId, srsCards.vocabId, srsCards.direction],
+    }).onDelete("cascade"),
+    index("srs_reviews_user_id_session_id_idx").on(t.userId, t.sessionId),
     index("srs_reviews_user_id_reviewed_at_idx").on(t.userId, t.reviewedAt),
     index("srs_reviews_card_reviewed_at_idx").on(t.userId, t.vocabId, t.direction, t.reviewedAt),
     check("srs_reviews_rating_range", sql`${t.rating} BETWEEN 1 AND 4`),
