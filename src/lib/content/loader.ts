@@ -4,7 +4,8 @@ import path from "node:path";
 import type { ZodType } from "zod";
 import { lessonSchema, vocabItemSchema, type Lesson, type VocabItem } from "./schema";
 
-export type Problem = { file: string; id?: string; message: string };
+/** `rule` names a content rule family (src/lib/content/rules/); the CLI groups problems by it. */
+export type Problem = { file: string; id?: string; message: string; rule?: string };
 export type LoadedLesson = { file: string; lesson: Lesson };
 export type LoadedVocab = { file: string; items: VocabItem[] };
 export type ContentData = { lessons: LoadedLesson[]; vocab: LoadedVocab[]; failedVocabIds?: string[] };
