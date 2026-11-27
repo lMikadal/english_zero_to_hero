@@ -5,6 +5,8 @@ import Home, { dynamic } from "./page";
 
 const lessonFor = vi.hoisted(() => ({ missing: false }));
 const query = vi.hoisted(() => ({ result: null as unknown as LearnerHome | Error }));
+const getReviewSummary = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/srs/cards", () => ({ getReviewSummary }));
 vi.mock("@/components/player/UnsavedNote", () => ({ UnsavedNote: () => <p>unsaved-note</p> }));
 vi.mock("@/db/client", () => ({ getDb: () => ({}) }));
 vi.mock("@/lib/content/repo", () => ({
@@ -28,6 +30,8 @@ describe("Home page", () => {
   beforeEach(() => {
     query.result = fresh;
     lessonFor.missing = false;
+    getReviewSummary.mockReset();
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 0 });
   });
 
   it("renders the app name as the h1", async () => {
@@ -79,9 +83,10 @@ describe("Home page", () => {
     expect(bar).toHaveAttribute("aria-valuemax", "365");
   });
 
-  it("shows no data the app does not have (words learned, last score, weak spots, level)", async () => {
+  it("shows no data the app does not have (last score, weak spots, level, words known for real)", async () => {
+    getReviewSummary.mockResolvedValue({ due: 4, withCard: 5 });
     await show();
-    for (const t of [/คำที่เรียนแล้ว/, /คะแนน/, /ควรฝึก/, /ระดับโดยประมาณ/, /ถึงกำหนด/]) expect(screen.queryByText(t)).not.toBeInTheDocument();
+    for (const t of [/คะแนน/, /ควรฝึก/, /ระดับโดยประมาณ/, /รู้จริง/]) expect(screen.queryByText(t)).not.toBeInTheDocument();
   });
 
   it("shows the current streak", async () => {
@@ -126,5 +131,74 @@ describe("Home page", () => {
 
   it("is rendered on every request", () => {
     expect(dynamic).toBe("force-dynamic");
+  });
+});
+
+describe("Home page: vocabulary review entry points (plan 2.6 rule 27, item 7.6)", () => {
+  beforeEach(() => {
+    query.result = { ...fresh, currentDay: 2 };
+    lessonFor.missing = false;
+    getReviewSummary.mockReset();
+  });
+
+  it("shows the words-learned tile next to the streak tiles, counting words (not cards)", async () => {
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 5 });
+    await show();
+    const tile = screen.getByText("คำที่เรียนแล้ว").closest("div")!;
+    expect(tile).toHaveTextContent("5");
+    expect(tile.parentElement).toBe(screen.getByText("สตรีคต่อเนื่อง").closest("div")!.parentElement);
+    expect(tile).not.toHaveTextContent("5 วัน");
+  });
+
+  it("with no finished lesson the tile says 0, not a made-up number", async () => {
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 0 });
+    await show();
+    expect(screen.getByText("คำที่เรียนแล้ว").closest("div")).toHaveTextContent("0");
+  });
+
+  it("due cards: a link 'ทวนคำศัพท์ · ถึงกำหนด N ใบ' to /review, secondary to the lesson button", async () => {
+    getReviewSummary.mockResolvedValue({ due: 10, withCard: 5 });
+    await show();
+    const link = screen.getByRole("link", { name: "ทวนคำศัพท์ · ถึงกำหนด 10 ใบ" });
+    expect(link).toHaveAttribute("href", "/review");
+    expect(link.className).not.toMatch(/\bbg-accent\b/);
+    expect(link.className).toMatch(/\bmin-h-1[1-9]\b/);
+    const start = screen.getByRole("link", { name: "เริ่มบทเรียนวันที่ 2" });
+    expect(start.className).toMatch(/\bbg-accent\b/);
+    expect(start.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getAllByRole("link")).toHaveLength(2);
+  });
+
+  it("nothing due: no review link at all", async () => {
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 5 });
+    await show();
+    expect(screen.queryByRole("link", { name: /ทวนคำศัพท์/ })).toBeNull();
+    expect(screen.queryByText(/ถึงกำหนด/)).toBeNull();
+  });
+
+  it("also shown after the whole course is done", async () => {
+    query.result = { currentDay: 365, streak: { current: 40, longest: 90 }, activeToday: true, courseComplete: true };
+    getReviewSummary.mockResolvedValue({ due: 7, withCard: 300 });
+    await show();
+    expect(screen.getByRole("link", { name: "ทวนคำศัพท์ · ถึงกำหนด 7 ใบ" })).toHaveAttribute("href", "/review");
+    expect(screen.getByText("คำที่เรียนแล้ว").closest("div")).toHaveTextContent("300");
+  });
+
+  it("asks the summary with the learner and the server's clock", async () => {
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 0 });
+    await show();
+    expect(getReviewSummary).toHaveBeenCalledWith(expect.anything(), "local", expect.any(Date));
+  });
+
+  it("if the review numbers cannot be read the page still works and shows no invented tile or link", async () => {
+    getReviewSummary.mockRejectedValue(new Error("boom"));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    await show();
+    expect(screen.getByRole("link", { name: "เริ่มบทเรียนวันที่ 2" })).toBeInTheDocument();
+    expect(screen.queryByText("คำที่เรียนแล้ว")).toBeNull();
+    expect(screen.queryByRole("link", { name: /ทวนคำศัพท์/ })).toBeNull();
+    expect(screen.getByText("สตรีคต่อเนื่อง")).toBeInTheDocument();
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
   });
 });

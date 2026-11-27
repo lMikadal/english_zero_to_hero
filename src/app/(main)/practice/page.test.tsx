@@ -4,9 +4,11 @@ import { readLesson } from "@/lib/answers/test-content";
 import Page from "./page";
 
 const listDoneDays = vi.hoisted(() => vi.fn());
+const getReviewSummary = vi.hoisted(() => vi.fn());
 vi.mock("@/db/client", () => ({ getDb: () => ({}) }));
 vi.mock("@/lib/server/current-user", () => ({ getCurrentUserId: async () => "local" }));
 vi.mock("@/db/queries/practice", () => ({ listDoneDays }));
+vi.mock("@/lib/srs/cards", () => ({ getReviewSummary }));
 const lessons = vi.hoisted(() => ({ throwFor: new Set<number>(), override: null as null | ((l: import("@/lib/content/schema").Lesson) => import("@/lib/content/schema").Lesson) }));
 vi.mock("@/lib/content/repo", async (importOriginal) => {
   const real = await importOriginal<typeof import("@/lib/content/repo")>();
@@ -22,6 +24,8 @@ describe("practice page", () => {
     lessons.throwFor.clear();
     lessons.override = null;
     listDoneDays.mockResolvedValue([done(2, 0.8), done(1, 0.94)]);
+    getReviewSummary.mockReset();
+    getReviewSummary.mockResolvedValue({ due: 12, withCard: 6 });
   });
 
   it("has the h1, a short true rule line and the h2", async () => {
@@ -134,7 +138,7 @@ describe("practice page", () => {
 
   it("has no controls for features that do not exist yet", async () => {
     await show();
-    expect(document.body.textContent).not.toMatch(/ทวนคำศัพท์|จุดอ่อน|10 ข้อ|เร็วๆ นี้/);
+    expect(document.body.textContent).not.toMatch(/จุดอ่อน|10 ข้อ|เร็วๆ นี้|ประมาณ \d+ นาที|แนะนำสำหรับคุณ/);
   });
 
   it("every link and summary is at least 44px tall (min-h-11 or taller)", async () => {
@@ -146,5 +150,67 @@ describe("practice page", () => {
 
   it("is always rendered dynamically", async () => {
     expect((await import("./page")).dynamic).toBe("force-dynamic");
+  });
+});
+
+describe("practice page: the vocabulary review card (plan 2.6 rule 26)", () => {
+  const review = () => screen.getByRole("region", { name: "ทวนคำศัพท์" });
+  beforeEach(() => {
+    listDoneDays.mockResolvedValue([done(1, 0.94)]);
+    getReviewSummary.mockReset();
+  });
+
+  it("due cards: shows how many CARDS are due and one primary link to /review, above the replay list", async () => {
+    getReviewSummary.mockResolvedValue({ due: 12, withCard: 6 });
+    await show();
+    expect(within(review()).getByRole("heading", { level: 2, name: "ทวนคำศัพท์" })).toBeInTheDocument();
+    expect(review()).toHaveTextContent("ถึงกำหนด 12 ใบ");
+    expect(review()).not.toHaveTextContent("ประมาณ");
+    const start = within(review()).getByRole("link", { name: "เริ่มทวน" });
+    expect(start).toHaveAttribute("href", "/review");
+    expect(start.className).toMatch(/\bbg-accent\b/);
+    expect(start.className).toMatch(/\bmin-h-1[1-9]\b/);
+    const replay = screen.getByRole("heading", { level: 2, name: "เล่นบทที่เรียนแล้วซ้ำ" });
+    expect(review().compareDocumentPosition(replay) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("states the streak rule in one short line", async () => {
+    getReviewSummary.mockResolvedValue({ due: 3, withCard: 6 });
+    await show();
+    expect(review()).toHaveTextContent("ทวนครบทุกใบที่ถึงกำหนด นับสตรีค");
+  });
+
+  it("nothing due: a calm line and no button", async () => {
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 6 });
+    await show();
+    expect(review()).toHaveTextContent("วันนี้ไม่มีคำถึงกำหนดทวน");
+    expect(review()).not.toHaveTextContent("ถึงกำหนด 0");
+    expect(within(review()).queryByRole("link")).toBeNull();
+  });
+
+  it("no cards at all yet: says so honestly, no button", async () => {
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 0 });
+    listDoneDays.mockResolvedValue([]);
+    await show();
+    expect(review()).toHaveTextContent("ยังไม่มีคำให้ทวน เรียนบทแรกให้จบก่อน");
+    expect(within(review()).queryByRole("link")).toBeNull();
+    expect(review()).not.toHaveTextContent("วันนี้ไม่มีคำถึงกำหนด");
+  });
+
+  it("asks the summary with the learner and the server's clock", async () => {
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 0 });
+    await show();
+    expect(getReviewSummary).toHaveBeenCalledWith(expect.anything(), "local", expect.any(Date));
+  });
+
+  it("if the count cannot be read the lessons are still listed, and the card does not invent a number", async () => {
+    getReviewSummary.mockRejectedValue(new Error("boom"));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    await show();
+    expect(review()).toHaveTextContent("อ่านจำนวนคำที่ถึงกำหนดไม่ได้");
+    expect(review()).not.toHaveTextContent(/\d+ ใบ/);
+    expect(within(review()).queryByRole("link", { name: "เริ่มทวน" })).toBeNull();
+    expect(screen.getByRole("list")).toBeInTheDocument();
+    error.mockRestore();
   });
 });

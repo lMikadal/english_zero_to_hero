@@ -9,7 +9,7 @@ import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import { seedLocal } from "@/lib/server/test-helpers";
 import { getLesson } from "@/lib/content/repo";
 import { localDate, localMidnight, addDays } from "@/lib/progress/dates";
-import { expectedCardVocabIds, loadReviewQueue, reconcileCards, repoContent, type CardContent } from "./cards";
+import { expectedCardVocabIds, getReviewSummary, loadReviewQueue, reconcileCards, repoContent, type CardContent } from "./cards";
 import { initialDues } from "./initial";
 import { cardKey, endOfToday, isDueBefore } from "./queue";
 import { REVIEW_DIRECTIONS } from "./contract";
@@ -418,5 +418,102 @@ describe("loadReviewQueue", () => {
     expect(b).toEqual(a);
     expect(await cards()).toEqual(rowsA);
     expect(REVIEW_DIRECTIONS).toHaveLength(2);
+  });
+});
+
+// PR 5: the number on /practice and the home page is the n of the "x / n" counter on /review. One definition (plan 2.2, 2.6/26).
+describe("getReviewSummary", () => {
+  const summary = (now = NOW, content: CardContent = repoContent) => getReviewSummary(db, userId, now, content);
+  const queueSize = async (now = NOW, content: CardContent = repoContent) => (await loadReviewQueue(db, userId, now, content)).cards.length;
+  /** The number the learner sees before starting must be the n of the session. */
+  const agree = async (now = NOW, content: CardContent = repoContent) => {
+    const s = await summary(now, content);
+    expect(s.due).toBe(await queueSize(now, content));
+    return s;
+  };
+
+  it("nothing finished: no words, nothing due, and no card is created", async () => {
+    expect(await agree()).toEqual({ due: 0, withCard: 0 });
+    expect(await cards()).toHaveLength(0);
+  });
+
+  it("day 1 just finished: 5 words with cards, none due today (they start tomorrow); once they are due, 10 cards (not 5 words)", async () => {
+    await markDone(1);
+    expect(await agree()).toEqual({ due: 0, withCard: 5 });
+    await db.update(srsCards).set({ due: new Date(NOW.getTime() - 3_600_000) }).where(eq(srsCards.userId, userId));
+    expect(await agree()).toEqual({ due: 10, withCard: 5 });
+  });
+
+  it("backfill of days 1-7: 36 words, 36 cards due (the en_th ones), and it is the queue's n", async () => {
+    for (let d = 1; d <= 7; d++) await markDone(d);
+    expect(await agree()).toEqual({ due: 36, withCard: 36 });
+  });
+
+  it("the day boundary is the learner's zone: due at the end of today is not counted, one millisecond before is", async () => {
+    await markDone(1);
+    await reconcile();
+    const end = endOfToday(NOW, BKK);
+    await db.update(srsCards).set({ due: new Date(end.getTime() - 86_400_000) }).where(eq(srsCards.direction, "en_th"));
+    await db.update(srsCards).set({ due: new Date(end.getTime() - 1) }).where(and(eq(srsCards.vocabId, "v-hello"), eq(srsCards.direction, "th_en")));
+    await db.update(srsCards).set({ due: end }).where(and(eq(srsCards.vocabId, "v-name"), eq(srsCards.direction, "th_en")));
+    expect((await agree()).due).toBe(6); // 5 en_th + v-hello th_en
+  });
+
+  it("uses the profile's zone: a card due 10 hours after Bangkok's midnight is due today in Los Angeles only", async () => {
+    await markDone(1);
+    await reconcile();
+    const late = new Date("2026-11-26T03:00:00.000Z"); // 10:00 on 26 Nov in Bangkok, 19:00 on 25 Nov in Los Angeles
+    await db.update(srsCards).set({ due: late }).where(eq(srsCards.userId, userId));
+    expect((await agree()).due).toBe(0);
+    await setTz(LA);
+    expect((await agree()).due).toBe(10);
+  });
+
+  it("a card whose word is no longer in content is stored but not counted, exactly like the queue", async () => {
+    await markDone(1);
+    const content = fakeContent({ 1: ["a", "b"] }, ["a", "b"]);
+    await summary(NOW, content); // creates the four cards
+    await db.update(srsCards).set({ due: new Date(NOW.getTime() - 3_600_000) }).where(eq(srsCards.userId, userId));
+    expect(await agree(NOW, content)).toEqual({ due: 4, withCard: 2 });
+    content.lessons[1] = ["a"]; // b leaves the lesson: its cards stay in the table
+    expect(await agree(NOW, content)).toEqual({ due: 2, withCard: 1 });
+    expect(await cards()).toHaveLength(4);
+    content.lessons[1] = ["a", "b"];
+    content.vocab.delete("b"); // b leaves the vocabulary bank
+    expect(await agree(NOW, content)).toEqual({ due: 2, withCard: 1 });
+  });
+
+  it("cards that are not review cards or not of a finished day are not counted (listen_spell, a day 2 word)", async () => {
+    await markDone(1);
+    await reconcile();
+    await db.update(srsCards).set({ due: new Date(NOW.getTime() - 3_600_000) }).where(eq(srsCards.userId, userId));
+    await db.insert(srsCards).values([
+      { userId, vocabId: "v-hello", direction: "listen_spell", due: new Date("2026-11-01T00:00:00.000Z") },
+      { userId, vocabId: "v-how", direction: "en_th", due: NOW },
+    ]);
+    expect(await agree()).toEqual({ due: 10, withCard: 5 });
+  });
+
+  it("only the given user's cards count", async () => {
+    await db.insert(user).values({ id: "other", name: "O", email: "o@example.com" });
+    await db.insert(profiles).values({ userId: "other", startDate: "2026-11-25" });
+    await markDone(1);
+    await db.update(srsCards).set({ due: NOW }).where(eq(srsCards.userId, userId));
+    expect(await getReviewSummary(db, "other", NOW, repoContent)).toEqual({ due: 0, withCard: 0 });
+    expect(await agree()).toMatchObject({ withCard: 5 });
+  });
+
+  it("a card that was just reviewed and is due later today still counts, like the queue", async () => {
+    await markDone(1);
+    await reconcile();
+    await db.update(srsCards).set({ due: new Date(NOW.getTime() + 600_000), state: 1 }).where(eq(srsCards.userId, userId));
+    expect((await agree()).due).toBe(10);
+  });
+
+  it("GUARD: reading the summary never writes progress, profiles or attempts", async () => {
+    await markDone(1);
+    const before = [await db.select().from(progress), await db.select().from(profiles), await db.select().from(attempts)];
+    await summary();
+    expect([await db.select().from(progress), await db.select().from(profiles), await db.select().from(attempts)]).toEqual(before);
   });
 });
