@@ -12,14 +12,13 @@ export function formatInterval(ms: number): string {
   if (hours < 24) return `${hours} ชั่วโมง`;
   const days = Math.round(ms / DAY);
   if (days < 31) return `${days} วัน`;
-  const months = Math.round(days / 30);
-  if (months < 12) return `${months} เดือน`;
-  return `${Math.max(1, Math.round(days / 365))} ปี`;
+  if (days < 365) return `${Math.round(days / 30)} เดือน`; // 345 to 364 days is "12 เดือน", not a year
+  return `${Math.round(days / 365)} ปี`;
 }
 
 /** The text under each rating button: how long until the card comes back if that button is pressed now. */
-export function ratingIntervalLabels(card: CardState, now: Date): Record<Rating, string> {
-  const next = previewRatings(card, now);
+export function ratingIntervalLabels(card: CardState, now: Date, timeZone: string): Record<Rating, string> {
+  const next = previewRatings(card, now, timeZone);
   const out = {} as Record<Rating, string>;
   for (const r of RATINGS) out[r] = formatInterval(next[r].due.getTime() - now.getTime());
   return out;

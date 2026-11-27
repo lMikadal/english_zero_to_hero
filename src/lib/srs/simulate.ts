@@ -8,7 +8,7 @@
 // `againRate`; otherwise Hard 15%, Good 65%, Easy 20% of the remaining presses.
 import { type ReviewDirection } from "./contract";
 import { initialDues } from "./initial";
-import { cardKey, endOfToday, isDueToday, orderQueue, requeue, type QueueCard } from "./queue";
+import { cardKey, endOfToday, isDueBefore, orderQueue, requeue, type QueueCard } from "./queue";
 import { applyRating, newCardState, type Rating } from "./scheduler";
 
 export type SimulationInput = {
@@ -82,15 +82,15 @@ export function simulateLoad(input: SimulationInput): SimulationResult {
     const off = offDays !== undefined && day >= offDays.from && day <= offDays.to;
     if (day === 1) for (let i = 0; i < backfillWords; i++) addWord(initialDues({ kind: "backfill" }, sessionStart, timeZone));
 
-    const dueCards = [...cards.values()].filter((c) => isDueToday(c.state.due, sessionStart, timeZone));
+    const end = endOfToday(sessionStart, timeZone); // once per day: it is costly
+    const dueCards = [...cards.values()].filter((c) => isDueBefore(c.state.due, end));
     let presses = 0;
     if (!off) {
-      const end = endOfToday(sessionStart, timeZone);
       let queue = orderQueue(dueCards, teach);
       while (queue.length > 0 && presses < 100_000) {
         const [card, ...rest] = queue;
         const now = new Date(sessionStart.getTime() + presses * secondsPerPress * 1000);
-        const next = applyRating(card.state, pickRating(), now);
+        const next = applyRating(card.state, pickRating(), now, timeZone);
         presses++;
         const updated = { ...card, state: next };
         cards.set(cardKey(card), updated);

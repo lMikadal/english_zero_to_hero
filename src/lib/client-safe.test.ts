@@ -22,6 +22,7 @@ const CLIENT_SAFE = [
   "lib/srs/config.ts",
   "lib/srs/contract.ts",
   "lib/srs/scheduler.ts",
+  "lib/srs/zone.ts",
   "lib/srs/format.ts",
   "lib/srs/queue.ts",
   "lib/srs/initial.ts",

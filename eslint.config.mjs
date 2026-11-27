@@ -10,7 +10,7 @@ export default defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    files: ["**/*.{ts,tsx,mjs}"],
+    files: ["**/*.{js,jsx,cjs,mjs,ts,tsx,mts,cts}"],
     ignores: ["src/lib/srs/scheduler.ts", "src/lib/srs/scheduler.*.test.ts", "src/lib/srs/scheduler.test.ts", "scripts/srs-golden.mjs"],
     rules: { "no-restricted-imports": ["error", { patterns: [TS_FSRS_ONLY_IN_ADAPTER] }] },
   },

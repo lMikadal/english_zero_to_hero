@@ -95,7 +95,7 @@ function cards(): [string, CardState, Date][] {
     out.push([`${label}, on time`, c, new Date(Math.max(c.due.getTime(), c.lastReview?.getTime() ?? 0))]);
     out.push([`${label}, 3 days late`, c, new Date(c.due.getTime() + 3 * DAY)]);
   }
-  const mature = applyRating(applyRating(review, 3, review.due), 3, new Date(review.due.getTime() + 2 * DAY + 3600_000 * 0), "UTC");
+  const mature = applyRating(applyRating(review, 3, review.due, "UTC"), 3, new Date(review.due.getTime() + 2 * DAY + 3600_000 * 0), "UTC");
   out.push(["mature, 8 hours early", mature, new Date(mature.due.getTime() - 8 * 3600_000)]);
   return out;
 }
@@ -145,10 +145,10 @@ describe("applyRating and previewRatings", () => {
     );
   });
 
-  it("elapsedDays is the whole days since the last review at the time of this review", () => {
+  it("elapsedDays is the difference of calendar dates (here UTC) between the last review and this one", () => {
     const card = applyRating(newCardState(NOW), 4, NOW, "UTC"); // Easy: due in 8 days
     expect(applyRating(card, 3, new Date(NOW.getTime() + 8 * DAY), "UTC").elapsedDays).toBe(8);
-    expect(applyRating(card, 3, new Date(NOW.getTime() + 8 * DAY - 3600_000), "UTC").elapsedDays).toBe(7);
+    expect(applyRating(card, 3, new Date(NOW.getTime() + 8 * DAY - 2 * 3600_000), "UTC").elapsedDays).toBe(7); // 23:00 on the 8th calendar day, not 01:00 on the 9th
   });
 
   it("never schedules past the maximum interval (36500 days)", () => {

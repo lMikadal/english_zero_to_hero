@@ -13,9 +13,14 @@ export function endOfToday(now: Date, timeZone: string): Date {
   return localMidnight(addDays(localDate(now, timeZone), 1), timeZone);
 }
 
-/** One definition of "due today" for every state: due before the next local midnight. */
+/** `due` is before `end` (compute `end` once with endOfToday for a whole queue: it costs dozens of Intl calls). */
+export function isDueBefore(due: Date, end: Date): boolean {
+  return due.getTime() < end.getTime();
+}
+
+/** One definition of "due today" for every state: due before the next local midnight. For many cards use endOfToday once and isDueBefore. */
 export function isDueToday(due: Date, now: Date, timeZone: string): boolean {
-  return due.getTime() < endOfToday(now, timeZone).getTime();
+  return isDueBefore(due, endOfToday(now, timeZone));
 }
 
 const directionIndex = (d: ReviewDirection) => REVIEW_DIRECTIONS.indexOf(d);
