@@ -7,7 +7,7 @@ import { buttonClass } from "@/components/ui/button-styles";
 import { StatusScreen } from "@/components/ui/StatusScreen";
 import { newId } from "@/lib/attempts/contract";
 import type { SyncSink } from "@/lib/offline/sink";
-import type { CompleteReviewRequest, ReviewQueue, WireCardState } from "@/lib/srs/contract";
+import type { CompleteReviewRequest, ReviewQueue, ReviewResult } from "@/lib/srs/contract";
 import { ratingIntervalLabels } from "@/lib/srs/format";
 import { cardKey } from "@/lib/srs/queue";
 import { RATING_LABEL_TH, type Rating } from "@/lib/srs/scheduler";
@@ -17,11 +17,8 @@ import { ReviewCard } from "./ReviewCard";
 import { ReviewCompletionScreen, type ReviewCompletion } from "./ReviewCompletionScreen";
 import { counterOf, createSession, sessionReducer } from "./session-state";
 
-/**
- * How the server's answer for a review reaches the session: `subscribe(callback)` returns the unsubscribe function.
- * The sink does not give this yet (SyncSink.sendReview returns nothing); when it does, pass it here.
- */
-export type ServerCardFeed = (cb: (r: { id: string; card: WireCardState }) => void) => () => void;
+/** How the server's answer for each review reaches the session: `feed(callback)` returns the unsubscribe function (HttpSink.onReviewResult). */
+export type ServerCardFeed = (cb: (r: ReviewResult) => void) => () => void;
 
 export type ReviewSessionProps = {
   queue: ReviewQueue;
@@ -39,6 +36,7 @@ export function ReviewSession({ queue, sink, now, serverCards, onContinue }: Rev
   const [startedAt] = useState(() => now().toISOString());
   const [completion, setCompletion] = useState<ReviewCompletion | null>(null);
   const sent = useRef(new Map<string, string>()); // review id -> card key, to place the server's answer
+  const latest = useRef(new Map<string, string>()); // card key -> id of its newest review: an older answer must not overwrite newer local state
   const rated = useRef<unknown>(null); // the card object already rated: one review per presentation
   const request = useRef<CompleteReviewRequest | null>(null); // the same request every time, so asking again is idempotent
   const completing = useRef(false);
@@ -61,9 +59,10 @@ export function ReviewSession({ queue, sink, now, serverCards, onContinue }: Rev
 
   useEffect(() => {
     if (!serverCards) return;
-    return serverCards(({ id, card }) => {
-      const key = sent.current.get(id);
-      if (key !== undefined) dispatch({ type: "server", key, card });
+    return serverCards((r) => {
+      const key = r.id === null ? undefined : sent.current.get(r.id);
+      if (key === undefined || latest.current.get(key) !== r.id) return;
+      dispatch(r.status === "rejected" ? { type: "drop", key } : { type: "server", key, card: r.card });
     });
   }, [serverCards]);
 
@@ -126,6 +125,7 @@ export function ReviewSession({ queue, sink, now, serverCards, onContinue }: Rev
     const t = now();
     const id = newId();
     sent.current.set(id, cardKey(card));
+    latest.current.set(cardKey(card), id);
     sink.sendReview({ id, sessionId, vocabId: card.vocabId, direction: card.direction, rating, reviewedAt: t.toISOString() });
     dispatch({ type: "rate", rating, now: t });
   };
@@ -156,7 +156,7 @@ export function ReviewSession({ queue, sink, now, serverCards, onContinue }: Rev
         className={`sticky bottom-0 mt-auto -mx-5 flex flex-col gap-3 px-5 ${back ? "border-t border-line bg-card pt-3.5" : "bg-bg"} pb-[max(1.5rem,env(safe-area-inset-bottom))]`}
       >
         <div role="status" className="sr-only">
-          {last && `${RATING_LABEL_TH[last.rating]} · ทวนอีกใน ${last.interval}${last.again ? " · ใบนี้จะกลับมาอีกครั้งในรอบนี้" : ""}`}
+          {state.notice ?? (last && `${RATING_LABEL_TH[last.rating]} · ทวนอีกใน ${last.interval}${last.again ? " · ใบนี้จะกลับมาอีกครั้งในรอบนี้" : ""}`)}
         </div>
         {back && labels ? (
           <RatingBar labels={labels} onRate={onRate} goodRef={goodButton} />

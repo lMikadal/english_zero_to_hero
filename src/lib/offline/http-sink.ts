@@ -20,7 +20,7 @@ import {
   type CompletePracticeRequest,
   type CompletePracticeResponse,
 } from "@/lib/attempts/contract";
-import { API_SRS, type CompleteReviewRequest, type CompleteReviewResponse, type ReviewInput } from "@/lib/srs/contract";
+import { API_SRS, type CompleteReviewRequest, type CompleteReviewResponse, type ReviewInput, type ReviewResult, type WireCardState } from "@/lib/srs/contract";
 import type { CompleteResult, SyncSink } from "./sink";
 
 /** The part of `Response` the sink reads, so tests can fake it. */
@@ -49,6 +49,14 @@ export type SinkState = { pending: number; pendingAttempts: number; pendingRevie
 /** A SyncSink plus what a UI needs to show the wait ("กำลังรอสัญญาณ"). Not part of the SyncSink interface. */
 export type HttpSink = SyncSink & {
   getState(): SinkState;
+  /**
+   * The server's answer for each review that is settled (docs/plans/vocab-review-plan.md 4.4 item 13): `created` / `duplicate`
+   * with the card after that review, or `rejected` with the reason. Delivered once per review, in queue order, after the
+   * item has left the queue; `id` is always the review's own id. A batch dropped without an answer (4xx, or 413 for one
+   * item) delivers `rejected` / `invalid` for each of its reviews. Nothing is delivered for attempts or for reviews that stay queued.
+   * Returns the unsubscribe function. A listener that throws is logged and does not affect the others or the queue.
+   */
+  onReviewResult(cb: (r: ReviewResult) => void): () => void;
   /** Removes the `online` listener and clears timers. */
   dispose(): void;
 };
@@ -67,6 +75,17 @@ type CompleteEntry = {
 type Entry = { kind: "attempt"; item: AttemptInput } | { kind: "review"; item: ReviewInput } | CompleteEntry;
 
 type Outcome = { next: "continue" } | { next: "retry"; afterMs?: number } | { next: "pause" };
+
+/** The settled items of a 200 answer as ReviewResults, with the review's own id (the server answers id null for an unreadable item). */
+function settledReviews(results: { status?: unknown; card?: unknown; reason?: unknown }[], batch: { id: string }[]): ReviewResult[] {
+  const out: ReviewResult[] = [];
+  results.forEach((r, i) => {
+    const id = batch[i].id;
+    if ((r.status === "created" || r.status === "duplicate") && isObject(r.card)) out.push({ id, status: r.status, card: r.card as WireCardState });
+    else if (r.status === "rejected") out.push({ id, status: "rejected", reason: r.reason === "unknown_word" || r.reason === "not_taught" ? r.reason : "invalid" });
+  });
+  return out;
+}
 
 const DROP_STATUSES = new Set(["created", "duplicate", "rejected"]);
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;
@@ -91,6 +110,20 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
 
   const queue: Entry[] = [];
   const listeners = new Set<() => void>();
+  const resultListeners = new Set<(r: ReviewResult) => void>();
+  const deliver = (results: ReviewResult[]) => {
+    for (const r of results) {
+      for (const cb of [...resultListeners]) {
+        try {
+          cb(r);
+        } catch (e) {
+          console.error("review result listener threw", e);
+        }
+      }
+    }
+  };
+  const rejectedAll = (items: (AttemptInput | ReviewInput)[]): ReviewResult[] =>
+    items.map((i) => ({ id: i.id, status: "rejected" as const, reason: "invalid" as const }));
   let batchSize = configuredBatch;
   let running = false;
   let paused = false;
@@ -212,6 +245,7 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       const kept = queue.splice(0, batch.length).filter((_, i) => !answered[i]);
       queue.unshift(...kept);
       notify();
+      if (kind === "review") deliver(settledReviews(results as { status?: unknown; card?: unknown; reason?: unknown }[], batch));
       return kept.length === 0 ? { next: "continue" } : { next: "retry" };
     }
     if (res.status === 401 || res.status === 403) return { next: "pause" };
@@ -222,12 +256,14 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       }
       console.error(`POST ${url} answered 413 for a single item; dropping it`, batch[0].id);
       dropHead(1);
+      if (kind === "review") deliver(rejectedAll(batch));
       return { next: "continue" };
     }
     if (res.status === 408 || res.status === 429 || res.status >= 500) return { next: "retry", afterMs: retryAfterMs(res) };
     if (res.status >= 400 && res.status < 500) {
       console.error(`POST ${url} answered ${res.status}; dropping the batch`, batch.map((a) => a.id));
       dropHead(batch.length);
+      if (kind === "review") deliver(rejectedAll(batch));
       return { next: "continue" };
     }
     return { next: "retry" };
@@ -336,6 +372,10 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       pendingReviews: queue.filter((e) => e.kind === "review").length,
       status: status(),
     }),
+    onReviewResult(cb) {
+      resultListeners.add(cb);
+      return () => void resultListeners.delete(cb);
+    },
     subscribe(cb) {
       listeners.add(cb);
       return () => void listeners.delete(cb);

@@ -19,7 +19,7 @@ export function ReviewApp({ queue }: { queue: ReviewQueue }) {
   return (
     <>
       <UnsavedGuard />
-      <ReviewSession queue={queue} sink={sink} now={clock} onContinue={reload} />
+      <ReviewSession queue={queue} sink={sink} now={clock} serverCards={sink.onReviewResult} onContinue={reload} />
     </>
   );
 }

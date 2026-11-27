@@ -29,6 +29,7 @@ function makeSink() {
     subscribe: () => () => {},
     getState: () => ({ pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle" as const }),
     dispose: () => {},
+    onReviewResult: () => () => {},
   } satisfies HttpSink;
 }
 
