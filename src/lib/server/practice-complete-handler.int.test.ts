@@ -6,7 +6,7 @@ import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import type { CompletePracticeResponse } from "@/lib/attempts/contract";
 import { handlePostAttempts } from "./attempts-handler";
 import { handleCompletePractice } from "./practice-complete-handler";
-import { ANSWERS, attemptItem, finishDay, NOW, PRACTICE_SESSION, seedLocal } from "./test-helpers";
+import { ANSWERS, attemptItem, finishDay, NO_LESSONS, NOW, PRACTICE_SESSION, seedLocal } from "./test-helpers";
 
 const { sql, db } = connectTestDb();
 let userId: string;
@@ -45,8 +45,9 @@ describe("request checks", () => {
   });
   it("409 not_replayable when the lesson file is missing although the day is done", async () => {
     await seedLocal(db, 9);
-    await db.insert(progress).values({ userId, day: 8, status: "done", startedAt: NOW, completedAt: NOW, score: 1 }); // day 8 has no lesson file
-    expect(await complete(body({ day: 8 }))).toEqual({ status: 409, body: { error: "not_replayable" } });
+    await db.insert(progress).values({ userId, day: 8, status: "done", startedAt: NOW, completedAt: NOW, score: 1 });
+    // the content source has no lesson at all, whatever files content/ holds
+    expect(await handleCompletePractice(body({ day: 8 }), { db, userId, now: NOW, content: NO_LESSONS })).toEqual({ status: 409, body: { error: "not_replayable" } });
   });
 });
 

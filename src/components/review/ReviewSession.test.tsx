@@ -412,10 +412,13 @@ describe("a card the server dropped (PR 4 review follow-up)", () => {
 
   it("a rejection that arrives after the session finished does not make the completion screen contradictory", async () => {
     const sink = fakeSink({ status: "done", response: { ...DONE, countedForStreak: false, remainingDue: 1, streak: { current: 0, longest: 7 } } });
-    show([["country", "en_th"]], {}, sink);
+    let push: (r: ReviewResult) => void = () => {};
+    show([["country", "en_th"]], { serverCards: (cb) => { push = cb; return () => {}; } }, sink);
     await reveal(); await rate("ง่าย");
     expect(await screen.findByText("ยังมีคำถึงกำหนดอีก 1 ใบ")).toBeInTheDocument();
+    act(() => push({ id: reviewsSent(sink)[0].id, status: "rejected", reason: "not_taught" })); // too late: the session is over
     expect(screen.getByRole("heading", { level: 1, name: "จบรอบนี้แล้ว" })).toBeInTheDocument();
+    expect(screen.queryByText("บันทึกใบนี้ไม่ได้ จึงข้ามไป")).toBeNull();
     expect(screen.queryByText("ทวนครบแล้ว")).toBeNull();
     expect(screen.getByRole("link", { name: "ทวนต่อ" })).toBeInTheDocument();
   });

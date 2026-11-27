@@ -42,7 +42,7 @@ export function ReviewCompletionScreen({
           <button type="button" onClick={onRetry} className={buttonClass("quiet")}>ลองอีกครั้ง</button>
         </div>
       )}
-      <UnsavedNote kind="review" />
+      <UnsavedNote />
       <div className="mt-auto flex flex-col gap-2.5 pt-3">
         {done && !done.countedForStreak && leftOver && (
           <Link href="/review" onClick={(e) => { e.preventDefault(); onContinue(); }} className={buttonClass("primary")}>ทวนต่อ</Link>

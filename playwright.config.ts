@@ -4,6 +4,8 @@ import { defineConfig } from "@playwright/test";
 // reaches it at BASE_URL=http://e2e-target:3000.
 export default defineConfig({
   testDir: "./e2e",
+  // Only *.spec.ts are Playwright tests; e2e/helpers/*.test.ts are Vitest unit tests (run by `make check`).
+  testMatch: "**/*.spec.ts",
   outputDir: "./test-results",
   // html report (never auto-opened) is uploaded as a CI artifact on failure
   reporter: [["list"], ["html", { open: "never" }]],

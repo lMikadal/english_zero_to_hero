@@ -7,12 +7,13 @@ import type { CompleteLessonResponse } from "@/lib/attempts/contract";
 import { handlePostAttempts } from "./attempts-handler";
 import { touchStreak } from "@/db/queries/progress";
 import { handleCompleteLesson } from "./complete-handler";
-import { ANSWERS, attemptItem, NOW, seedLocal, SESSION } from "./test-helpers";
+import { ANSWERS, attemptItem, NO_LESSONS, NOW, seedLocal, SESSION } from "./test-helpers";
 
 const { sql, db } = connectTestDb();
 let userId: string;
 
 const complete = (body: unknown, now = NOW) => handleCompleteLesson(body, { db, userId, now });
+const completeWithoutLessons = (body: unknown) => handleCompleteLesson(body, { db, userId, now: NOW, content: NO_LESSONS });
 const req = (day: number, completedAt = NOW.toISOString()) => ({ day, sessionId: SESSION, completedAt });
 const send = (...items: ReturnType<typeof attemptItem>[]) => handlePostAttempts({ attempts: items }, { db, userId, now: NOW });
 const ok = (r: Awaited<ReturnType<typeof complete>>) => {
@@ -50,9 +51,9 @@ describe("request checks", () => {
 });
 
 describe("a lesson that does not exist cannot be completed", () => {
-  it("409 for day 8 even when current_day allows it (no lesson file), and nothing changes", async () => {
+  it("409 when current_day allows the day but it has no lesson file, and nothing changes", async () => {
     await seedLocal(db, 8);
-    expect((await complete(req(8))).status).toBe(409);
+    expect((await completeWithoutLessons(req(8))).status).toBe(409);
     expect(await db.select().from(progress)).toHaveLength(0);
     expect(await streak()).toBeUndefined();
     expect((await profile()).currentDay).toBe(8);
@@ -329,7 +330,7 @@ describe("finishing a lesson creates its review cards (docs/plans/vocab-review-p
   it("a completion that is refused (locked day, missing lesson file) creates no card", async () => {
     expect((await complete(req(2))).status).toBe(409);
     await seedLocal(db, 8);
-    expect((await complete(req(8))).status).toBe(409);
+    expect((await completeWithoutLessons(req(8))).status).toBe(409);
     expect(await cardRows()).toHaveLength(0);
   });
 

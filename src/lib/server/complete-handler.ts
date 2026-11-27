@@ -11,28 +11,27 @@ import {
 import { withTransactionRetry } from "@/db/queries/tx";
 import { completeLessonRequestSchema, type CompleteLessonResponse } from "@/lib/attempts/contract";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
-import { getLesson } from "@/lib/content/repo";
-import { reconcileCards, type CardContent } from "@/lib/srs/cards";
+import { reconcileCards, repoContent, type CardContent } from "@/lib/srs/cards";
 import { localDate, resolveTimeZone } from "@/lib/progress/dates";
 import type { HandlerDeps, HandlerResult } from "./attempts-handler";
 import { clampTimestamp, timestampFloor } from "./clamp";
 
 /** A day can be completed only when the lesson exists (a missing or broken file must not unlock the next day). */
-function lessonExists(day: number): boolean {
+function lessonExists(day: number, content: Pick<CardContent, "getLesson">): boolean {
   try {
-    return getLesson(day) !== null;
+    return content.getLesson(day) !== null;
   } catch (err) {
     console.error(`[complete] lesson for day ${day} failed to load:`, err);
     return false;
   }
 }
 
-/** `content` is a test seam: where the cards of the finished lessons get their words from (default: the content files). */
+/** `content` is a test seam: where lessons (do they exist?) and the words of the finished lessons come from (default: the content files). */
 export async function handleCompleteLesson(body: unknown, { db, userId, now, content }: HandlerDeps & { content?: CardContent }): Promise<HandlerResult<CompleteLessonResponse>> {
   const parsed = completeLessonRequestSchema.safeParse(body);
   if (!parsed.success) return { status: 400, body: { error: "invalid_body" } };
   const { day, completedAt: clientCompletedAt } = parsed.data;
-  const exists = lessonExists(day);
+  const exists = lessonExists(day, content ?? repoContent);
 
   const response = await withTransactionRetry(db, async (tx): Promise<CompleteLessonResponse | null> => {
     // Lock order: profile, then this day's progress row, then streak. Attempts take the profile SHARE lock first too.

@@ -31,17 +31,17 @@ export function UnsavedGuard({ sink }: { sink?: SinkView }) {
 }
 
 /**
- * What is unsaved is read from the sink: answers and reviews waiting are counted in their own words, and a completion
- * that is waiting alone is named by its kind (a review completion says so on every page, e.g. the home page). `kind` is
- * only the fallback for a waiting completion the sink does not name; the lesson wording is the default.
+ * What is unsaved is read from the sink only: answers and reviews waiting are counted in their own words, and a
+ * completion that is waiting alone is named by its kind (a review completion says so on every page). The page the note
+ * is on does not decide the wording: a lesson completion waiting on /review is still a lesson.
  */
-export function UnsavedNote({ sink, kind = "lesson" }: { sink?: SinkView; kind?: "lesson" | "review" }) {
+export function UnsavedNote({ sink }: { sink?: SinkView }) {
   const { pending, attempts, reviews, reviewCompletions } = usePending(sink ?? getSyncSink());
   if (pending === 0) return null;
   const text =
     attempts > 0 ? `มีคำตอบ ${attempts} ข้อที่ยังไม่ได้บันทึก อย่าปิดหน้านี้`
     : reviews > 0 ? `มีผลการทวนคำศัพท์ ${reviews} ใบที่ยังไม่ได้บันทึก อย่าปิดหน้านี้`
-    : kind === "review" || reviewCompletions === pending ? "มีผลการทวนคำศัพท์ที่ยังไม่ได้บันทึก อย่าปิดหน้านี้"
+    : reviewCompletions === pending ? "มีผลการทวนคำศัพท์ที่ยังไม่ได้บันทึก อย่าปิดหน้านี้"
     : "มีผลบทเรียนที่ยังไม่ได้บันทึก อย่าปิดหน้านี้";
   return (
     <p role="status" className="rounded-xl border border-hint/40 bg-hint-soft p-3.5 text-[13px] text-hint-fg">
