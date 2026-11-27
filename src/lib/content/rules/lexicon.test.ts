@@ -66,7 +66,7 @@ describe("surfaceForms", () => {
 describe("surfaceForms: no unrelated words", () => {
   const f = (word: string, pos: string, forms?: Record<string, string>) => surfaceForms(vocabItem({ id: `v-${word}`, word, pos, forms }));
   it.each([
-    ["be", "verb", { past: "was / were", pastParticiple: "been" }, ["bed", "bes", "bee"]],
+    ["be", "verb", { present: "am / is / are", past: "was / were", pastParticiple: "been" }, ["bed", "bes", "bee"]],
     ["go", "verb", { past: "went", pastParticiple: "gone" }, ["god", "goed", "gos"]],
     ["see", "verb", { past: "saw", pastParticiple: "seen" }, ["seed", "sees!"]],
     ["plan", "noun", undefined, ["planes", "plane"]],
