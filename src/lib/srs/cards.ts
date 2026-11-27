@@ -73,7 +73,8 @@ export function expectedCardVocabIds(doneDays: readonly number[], content: CardC
 
 const isReviewDirection = (d: string): d is ReviewDirection => (REVIEW_DIRECTIONS as readonly string[]).includes(d);
 
-const bound = (content: CardContent): CardContent => content.snapshot?.() ?? content;
+/** The content source bound to one read of the vocabulary (a source without `snapshot` is used as it is). */
+export const snapshotContent = (content: CardContent): CardContent => content.snapshot?.() ?? content;
 
 async function expectedForUser(db: DbOrTx, userId: string, content: CardContent): Promise<ExpectedWord[]> {
   const done = await listDoneDays(db, userId);
@@ -93,7 +94,7 @@ export type ReconcileOptions = {
  * Call it inside the completion transaction and from the queue loader.
  */
 export async function reconcileCards(db: DbOrTx, userId: string, now: Date, timeZone: string, opts: ReconcileOptions = {}): Promise<{ created: number; expected: ExpectedWord[] }> {
-  const content = bound(opts.content ?? repoContent);
+  const content = snapshotContent(opts.content ?? repoContent);
   const tz = resolveTimeZone(timeZone);
   const expected = await expectedForUser(db, userId, content);
   if (expected.length === 0) return { created: 0, expected };
@@ -138,7 +139,7 @@ export function rowToCardState(r: CardRow): CardState {
  * intervals are not computed here: the client computes them from `state` and its clock.
  */
 export async function loadReviewQueue(db: Db, userId: string, now: Date, source: CardContent = repoContent): Promise<ReviewQueue> {
-  const content = bound(source);
+  const content = snapshotContent(source);
   const profile = await getProfile(db, userId);
   const tz = resolveTimeZone(profile.timezone);
   const { expected } = await reconcileCards(db, userId, now, tz, { content });
