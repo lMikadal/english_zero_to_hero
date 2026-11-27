@@ -41,6 +41,9 @@ const UNITS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "
 const TENS = ["twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
 const HYPHENATED = new RegExp(`^(${TENS.join("|")})-(${UNITS.join("|")})$`);
 const S_FORM = /^(he|she|it|that|there|here|what|where|who|how|name)'s$/;
+/** The words an ambiguous 's (is / has) can follow, without the 's. */
+export const S_BASES: readonly string[] = ["he", "she", "it", "that", "there", "here", "what", "where", "who", "how", "name"];
+export const isSForm = (t: string): boolean => S_FORM.test(t);
 const WOULD = /^(i|you|he|she|we|they)'d$/;
 const IRREGULAR_PARTICIPLES = new Set(["gone", "done", "seen", "taken", "given", "eaten", "written", "spoken", "known", "broken", "made", "found", "left", "lost", "met", "heard", "said", "told"]);
 const NOT_ED = new Set(["speed", "breed", "indeed", "hundred"]);

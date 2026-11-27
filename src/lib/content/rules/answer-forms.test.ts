@@ -22,7 +22,7 @@ describe("answer-forms: contractions", () => {
     const out = check(translate(["He's tired"]));
     expect(out).toHaveLength(1);
     expect(out[0]).toMatchObject({ rule: "answer-forms", file: "content/lessons/day-001.json", id: "d001-write-01" });
-    expect(out[0].message).toContain("He is tired");
+    expect(out[0].message).toContain("he is tired");
     expect(out[0].message).toContain("strict");
     expect(check(translate(["He's tired", "He is tired"]))).toEqual([]);
     expect(check(translate(["He's tired"], true))).toEqual([]);
@@ -33,7 +33,7 @@ describe("answer-forms: contractions", () => {
   it("flags the full form too, because it would not match the contraction", () => {
     const out = check(translate(["It is tired"]));
     expect(out).toHaveLength(1);
-    expect(out[0].message).toContain("It's tired");
+    expect(out[0].message).toContain("it's tired");
     expect(check(translate(["It is tired", "It's tired"]))).toEqual([]);
   });
   it("flags a contraction that is not in the table", () => {
@@ -52,6 +52,7 @@ describe("answer-forms: contractions", () => {
 
 describe("answer-forms: numbers", () => {
   it("passes digits and words up to 100, and 21-99", () => {
+    expect(check(dictation("Six, seven", ["6,7", "6, 7, 8, 9, 10"]))).toEqual([]); // commas that separate a list are punctuation
     expect(check(translate(["I am 20", "I am twenty-one", "It is 100 baht", "It is a hundred baht"]))).toEqual([]);
   });
   it.each([
