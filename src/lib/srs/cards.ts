@@ -162,7 +162,7 @@ export async function loadReviewQueue(db: Db, userId: string, now: Date, source:
  * The numbers for /practice and the home page: `due` = cards (both directions) due today, the n of the "x / n" counter
  * of the session that would start now (same zone, same end of today, same set of words); `withCard` = words with cards
  * = the distinct words of the finished lessons. Creates missing cards first, like the loader, so a learner who finished
- * lessons before the feature sees the right numbers on the first visit. Pure counting in SQL: no card is read into memory.
+ * lessons before the feature sees the right numbers on the first visit. The count itself is one SQL query; `reconcileCards` first lists the learner's finished days and cards (to insert what is missing), so the cards are read, but only the count is returned.
  */
 export async function getReviewSummary(db: Db, userId: string, now: Date, source: CardContent = repoContent): Promise<{ due: number; withCard: number }> {
   const content = snapshotContent(source);
