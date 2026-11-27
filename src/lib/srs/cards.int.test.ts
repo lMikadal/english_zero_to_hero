@@ -290,6 +290,16 @@ describe("loadReviewQueue", () => {
     for (const w of four) expect(Math.abs(at.get(`${w}|en_th`)! - at.get(`${w}|th_en`)!)).toBeGreaterThanOrEqual(SIBLING_GAP);
   });
 
+  it("a missed day: 5 words, both directions due, all new -> no siblings adjacent, every gap >= SIBLING_GAP, en_th block first", async () => {
+    await markDone(1);
+    await reconcile();
+    await db.update(srsCards).set({ due: NOW }).where(eq(srsCards.userId, userId));
+    const q = await load();
+    expect(keys(q)).toEqual([...DAY1.map((w) => `${w}/en_th`), ...DAY1.map((w) => `${w}/th_en`)]);
+    const at = new Map(q.cards.map((c, i) => [cardKey(c), i]));
+    for (const w of DAY1) expect(Math.abs(at.get(`${w}|en_th`)! - at.get(`${w}|th_en`)!)).toBeGreaterThanOrEqual(SIBLING_GAP);
+  });
+
   it("content comes from the content source: word, IPA by the profile's accent, Thai, first example", async () => {
     await markDone(1);
     const content = fakeContent({ 1: ["a", "b"] }, ["a", "b"]);

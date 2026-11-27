@@ -27,7 +27,8 @@ const directionIndex = (d: ReviewDirection) => REVIEW_DIRECTIONS.indexOf(d);
 
 /**
  * Walks the queue front to back and, at each position, takes the first remaining card whose sibling (same word) is not
- * among the previous SIBLING_GAP - 1 cards. If every remaining card conflicts, the first one is taken (unavoidable).
+ * among the previous SIBLING_GAP - 1 cards. If every remaining card conflicts (unavoidable), the one whose sibling is
+ * furthest back is taken (the first of those on a tie), so the pair that is left is as far apart as it can be.
  * The other cards keep their order. A queue that already satisfies the rule comes back unchanged.
  */
 export function separateSiblings<T extends { vocabId: string }>(queue: readonly T[]): T[] {
@@ -36,14 +37,22 @@ export function separateSiblings<T extends { vocabId: string }>(queue: readonly 
   while (remaining.length > 0) {
     const recent = out.slice(-(SIBLING_GAP - 1));
     let pick = remaining.findIndex((c) => !recent.some((p) => p.vocabId === c.vocabId));
-    if (pick === -1) pick = 0;
+    if (pick === -1) {
+      // every candidate conflicts: distance back to its sibling, larger is better; the first wins a tie
+      let best = -1;
+      remaining.forEach((c, i) => {
+        const back = out.length - out.map((p) => p.vocabId).lastIndexOf(c.vocabId);
+        if (back > best) [best, pick] = [back, i];
+      });
+    }
     out.push(remaining.splice(pick, 1)[0]);
   }
   return out;
 }
 
 /**
- * Reviews first (state 1-3, oldest due first), then new cards (state 0) in teaching order, en_th before th_en; ties by
+ * Reviews first (state 1-3, oldest due first), then new cards (state 0): every en_th in teaching order, then every th_en
+ * in teaching order (direction first, so the two cards of a word are a whole direction apart); ties by
  * vocab id and direction, so the result never depends on input order. Siblings are then kept apart.
  * `teachOrder` maps a vocab id to its position in the course (day, then place in the lesson).
  */
@@ -53,7 +62,7 @@ export function orderQueue(cards: readonly QueueCard[], teachOrder: ReadonlyMap<
   const reviews = cards.filter((c) => c.state.state !== 0).sort((a, b) => a.state.due.getTime() - b.state.due.getTime() || tie(a, b));
   const fresh = cards
     .filter((c) => c.state.state === 0)
-    .sort((a, b) => position(a) - position(b) || directionIndex(a.direction) - directionIndex(b.direction) || tie(a, b));
+    .sort((a, b) => directionIndex(a.direction) - directionIndex(b.direction) || position(a) - position(b) || tie(a, b));
   return separateSiblings([...reviews, ...fresh]);
 }
 
