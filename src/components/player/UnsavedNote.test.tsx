@@ -47,13 +47,7 @@ describe("UnsavedNote", () => {
     expect(note).not.toHaveTextContent("บทเรียน");
   });
 
-  it("on the review page, a waiting completion (no answers pending) is about the review, never the lesson", () => {
-    render(<UnsavedNote kind="review" sink={fakeSink({ pending: 1, pendingAttempts: 0, pendingReviews: 0 }).sink} />);
-    expect(screen.getByRole("status")).toHaveTextContent("ผลการทวนคำศัพท์ที่ยังไม่ได้บันทึก อย่าปิดหน้านี้");
-    expect(screen.getByRole("status")).not.toHaveTextContent("บทเรียน");
-  });
-
-  it("on any page (no kind given), a lone waiting review completion uses the review wording, taken from the sink state", () => {
+  it("on any page, a lone waiting review completion uses the review wording, taken from the sink state", () => {
     render(<UnsavedNote sink={fakeSink({ pending: 1, pendingAttempts: 0, pendingReviews: 0, pendingReviewCompletions: 1 }).sink} />);
     const note = screen.getByRole("status");
     expect(note).toHaveTextContent("มีผลการทวนคำศัพท์ที่ยังไม่ได้บันทึก อย่าปิดหน้านี้");
@@ -65,7 +59,7 @@ describe("UnsavedNote", () => {
     expect(screen.getByRole("status")).toHaveTextContent("มีผลบทเรียนที่ยังไม่ได้บันทึก");
   });
 
-  it("the lesson wording is unchanged when no kind is given", () => {
+  it("a lone waiting lesson completion uses the lesson wording", () => {
     render(<UnsavedNote sink={fakeSink({ pending: 1, pendingAttempts: 0, pendingReviews: 0 }).sink} />);
     expect(screen.getByRole("status")).toHaveTextContent("มีผลบทเรียนที่ยังไม่ได้บันทึก");
   });
