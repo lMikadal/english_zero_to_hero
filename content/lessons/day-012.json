@@ -1,0 +1,327 @@
+{
+  "day": 12,
+  "phase": 1,
+  "week": 2,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "We are, they are! Long vowel /ɑː/",
+    "th": "We are, they are! เสียงสระยาว /ɑː/"
+  },
+  "objectives": [
+    {
+      "en": "Say 'We are…' and 'They are…' about groups of people",
+      "th": "พูด 'We are…' และ 'They are…' เกี่ยวกับกลุ่มคนได้"
+    },
+    {
+      "en": "Hear and say the long vowel /ɑː/ in car and park",
+      "th": "ฟังและออกเสียงสระยาว /ɑː/ ในคำว่า car และ park ได้"
+    },
+    {
+      "en": "Say where people and things are: in the park, in the shop",
+      "th": "บอกว่าคนและสิ่งของอยู่ที่ไหน เช่น in the park, in the shop ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-we",
+    "v-they",
+    "v-car",
+    "v-park",
+    "v-house",
+    "v-shop",
+    "v-happy",
+    "v-in"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The long vowel /ɑː/",
+        "th": "เสียงสระยาว /ɑː/"
+      },
+      "exercises": [
+        {
+          "id": "d012-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "ar",
+          "ipa": "/ɑː/",
+          "tipTh": "เสียง 'อา' ยาว อ้าปากกว้างและยืดเสียงให้นาน ไม่ยิ้ม สัญลักษณ์นี้ตัวเดียวกับ hot ในวันที่ 4: สำเนียงอเมริกัน car ใช้สระเดียวกับ hot แล้วตามด้วย r ส่วนสำเนียงอังกฤษ hot เป็น /ɒ/ สั้น แต่ car เป็น /ɑː/ ยาวและไม่มี r ระวังอย่าให้สั้นจนเป็น 'แอ' แบบ pack (แพ็ค) และปิดเสียง k ใน park ให้ชัด",
+          "examples": [
+            "car",
+            "park",
+            "far",
+            "start"
+          ]
+        },
+        {
+          "id": "d012-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "park",
+              "b": "pack",
+              "answer": "a"
+            },
+            {
+              "a": "duck",
+              "b": "dark",
+              "answer": "b"
+            },
+            {
+              "a": "cart",
+              "b": "cat",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d012-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง the ใช้ปลายลิ้นแตะระหว่างฟัน ไม่ใช่ 'เดอะ' ที่ออกเสียง ด"
+          },
+          "text": "The car is in the park.",
+          "ipa": "/ðə kɑːr ɪz ɪn ðə pɑːrk/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: we and they",
+        "th": "ฟัง: we และ they"
+      },
+      "exercises": [
+        {
+          "id": "d012-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแอนกับเบนอยู่ที่ไหน"
+          },
+          "audioText": "Ann and Ben are friends. They are in the car. They are happy.",
+          "question": {
+            "en": "Where are Ann and Ben?",
+            "th": "แอนกับเบนอยู่ที่ไหน"
+          },
+          "choices": [
+            "In the car",
+            "In the shop",
+            "In the park"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d012-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอะไรไม่ใหญ่"
+          },
+          "audioText": "The shop is big. The park is big, too. My house is not big.",
+          "question": {
+            "en": "Which one is not big?",
+            "th": "อะไรไม่ใหญ่"
+          },
+          "choices": [
+            "The shop",
+            "The park",
+            "My house"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "d012-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "We are friends. We are happy.",
+          "accept": [
+            "We're friends. We're happy",
+            "We are friends. We're happy",
+            "We're friends. We are happy"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say where we are",
+        "th": "บอกว่าเราอยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d012-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "We are friends.",
+            "They are in the park.",
+            "Are they happy?",
+            "Yes, they are.",
+            "We are not in the shop."
+          ]
+        },
+        {
+          "id": "d012-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียงตามความจริง"
+          },
+          "prompt": "Are you in the park? Are you happy?",
+          "sampleAnswer": "No, I am not. I am happy.",
+          "keywords": [
+            "happy"
+          ]
+        },
+        {
+          "id": "d012-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /ɑː/ ใน park และ happy ที่ท้ายคำเป็น 'ปี้' สั้น ๆ"
+          },
+          "text": "We are happy in the park.",
+          "ipa": "/wi ɑːr ˈhæpi ɪn ðə pɑːrk/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "In the park",
+        "th": "ในสวนสาธารณะ"
+      },
+      "exercises": [
+        {
+          "id": "d012-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Ann and Ben are friends. They are in the park. It is a big park. They are not in the shop.\nAnn is happy. Ben is happy, too. We are happy to see them.",
+          "glossary": {
+            "them": "พวกเขา (เป็นกรรม)"
+          },
+          "questions": [
+            {
+              "question": {
+                "en": "Where are Ann and Ben?",
+                "th": "แอนกับเบนอยู่ที่ไหน"
+              },
+              "choices": [
+                "In the park",
+                "In the shop"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Are they happy?",
+                "th": "พวกเขามีความสุขไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What are Ann and Ben?",
+                "th": "แอนกับเบนเป็นอะไรกัน"
+              },
+              "choices": [
+                "Friends",
+                "Teachers"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: we are, they are",
+        "th": "เขียน: we are, they are"
+      },
+      "exercises": [
+        {
+          "id": "d012-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "park",
+            "They",
+            "are",
+            "in",
+            "the"
+          ],
+          "answer": "They are in the park"
+        },
+        {
+          "id": "d012-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "Ann and Ben are friends. ___ are happy.",
+          "answer": [
+            "They"
+          ]
+        },
+        {
+          "id": "d012-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "พวกเรามีความสุข",
+          "accept": [
+            "We are happy",
+            "We're happy"
+          ]
+        },
+        {
+          "id": "d012-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-we"
+            },
+            {
+              "vocabId": "v-they"
+            },
+            {
+              "vocabId": "v-car"
+            },
+            {
+              "vocabId": "v-park"
+            },
+            {
+              "vocabId": "v-house"
+            },
+            {
+              "vocabId": "v-shop"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "day": 14,
+  "phase": 1,
+  "week": 2,
+  "type": "challenge",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 2 challenge: tell me about yourself and a friend",
+    "th": "ภารกิจสัปดาห์ที่ 2: เล่าเรื่องตัวเองและเพื่อน"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read a short profile with name, age, job and country",
+      "th": "ฟังและอ่านข้อมูลแนะนำตัวสั้น ๆ ที่มีชื่อ อายุ อาชีพ และประเทศได้"
+    },
+    {
+      "en": "Tell about yourself aloud in about 30 seconds",
+      "th": "เล่าเรื่องตัวเองด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write 5–6 sentences about you and a friend",
+      "th": "เขียนเกี่ยวกับตัวเองและเพื่อน 5–6 ประโยคได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d014-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียงสระยาวและเสียงท้ายคำ"
+          },
+          "text": "I am Ben. I am thirty. I am a doctor. I am from England.",
+          "ipa": "/aɪ æm ben aɪ æm ˈθɜːrti aɪ æm ə ˈdɑːktər aɪ æm frəm ˈɪŋɡlənd/"
+        },
+        {
+          "id": "d014-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /iː/ ใน he, she, we และ /ɑː/ ใน park"
+          },
+          "text": "He is my friend. She is happy. We are in the park.",
+          "ipa": "/hiː ɪz maɪ frend ʃiː ɪz ˈhæpi wiː ɑːr ɪn ðə pɑːrk/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a profile",
+        "th": "ฟังข้อมูลแนะนำตัว"
+      },
+      "exercises": [
+        {
+          "id": "d014-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบคำถาม"
+          },
+          "audioText": "Hello! I am Ann. I am twenty. I am a student. I am from Thailand.",
+          "question": {
+            "en": "How old is Ann?",
+            "th": "แอนอายุเท่าไร"
+          },
+          "choices": [
+            "Twelve",
+            "Twenty",
+            "Thirty"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d014-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบคำถาม ระวัง forty กับ fourteen"
+          },
+          "audioText": "This is my friend, Tom. He is a teacher. He is forty. He is from England.",
+          "question": {
+            "en": "How old is Tom?",
+            "th": "ทอมอายุเท่าไร"
+          },
+          "choices": [
+            "Fourteen",
+            "Forty",
+            "Fifty"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d014-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "This is my friend. He is a doctor. He is thirty.",
+          "accept": [
+            "This is my friend. He is a doctor. He is 30",
+            "This is my friend. He is a doctor. He's thirty",
+            "This is my friend. He is a doctor. He's 30",
+            "This is my friend. He's a doctor. He is thirty",
+            "This is my friend. He's a doctor. He is 30",
+            "This is my friend. He's a doctor. He's thirty",
+            "This is my friend. He's a doctor. He's 30"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d014-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "Hello! I am Mai. Nice to meet you.",
+            "Hi, Mai. I am Ben. Are you a student?",
+            "No, I am not. I am a teacher. And you?",
+            "I am a doctor. How old are you, Mai?",
+            "I am twenty. How old are you?",
+            "I am thirty. We are friends.",
+            "Is he your friend?",
+            "Yes, he is. He is a good friend.",
+            "We are happy. Goodbye, Ben!"
+          ]
+        },
+        {
+          "id": "d014-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องตัวเองด้วยเสียงประมาณ 30 วินาที: ชื่อ อายุ อาชีพ มาจากที่ไหน และเพื่อนของคุณ"
+          },
+          "prompt": "Hello! What is your name? How old are you? Are you a student? Where are you from? Who is your friend?",
+          "sampleAnswer": "Hello! My name is Mai. I am twenty. I am not a student. I am a teacher. I am from Thailand. My friend is Ben. He is a doctor. He is thirty.",
+          "keywords": [
+            "name",
+            "old",
+            "from"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read the profile",
+        "th": "อ่านข้อมูลแนะนำตัว"
+      },
+      "exercises": [
+        {
+          "id": "d014-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! My name is Ann. I am twenty. I am a student. I am from Bangkok. It is a big city.\nThis is my friend, Tom. He is forty. He is a teacher. He is from England.\nWe are in the park. We are happy.",
+          "questions": [
+            {
+              "question": {
+                "en": "Is Ann a student?",
+                "th": "แอนเป็นนักเรียนไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Tom?",
+                "th": "ทอมอายุเท่าไร"
+              },
+              "choices": [
+                "Fourteen",
+                "Forty"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Where is Tom from?",
+                "th": "ทอมมาจากที่ไหน"
+              },
+              "choices": [
+                "Thailand",
+                "England"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about you and a friend",
+        "th": "เขียนเกี่ยวกับตัวเองและเพื่อน"
+      },
+      "exercises": [
+        {
+          "id": "d014-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยค: ชื่อของคุณ อายุ มาจากที่ไหน เป็นนักเรียน ครู หรือหมอ แล้วเขียนเกี่ยวกับเพื่อนของคุณ"
+          },
+          "prompt": "Write 5–6 sentences. Say your name, how old you are, where you are from and if you are a student, a teacher or a doctor. Then write about a friend.",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}
