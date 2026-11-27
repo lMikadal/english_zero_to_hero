@@ -171,6 +171,19 @@ describe("reconcileCards", () => {
     expect(cat.find((c) => c.direction === "th_en")!.due).toEqual(initialDues({ kind: "backfill" }, NOW, BKK).th_en);
   });
 
+  it("a card of another direction (listen_spell) does not change which due rule a word gets", async () => {
+    await markDone(1);
+    await db.insert(srsCards).values({ userId, vocabId: "v-hello", direction: "listen_spell", due: new Date("2026-11-01T00:00:00.000Z") });
+    const completedAt = new Date("2026-11-25T09:00:00.000Z");
+    await reconcile(NOW, BKK, { completed: { day: 1, completedAt } });
+    const hello = (await cards()).filter((c) => c.vocabId === "v-hello");
+    expect(hello.map((c) => c.direction)).toEqual(["en_th", "listen_spell", "th_en"]);
+    const lesson = initialDues({ kind: "lesson", completedAt }, NOW, BKK);
+    expect(hello.find((c) => c.direction === "en_th")!.due).toEqual(lesson.en_th); // not the backfill rule
+    expect(hello.find((c) => c.direction === "th_en")!.due).toEqual(lesson.th_en);
+    expect(hello.find((c) => c.direction === "listen_spell")!.due.toISOString()).toBe("2026-11-01T00:00:00.000Z"); // untouched
+  });
+
   it("GUARD: a word of a lesson that is not finished never gets a card (in_progress, not_started, no row)", async () => {
     await markDone(1);
     await db.insert(progress).values({ userId, day: 2, status: "in_progress", startedAt: NOW });
