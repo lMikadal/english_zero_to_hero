@@ -319,9 +319,9 @@ Response `200` (`PostReviewsResponse`): `{ results: ReviewResult[] }` เรี�
 
 จบ session ทวนเพื่อนับสตรีค Request (`completeReviewRequestSchema`): `{ sessionId: uuid, startedAt: ISO, completedAt: ISO }`
 Response `200` (`CompleteReviewResponse`): `{ sessionDate: "YYYY-MM-DD", reviewed, remainingDue, streak: { current, longest }, countedForStreak }`
-- `sessionDate` = วันที่ท้องถิ่น (`profiles.timezone`) ของ `startedAt` ที่ตัดเข้า `[floor, now]` (ย้อนหลังเกิน 30 วันหรือก่อน `start_date` ไม่ได้); `completedAt` ไม่ใช้คำนวณวัน
-- `reviewed` = จำนวนรีวิวของ `sessionId` นี้ที่เก็บแล้ว; `remainingDue` = จำนวนการ์ด (ทั้งสองทิศ) ของคำที่เรียนจบแล้วที่ `due` ก่อนเที่ยงคืนท้องถิ่นถัดจาก `sessionDate` และ `created_at <= startedAt`
-- `countedForStreak` = `reviewed >= 1 && remainingDue === 0` จึงเรียก `touchStreak(..., "review")` (วันที่มี `lesson`/`practice` อยู่แล้วคงแถวเดิม ไม่มีแถวที่สอง); ไม่ผ่านก็ตอบ `200` `false` (ไม่ใช่ 409) พร้อม `streak` ปัจจุบัน
+- `sessionDate` = วันที่ท้องถิ่น (`profiles.timezone`) ของ **รีวิวแรกที่เก็บไว้ของ session** (ไม่ใช่ `startedAt`/`completedAt` ของ client: ใช้เติม response เมื่อ session ไม่มีรีวิวเท่านั้น)
+- `reviewed` = จำนวนรีวิวของ `sessionId` นี้ที่เก็บแล้ว; `remainingDue` = จำนวนการ์ด (ทั้งสองทิศ) ของคำที่เรียนจบแล้วที่ `due` ก่อนเที่ยงคืนท้องถิ่นถัดจาก `sessionDate` และ `created_at <=` เวลารีวิวแรก
+- `countedForStreak` = มีรีวิวของ session บนการ์ดที่ถึงกำหนดจริงตอนนั้น (`state_before.due` ก่อนสิ้นวัน) ≥ 1 **และ** `remainingDue === 0` จึงเรียก `touchStreak(..., "review")` (วันที่มี `lesson`/`practice` อยู่แล้วคงแถวเดิม); ไม่ผ่านก็ตอบ `200` `false` (ไม่ใช่ 409) พร้อม `streak` ปัจจุบัน วันที่ไม่มีการ์ดถึงกำหนดไม่นับ
 - เรียกซ้ำผลเดิม; ไม่เขียน `progress`/`profiles`/`attempts`; ไม่สร้างการ์ด (ไม่เรียก `reconcileCards`)
 
 #### รายละเอียดฝั่ง server (`src/lib/server/`)
