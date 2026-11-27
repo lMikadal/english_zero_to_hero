@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { eq } from "drizzle-orm";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { attempts, profiles, progress, streaks } from "@/db/schema";
+import { attempts, profiles, progress, srsCards, streaks } from "@/db/schema";
 import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import type { CompleteLessonResponse } from "@/lib/attempts/contract";
 import { handlePostAttempts } from "./attempts-handler";
@@ -280,5 +280,84 @@ describe("attempt rows are untouched by completion", () => {
     const before = await db.select().from(attempts);
     await complete(req(1));
     expect(await db.select().from(attempts)).toEqual(before);
+  });
+});
+
+describe("finishing a lesson creates its review cards (docs/plans/vocab-review-plan.md 2.1)", () => {
+  const cardRows = () => db.select().from(srsCards).orderBy(srsCards.vocabId, srsCards.direction);
+  const DAY1 = ["v-cat", "v-hello", "v-meet", "v-name", "v-nice"];
+  const iso = (c: { due: Date }) => c.due.toISOString();
+
+  it("day 1 gives 10 New cards: en_th due at the next local midnight, th_en one day later (Asia/Bangkok)", async () => {
+    ok(await complete(req(1)));
+    const rows = await cardRows();
+    expect(rows).toHaveLength(10);
+    expect(rows.map((c) => c.vocabId)).toEqual(DAY1.flatMap((w) => [w, w]));
+    expect(rows.every((c) => c.state === 0 && c.reps === 0 && c.lastReview === null)).toBe(true);
+    expect(rows.filter((c) => c.direction === "en_th").map(iso)).toEqual(Array(5).fill("2026-11-25T17:00:00.000Z")); // 00:00 on 26 Nov, Bangkok
+    expect(rows.filter((c) => c.direction === "th_en").map(iso)).toEqual(Array(5).fill("2026-11-26T17:00:00.000Z")); // 00:00 on 27 Nov
+    expect(rows.every((c) => c.createdAt.getTime() === NOW.getTime())).toBe(true);
+  });
+
+  it("the same in another zone (America/Los_Angeles): the next LOCAL midnight", async () => {
+    await db.update(profiles).set({ timezone: "America/Los_Angeles" }).where(eq(profiles.userId, userId));
+    ok(await complete(req(1))); // 02:00 on 25 Nov in Los Angeles
+    const rows = await cardRows();
+    expect(rows.filter((c) => c.direction === "en_th").map(iso)).toEqual(Array(5).fill("2026-11-26T08:00:00.000Z"));
+    expect(rows.filter((c) => c.direction === "th_en").map(iso)).toEqual(Array(5).fill("2026-11-27T08:00:00.000Z"));
+  });
+
+  it("finishing at 23:59 local and at 00:01 local gives different first-review days (the day the lesson was finished counts)", async () => {
+    const late = new Date("2026-11-25T16:59:00.000Z"); // 23:59 on 25 Nov, Bangkok
+    ok(await complete(req(1, late.toISOString()), late));
+    expect((await cardRows()).filter((c) => c.direction === "en_th").map(iso)).toEqual(Array(5).fill("2026-11-25T17:00:00.000Z"));
+    await cleanDatabase(sql);
+    userId = await seedLocal(db, 1);
+    const after = new Date("2026-11-25T17:01:00.000Z"); // 00:01 on 26 Nov
+    ok(await complete(req(1, after.toISOString()), after));
+    expect((await cardRows()).filter((c) => c.direction === "en_th").map(iso)).toEqual(Array(5).fill("2026-11-26T17:00:00.000Z"));
+  });
+
+  it("a second completion creates nothing and changes no card", async () => {
+    ok(await complete(req(1)));
+    const before = await cardRows();
+    const later = new Date(NOW.getTime() + 3 * 86_400_000);
+    ok(await complete(req(1, later.toISOString()), later));
+    expect(await cardRows()).toEqual(before);
+  });
+
+  it("a completion that is refused (locked day, missing lesson file) creates no card", async () => {
+    expect((await complete(req(2))).status).toBe(409);
+    await seedLocal(db, 8);
+    expect((await complete(req(8))).status).toBe(409);
+    expect(await cardRows()).toHaveLength(0);
+  });
+
+  it("day 2 adds only day 2's words, and the cards of day 1 are not touched", async () => {
+    ok(await complete(req(1)));
+    const day1 = await cardRows();
+    const t2 = new Date(NOW.getTime() + 86_400_000);
+    ok(await complete(req(2, t2.toISOString()), t2));
+    const all = await cardRows();
+    expect(all).toHaveLength(10 + 14); // day 2 teaches 7 words
+    for (const c of day1) expect(all).toContainEqual(c);
+  });
+
+  it("the response shape does not change (no cards in it)", async () => {
+    const body = ok(await complete(req(1)));
+    expect(Object.keys(body).sort()).toEqual(["currentDay", "progress", "streak"]);
+  });
+
+  it("a failure while creating the cards rolls the whole completion back", async () => {
+    // make inserting one of day 1's cards fail, as a broken database would
+    await sql`ALTER TABLE srs_cards ADD CONSTRAINT srs_cards_test_block CHECK (vocab_id <> 'v-cat')`;
+    try {
+      await expect(complete(req(1))).rejects.toThrow();
+      expect(await db.select().from(progress)).toHaveLength(0);
+      expect((await profile()).currentDay).toBe(1);
+      expect(await streak()).toBeUndefined();
+    } finally {
+      await sql`ALTER TABLE srs_cards DROP CONSTRAINT srs_cards_test_block`;
+    }
   });
 });

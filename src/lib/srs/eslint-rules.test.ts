@@ -93,3 +93,33 @@ describe("no clock inside src/lib/srs/**", () => {
     expect(await messages("export const t = Date.now();", "src/lib/server/clamp.ts", "no-restricted-syntax")).toEqual([]);
   });
 });
+
+describe("the review tables are reached only through src/db/queries/srs.ts", () => {
+  const value = 'import { srsCards } from "@/db/schema";\nexport const x = srsCards;';
+  it.each([
+    ["src/lib/srs/cards.ts", value],
+    ["src/lib/server/review-handler.ts", 'import { srsReviews } from "@/db/schema";\nexport const x = srsReviews;'],
+    ["src/app/(learn)/review/page.tsx", value],
+    ["src/db/queries/home.ts", 'import { srsCards } from "../schema";\nexport const x = srsCards;'],
+    ["src/db/queries/progress.ts", 'import { srsReviews, profiles } from "./schema";\nexport const x = [srsReviews, profiles];'],
+  ])("%s may not import a review table as a value", async (file, code) => {
+    const m = await messages(code, file, "no-restricted-imports");
+    expect(m).toHaveLength(1);
+    expect(m[0].message).toMatch(/queries\/srs/);
+  });
+  it.each([
+    "src/db/queries/srs.ts",
+    "src/db/schema.int.test.ts",
+    "src/lib/srs/cards.int.test.ts",
+  ])("%s may", async (file) => {
+    expect(await messages('import { srsCards, srsReviews } from "@/db/schema";\nexport const x = [srsCards, srsReviews];', file, "no-restricted-imports")).toEqual([]);
+  });
+  it("types of the tables and the other tables are fine everywhere", async () => {
+    expect(await messages('import type { srsCards } from "@/db/schema";\nexport type X = typeof srsCards;', "src/lib/srs/cards.ts", "no-restricted-imports")).toEqual([]);
+    expect(await messages('import { progress } from "@/db/schema";\nexport const x = progress;', "src/lib/srs/cards.ts", "no-restricted-imports")).toEqual([]);
+  });
+  it("the exempt files still cannot import ts-fsrs", async () => {
+    const m = await messages('import { DefaultScheduler } from "ts-fsrs";\nexport const x = 1;', "src/db/queries/srs.ts", "no-restricted-imports");
+    expect(m).toHaveLength(1);
+  });
+});
