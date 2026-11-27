@@ -62,11 +62,11 @@ describe("a finished session counts for the streak", () => {
     expect((await days()).map((d) => d.localDate)).toEqual(["2026-11-25"]);
   });
 
-  it("the same card reviewed again with Good afterwards: counted", async () => {
+  it("the same card reviewed again with Easy afterwards (a new card needs both learning steps with Good): counted", async () => {
     await reviewAll(4, DAY1.slice(0, 4));
     await review([reviewItem("v-cat", "en_th", 1, T1)]);
     expect((await complete()).countedForStreak).toBe(false);
-    await review([reviewItem("v-cat", "en_th", 3, new Date(T1.getTime() + 11 * 60_000))], new Date(T1.getTime() + 11 * 60_000));
+    await review([reviewItem("v-cat", "en_th", 4, new Date(T1.getTime() + 11 * 60_000))], new Date(T1.getTime() + 11 * 60_000));
     const r = await complete({}, new Date(T1.getTime() + 12 * 60_000));
     expect(r).toMatchObject({ remainingDue: 0, countedForStreak: true, reviewed: 6 });
     expect((await days()).find((d) => d.localDate === "2026-11-26")?.source).toBe("review");
@@ -101,11 +101,15 @@ describe("a finished session counts for the streak", () => {
     await reviewAll(4);
     const first = await complete();
     const rows = await days();
-    const streakRow = (await db.select().from(streaks).where(eq(streaks.userId, userId)))[0];
+    const streakNow = async () => {
+      const { current, longest, lastActiveDate } = (await db.select().from(streaks).where(eq(streaks.userId, userId)))[0];
+      return { current, longest, lastActiveDate };
+    };
+    const streakRow = await streakNow();
     expect(await complete()).toEqual(first);
     expect(await complete({ completedAt: new Date(T1.getTime() + 5000).toISOString() })).toEqual(first);
     expect(await days()).toEqual(rows);
-    expect((await db.select().from(streaks).where(eq(streaks.userId, userId)))[0]).toEqual(streakRow);
+    expect(await streakNow()).toEqual(streakRow);
   });
 
   it("a day counts once: a second session on the same day adds no row and does not raise the streak", async () => {
@@ -167,7 +171,7 @@ describe("which day, which cards", () => {
 
   it("uses the profile's time zone for the day", async () => {
     await db.update(profiles).set({ timezone: "America/Los_Angeles" }).where(eq(profiles.userId, userId));
-    await db.update(srsCards).set({ due: new Date("2026-11-25T00:00:00.000Z") });
+    await db.update(srsCards).set({ due: new Date("2026-11-25T00:00:00.000Z") }).where(eq(srsCards.direction, "en_th"));
     await reviewAll(4);
     expect(await complete()).toMatchObject({ sessionDate: "2026-11-25", countedForStreak: true }); // 21:00 on the 25th in Los Angeles
   });
@@ -178,6 +182,7 @@ describe("which day, which cards", () => {
     await db.insert(progress).values({ userId: "other", day: 1, status: "done", startedAt: NOW, completedAt: NOW, score: 1 });
     await reviewAll(4, DAY1, { sessionId: REVIEW_SESSION });
     await handlePostReviews({ reviews: [reviewItem("v-hello", "en_th", 4, T1)] }, { db, userId: "other", now: T1 });
+    await db.update(srsCards).set({ createdAt: NOW }).where(eq(srsCards.userId, "other")); // their cards existed before the session began
     expect(await complete()).toMatchObject({ reviewed: 5, countedForStreak: true });
     expect((await complete({}, T1, "other")).countedForStreak).toBe(false); // the other user still has 4 due
   });
