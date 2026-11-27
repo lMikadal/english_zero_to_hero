@@ -1,4 +1,5 @@
 // Client-safe: no node:* or src/db imports. Rule is documented in docs/CONTENT_SCHEMA.md.
+import { canonicalAnswer } from "./equivalents";
 
 /**
  * Strip zero-width characters (U+200B-U+200D, U+FEFF); map the apostrophe look-alikes ’ ‘ ʼ ´ ` to '
@@ -16,8 +17,11 @@ export function normalizeAnswer(s: string): string {
     .trim();
 }
 
-/** True when `input` equals one of `accepted` after normalising both. Empty input never matches. */
+/** The form two answers are compared in: normalised, then contractions and digits folded (equivalents.ts). */
+const comparable = (s: string): string => canonicalAnswer(normalizeAnswer(s));
+
+/** True when `input` equals one of `accepted` after normalising both and folding contractions and digits. Empty input never matches. */
 export function matchesAny(input: string, accepted: readonly string[]): boolean {
-  const n = normalizeAnswer(input);
-  return n !== "" && accepted.some((a) => normalizeAnswer(a) === n);
+  const n = comparable(input);
+  return n !== "" && accepted.some((a) => comparable(a) === n);
 }
