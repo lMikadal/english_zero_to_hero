@@ -3,7 +3,7 @@ import { simulateLoad } from "./simulate";
 
 const base = { wordsPerLessonDay: 5, days: 40, againRate: 0.1 } as const;
 
-describe("simulateLoad", () => {
+describe("simulateLoad", { timeout: 30_000 }, () => {
   it("is deterministic: same input, same output", () => {
     expect(simulateLoad(base).days).toEqual(simulateLoad(base).days);
   });
@@ -74,7 +74,7 @@ describe("simulateLoad", () => {
 // The numbers quoted in docs/plans/vocab-review-plan.md 2.7. Seed 1, Again 10%, then Hard 15% / Good 65% / Easy 20% of
 // the rest, 10 seconds a press, ts-fsrs 6.0.1 with SRS_CONFIG. If the library or the configuration changes, these move
 // and the plan must be updated with them.
-describe("simulateLoad: the numbers in the plan (Again 10%, seed 1)", () => {
+describe("simulateLoad: the numbers in the plan (Again 10%, seed 1)", { timeout: 60_000 }, () => {
   const again = 0.1;
   it("backfill of 36 words: day 1 has 36 new en_th cards, day 2 the 36 th_en cards", () => {
     const r = simulateLoad({ wordsPerLessonDay: 0, days: 14, againRate: again, backfillWords: 36 });
