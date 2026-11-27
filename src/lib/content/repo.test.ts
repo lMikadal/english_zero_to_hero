@@ -19,7 +19,9 @@ describe("getLesson", () => {
     expect(l?.sections.length).toBeGreaterThan(0);
   });
   it("returns null for a day without a file and for days out of range", () => {
-    expect(getLesson(365)).toBeNull();
+    const empty = fs.mkdtempSync(path.join(os.tmpdir(), "repo-"));
+    tmp.push(empty);
+    expect(getLesson(1, empty)).toBeNull(); // a day without a file (never a real day number: content/ grows to 365)
     expect(getLesson(0)).toBeNull();
     expect(getLesson(366)).toBeNull();
     expect(getLesson(1.5)).toBeNull();
