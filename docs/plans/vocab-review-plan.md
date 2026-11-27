@@ -74,7 +74,7 @@
 
 ### 2.2 "ถึงกำหนด" และเขตเวลา
 7. `today` = `localDate(now, tz)`, `endOfToday` = `localMidnight(addDays(today, 1), tz)` (ฟังก์ชันมีอยู่แล้วใน `src/lib/progress/dates.ts`)
-8. การ์ด **ถึงกำหนดวันนี้** เมื่อ `due < endOfToday` และคำนั้นอยู่ในชุดข้อ 2 ใช้นิยามเดียวทุกสถานะ (New/Learning/Review/Relearning) ทั้งการนับบนหน้า, คิว, และการตรวจที่ server เหตุผล: FSRS ให้ `due` เป็นเวลาแน่นอน (ทวน 20:00 ระยะ 1 วัน → ครบ 20:00 พรุ่งนี้) ถ้าใช้ `due <= now` ผู้เรียนที่ทวนตอนเช้าจะไม่เห็นคำของวันนั้น จึงใช้ขอบเที่ยงคืนท้องถิ่นแทน ทวนก่อนเวลาไม่กี่ชั่วโมง FSRS รองรับ (คำนวณจากเวลาที่ผ่านไปจริง)
+8. การ์ด **ถึงกำหนดวันนี้** เมื่อ `due < endOfToday` และคำนั้นอยู่ในชุดข้อ 2 ใช้นิยามเดียวทุกสถานะ (New/Learning/Review/Relearning) ทั้งการนับบนหน้า, คิว, และการตรวจที่ server เหตุผล: `due` เป็นเวลาแน่นอน (ทวน 20:00 ระยะ 1 วัน → ครบ 20:00 น. เวลาท้องถิ่นพรุ่งนี้) ถ้าใช้ `due <= now` ผู้เรียนที่ทวนตอนเช้าจะไม่เห็นคำของวันนั้น จึงใช้ขอบเที่ยงคืนท้องถิ่นแทน **การนับ "วัน" ของ FSRS ใช้วันปฏิทินท้องถิ่น** (ไม่ใช่ UTC และไม่ใช่ทุก 24 ชม.): `ts-fsrs` นับวันเป็นผลต่างของวันที่ปฏิทิน UTC ซึ่งสำหรับ Asia/Bangkok จะเปลี่ยนวันเวลา 07:00 (พิสูจน์ด้วย library จริง 2026-11-27: การ์ด Review ที่ทวนล่าสุด 12:00 แล้วทวนอีกครั้ง 06:30 เช้าวันถัดไป library เห็นเป็น 0 วัน ส่วน 07:30 เห็นเป็น 1 วัน) adapter จึงแปลงทุกเวลาเป็น "เวลานาฬิกาท้องถิ่นที่เขียนเป็น UTC" ก่อนเข้า library และแปลง `due` กลับ: ระยะเป็นนาที (ขั้นเรียน) = ระยะเวลาจริงเท่าเดิม, ระยะ ≥ 1 วัน = เวลานาฬิกาท้องถิ่นเดิมของวันที่ครบ (ข้าม DST ได้ เช่น 12:00 ยังเป็น 12:00) ดังนั้นการ์ดที่ทวนก่อนกำหนดไม่กี่ชั่วโมงในวันปฏิทินเดียวกับ `due` ถือว่าครบกำหนดตรงวัน และ `elapsed_days` ที่เก็บ = ผลต่างวันที่ปฏิทินท้องถิ่นที่ FSRS ใช้จริง (รีวิวที่ข้ามเที่ยงคืนท้องถิ่นระหว่างขั้นเรียนนับเป็น 1 วันตามนิยามเดียวกัน)
 9. นิยามนี้เป็นฟังก์ชันล้วน `isDueToday(due: Date, now: Date, tz: string)` ใน `src/lib/srs/queue.ts` ใช้ทั้งสองฝั่ง ข้ามเที่ยงคืนระหว่างทวน: คิวของ session ยึด `today` ตอนเริ่ม (ข้อ 2.4)
 
 ### 2.3 ลำดับและการวนซ้ำใน session
@@ -131,7 +131,7 @@
     | 8 (เฟส 1) | 5.7 | 61.0 (11.9) | **83.8** | **14.0 นาที** | 115 | 154.4, 25.7 นาที |
     | 11 (เฟส 2) | 7.9 | 82.8 (16.3) | **113.5** | **18.9 นาที** | 151 | 213.9, 35.7 นาที |
     ตัวเลขเดิมที่ประมาณไว้ (~50 ครั้งกด, 1.6 เท่า, 2 เท่า) ใกล้ของจริง (52.8 → 83.8 = 1.6 เท่า → 113.5 = 2.1 เท่า) ความไวต่ออัตราลืมสูง: ลืม 20% ทำให้งานเกือบ 2 เท่า
-30. ตัวเลขข้อ 28–29 พิสูจน์ด้วยเครื่องแล้ว ไม่ใช่การประมาณ: `simulateLoad({ wordsPerLessonDay, days, againRate, newWordDaysPerWeek, backfillWords, offDays, seed, secondsPerPress, timeZone })` ใน `src/lib/srs/simulate.ts` (ล้วน ผลคงที่) และ `simulate.test.ts` ตรึงค่า (วิ่ง 90 วันใช้เวลาหลายวินาทีต่อรอบ เทสต์จึงตั้ง timeout 30–60 วินาที)
+30. ตัวเลขข้อ 28–29 พิสูจน์ด้วยเครื่องแล้ว ไม่ใช่การประมาณ: `simulateLoad({ wordsPerLessonDay, days, againRate, newWordDaysPerWeek, backfillWords, offDays, seed, secondsPerPress, timeZone })` ใน `src/lib/srs/simulate.ts` (ล้วน ผลคงที่) และ `simulate.test.ts` ตรึงค่า (วิ่ง 90 วันใช้ ~0.5 วินาทีต่อรอบ เพราะคำนวณขอบเที่ยงคืนครั้งเดียวต่อวันด้วย `isDueBefore` ไม่ใช่ต่อการ์ด)
 31. **หยุดเรียน 7 วัน (วันที่ 61–67, ไม่ทวนและไม่เรียน, 5 คำ/บท):** วันกลับมาถึงกำหนด **155 ใบ = 198 ครั้งกด ≈ 33 นาที** (วันปกติช่วงนั้น 42 ใบ / 57 ครั้ง) แล้ววันถัดไป 39 / 52 / 26 / 39 ครั้งกด (จำไม่ได้ 20%: 227 ใบ, 335 ครั้ง ≈ 56 นาที) **ตัวเลข "250+ ใบ" ในแผนเดิมสูงเกินจริง** (การ์ดที่ถึงกำหนดช่วงหยุดมีแค่ราว 7 วัน × ~25 ใบ ที่เหลือยังไม่ถึงกำหนด) ไม่มีเพดาน (U10) จึงกองสะสม ผลต่อสตรีค: ทวนไม่ครบ = ไม่นับจากการทวน แต่จบบทยังนับ วิธีเพิ่มเพดานภายหลังแบบถูก: ค่า `MAX_NEW_PER_DAY` / `MAX_REVIEWS_PER_SESSION` ใน `orderQueue` **และ** นิยาม "ครบ" ในข้อ 16(ข) ต้องอ่านเพดานเดียวกัน (ฟังก์ชัน `sessionTarget(cards, limits)` ใช้ร่วม client/server) ไม่งั้นสตรีคจากการทวนจะเป็นไปไม่ได้ในวันที่เกินเพดาน
 
 ## 3. ข้อมูล (migration 0004)
@@ -188,12 +188,13 @@ export type CardState = {                                 // ชื่อตร�
   elapsedDays: number; reps: number; lapses: number; state: 0 | 1 | 2 | 3; lastReview: Date | null;
 };
 export function newCardState(due: Date): CardState;
-export function applyRating(card: CardState, rating: Rating, now: Date): CardState;     // review 1 ครั้ง
-export function previewRatings(card: CardState, now: Date): Record<Rating, CardState>; // ไม่เขียนอะไร
+export function applyRating(card: CardState, rating: Rating, now: Date, timeZone: string): CardState;     // review 1 ครั้ง
+export function previewRatings(card: CardState, now: Date, timeZone: string): Record<Rating, CardState>; // ไม่เขียนอะไร
 export function toStoredState(card: CardState): StoredCardState;                         // jsonb ข้อ 3.3
 ```
-- `previewRatings` เรียก `preview` ของ library ครั้งเดียว (ไม่เขียน) ระยะใต้ปุ่ม = `formatInterval(next.due - now)` ใน `src/lib/srs/format.ts`: < 60 นาที → "N นาที", < 24 ชม. → "N ชั่วโมง", < 31 วัน → "N วัน", < 365 วัน → "N เดือน", ไม่งั้น "N ปี" (ปัดเป็นจำนวนเต็มใกล้สุด ขั้นต่ำ 1)
-- `applyRating(card, r, now)` ต้อง **เท่ากับ** `previewRatings(card, now)[r]` ทุกกรณี (เทสต์) ปุ่มจึงไม่โกหก
+- `previewRatings` ไม่เขียนอะไร และ `applyRating` กับ `previewRatings` ผ่านฟังก์ชันภายในตัวเดียวกัน (`step`) จึงเท่ากันโดยโครงสร้าง ไม่ใช่แค่เทสต์; `timeZone` คือ `profiles.timezone` ระยะใต้ปุ่ม = `formatInterval(next.due - now)` ใน `src/lib/srs/format.ts`: < 60 นาที → "N นาที", < 24 ชม. → "N ชั่วโมง", < 31 วัน → "N วัน", < 365 วัน → "N เดือน", ไม่งั้น "N ปี" (ปัดเป็นจำนวนเต็มใกล้สุด ขั้นต่ำ 1)
+- `applyRating(card, r, now, tz)` **เท่ากับ** `previewRatings(card, now, tz)[r]` ทุกกรณี (โดยโครงสร้าง + เทสต์ในทุกเขตเวลา) ปุ่มจึงไม่โกหก ผู้เรียกทุกคน (server ตอนบันทึกรีวิว, client ตอนแสดงปุ่ม, `simulateLoad`) ต้องส่ง **เขตเวลาเดียวกัน** ของโปรไฟล์ ไม่งั้นผลของ client กับ server ต่างกัน
+- `isDueToday` คำนวณขอบเที่ยงคืนใหม่ทุกครั้ง (เรียก `Intl` เป็นร้อยครั้ง) คิวและตัวโหลดคิวต้องใช้ `endOfToday(now, tz)` ครั้งเดียวแล้ว `isDueBefore(due, end)` ต่อการ์ด
 - ไม่มีที่ใดใน `src/lib/srs/**` เรียก `Date.now()` หรือ `new Date()` ไม่มีอาร์กิวเมนต์ เวลาเข้ามาทางพารามิเตอร์เท่านั้น
 
 ### 4.3 การทดสอบความ deterministic
@@ -206,13 +207,20 @@ export function toStoredState(card: CardState): StoredCardState;                
 1. **ตั้งค่า (ข้อ 4.1.3) เป็นค่าจริงใน `src/lib/srs/config.ts`:** `algorithm "FSRS-6"`, `desiredRetention 0.9`, `enableShortTerm true`, `learningSteps ["1m","10m"]`, `relearningSteps ["10m"]`, `graduatingInterval 1`, `enableFuzz false`, `maximumInterval 36500`, `weights` = 21 ค่าเริ่มต้นของ FSRS-6 เขียนตรงๆ เทสต์ `scheduler.test.ts` ตรึงทั้ง `SRS_CONFIG` และค่าที่ library รันจริง (`effectiveLibraryConfig()`) และตรวจว่า weights ตรงกับ `FSRS6_DEFAULT_WEIGHTS` ของ library (อัปเกรดแล้วเปลี่ยน = ล้ม)
 2. **สร้าง scheduler แบบ sync ไม่ใช้ `DefaultScheduler`** (async) ด้วย `defineScheduler` + `ts-fsrs/models/fsrs-6` + `ts-fsrs/middlewares` เทสต์เทียบผลกับ golden ที่สร้างจาก `DefaultScheduler({version:"FSRS-6", ...})` จริง
 3. **`elapsedDays` คำนวณใน adapter** (library ไม่ให้แล้ว) `CardState` คงชื่อตามคอลัมน์ `srs_cards`; adapter แปลงชื่อ (`dueAt`, `lastReviewAt`, `learningStep`) ทั้งสองทาง และใส่ `cardId` ค่าคงที่กับ `scheduleStatus` ที่หาจาก `state`
-4. **แหล่งอ้างอิงภายนอก (ข้อ 4.3):** แพ็กเกจไม่มีไฟล์เทสต์ของ ts-fsrs และไม่ได้ดึงจาก GitHub จึงใช้ 2 ชั้นแทน: (ก) golden vectors ที่ `scripts/srs-golden.mjs` สร้างจาก library โดยตรง (ไม่ผ่าน adapter) 8 ลำดับ รวมการทวนก่อนกำหนด 8 ชั่วโมงและการลืมใน state Review และ (ข) `scheduler.fsrs6-oracle.test.ts` คำนวณจากสูตร FSRS-6 ที่เผยแพร่ + ค่า weights เริ่มต้น (stability/difficulty รีวิวแรก, สเต็ปเรียน, stability/ช่วงวันของการ์ด Review ทั้ง 4 คะแนน) โดยไม่ใช้ library **ยังไม่ได้เทียบกับ test vector ของ ts-fsrs เอง** (ทำเพิ่มได้ภายหลังถ้าต้องการ)
-5. **ปุ่มระยะ:** `ratingIntervalLabels(card, now)` อยู่ใน `format.ts` (ข้อความ 59 นาที→"1 ชั่วโมง" ปัดข้ามขอบ ไม่แสดง "60 นาที")
+4. **แหล่งอ้างอิงภายนอก (ข้อ 4.3):** แพ็กเกจไม่มีไฟล์เทสต์ของ ts-fsrs และไม่ได้ดึงจาก GitHub จึงใช้ 2 ชั้นแทน: (ก) golden vectors ที่ `scripts/srs-golden.mjs` สร้างจาก library โดยตรง (ไม่ผ่าน adapter) 14 ลำดับ (8 แบบ UTC และ 6 แบบเขตเวลา) รวมการทวนก่อนกำหนด 8 ชั่วโมงและการลืมใน state Review และ (ข) `scheduler.fsrs6-oracle.test.ts` คำนวณจากสูตร FSRS-6 ที่เผยแพร่ + ค่า weights เริ่มต้น (stability/difficulty รีวิวแรก, สเต็ปเรียน, stability/ช่วงวันของการ์ด Review ทั้ง 4 คะแนน) โดยไม่ใช้ library **ยังไม่ได้เทียบกับ test vector ของ ts-fsrs เอง** (ทำเพิ่มได้ภายหลังถ้าต้องการ)
+5. **ปุ่มระยะ:** `ratingIntervalLabels(card, now, timeZone)` อยู่ใน `format.ts` (59.7 นาที → "1 ชั่วโมง" ปัดข้ามขอบ ไม่แสดง "60 นาที"; 345–364 วัน = "12 เดือน" ตามกติกาน้อยกว่า 365 วันเป็นเดือน, 365 วันขึ้นไป = ปี)
 6. **ไฟล์เพิ่มเติมใน `queue.ts`:** `cardKey`, `endOfToday`, `separateSiblings` (ข้อ 11a, ใช้ทั้งใน `orderQueue` และ `requeue`), `sessionCounter(total, queue)`; `requeue` เป็น generic; `orderQueue(cards, teachOrder: ReadonlyMap<vocabId, ตำแหน่งในหลักสูตร>)`
 7. **contract:** `ParsedBatch<T>` ของรีวิวมีรูป `{ ok: true; id; value }` (ของ attempts ใช้ `attempt`); `getState()` ของ http-sink เพิ่ม `pendingReviews` (ฟิลด์บังคับ จึงต้องแก้ fake ใน `DayPlayer*.test.tsx`, `UnsavedNote.test.tsx` และเพิ่ม stub `sendReview`/`completeReview` ในทุก fake sink)
 8. **`client-safe.test.ts`:** กฎเดิมห้ามทั้ง `lib/progress/**` แต่ `queue.ts`/`initial.ts` ต้องใช้ `dates.ts` (→ `config` → `sources` → `types`) ซึ่งล้วนและไม่แตะ server จึงอนุญาตเฉพาะ 4 ไฟล์นี้ (ที่เหลือใน `lib/progress` ยังต้องห้าม มีเทสต์ของตัวตรวจ)
 9. **ESLint:** `no-restricted-imports` ห้าม `ts-fsrs` นอก `scheduler.ts` (ยกเว้น `scheduler*.test.ts` และ `scripts/srs-golden.mjs`) และต้องใส่ซ้ำในบล็อก `practice-*` เดิมเพราะบล็อกนั้นแทนที่กฎทั่วไป; `no-restricted-syntax` ห้าม `Date.now` และ `new Date()` ไม่มีอาร์กิวเมนต์ใน `src/lib/srs/**` เทสต์ `eslint-rules.test.ts` รัน ESLint จริงกับโค้ดตัวอย่าง จึงทดแทนขั้น "ลองใส่แล้ว `make lint` ต้องล้ม" อัตโนมัติ
 10. **ข้อ 6.1 "ลองเพิ่ม `speak` ใน `REVIEW_DIRECTIONS`":** ทดลองจริง typecheck ล้มที่ `DIRECTION_LABEL_TH`, `initialDues` (2 จุด) และ type test ของ contract
+11. **เขตเวลา (รีวิวหลัง PR 1):** ดูข้อ 2.2 ข้อ 8 — `applyRating`/`previewRatings`/`ratingIntervalLabels` รับ `timeZone`; `zone.ts` มี `toLocalWall`/`fromLocalWall`/`offsetMs`; golden vectors มี 14 ลำดับ รวม Bangkok (06:30 และ 23:30 ท้องถิ่น), Los Angeles ข้าม DST (มีนาคม และ ตุลาคม–พฤศจิกายน), Auckland (UTC+13); oracle ใน `scheduler.fsrs6-oracle.test.ts` ตรวจสูตร FSRS-6 ที่ t ≠ S, การอัปเดต difficulty, สูตร short-term (w17–w19) และเพดานต่างๆ: ผลลัพธ์ของรีวิวระยะสั้นในวันเดียวกัน **Hard ก็ถูกจำกัดไม่ให้ต่ำกว่า S เดิม (G ≥ 2)** ไม่ใช่เฉพาะ Good/Easy ตามที่เขียนไว้ตอนแรก
+12. **ESLint:** `eslint-rules.test.ts` เดินทุก config block ที่ตั้ง `no-restricted-imports` และต้องมี pattern `ts-fsrs` (flat config: block ท้ายแทนที่ค่าของ block ก่อนหน้า) glob ครอบ `.js/.jsx/.cjs/.mjs/.ts/.tsx/.mts/.cts`
+13. **เรื่องที่ PR ถัดไปต้องทำ (บันทึกไว้ ยังไม่ทำ):**
+    - PR 3: `fromStoredState(json)` (ตรงข้ามกับ `toStoredState`) พร้อมเทสต์ round-trip และบีบชนิดคอลัมน์ `state` ของ `srs_cards` จาก `number` เป็น `0 | 1 | 2 | 3` ตอนอ่านจาก DB (ตอนนี้ `schema.ts` ประกาศเป็น `smallint` ธรรมดา)
+    - PR 4: `UnsavedNote` ต้องแสดงข้อความของบทเรียนก็ต่อเมื่อมี attempt ค้าง ถ้ามีแต่รีวิวค้าง (`pendingReviews > 0`, `pendingAttempts === 0`) ต้องใช้ถ้อยคำของการทวนคำศัพท์ (ตอนนี้ดู `pendingAttempts` อย่างเดียว)
+    - PR 2: `separateSiblings` อาจเลื่อนการ์ดใหม่ขึ้นมาก่อนการ์ดทวน (ข้อ 11a อนุญาต เพราะเรียงใหม่เฉพาะเมื่อคู่ชนกัน) เพิ่มเทสต์ "คิวที่ถูกต้องอยู่แล้วต้องไม่เปลี่ยน" ที่ระดับ `loadReviewQueue`
+    - เอกสาร: แพ็กเกจ `@open-spaced-repetition/srs-kit` เป็น BSD-3-Clause อยู่ใน `docs/THIRD_PARTY.md` แล้ว
 
 ## 5. สัญญาที่ใช้ร่วมกัน
 
