@@ -4,7 +4,7 @@ import type { HttpSink, SinkState } from "@/lib/offline/http-sink";
 import { UnsavedGuard, UnsavedNote } from "./UnsavedNote";
 
 function fakeSink(initial: Partial<SinkState> = {}) {
-  let state: SinkState = { pending: 0, pendingAttempts: 0, status: "idle", ...initial };
+  let state: SinkState = { pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle", ...initial };
   const listeners = new Set<() => void>();
   const sink = {
     getState: () => state,

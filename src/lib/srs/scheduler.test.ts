@@ -61,7 +61,8 @@ describe("ratings", () => {
   });
   it("every rating has a Thai label (Record: a missing one is a compile error)", () => {
     expect(RATING_LABEL_TH).toEqual({ 1: "จำไม่ได้", 2: "ยาก", 3: "ได้", 4: "ง่าย" });
-    expectTypeOf(RATING_LABEL_TH).toEqualTypeOf<Record<Rating, string>>();
+    expectTypeOf<keyof typeof RATING_LABEL_TH>().toEqualTypeOf<Rating>();
+    expectTypeOf(RATING_LABEL_TH).toExtend<Record<Rating, string>>();
   });
   it("CardState.state values are the library's State values", () => {
     expect([LibState.New, LibState.Learning, LibState.Review, LibState.Relearning]).toEqual([0, 1, 2, 3]);
