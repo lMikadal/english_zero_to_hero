@@ -20,7 +20,7 @@ afterEach(() => fs.rmSync(tmp, { recursive: true, force: true }));
 
 function run(file: string, args: string[], env: Record<string, string> = {}) {
   const r = spawnSync("sh", [script(file), ...args], {
-    env: { PATH: process.env.PATH ?? "", ...env },
+    env: { PATH: process.env.PATH ?? "", ...env } as unknown as NodeJS.ProcessEnv,
     encoding: "utf8",
   });
   return { code: r.status, out: r.stdout, err: r.stderr };
