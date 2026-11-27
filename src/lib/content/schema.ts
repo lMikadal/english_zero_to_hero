@@ -17,7 +17,8 @@ export const TOPICS = [
 const text = z.string().refine((s) => s.length > 0 && s.trim() === s, "must not be empty or have leading/trailing whitespace");
 const thai = text.refine((s) => /[\u0E00-\u0E7F]/.test(s), "must contain Thai characters");
 const bilingual = z.strictObject({ en: text, th: thai });
-const vocabId = z.string().regex(/^v-[a-z0-9]+(-[a-z0-9]+)*$/, "vocab id must look like v-word or v-word-pos");
+export const VOCAB_ID_PATTERN = /^v-[a-z0-9]+(-[a-z0-9]+)*$/;
+const vocabId = z.string().regex(VOCAB_ID_PATTERN, "vocab id must look like v-word or v-word-pos");
 /** `dXXX-<skill>-NN`; also used by the attempts API contract. */
 export const EXERCISE_ID_PATTERN = /^d\d{3}-(pron|listen|speak|read|write|vocab)-\d{2}$/;
 const exerciseId = z.string().regex(EXERCISE_ID_PATTERN, "exercise id must look like dXXX-<skill>-NN, skill = pron|listen|speak|read|write|vocab");

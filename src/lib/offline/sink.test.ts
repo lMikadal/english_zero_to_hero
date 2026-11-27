@@ -1,5 +1,6 @@
 import { expect, expectTypeOf, it } from "vitest";
 import type { AttemptInput, CompleteLessonRequest, CompleteLessonResponse, CompletePracticeRequest, CompletePracticeResponse } from "@/lib/attempts/contract";
+import type { CompleteReviewRequest, CompleteReviewResponse, ReviewInput } from "@/lib/srs/contract";
 import type { CompleteResult, SyncSink } from "./sink";
 
 it("SyncSink has the documented shape and can be faked", async () => {
@@ -10,6 +11,10 @@ it("SyncSink has the documented shape and can be faked", async () => {
   expectTypeOf<SyncSink["completePractice"]>().toEqualTypeOf<
     (c: CompletePracticeRequest) => Promise<CompleteResult<CompletePracticeResponse>>
   >();
+  expectTypeOf<SyncSink["sendReview"]>().toEqualTypeOf<(r: ReviewInput) => void>();
+  expectTypeOf<SyncSink["completeReview"]>().toEqualTypeOf<
+    (c: CompleteReviewRequest) => Promise<CompleteResult<CompleteReviewResponse>>
+  >();
   expectTypeOf<SyncSink["pendingCount"]>().toEqualTypeOf<() => number>();
   expectTypeOf<SyncSink["subscribe"]>().toEqualTypeOf<(cb: () => void) => () => void>();
 
@@ -18,6 +23,8 @@ it("SyncSink has the documented shape and can be faked", async () => {
     sendAttempt: (a) => void sent.push(a),
     completeLesson: async () => ({ status: "queued" }),
     completePractice: async () => ({ status: "queued" }),
+    sendReview: () => {},
+    completeReview: async () => ({ status: "queued" }),
     pendingCount: () => sent.length,
     subscribe: () => () => {},
   };
