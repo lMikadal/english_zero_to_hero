@@ -18,7 +18,32 @@ export const HETERONYMS: readonly string[] = [
 
 /** Symbols written between slashes, e.g. "/ɔː/". A slash must start the symbol (so "and/or/not" and "am / is / are" are not symbols). */
 export function namedIpaSymbols(text: string): string[] {
-  return [...text.matchAll(/(?<![\p{L}\p{N}])\/([^\s/]+)\//gu)].map((m) => m[1]);
+  return [...text.matchAll(/(?<![A-Za-z0-9])\/([^\s/\u0E00-\u0E7F]+)\//g)].map((m) => m[1]);
+}
+
+/** Phonemes longest first, so "tʃ" is one phoneme and "aɪ" is not "a" + "ɪ". Stress and length marks are not phonemes. */
+const PHONEMES = ["tʃ", "dʒ", "eɪ", "aɪ", "ɔɪ", "aʊ", "oʊ", "əʊ", "ɪə", "eə", "ʊə", "iː", "uː", "ɔː", "ɜː", "ɑː", "æː"];
+export function ipaTokens(ipa: string): string[] {
+  const chars = [...ipa.replace(/[\/ˈˌ.\s]/g, "")];
+  const out: string[] = [];
+  for (let i = 0; i < chars.length; ) {
+    const two = chars[i] + (chars[i + 1] ?? "");
+    if (PHONEMES.includes(two)) {
+      out.push(two);
+      i += 2;
+    } else {
+      out.push(chars[i]);
+      i += 1;
+    }
+  }
+  return out;
+}
+
+/** True when `symbol` (one or more phonemes) occurs in `ipa` as whole phonemes. */
+export function ipaContains(ipa: string, symbol: string): boolean {
+  const hay = ipa.split(/\s+/).map(ipaTokens);
+  const needle = ipaTokens(symbol);
+  return hay.some((word) => word.some((_, i) => needle.every((n, k) => word[i + k] === n)));
 }
 
 const words = (s: string) => s.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w));
@@ -49,7 +74,7 @@ export function checkPronunciation(ctx: RuleContext): Problem[] {
         }
         for (const sym of symbolsToCheck(ex)) {
           const own = ownIpa(ex, ipaByWord);
-          if (!own.includes(sym)) {
+          if (!ipaContains(own, sym)) {
             add(`the instruction names /${sym}/ but ${own ? `the item's ipa "${own.trim()}" does not contain it` : "the item has no ipa to check it against"}. Practise the sound in an item whose ipa contains it, or change the instruction.`);
           }
         }
