@@ -71,6 +71,11 @@ export function getVocabLookup(ids: readonly string[], root = defaultRoot()): Vo
   return out;
 }
 
+/** The whole vocabulary entry (word, IPA for both accents, Thai, examples), or null when the id is not in the bank. */
+export function getVocabEntry(id: string, root = defaultRoot()): VocabItem | null {
+  return vocabIndex(root).get(id) ?? null;
+}
+
 const taught = new Map<string, ReadonlyMap<string, string>>();
 
 /**

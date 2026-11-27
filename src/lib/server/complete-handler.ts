@@ -12,6 +12,7 @@ import { withTransactionRetry } from "@/db/queries/tx";
 import { completeLessonRequestSchema, type CompleteLessonResponse } from "@/lib/attempts/contract";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
 import { getLesson } from "@/lib/content/repo";
+import { reconcileCards } from "@/lib/srs/cards";
 import { localDate, resolveTimeZone } from "@/lib/progress/dates";
 import type { HandlerDeps, HandlerResult } from "./attempts-handler";
 import { clampTimestamp, timestampFloor } from "./clamp";
@@ -56,6 +57,8 @@ export async function handleCompleteLesson(body: unknown, { db, userId, now }: H
     const done = await finishProgress(tx, userId, day, completedAt, score);
     const streak = await touchStreak(tx, userId, localDate(completedAt, tz));
     const currentDay = await advanceCurrentDay(tx, userId, day);
+    // the lesson's words become review cards in the same transaction (docs/plans/vocab-review-plan.md 2.1); not reported in the response
+    await reconcileCards(tx, userId, now, tz, { completed: { day, completedAt } });
     return { progress: { day, status: "done", score: done.score, completedAt: done.completedAt!.toISOString() }, streak, currentDay };
   });
 

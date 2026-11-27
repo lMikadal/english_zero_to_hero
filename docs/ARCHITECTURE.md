@@ -192,15 +192,16 @@ attempts       id uuid PK (สร้างฝั่ง client เพื่อก
                INDEX(user_id, created_at), INDEX(user_id, exercise_id), INDEX(user_id, skill, created_at), INDEX(user_id, source, created_at), INDEX(user_id, day), INDEX(user_id, session_id), GIN(tags)
 srs_cards      user_id, vocab_id text, direction text(en_th|th_en|listen_spell|speak),
                due timestamptz, stability double, difficulty double, scheduled_days int, learning_steps smallint, elapsed_days int,
-               reps int, lapses int, state smallint, last_review timestamptz, updated_at
+               reps int, lapses int, state smallint, last_review timestamptz, created_at, updated_at
                PK(user_id, vocab_id, direction), INDEX(user_id, due)
 srs_reviews    id uuid PK (สร้างฝั่ง client), user_id, vocab_id text, direction text, rating smallint(1..4), reviewed_at timestamptz,
-               duration_ms int, state_before jsonb, state_after jsonb, created_at timestamptz
-               INDEX(user_id, reviewed_at), INDEX(user_id, vocab_id, direction, reviewed_at)
+               duration_ms int, state_before jsonb, state_after jsonb, session_id uuid, created_at timestamptz
+               INDEX(user_id, reviewed_at), INDEX(user_id, vocab_id, direction, reviewed_at), INDEX(user_id, session_id),
+               FK(user_id, vocab_id, direction) -> srs_cards ON DELETE CASCADE
 recordings     id uuid PK, user_id, exercise_id text, day int, tags text[], object_key text, pron_score jsonb, created_at timestamptz
 streaks        user_id PK, current int, longest int, last_active_date date, freezes_left int, updated_at
                (คำนวณใหม่จาก activity_days ทุกครั้งที่ touchStreak: current = ช่วงวันติดกันที่จบที่วันล่าสุดที่มีกิจกรรม, ไม่ขึ้นกับลำดับที่ข้อมูลมาถึง)
-activity_days  user_id FK cascade, local_date date, source text default 'lesson' CHECK(lesson|practice), PK(user_id, local_date)  -- หนึ่งแถวต่อวันปฏิทินท้องถิ่นที่มีกิจกรรม (จบบท, เล่นบทเดิมซ้ำทั้งบทจนจบ = practice; SRS จะเพิ่มทีหลัง) source เป็นของกิจกรรมแรกของวัน
+activity_days  user_id FK cascade, local_date date, source text default 'lesson' CHECK(lesson|practice|review), PK(user_id, local_date)  -- หนึ่งแถวต่อวันปฏิทินท้องถิ่นที่มีกิจกรรม (จบบท, เล่นบทเดิมซ้ำทั้งบทจนจบ = practice; ทวนคำศัพท์ครบ = review) source เป็นของกิจกรรมแรกของวัน
 push_subscriptions  id uuid PK, user_id, endpoint text UNIQUE, p256dh text, auth text, created_at timestamptz
 reminder_settings   user_id PK, enabled bool, remind_at time, types text[], updated_at
 ```
@@ -219,8 +220,8 @@ reminder_settings   user_id PK, enabled bool, remind_at time, types text[], upda
 - `profiles`: `display_name` nullable, `start_date` NOT NULL ไม่มี default (ผู้เรียนเลือกตอน onboarding), `current_day` default 1 + CHECK 1..365, `timezone` NOT NULL default `Asia/Bangkok`, `accent` NOT NULL default `us`
 - `progress`: `status` default `not_started`; `score`, `started_at`, `completed_at` nullable; CHECK `day` 1..365; CHECK `status = 'done'` ต้องมี `completed_at` (ไม่ได้ CHECK ช่วงของ `score` เพราะยังไม่ได้กำหนดสเกล)
 - `attempts`: `id` default `gen_random_uuid()` (client ส่ง id มาเองได้); NOT NULL: `day` (CHECK 1..365), `skill`, `exercise_type`, `correct`; `tags` default `{}` (รายการสิ่งที่ข้อนี้ฝึก เช่น `phoneme:ae`, `vocab:v-cat` ดู [PROGRESS.md](PROGRESS.md)); `source` default `lesson`; `duration_ms` nullable + CHECK >= 0; `session_id`, `score`, `answer` nullable
-- `srs_cards`: `due` default `now()` (การ์ดใหม่ถึงกำหนดทันที), `stability`/`difficulty` NOT NULL default 0, `scheduled_days`/`learning_steps`/`elapsed_days`/`reps`/`lapses` default 0 + CHECK >= 0 (ฟิลด์ของ ts-fsrs), `state` default 0 + CHECK 0..3 (New/Learning/Review/Relearning), `last_review` nullable
-- `srs_reviews`: 1 แถวต่อการทบทวน 1 ครั้ง `id` default `gen_random_uuid()` (client ส่งมาเองได้), `rating` CHECK 1..4, `reviewed_at` NOT NULL ไม่มี default, `state_after` NOT NULL, `state_before` และ `duration_ms` nullable (+ CHECK >= 0)
+- `srs_cards`: `due` default `now()` (การ์ดใหม่ถึงกำหนดทันที), `stability`/`difficulty` NOT NULL default 0, `scheduled_days`/`learning_steps`/`elapsed_days`/`reps`/`lapses` default 0 + CHECK >= 0 (ชื่อคอลัมน์ตามการ์ด FSRS ของเรา ไม่ใช่ object ของ library), CHECK `stability`/`difficulty` >= 0, `state` default 0 + CHECK 0..3 (New/Learning/Review/Relearning, ชนิด TypeScript `0|1|2|3`), `last_review` nullable, `created_at` NOT NULL default `now()` (migration 0004)
+- `srs_reviews`: 1 แถวต่อการทบทวน 1 ครั้ง `id` default `gen_random_uuid()` (client ส่งมาเองได้), `rating` CHECK 1..4, `reviewed_at` NOT NULL ไม่มี default, `state_after` NOT NULL, `state_before` และ `duration_ms` nullable (+ CHECK >= 0), `session_id` uuid nullable + index `(user_id, session_id)`, FK `(user_id, vocab_id, direction)` → `srs_cards` ON DELETE CASCADE (รีวิวต้องมีการ์ด; migration 0004)
 - `recordings`: `id` default `gen_random_uuid()`; `object_key` NOT NULL; `pron_score` nullable (ยังไม่ได้ให้คะแนน); `day` nullable + CHECK 1..365; `tags` default `{}`
 - `streaks`: `current`/`longest`/`freezes_left` NOT NULL default 0 + CHECK >= 0; `last_active_date` nullable
 - `push_subscriptions`: `id` default `gen_random_uuid()`; `p256dh`, `auth` NOT NULL
@@ -243,7 +244,7 @@ reminder_settings   user_id PK, enabled bool, remind_at time, types text[], upda
 4c. ปุ่มล่างของ player: feedback (live region เดียวที่ mount ตลอด) กับปุ่ม "ถัดไป" อยู่ใน action bar แบบ `sticky bottom-0` พื้นทึบ มีเส้นขอบบนและ `safe-area-inset-bottom` รายการ "คำตอบที่ถูกต้อง" ยาวจะเลื่อนในแถบ (`max-h-[30dvh]`) ไม่ดันปุ่มออกนอกจอ ส่วนปุ่ม "ตรวจคำตอบ" เป็นของ component อยู่ในเนื้อหา
 4d. `GET /api/health` ตอบ `{ "ok": true }` โดยไม่แตะฐานข้อมูลและไม่สร้างผู้เรียน ใช้เป็น healthcheck ของ compose (dev) และ `HEALTHCHECK` ใน Dockerfile (prod); `/` ไม่ใช้เป็น healthcheck เพราะทุกครั้งที่เรียกจะเขียน seed ผู้เรียน
 4e. หนึ่ง request อ่านโปรไฟล์ครั้งเดียว: layout (accent) และหน้า (current day) ใช้ `getLearnerProfile()` ที่ห่อด้วย React `cache()`
-5. ยังไม่ทำ: เพิ่มคำศัพท์เข้า `srs_cards` (รอ SRS), ไฟล์เสียงจริง (ตอนนี้ใช้ `speechSynthesis` ของอุปกรณ์), การอัดเสียง, หน้าสรุปหลังบท, คิว IndexedDB/service worker (PWA)
+5. การ์ดทวนคำศัพท์เกิดเมื่อจบบท (`reconcileCards` ใน transaction เดียวกับ `POST /api/lessons/complete`, ไม่มีใน response) และตอนโหลดคิวทวน (backfill/ซ่อม) ยังไม่ทำ: ไฟล์เสียงจริง (ตอนนี้ใช้ `speechSynthesis` ของอุปกรณ์), การอัดเสียง, หน้าสรุปหลังบท, คิว IndexedDB/service worker (PWA)
 
 ### 5.1 API contract (Milestone 1)
 

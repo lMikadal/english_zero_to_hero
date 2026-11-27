@@ -6,12 +6,26 @@ import nextTs from "eslint-config-next/typescript";
 // Its own tests and the golden-vector generator may import the library to compare against it.
 const TS_FSRS_ONLY_IN_ADAPTER = { group: ["ts-fsrs", "ts-fsrs/*"], message: "Only src/lib/srs/scheduler.ts imports ts-fsrs; use its applyRating / previewRatings." };
 
+// The review tables are reached through ONE module (docs/plans/vocab-review-plan.md 5.4): other code asks it, and cannot
+// bypass it (e.g. a review written without its card, or a due date computed outside initialDues).
+const SRS_TABLES_ONLY_IN_QUERIES = {
+  group: ["@/db/schema", "**/db/schema", "./schema", "../schema"],
+  importNames: ["srsCards", "srsReviews"],
+  allowTypeImports: true,
+  message: "Use the functions in src/db/queries/srs.ts; only that module imports srsCards / srsReviews as values.",
+};
+
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
   {
     files: ["**/*.{js,jsx,cjs,mjs,ts,tsx,mts,cts}"],
     ignores: ["src/lib/srs/scheduler.ts", "src/lib/srs/scheduler.*.test.ts", "src/lib/srs/scheduler.test.ts", "scripts/srs-golden.mjs"],
+    rules: { "no-restricted-imports": ["error", { patterns: [TS_FSRS_ONLY_IN_ADAPTER, SRS_TABLES_ONLY_IN_QUERIES] }] },
+  },
+  {
+    // the query module itself, the schema, the Drizzle wiring (namespace import) and integration tests that inspect rows may import the tables (the ts-fsrs ban stays)
+    files: ["src/db/queries/srs.ts", "src/db/schema.ts", "src/db/client.ts", "src/db/test-utils.ts", "src/**/*.int.test.ts"],
     rules: { "no-restricted-imports": ["error", { patterns: [TS_FSRS_ONLY_IN_ADAPTER] }] },
   },
   {

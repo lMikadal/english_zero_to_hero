@@ -36,6 +36,11 @@ function reviewRow(userId: string, over: Partial<typeof srsReviews.$inferInsert>
   return { userId, vocabId: "w-hello", direction: "en_th", rating: 3, reviewedAt: new Date(), stateAfter: { due: "2026-01-02" }, ...over };
 }
 
+/** A review needs its card (FK srs_reviews -> srs_cards): create the card the default reviewRow points at. */
+async function newCard(userId: string, vocabId = "w-hello", direction: "en_th" | "th_en" = "en_th") {
+  await db.insert(srsCards).values({ userId, vocabId, direction }).onConflictDoNothing();
+}
+
 async function indexDefs(table: string): Promise<string[]> {
   const rows = await sql`SELECT indexdef FROM pg_indexes WHERE schemaname = 'public' AND tablename = ${table}`;
   return rows.map((r) => r.indexdef as string);
@@ -230,10 +235,25 @@ describe("srs_cards", () => {
     const base = { userId: id, vocabId: "w", direction: "speak" } as const;
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, reps: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, lapses: -1 }))).toBe(CHECK);
-    expect(await pgErrorCode(db.insert(srsCards).values({ ...base, state: 4 }))).toBe(CHECK);
+    // the TypeScript type is 0 | 1 | 2 | 3, so a state out of range can only be written with raw SQL (the CHECK still guards it)
+    expect(await pgErrorCode(db.execute(dsql`INSERT INTO srs_cards (user_id, vocab_id, direction, state) VALUES (${id}, 'w', 'speak', 4)`))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, scheduledDays: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, learningSteps: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, elapsedDays: -1 }))).toBe(CHECK);
+    expect(await pgErrorCode(db.insert(srsCards).values({ ...base, stability: -0.5 }))).toBe(CHECK);
+    expect(await pgErrorCode(db.insert(srsCards).values({ ...base, difficulty: -0.5 }))).toBe(CHECK);
+  });
+
+  it("created_at has a default (now), is NOT NULL, and is not changed by updates", async () => {
+    const id = await newUser();
+    const before = Date.now();
+    const [c] = await db.insert(srsCards).values({ userId: id, vocabId: "w", direction: "en_th" }).returning();
+    expect(c.createdAt).toBeInstanceOf(Date);
+    expect(Math.abs(c.createdAt.getTime() - before)).toBeLessThan(60_000);
+    const explicit = new Date("2026-01-01T00:00:00.000Z");
+    const [d] = await db.insert(srsCards).values({ userId: id, vocabId: "w2", direction: "en_th", createdAt: explicit }).returning();
+    expect(d.createdAt).toEqual(explicit);
+    expect(await pgErrorCode(db.execute(dsql`UPDATE srs_cards SET created_at = NULL WHERE vocab_id = 'w'`))).toBe(NOT_NULL);
   });
 
   it("has an index on (user_id, due)", async () => {
@@ -245,6 +265,7 @@ describe("srs_cards", () => {
 describe("srs_reviews", () => {
   it("rejects a duplicate id, and an idempotent upsert leaves one row", async () => {
     const id = await newUser();
+    await newCard(id);
     const row = { ...reviewRow(id), id: randomUUID() };
     await db.insert(srsReviews).values(row);
     expect(await pgErrorCode(db.insert(srsReviews).values(row))).toBe(UNIQUE);
@@ -254,6 +275,7 @@ describe("srs_reviews", () => {
 
   it("defaults id and stores before/after state and duration", async () => {
     const id = await newUser();
+    await newCard(id);
     const [r] = await db.insert(srsReviews).values(reviewRow(id, { stateBefore: { s: 1 }, durationMs: 800 })).returning();
     expect(r.id).toMatch(/^[0-9a-f-]{36}$/);
     expect(r.stateBefore).toEqual({ s: 1 });
@@ -263,6 +285,7 @@ describe("srs_reviews", () => {
 
   it("validates rating 1..4, direction, duration and required columns", async () => {
     const id = await newUser();
+    await newCard(id);
     expect(await pgErrorCode(db.insert(srsReviews).values(reviewRow(id, { rating: 0 })))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsReviews).values(reviewRow(id, { rating: 5 })))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsReviews).values(reviewRow(id, { durationMs: -5 })))).toBe(CHECK);
@@ -271,10 +294,41 @@ describe("srs_reviews", () => {
     for (const rating of [1, 2, 3, 4]) await db.insert(srsReviews).values(reviewRow(id, { rating }));
   });
 
-  it("has its two indexes", async () => {
+  it("has its indexes, including (user_id, session_id)", async () => {
     const defs = await indexDefs("srs_reviews");
     expect(defs.some((d) => /\(user_id, reviewed_at\)/.test(d))).toBe(true);
     expect(defs.some((d) => /\(user_id, vocab_id, direction, reviewed_at\)/.test(d))).toBe(true);
+    expect(defs.some((d) => /\(user_id, session_id\)/.test(d))).toBe(true);
+  });
+
+  it("a review without its card is rejected (FK on user, word and direction), and the direction must be the card's", async () => {
+    const id = await newUser();
+    expect(await pgErrorCode(db.insert(srsReviews).values(reviewRow(id)))).toBe(FK);
+    await newCard(id, "w-hello", "en_th");
+    expect(await pgErrorCode(db.insert(srsReviews).values(reviewRow(id, { direction: "th_en" })))).toBe(FK);
+    expect(await pgErrorCode(db.insert(srsReviews).values(reviewRow(id, { vocabId: "w-other" })))).toBe(FK);
+    await db.insert(srsReviews).values(reviewRow(id));
+    await newCard(id, "w-hello", "th_en");
+    await db.insert(srsReviews).values(reviewRow(id, { direction: "th_en" }));
+  });
+
+  it("another user's card does not satisfy the FK", async () => {
+    const a = await newUser("a");
+    const b = await newUser("b");
+    await newCard(a);
+    expect(await pgErrorCode(db.insert(srsReviews).values(reviewRow(b)))).toBe(FK);
+  });
+
+  it("deleting a card deletes its reviews; session_id is optional and stored", async () => {
+    const id = await newUser();
+    await newCard(id);
+    const session = randomUUID();
+    const [r] = await db.insert(srsReviews).values(reviewRow(id, { sessionId: session })).returning();
+    expect(r.sessionId).toBe(session);
+    const [noSession] = await db.insert(srsReviews).values(reviewRow(id)).returning();
+    expect(noSession.sessionId).toBeNull();
+    await db.delete(srsCards).where(eq(srsCards.userId, id));
+    expect(await db.select().from(srsReviews)).toHaveLength(0);
   });
 });
 
@@ -344,7 +398,7 @@ describe("ON DELETE CASCADE", () => {
       await db.insert(progress).values({ userId: u, day: 1 });
       await db.insert(attempts).values(attemptRow(u));
       await db.insert(srsCards).values({ userId: u, vocabId: "w", direction: "en_th" });
-      await db.insert(srsReviews).values(reviewRow(u));
+      await db.insert(srsReviews).values(reviewRow(u, { vocabId: "w" }));
       await db.insert(recordings).values({ userId: u, exerciseId: "e", objectKey: `k-${u}` });
       await db.insert(streaks).values({ userId: u });
       await db.insert(pushSubscriptions).values({ userId: u, endpoint: `e-${u}`, p256dh: "p", auth: "a" });
@@ -376,6 +430,8 @@ describe("activity_days", () => {
     await db.insert(activityDays).values({ userId: id, localDate: "2026-11-26", source: "practice" });
     const rows = await db.select().from(activityDays).orderBy(activityDays.localDate);
     expect(rows.map((r) => [r.localDate, r.source])).toEqual([["2026-11-25", "lesson"], ["2026-11-26", "practice"]]);
+    await db.insert(activityDays).values({ userId: id, localDate: "2026-11-28", source: "review" });
+    expect((await db.select().from(activityDays).where(eq(activityDays.localDate, "2026-11-28")))[0].source).toBe("review");
     expect(await pgErrorCode(db.execute(dsql`INSERT INTO activity_days (user_id, local_date, source) VALUES (${id}, '2026-11-27', 'foo')`))).toBe(CHECK);
     expect(await pgErrorCode(db.execute(dsql`INSERT INTO activity_days (user_id, local_date, source) VALUES (${id}, '2026-11-27', 'srs')`))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(activityDays).values({ userId: "nobody", localDate: "2026-11-25" }))).toBe(FK);

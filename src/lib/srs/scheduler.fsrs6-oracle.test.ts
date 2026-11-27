@@ -190,3 +190,43 @@ describe("same-day review (short-term formula, w17..w19) and the graduation clam
   });
 });
 
+
+// A Learning or Relearning card that comes back after a day or more (more than the same-session limit): the long-term
+// formulas apply to it just like to a Review card. This path had no independent check before.
+describe("Learning and Relearning cards seen again at least one local day later (long-term formulas)", () => {
+  const cases = [
+    [1, 2.3065, 2.1181, 1],
+    [1, 2.3065, 2.1181, 3],
+    [1, 0.5, 6, 2],
+    [3, 0.6077, 7.3922, 1],
+    [3, 0.6077, 7.3922, 4],
+    [3, 5, 4, 2],
+  ] as const;
+  it.each(cases)("state %i, S=%d, D=%d, %i day(s) later: stability and difficulty for every rating", (st, S, D, t) => {
+    const card = state(S, D, st, noon(0));
+    const now = noon(t);
+    const r = R(t, S);
+    for (const g of [2, 3, 4] as const) {
+      const next = applyRating(card, g, now, TZ);
+      expect(next.elapsedDays).toBe(t);
+      rel(next.stability, sRecall(S, D, r, g));
+      expect(next.difficulty).toBeCloseTo(nextD(D, g), 4);
+    }
+    // Good and Easy always graduate to Review from the last learning step
+    expect(applyRating(card, 3, now, TZ).state).toBe(2);
+    expect(applyRating(card, 4, now, TZ).state).toBe(2);
+    const again = applyRating(card, 1, now, TZ);
+    expect(again.elapsedDays).toBe(t);
+    rel(again.stability, sForget(S, D, r));
+    expect(again.difficulty).toBeCloseTo(nextD(D, 1), 4);
+    expect(again.state).toBe(st === 3 ? 3 : 1);
+  });
+  it("the same Learning card answered 10 minutes later still uses the short-term formula (the two paths differ)", () => {
+    const card = state(2.3065, 2.1181, 1, noon(0));
+    const sameSession = applyRating(card, 3, new Date(noon(0).getTime() + 10 * MIN), TZ);
+    const nextDay = applyRating(card, 3, noon(1), TZ);
+    rel(sameSession.stability, sShort(2.3065, 3));
+    rel(nextDay.stability, sRecall(2.3065, 2.1181, R(1, 2.3065), 3));
+    expect(nextDay.stability).toBeGreaterThan(sameSession.stability * 1.5);
+  });
+});

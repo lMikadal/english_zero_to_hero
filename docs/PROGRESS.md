@@ -56,7 +56,7 @@
 - คำที่ลืมบ่อย: ใช้ `lapses` สูงสุดของการ์ดทุกทิศของคำนั้น
 - อัตราการจำได้นับการทบทวนทุกทิศ (`en_th`, `th_en`, `listen_spell`, `speak`)
 - การทบทวนที่เวลาเดียวกันพอดีของทิศเดียวกัน: ถ้ามีข้อผิดอยู่ด้วยถือว่าครั้งล่าสุดผิด (ไม่ขึ้นกับลำดับในข้อมูล)
-- รูปแบบ `srs_reviews.state_before` / `state_after` (jsonb) ที่สูตรอ่าน: ออบเจ็กต์ที่มีฟิลด์การ์ดของ ts-fsrs (`due`, `stability`, `difficulty`, `elapsed_days`, `scheduled_days`, `reps`, `lapses`, `state`, `last_review`) โดย `state` เป็นตัวเลข 0 New, 1 Learning, 2 Review, 3 Relearning สูตรอ่านเฉพาะ `state_before.state` ถ้าไม่มีหรือไม่ใช่ตัวเลข การทบทวนนั้นไม่นับ ระบบทบทวนต้องบันทึกรูปแบบนี้
+- รูปแบบ `srs_reviews.state_before` / `state_after` (jsonb) ที่สูตรอ่าน: ออบเจ็กต์รูปแบบของเราเอง (snake_case, เวลาเป็น ISO string; สร้างด้วย `toStoredState` ใน `src/lib/srs/scheduler.ts` ไม่ใช่ object ของ library) ที่มีฟิลด์การ์ด (`due`, `stability`, `difficulty`, `elapsed_days`, `scheduled_days`, `reps`, `lapses`, `state`, `last_review`) โดย `state` เป็นตัวเลข 0 New, 1 Learning, 2 Review, 3 Relearning สูตรอ่านเฉพาะ `state_before.state` ถ้าไม่มีหรือไม่ใช่ตัวเลข การทบทวนนั้นไม่นับ ระบบทบทวนต้องบันทึกรูปแบบนี้
 
 `stability` คือค่าที่ระบบทบทวน (FSRS) ประเมินว่าเราจะจำคำนี้ได้อีกกี่วัน คำที่ "รู้จริง" จึงหมายถึงคำที่คาดว่าจำได้เกิน 3 สัปดาห์โดยไม่ต้องทวน และนึกออกได้ทั้งสองทาง
 

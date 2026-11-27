@@ -4,6 +4,7 @@
 // at 07:30 Bangkok (00:30Z) it saw 1 day (stability 6.367), and at 00:30 Bangkok two days later it still saw 1.
 // The adapter shifts every instant to local wall-clock-as-UTC before calling the library, so these tests hold.
 import { describe, expect, it } from "vitest";
+import { SAME_SESSION_MAX_MS } from "./config";
 import { applyRating, previewRatings, RATINGS, toStoredState, type CardState } from "./scheduler";
 
 const BKK = "Asia/Bangkok";
@@ -113,12 +114,73 @@ describe("minute steps are real durations, in every zone and across a DST change
     const review = reviewCard(new Date(now.getTime() - 3 * DAY).toISOString(), { due: now });
     expect(applyRating(review, 1, now, tz).due.getTime() - now.getTime()).toBe(10 * MIN);
   });
-  it("a new card reviewed at 23:55 local (Bangkok) and again 10 minutes later across midnight is a same-day-style step, not 1 day", () => {
+});
+
+// Learning steps are minutes apart. A midnight crossing between two answers of the same session must not count as a day:
+// that would switch FSRS to the long-term formula and graduate the card to ~7 days instead of ~2.
+describe("learning steps across local midnight are the same session (elapsed 0)", () => {
+  const fresh = (due: Date): CardState => ({ due, stability: 0, difficulty: 0, scheduledDays: 0, learningSteps: 0, elapsedDays: 0, reps: 0, lapses: 0, state: 0, lastReview: null });
+  const shape = (c: CardState) => ({ stability: c.stability, difficulty: c.difficulty, state: c.state, scheduledDays: c.scheduledDays, elapsedDays: c.elapsedDays, learningSteps: c.learningSteps, reps: c.reps });
+  /** two Good answers 10 minutes apart: new -> step 1 -> graduation */
+  const twoGood = (t0: Date, tz: string) => {
+    const a = applyRating(fresh(t0), 3, t0, tz);
+    const t1 = new Date(t0.getTime() + 10 * MIN);
+    return { a, b: applyRating(a, 3, t1, tz) };
+  };
+  const cases: [string, string, string, string][] = [
+    ["Asia/Bangkok", "23:55 -> 00:05", "2026-01-01T16:55:00.000Z", "2026-01-01T05:00:00.000Z"], // 23:55 local vs 12:00 local
+    [LA, "23:55 -> 00:05 on the spring-forward night", "2026-03-08T07:55:00.000Z", "2026-03-07T20:00:00.000Z"], // 23:55 PST 7 Mar vs 12:00 PST
+    ["UTC", "23:55 -> 00:05", "2026-01-01T23:55:00.000Z", "2026-01-01T12:00:00.000Z"],
+  ];
+  it.each(cases)("%s %s gives exactly the schedule of 12:00 -> 12:10", (tz, _n, cross, noonStart) => {
+    const across = twoGood(new Date(cross), tz);
+    const noon = twoGood(new Date(noonStart), tz);
+    expect(across.b.elapsedDays).toBe(0);
+    expect(shape(across.b)).toEqual(shape(noon.b));
+    expect(shape(across.a)).toEqual(shape(noon.a));
+    expect(across.b.state).toBe(2);
+    expect(across.b.scheduledDays).toBeLessThanOrEqual(3); // ~2 days, not ~7
+  });
+  it("a Relearning card answered across midnight is also same-session", () => {
+    const review = reviewCard("2026-01-01T05:00:00.000Z");
+    const t0 = new Date("2026-01-04T16:55:00.000Z"); // 23:55 local, 3 days later (due)
+    const lapsed = applyRating(review, 1, t0, BKK);
+    expect(lapsed.state).toBe(3);
+    const back = applyRating(lapsed, 3, lapsed.due, BKK); // 00:05 next local day
+    const t0n = new Date("2026-01-04T05:00:00.000Z");
+    const lapsedN = applyRating(review, 1, t0n, BKK);
+    const backN = applyRating(lapsedN, 3, lapsedN.due, BKK); // 12:10
+    expect(back.elapsedDays).toBe(0);
+    expect(shape(back)).toEqual(shape(backN));
+  });
+  it("a Learning card answered the next morning (at least 4 hours later, next calendar day) still counts 1 day", () => {
+    const t0 = new Date("2026-01-01T16:55:00.000Z"); // 23:55 local
+    const a = applyRating(fresh(t0), 3, t0, BKK);
+    const morning = new Date(t0.getTime() + SAME_SESSION_MAX_MS + MIN); // 04:56 local next day
+    expect(applyRating(a, 3, morning, BKK).elapsedDays).toBe(1);
+  });
+  it("the limit is exclusive: just under SAME_SESSION_MAX_MS is the same session, exactly SAME_SESSION_MAX_MS follows the calendar", () => {
+    const t0 = new Date("2026-01-01T16:55:00.000Z"); // 23:55 local
+    const a = applyRating(fresh(t0), 3, t0, BKK);
+    expect(applyRating(a, 3, new Date(t0.getTime() + SAME_SESSION_MAX_MS - 1), BKK).elapsedDays).toBe(0);
+    expect(applyRating(a, 3, new Date(t0.getTime() + SAME_SESSION_MAX_MS), BKK).elapsedDays).toBe(1);
+  });
+  it("SAME_SESSION_MAX_MS is 4 hours", () => {
+    expect(SAME_SESSION_MAX_MS).toBe(4 * 3_600_000);
+  });
+  it("a Review-state card is NOT affected: 23:55 then 00:05 is still 1 calendar day", () => {
+    const review = reviewCard("2026-01-01T16:55:00.000Z");
+    expect(applyRating(review, 3, new Date("2026-01-01T17:05:00.000Z"), BKK).elapsedDays).toBe(1);
+  });
+  it("a new card has no last review: unchanged", () => {
+    expect(applyRating(fresh(new Date(0)), 3, new Date("2026-01-01T16:55:00.000Z"), BKK).elapsedDays).toBe(0);
+  });
+  it("applyRating still equals previewRatings[r] across midnight", () => {
     const t0 = new Date("2026-01-01T16:55:00.000Z");
-    const a = applyRating({ ...fresh, due: t0 }, 3, t0, BKK);
-    const b = applyRating(a, 3, a.due, BKK); // 00:05 next local day
-    expect(b.elapsedDays).toBe(1); // the day count follows local dates, as defined
-    expect(b.state).toBe(2); // and the card still graduates
+    const a = applyRating(fresh(t0), 3, t0, BKK);
+    const now = new Date(t0.getTime() + 10 * MIN);
+    const p = previewRatings(a, now, BKK);
+    for (const r of RATINGS) expect(applyRating(a, r, now, BKK)).toEqual(p[r]);
   });
 });
 

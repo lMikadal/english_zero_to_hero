@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { getLesson, getTaughtWords, getVocabLookup } from "./repo";
+import { getLesson, getTaughtWords, getVocabEntry, getVocabLookup } from "./repo";
 
 const tmp: string[] = [];
 afterEach(() => {
@@ -89,5 +89,24 @@ describe("getTaughtWords", () => {
     expect(w.has("v-hello")).toBe(true);
     expect(w.has("v-where")).toBe(true);
     expect(w.has("v-bed")).toBe(false);
+  });
+});
+
+describe("getVocabEntry (what a review card shows)", () => {
+  it("returns the whole entry (word, ipa for both accents, Thai, examples) or null", () => {
+    const v = getVocabEntry("v-hello");
+    expect(v?.word).toBe("hello");
+    expect(v?.ipa.us.length).toBeGreaterThan(0);
+    expect(v?.ipa.uk.length).toBeGreaterThan(0);
+    expect(v?.examples[0].en.length).toBeGreaterThan(0);
+    expect(getVocabEntry("v-does-not-exist")).toBeNull();
+  });
+});
+
+describe("getTaughtWords is in teaching order (day, then position in lesson.vocab)", () => {
+  it("days 1 and 2: the five day 1 words in lesson order, then day 2's", () => {
+    const ids = [...getTaughtWords(2).keys()];
+    expect(ids.slice(0, 5)).toEqual([...(getLesson(1)?.vocab ?? [])]);
+    expect(ids.slice(5)).toEqual([...(getLesson(2)?.vocab ?? [])]);
   });
 });
