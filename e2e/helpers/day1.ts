@@ -1,7 +1,7 @@
 // Helpers shared by the e2e specs that play day 1 (lesson.spec.ts, replay.spec.ts): the lesson file is the answer key.
 import fs from "node:fs";
 import path from "node:path";
-import { expect, type Locator, type Page } from "@playwright/test";
+import { expect, type APIRequestContext, type Locator, type Page } from "@playwright/test";
 
 type Ex = {
   id: string;
@@ -146,4 +146,25 @@ export async function playToEnd(page: Page, finished: Locator) {
     // the player moved on (another step, or the completion screen)
     await expect.poll(async () => (await finished.isVisible()) || (await stepLabel(page).innerText()) !== before, SLOW).toBe(true);
   }
+}
+
+/**
+ * Makes sure day 1 is finished without playing it: through the same HTTP API the app uses (one first-try reading attempt,
+ * then /api/lessons/complete), unless /day/1 already opens as a replay (lesson.spec.ts ran first, as it does in CI).
+ * Both calls are idempotent. Needs a database in which day 1 is the only finished day.
+ */
+export async function ensureDayOneFinished(api: APIRequestContext, timeout: number) {
+  // A finished day opens as a replay: the badge is in the server-rendered page.
+  const html = await (await api.get("/day/1", { timeout })).text();
+  if (html.includes("เล่นซ้ำ")) return;
+  const sessionId = "5e2a6c1e-0b53-4a0e-9c43-7d6f1b8e0001";
+  const attempt = {
+    id: "5e2a6c1e-0b53-4a0e-9c43-7d6f1b8e0002", exerciseId: "d001-read-01", sessionId, source: "lesson", attemptNo: 1,
+    answer: { kind: "choices", selected: [1] }, // "Ann", the right answer in content/lessons/day-001.json
+    createdAt: new Date().toISOString(),
+  };
+  const a = await api.post("/api/attempts", { data: { attempts: [attempt] }, timeout });
+  expect(a.status(), "POST /api/attempts").toBe(200);
+  const c = await api.post("/api/lessons/complete", { data: { day: 1, sessionId, completedAt: new Date().toISOString() }, timeout });
+  expect(c.status(), "POST /api/lessons/complete").toBe(200);
 }
