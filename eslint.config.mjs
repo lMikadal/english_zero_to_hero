@@ -81,4 +81,19 @@ export default defineConfig([
     },
   },
   globalIgnores([".next/**", "out/**", "coverage/**", "playwright-report/**", "test-results/**", "next-env.d.ts", ".claude/**"]),
+  {
+    // The vocabulary review UI (docs/plans/vocab-review-plan.md 4.4 item 13): the learner's zone comes ONLY from
+    // ReviewQueue.timeZone (never the device), and the clock is read in one place (ReviewApp / the page) and passed in as `now`.
+    // This block replaces the general no-restricted-imports for these files, so the existing bans are repeated.
+    files: ["src/components/review/**/*.{ts,tsx}", "src/app/(learn)/review/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": ["error", { patterns: [TS_FSRS_ONLY_IN_ADAPTER, SRS_TABLES_ONLY_IN_QUERIES] }],
+      "no-restricted-syntax": [
+        "error",
+        { selector: "CallExpression[callee.property.name='resolvedOptions']", message: "The review UI takes the time zone from ReviewQueue.timeZone only; never read the device's zone (resolvedOptions)." },
+        { selector: "MemberExpression[object.name='Date'][property.name='now']", message: "Do not read the clock in the review UI: take `now` as a prop (ReviewApp injects the clock)." },
+        { selector: "NewExpression[callee.name='Date'][arguments.length=0]", message: "Do not read the clock in the review UI: take `now` as a prop (ReviewApp injects the clock)." },
+      ],
+    },
+  },
 ]);

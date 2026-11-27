@@ -741,3 +741,89 @@ describe("createHttpSink: reviews (vocabulary review)", () => {
     expect(t.sink.getState().status).toBe("paused");
   });
 });
+
+// The page needs the server's card for each review (docs/plans/vocab-review-plan.md 4.4 item 13): onReviewResult.
+// Decision: a batch the sink drops without an answer (4xx other than 401/403/408/429, or a 413 for one item) delivers
+// `rejected` / `invalid` for each of its reviews, so the page can drop those cards instead of waiting for a card that never comes.
+describe("createHttpSink: onReviewResult", () => {
+  const review = (n: number): ReviewInput => ({
+    id: uuid(n), sessionId: uuid(8888), vocabId: "v-hello", direction: "en_th", rating: 3, reviewedAt: "2026-11-26T10:00:00.000Z",
+  });
+  const wire = (stability: number) => ({ due: "2026-11-27T10:00:00.000Z", lastReview: "2026-11-26T10:00:00.000Z", stability, difficulty: 2.1, scheduledDays: 1, learningSteps: 0, elapsedDays: 0, reps: 1, lapses: 0, state: 2 });
+  const createdReview = (n: number) => ({ id: uuid(n), status: "created", card: wire(n) });
+  const listen = (t: ReturnType<typeof setup>) => {
+    const got: unknown[] = [];
+    const off = t.sink.onReviewResult((r) => got.push(r));
+    return { got, off };
+  };
+
+  it("delivers one result per settled review, in order, with the server's card (created and duplicate)", async () => {
+    const t = setup([{ status: 200, body: { results: [createdReview(1), { id: uuid(2), status: "duplicate", card: wire(2) }, createdReview(3)] } }]);
+    const { got } = listen(t);
+    [1, 2, 3].forEach((n) => t.sink.sendReview(review(n)));
+    await settle();
+    expect(got).toEqual([
+      { id: uuid(1), status: "created", card: wire(1) },
+      { id: uuid(2), status: "duplicate", card: wire(2) },
+      { id: uuid(3), status: "created", card: wire(3) },
+    ]);
+  });
+
+  it("delivers rejected with its reason and the id of the review even when the server answered id null", async () => {
+    const t = setup([{ status: 200, body: { results: [{ id: uuid(1), status: "rejected", reason: "not_taught" }, { id: null, status: "rejected", reason: "invalid" }] } }]);
+    const { got } = listen(t);
+    t.sink.sendReview(review(1));
+    t.sink.sendReview(review(2));
+    await settle();
+    expect(got).toEqual([
+      { id: uuid(1), status: "rejected", reason: "not_taught" },
+      { id: uuid(2), status: "rejected", reason: "invalid" },
+    ]);
+  });
+
+  it("delivers nothing for a review that stays queued (no usable status, 5xx) and each result once, even after a retry", async () => {
+    const t = setup([{ status: 200, body: { results: [createdReview(1), { id: uuid(2) }] } }, { status: 200, body: { results: [createdReview(2)] } }]);
+    const { got } = listen(t);
+    t.sink.sendReview(review(1));
+    t.sink.sendReview(review(2));
+    await settle();
+    expect(got).toHaveLength(1);
+    await t.runTimer();
+    expect(got.map((r) => (r as { id: string }).id)).toEqual([uuid(1), uuid(2)]);
+  });
+
+  it("delivers nothing for attempts, and nothing for a 5xx", async () => {
+    const t = setup([okFor(1), { status: 503 }]);
+    const { got } = listen(t);
+    t.sink.sendAttempt(attempt(1));
+    await settle();
+    t.sink.sendReview(review(2));
+    await settle();
+    expect(got).toEqual([]);
+  });
+
+  it("a dropped batch (400) delivers rejected/invalid for each review in it", async () => {
+    const t = setup([{ status: 400 }]);
+    const { got } = listen(t);
+    t.sink.sendReview(review(1));
+    t.sink.sendReview(review(2));
+    await settle();
+    expect(got).toEqual([{ id: uuid(1), status: "rejected", reason: "invalid" }, { id: uuid(2), status: "rejected", reason: "invalid" }]);
+  });
+
+  it("unsubscribe stops delivery; several listeners all hear; a throwing listener does not stop the others or the queue", async () => {
+    const t = setup([{ status: 200, body: { results: [createdReview(1)] } }, { status: 200, body: { results: [createdReview(2)] } }]);
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const a = listen(t);
+    const b = listen(t);
+    t.sink.onReviewResult(() => { throw new Error("boom"); });
+    t.sink.sendReview(review(1));
+    await settle();
+    a.off();
+    t.sink.sendReview(review(2));
+    await settle();
+    expect(a.got).toHaveLength(1);
+    expect(b.got).toHaveLength(2);
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+});

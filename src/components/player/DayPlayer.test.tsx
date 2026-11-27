@@ -32,6 +32,7 @@ describe("DayPlayer", () => {
       subscribe: () => () => {},
       getState: () => ({ pending: 0, pendingAttempts: 0, pendingReviews: 0, status: "idle" as const }),
       dispose: () => {},
+      onReviewResult: () => () => {},
     };
     const day1 = readLesson(1);
     // one phoneme_intro only: no answer needed, just "ถัดไป"
