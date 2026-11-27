@@ -239,6 +239,8 @@ describe("srs_cards", () => {
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, scheduledDays: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, learningSteps: -1 }))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(srsCards).values({ ...base, elapsedDays: -1 }))).toBe(CHECK);
+    expect(await pgErrorCode(db.insert(srsCards).values({ ...base, stability: -0.5 }))).toBe(CHECK);
+    expect(await pgErrorCode(db.insert(srsCards).values({ ...base, difficulty: -0.5 }))).toBe(CHECK);
   });
 
   it("created_at has a default (now), is NOT NULL, and is not changed by updates", async () => {
