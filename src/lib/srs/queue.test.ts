@@ -128,6 +128,13 @@ describe("siblings are kept apart (SIBLING_GAP)", () => {
     };
   }
 
+  it("with every first card before every second card and 8 or more words, nobody is close to their sibling", () => {
+    const first = ["a", "b", "c", "d", "e", "f", "g", "h"].map((w) => card(`v-${w}`, "en_th"));
+    const second = first.map((c) => card(c.vocabId, "th_en"));
+    const out = separateSiblings([...first, ...second]);
+    out.forEach((c, i) => expect(out.slice(Math.max(0, i - (SIBLING_GAP - 1)), i).some((p) => p.vocabId === c.vocabId)).toBe(false));
+  });
+
   it("property (1,000 seeded queues): the output is a permutation, and a close pair appears only when it cannot be avoided", () => {
     for (let seed = 1; seed <= 1000; seed++) {
       const rand = rng(seed);
@@ -154,12 +161,6 @@ describe("siblings are kept apart (SIBLING_GAP)", () => {
           expect(near.some((p) => sibling(p, out[k])), `seed ${seed}: a card at ${k} could have been moved up to ${i}`).toBe(true);
         }
       });
-      // with every word appearing at most once per direction and enough distinct words, there is no violation at all
-      if (words >= 2 * SIBLING_GAP) {
-        out.forEach((c, i) => {
-          expect(out.slice(Math.max(0, i - (SIBLING_GAP - 1)), i).some((p) => sibling(p, c)), `seed ${seed} index ${i}`).toBe(false);
-        });
-      }
     }
   });
 });

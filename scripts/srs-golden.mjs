@@ -23,6 +23,7 @@ const SEQUENCES = {
   "lapse then recover: 1 3 3": { ratings: [1, 3, 3], early: false },
   "easy x2": { ratings: [4, 4], early: false },
   "good, lapse, good, good: 3 1 3 3": { ratings: [3, 1, 3, 3], early: false },
+  "good, good, then forgotten in Review state (relearning): 3 3 1 3 3": { ratings: [3, 3, 1, 3, 3], early: false },
   "hard x2 then good": { ratings: [2, 2, 3], early: false },
   "good x8, on time": { ratings: [3, 3, 3, 3, 3, 3, 3, 3], early: false },
   "good x5, 8 hours early once the interval is 2+ days": { ratings: [3, 3, 3, 3, 3], early: true },

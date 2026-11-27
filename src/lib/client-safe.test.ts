@@ -160,6 +160,8 @@ describe("the checker itself", () => {
   });
   it("lets the pure progress helpers through but still flags the rest of lib/progress", () => {
     const root = project({
+      "lib/progress/dates.ts": "export const a = 1;", "lib/progress/config.ts": "export const a = 1;",
+      "lib/progress/sources.ts": "export const a = 1;", "lib/progress/types.ts": "export const a = 1;",
       "a.ts": [
         'import "@/lib/progress/dates";', 'import "@/lib/progress/config";', 'import "@/lib/progress/sources";', 'import "@/lib/progress/types";',
         'import "@/lib/progress/vocab";', 'import "@/lib/progress/streak";', 'import "@/lib/progress";', 'import "@/lib/progress/index";',

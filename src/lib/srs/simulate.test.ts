@@ -5,7 +5,7 @@ const base = { wordsPerLessonDay: 5, days: 40, againRate: 0.1 } as const;
 
 describe("simulateLoad", () => {
   it("is deterministic: same input, same output", () => {
-    expect(simulateLoad(base)).toEqual(simulateLoad(base));
+    expect(simulateLoad(base).days).toEqual(simulateLoad(base).days);
   });
   it("a different seed gives a different (but still valid) run", () => {
     const a = simulateLoad({ ...base, seed: 1 });

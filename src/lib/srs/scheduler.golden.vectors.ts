@@ -37,6 +37,16 @@ export const GOLDEN_SEQUENCES: { name: string; steps: GoldenStep[] }[] = [
     ],
   },
   {
+    name: "good, good, then forgotten in Review state (relearning): 3 3 1 3 3",
+    steps: [
+      { rating: 3, now: "2026-01-01T01:00:00.000Z", due: "2026-01-01T01:10:00.000Z", stability: 2.3065, difficulty: 2.1181, state: 1, scheduledDays: 0, learningSteps: 1, reps: 1, lapses: 0, elapsedDays: 0 },
+      { rating: 3, now: "2026-01-01T01:10:00.000Z", due: "2026-01-03T01:10:00.000Z", stability: 2.3065, difficulty: 2.1112, state: 2, scheduledDays: 2, learningSteps: 0, reps: 2, lapses: 0, elapsedDays: 0 },
+      { rating: 1, now: "2026-01-03T01:10:00.000Z", due: "2026-01-03T01:20:00.000Z", stability: 0.6077, difficulty: 7.3922, state: 3, scheduledDays: 0, learningSteps: 0, reps: 3, lapses: 1, elapsedDays: 2 },
+      { rating: 3, now: "2026-01-03T01:20:00.000Z", due: "2026-01-04T01:20:00.000Z", stability: 0.6598, difficulty: 7.3801, state: 2, scheduledDays: 1, learningSteps: 0, reps: 4, lapses: 1, elapsedDays: 0 },
+      { rating: 3, now: "2026-01-04T01:20:00.000Z", due: "2026-01-07T01:20:00.000Z", stability: 2.4892, difficulty: 7.3679, state: 2, scheduledDays: 3, learningSteps: 0, reps: 5, lapses: 1, elapsedDays: 1 },
+    ],
+  },
+  {
     name: "hard x2 then good",
     steps: [
       { rating: 2, now: "2026-01-01T01:00:00.000Z", due: "2026-01-01T01:05:30.000Z", stability: 1.2931, difficulty: 5.1122, state: 1, scheduledDays: 0, learningSteps: 0, reps: 1, lapses: 0, elapsedDays: 0 },

@@ -23,8 +23,8 @@ describe("initialDues: finishing a lesson (first review the next day, th_en one 
   it("Asia/Bangkok: 23:59 and 00:01 local fall on different days", () => {
     const late = new Date("2026-11-26T16:59:00Z"); // 23:59 on 26 Nov
     const early = new Date("2026-11-26T17:01:00Z"); // 00:01 on 27 Nov
-    expect(dues({ kind: "lesson", completedAt: late }, late, BKK).en_th.toISOString()).toBe("2026-11-26T17:00:00.000Z");
-    expect(dues({ kind: "lesson", completedAt: early }, early, BKK).en_th.toISOString()).toBe("2026-11-27T17:00:00.000Z");
+    expect(dues({ kind: "lesson", completedAt: late }, late, BKK).en_th).toBe("2026-11-26T17:00:00.000Z");
+    expect(dues({ kind: "lesson", completedAt: early }, early, BKK).en_th).toBe("2026-11-27T17:00:00.000Z");
   });
   it("America/Los_Angeles across the end of daylight saving time (2026-11-01, 25 hours)", () => {
     const completedAt = new Date("2026-10-31T20:00:00Z"); // 13:00 PDT on 31 Oct
@@ -36,8 +36,8 @@ describe("initialDues: finishing a lesson (first review the next day, th_en one 
   it("America/Los_Angeles: 23:59 and 00:01 local", () => {
     const late = new Date("2026-11-27T07:59:00Z"); // 23:59 PST on 26 Nov
     const early = new Date("2026-11-27T08:01:00Z"); // 00:01 PST on 27 Nov
-    expect(dues({ kind: "lesson", completedAt: late }, late, LA).en_th.toISOString()).toBe("2026-11-27T08:00:00.000Z");
-    expect(dues({ kind: "lesson", completedAt: early }, early, LA).en_th.toISOString()).toBe("2026-11-28T08:00:00.000Z");
+    expect(dues({ kind: "lesson", completedAt: late }, late, LA).en_th).toBe("2026-11-27T08:00:00.000Z");
+    expect(dues({ kind: "lesson", completedAt: early }, early, LA).en_th).toBe("2026-11-28T08:00:00.000Z");
   });
   it("ignores `now` for a lesson origin (the server's completedAt decides)", () => {
     const completedAt = new Date("2026-11-26T07:00:00Z");
