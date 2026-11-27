@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { sql as dsql } from "drizzle-orm";
 import type { Db } from "@/db/types";
 import type { AttemptAnswer, AttemptInput } from "@/lib/attempts/contract";
+import type { ReviewInput } from "@/lib/srs/contract";
 import { ensureLocalUser } from "./current-user";
 
 export const NOW = new Date("2026-11-25T10:00:00.000Z");
@@ -48,3 +49,16 @@ export async function finishDay(db: Db, userId: string, day: number, now = NOW):
 }
 
 export const PRACTICE_SESSION = "22222222-2222-4222-8222-222222222222";
+
+export const REVIEW_SESSION = "33333333-3333-4333-8333-333333333333";
+
+/** A review request item (docs/plans/vocab-review-plan.md 5.1) with a fresh id; `reviewedAt` defaults to a minute before `at`. */
+export function reviewItem(
+  vocabId: string,
+  direction: ReviewInput["direction"],
+  rating: ReviewInput["rating"],
+  at: Date,
+  over: Partial<ReviewInput> = {},
+): ReviewInput {
+  return { id: randomUUID(), sessionId: REVIEW_SESSION, vocabId, direction, rating, reviewedAt: new Date(at.getTime() - 60_000).toISOString(), ...over };
+}
