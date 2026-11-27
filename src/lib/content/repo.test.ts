@@ -2,11 +2,12 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
-import { getLesson, getTaughtWords, getVocabEntry, getVocabLookup } from "./repo";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { getLesson, getTaughtWords, getVocabEntry, getVocabLookup, vocabReader } from "./repo";
 
 const tmp: string[] = [];
 afterEach(() => {
+  vi.restoreAllMocks();
   while (tmp.length) fs.rmSync(tmp.pop()!, { recursive: true, force: true });
 });
 const realRoot = path.resolve(import.meta.dirname, "../../../content");
@@ -100,6 +101,25 @@ describe("getVocabEntry (what a review card shows)", () => {
     expect(v?.ipa.uk.length).toBeGreaterThan(0);
     expect(v?.examples[0].en.length).toBeGreaterThan(0);
     expect(getVocabEntry("v-does-not-exist")).toBeNull();
+  });
+});
+
+describe("vocabReader (one index for many lookups)", () => {
+  /** How many times the vocab tree was listed from its top directory. */
+  const spyTreeReads = () => {
+    const spy = vi.spyOn(fs, "readdirSync");
+    return () => spy.mock.calls.filter(([dir]) => String(dir) === path.join(realRoot, "vocab")).length;
+  };
+  it("reads the vocabulary tree once for any number of lookups (outside production getVocabEntry rebuilds it every call)", () => {
+    const reads = spyTreeReads();
+    const get = vocabReader(realRoot);
+    for (let i = 0; i < 500; i++) get("v-hello");
+    expect(get("v-hello")?.word).toBe("hello");
+    expect(get("v-does-not-exist")).toBeNull();
+    expect(reads()).toBe(1);
+  });
+  it("single-entry behaviour of getVocabEntry is unchanged", () => {
+    expect(vocabReader(realRoot)("v-cat")).toEqual(getVocabEntry("v-cat", realRoot));
   });
 });
 

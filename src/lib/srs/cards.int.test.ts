@@ -1,7 +1,9 @@
 // @vitest-environment node
 // Cards are created from finished lessons by ONE idempotent function (docs/plans/vocab-review-plan.md 2.1, PR 2).
+import fs from "node:fs";
+import path from "node:path";
 import { and, eq, inArray } from "drizzle-orm";
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { attempts, profiles, progress, srsCards, user } from "@/db/schema";
 import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import { seedLocal } from "@/lib/server/test-helpers";
@@ -52,6 +54,7 @@ beforeEach(async () => {
   vi.mocked(initialDues).mockClear();
   userId = await seedLocal(db, 1, NOW);
 });
+afterEach(() => vi.restoreAllMocks());
 afterAll(async () => {
   await cleanDatabase(sql);
   await sql.end();
@@ -77,6 +80,29 @@ describe("expectedCardVocabIds (pure)", () => {
   });
   it("the real content: day 1 teaches the five words the plan names", () => {
     expect(expectedCardVocabIds([1], repoContent).map((w) => w.vocabId)).toEqual(DAY1);
+  });
+});
+
+describe("content is read once per call", () => {
+  const vocabTreeReads = (spy: ReturnType<typeof vi.spyOn>) => spy.mock.calls.filter(([dir]) => String(dir) === path.join(process.cwd(), "content", "vocab")).length;
+  it("one reconcile of 7 finished days lists the vocabulary tree once (not once per word)", async () => {
+    for (let d = 1; d <= 7; d++) await markDone(d);
+    const spy = vi.spyOn(fs, "readdirSync");
+    await reconcile();
+    expect(vocabTreeReads(spy)).toBe(1);
+  });
+  it("one queue load (reconcile + queue) lists it once too", async () => {
+    for (let d = 1; d <= 7; d++) await markDone(d);
+    const spy = vi.spyOn(fs, "readdirSync");
+    await loadReviewQueue(db, userId, NOW);
+    expect(vocabTreeReads(spy)).toBe(1);
+  });
+  it("the loader asks for the finished days once", async () => {
+    await markDone(1);
+    const content = fakeContent({ 1: ["a"] }, ["a"]);
+    const getLessonSpy = vi.spyOn(content, "getLesson");
+    await loadReviewQueue(db, userId, NOW, content);
+    expect(getLessonSpy).toHaveBeenCalledTimes(1);
   });
 });
 
