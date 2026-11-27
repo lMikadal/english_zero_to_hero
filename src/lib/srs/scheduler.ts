@@ -28,6 +28,7 @@
 //
 // Stored format: ts-fsrs 6 renamed the card fields (dueAt, lastReviewAt, learningStep) and dropped elapsed_days. Our
 // own CardState keeps the names of the `srs_cards` columns; this file converts both ways.
+import { z } from "zod";
 import { dateChrono, defineScheduler, Rating as LibRating, type Grade } from "ts-fsrs";
 import {
   schedulerDesiredRetentionMiddleware, schedulerFuzzingMiddleware, schedulerLearningStepsMiddleware, schedulerMaximumIntervalMiddleware,
@@ -147,5 +148,28 @@ export function toStoredState(c: CardState): StoredCardState {
   return {
     due: c.due.toISOString(), stability: c.stability, difficulty: c.difficulty, elapsed_days: c.elapsedDays, scheduled_days: c.scheduledDays,
     learning_steps: c.learningSteps, reps: c.reps, lapses: c.lapses, state: c.state, last_review: c.lastReview ? c.lastReview.toISOString() : null,
+  };
+}
+
+const isoDate = z.string().refine((v) => !Number.isNaN(new Date(v).getTime()), "not a date");
+const storedCardStateSchema = z.object({
+  due: isoDate,
+  stability: z.number().min(0),
+  difficulty: z.number().min(0),
+  elapsed_days: z.number().int().min(0),
+  scheduled_days: z.number().int().min(0),
+  learning_steps: z.number().int().min(0),
+  reps: z.number().int().min(0),
+  lapses: z.number().int().min(0),
+  state: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
+  last_review: isoDate.nullable(),
+});
+
+/** The inverse of toStoredState: the card a `state_before` / `state_after` jsonb describes. Throws on anything else. */
+export function fromStoredState(json: unknown): CardState {
+  const s = storedCardStateSchema.parse(json);
+  return {
+    due: new Date(s.due), stability: s.stability, difficulty: s.difficulty, scheduledDays: s.scheduled_days, learningSteps: s.learning_steps,
+    elapsedDays: s.elapsed_days, reps: s.reps, lapses: s.lapses, state: s.state, lastReview: s.last_review ? new Date(s.last_review) : null,
   };
 }

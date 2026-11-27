@@ -123,3 +123,52 @@ describe("the review tables are reached only through src/db/queries/srs.ts", () 
     expect(m).toHaveLength(1);
   });
 });
+
+describe("the table-access ban cannot be dropped silently by a later config block", () => {
+  type Block = { files?: string[]; ignores?: string[]; rules?: Record<string, unknown> };
+  type Pattern = { group?: string[]; importNames?: string[] };
+  const patternsOf = (b: Block): Pattern[] => {
+    const value = b.rules?.["no-restricted-imports"];
+    const options = Array.isArray(value) ? value[1] : undefined;
+    return options && typeof options === "object" && "patterns" in options ? (options as { patterns: Pattern[] }).patterns : [];
+  };
+  const names = ["srsCards", "srsReviews"];
+  /** The block bans the review tables as values: either the two names, or every value import from the schema. */
+  const bansTables = (b: Block) =>
+    patternsOf(b).some(
+      (p) => p.group?.some((g) => g.endsWith("db/schema")) && (p.importNames === undefined || names.every((n) => p.importNames!.includes(n))),
+    );
+  /** The ONLY blocks allowed to set no-restricted-imports without the table ban (they are the files that may touch the tables). */
+  const EXEMPT_FILES = ["src/db/queries/srs.ts", "src/db/schema.ts", "src/db/client.ts", "src/db/test-utils.ts", "src/**/*.int.test.ts"];
+  const unprotected = (blocks: Block[]) =>
+    blocks.filter((b) => b.rules && "no-restricted-imports" in b.rules && !bansTables(b) && JSON.stringify(b.files) !== JSON.stringify(EXEMPT_FILES));
+
+  it("every block of the real config that sets no-restricted-imports bans the tables, or is the exempt block with the listed files", async () => {
+    const config = (await import(path.join(root, "eslint.config.mjs"))).default as Block[];
+    expect(unprotected(config)).toEqual([]);
+    expect(config.some((b) => JSON.stringify(b.files) === JSON.stringify(EXEMPT_FILES))).toBe(true); // the exemption exists and is exactly the list
+  });
+  it("the exempt list is exactly these files (adding a file to it is a deliberate edit of this test)", async () => {
+    const config = (await import(path.join(root, "eslint.config.mjs"))).default as Block[];
+    const exempt = config.find((b) => JSON.stringify(b.files) === JSON.stringify(EXEMPT_FILES));
+    expect(exempt?.files).toEqual(EXEMPT_FILES);
+    expect(patternsOf(exempt!).some((p) => p.importNames?.includes("srsCards"))).toBe(false);
+  });
+  it("the check notices a new block that sets the rule without the ban", () => {
+    const good: Block = { files: ["a"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["@/db/schema"], importNames: names }] }] } };
+    const everyValue: Block = { files: ["b"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["@/db/schema"] }] }] } };
+    const oneName: Block = { files: ["c"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["@/db/schema"], importNames: ["srsCards"] }] }] } };
+    const onlyFsrs: Block = { files: ["d"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["ts-fsrs"] }] }] } };
+    const other: Block = { files: ["e"], rules: { "no-console": "error" } };
+    expect(unprotected([good, everyValue, other])).toEqual([]);
+    expect(unprotected([good, oneName, onlyFsrs, other])).toEqual([oneName, onlyFsrs]);
+  });
+  it.each(["../../db/schema", "../../../src/db/schema", "../schema", "./schema", "@/db/schema"])("a deep or relative import of the tables (%s) is caught in an ordinary file", async (from) => {
+    const m = await messages(`import { srsCards } from "${from}";\nexport const x = srsCards;`, "src/lib/srs/cards.ts", "no-restricted-imports");
+    expect(m).toHaveLength(1);
+  });
+  it("and in a review-* server file", async () => {
+    const m = await messages('import { srsReviews } from "../../db/schema";\nexport const x = srsReviews;', "src/lib/server/review-handler.ts", "no-restricted-imports");
+    expect(m.length).toBeGreaterThanOrEqual(1);
+  });
+});

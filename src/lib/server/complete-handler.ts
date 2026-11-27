@@ -12,7 +12,7 @@ import { withTransactionRetry } from "@/db/queries/tx";
 import { completeLessonRequestSchema, type CompleteLessonResponse } from "@/lib/attempts/contract";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
 import { getLesson } from "@/lib/content/repo";
-import { reconcileCards } from "@/lib/srs/cards";
+import { reconcileCards, type CardContent } from "@/lib/srs/cards";
 import { localDate, resolveTimeZone } from "@/lib/progress/dates";
 import type { HandlerDeps, HandlerResult } from "./attempts-handler";
 import { clampTimestamp, timestampFloor } from "./clamp";
@@ -27,7 +27,8 @@ function lessonExists(day: number): boolean {
   }
 }
 
-export async function handleCompleteLesson(body: unknown, { db, userId, now }: HandlerDeps): Promise<HandlerResult<CompleteLessonResponse>> {
+/** `content` is a test seam: where the cards of the finished lessons get their words from (default: the content files). */
+export async function handleCompleteLesson(body: unknown, { db, userId, now, content }: HandlerDeps & { content?: CardContent }): Promise<HandlerResult<CompleteLessonResponse>> {
   const parsed = completeLessonRequestSchema.safeParse(body);
   if (!parsed.success) return { status: 400, body: { error: "invalid_body" } };
   const { day, completedAt: clientCompletedAt } = parsed.data;
@@ -58,7 +59,7 @@ export async function handleCompleteLesson(body: unknown, { db, userId, now }: H
     const streak = await touchStreak(tx, userId, localDate(completedAt, tz));
     const currentDay = await advanceCurrentDay(tx, userId, day);
     // the lesson's words become review cards in the same transaction (docs/plans/vocab-review-plan.md 2.1); not reported in the response
-    await reconcileCards(tx, userId, now, tz, { completed: { day, completedAt } });
+    await reconcileCards(tx, userId, now, tz, { completed: { day, completedAt }, content });
     return { progress: { day, status: "done", score: done.score, completedAt: done.completedAt!.toISOString() }, streak, currentDay };
   });
 

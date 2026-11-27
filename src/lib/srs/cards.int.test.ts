@@ -1,7 +1,9 @@
 // @vitest-environment node
 // Cards are created from finished lessons by ONE idempotent function (docs/plans/vocab-review-plan.md 2.1, PR 2).
+import fs from "node:fs";
+import path from "node:path";
 import { and, eq, inArray } from "drizzle-orm";
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { attempts, profiles, progress, srsCards, user } from "@/db/schema";
 import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import { seedLocal } from "@/lib/server/test-helpers";
@@ -52,6 +54,7 @@ beforeEach(async () => {
   vi.mocked(initialDues).mockClear();
   userId = await seedLocal(db, 1, NOW);
 });
+afterEach(() => vi.restoreAllMocks());
 afterAll(async () => {
   await cleanDatabase(sql);
   await sql.end();
@@ -77,6 +80,29 @@ describe("expectedCardVocabIds (pure)", () => {
   });
   it("the real content: day 1 teaches the five words the plan names", () => {
     expect(expectedCardVocabIds([1], repoContent).map((w) => w.vocabId)).toEqual(DAY1);
+  });
+});
+
+describe("content is read once per call", () => {
+  const vocabTreeReads = (spy: { mock: { calls: unknown[][] } }) => spy.mock.calls.filter(([dir]) => String(dir) === path.join(process.cwd(), "content", "vocab")).length;
+  it("one reconcile of 7 finished days lists the vocabulary tree once (not once per word)", async () => {
+    for (let d = 1; d <= 7; d++) await markDone(d);
+    const spy = vi.spyOn(fs, "readdirSync");
+    await reconcile();
+    expect(vocabTreeReads(spy)).toBe(1);
+  });
+  it("one queue load (reconcile + queue) lists it once too", async () => {
+    for (let d = 1; d <= 7; d++) await markDone(d);
+    const spy = vi.spyOn(fs, "readdirSync");
+    await loadReviewQueue(db, userId, NOW);
+    expect(vocabTreeReads(spy)).toBe(1);
+  });
+  it("the loader asks for the finished days once", async () => {
+    await markDone(1);
+    const content = fakeContent({ 1: ["a"] }, ["a"]);
+    const getLessonSpy = vi.spyOn(content, "getLesson");
+    await loadReviewQueue(db, userId, NOW, content);
+    expect(getLessonSpy).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -143,6 +169,19 @@ describe("reconcileCards", () => {
     expect(cat.find((c) => c.direction === "en_th")).toMatchObject({ state: 2, reps: 3 });
     expect(cat.find((c) => c.direction === "en_th")!.due.toISOString()).toBe("2026-11-20T00:00:00.000Z");
     expect(cat.find((c) => c.direction === "th_en")!.due).toEqual(initialDues({ kind: "backfill" }, NOW, BKK).th_en);
+  });
+
+  it("a card of another direction (listen_spell) does not change which due rule a word gets", async () => {
+    await markDone(1);
+    await db.insert(srsCards).values({ userId, vocabId: "v-hello", direction: "listen_spell", due: new Date("2026-11-01T00:00:00.000Z") });
+    const completedAt = new Date("2026-11-25T09:00:00.000Z");
+    await reconcile(NOW, BKK, { completed: { day: 1, completedAt } });
+    const hello = (await cards()).filter((c) => c.vocabId === "v-hello");
+    expect(hello.map((c) => c.direction)).toEqual(["en_th", "listen_spell", "th_en"]);
+    const lesson = initialDues({ kind: "lesson", completedAt }, NOW, BKK);
+    expect(hello.find((c) => c.direction === "en_th")!.due).toEqual(lesson.en_th); // not the backfill rule
+    expect(hello.find((c) => c.direction === "th_en")!.due).toEqual(lesson.th_en);
+    expect(hello.find((c) => c.direction === "listen_spell")!.due.toISOString()).toBe("2026-11-01T00:00:00.000Z"); // untouched
   });
 
   it("GUARD: a word of a lesson that is not finished never gets a card (in_progress, not_started, no row)", async () => {
@@ -288,6 +327,16 @@ describe("loadReviewQueue", () => {
     expect(keys(q).slice(0, 4).every((k) => k.endsWith("en_th"))).toBe(true);
     const at = new Map(q.cards.map((c, i) => [cardKey(c), i]));
     for (const w of four) expect(Math.abs(at.get(`${w}|en_th`)! - at.get(`${w}|th_en`)!)).toBeGreaterThanOrEqual(SIBLING_GAP);
+  });
+
+  it("a missed day: 5 words, both directions due, all new -> no siblings adjacent, every gap >= SIBLING_GAP, en_th block first", async () => {
+    await markDone(1);
+    await reconcile();
+    await db.update(srsCards).set({ due: NOW }).where(eq(srsCards.userId, userId));
+    const q = await load();
+    expect(keys(q)).toEqual([...DAY1.map((w) => `${w}/en_th`), ...DAY1.map((w) => `${w}/th_en`)]);
+    const at = new Map(q.cards.map((c, i) => [cardKey(c), i]));
+    for (const w of DAY1) expect(Math.abs(at.get(`${w}|en_th`)! - at.get(`${w}|th_en`)!)).toBeGreaterThanOrEqual(SIBLING_GAP);
   });
 
   it("content comes from the content source: word, IPA by the profile's accent, Thai, first example", async () => {

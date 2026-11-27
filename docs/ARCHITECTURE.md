@@ -303,6 +303,27 @@ Response `200` (`CompletePracticeResponse`): `{ session: { sessionId, day, skill
 - query ของ handler นี้อยู่ใน `src/db/queries/practice.ts` ทั้งหมด (`practice-*.ts` import `@/db/schema` เป็นค่าไม่ได้ ESLint บังคับ)
 - `409` `not_replayable`: วันยังไม่ done, ไม่มีบท/โหลดไม่ได้ หรือบทไม่มีส่วนของ `skill` นั้น; `400` body ผิด; `413`/`415` เหมือน endpoint อื่น
 
+#### `POST /api/reviews`
+
+บันทึกการทวนคำศัพท์ (`docs/plans/vocab-review-plan.md` 5.2) Request: `{ reviews: ReviewInput[1..50] }` โดย `ReviewInput` = `{ id: uuid (สร้างที่ client), sessionId: uuid, vocabId, direction: "en_th"|"th_en", rating: 1..4, reviewedAt: ISO, durationMs?: 0..3600000 }` (`src/lib/srs/contract.ts`)
+Response `200` (`PostReviewsResponse`): `{ results: ReviewResult[] }` เรียงตามลำดับใน request; แต่ละรายการ:
+- `{ id, status: "created", card: WireCardState }`: เก็บแล้ว `card` คือการ์ดที่ **server** คำนวณ (= `state_after` ที่เก็บ) ซึ่ง client ต้องใช้แทนของตัวเอง
+- `{ id, status: "duplicate", card }`: id นี้มีแล้ว ไม่คำนวณใหม่ ไม่แก้การ์ด ไม่เพิ่มแถว `card` สร้างจาก `state_after` ที่เก็บไว้ด้วย `fromStoredState` (คือการ์ดหลังรีวิวนั้น ไม่ใช่สถานะปัจจุบันของการ์ดถ้ามีรีวิวใหม่กว่า)
+- `{ id | null, status: "rejected", reason }`: `invalid` (รูปแบบผิด, rating ผิด, การ์ดหาย, หรือ id นั้นเป็นของผู้ใช้อื่น), `unknown_word` (ไม่อยู่ในคลังคำ), `not_taught` (คำของบทที่ยังไม่จบ) รายการเสียไม่ล้มทั้ง batch
+- ลำดับตรวจ: schema → `unknown_word` → `not_taught` (ชุดคำของบทที่ `done`; ก่อนตรวจ `reconcileCards` สร้างการ์ดที่ขาดของบทที่จบแล้ว) → ในแต่ละรายการ (savepoint): ล็อกแถวการ์ด `FOR UPDATE` → `reviewedAt` ตัดเข้า `[floor, now]` แล้วยกขึ้นเป็นอย่างน้อย `last_review` → `after = applyRating(before, rating, reviewedAt, profiles.timezone)` (ที่เดียวที่คำนวณสถานะใหม่) → `INSERT srs_reviews ... ON CONFLICT (id) DO NOTHING` (`state_before`/`state_after` ผ่าน `toStoredState`, `session_id`) → ได้แถว: `UPDATE srs_cards`; ไม่ได้: `duplicate`
+- **ลำดับ:** ล็อกการ์ดตามลำดับ `(vocab_id, direction)` (กัน deadlock ระหว่าง batch) และรีวิวของการ์ดเดียวกันคำนวณตามลำดับใน request (ลำดับเวลา) **ห้ามเรียงตาม id**; ทวนก่อนถึงกำหนดรับได้ (คำนวณด้วย `applyRating` ตามปกติ)
+- ไม่เขียน `progress`, `profiles`, `attempts` (ไฟล์ `review-*.ts` import ตัวเขียนเหล่านั้นไม่ได้: ESLint `no-restricted-imports`, ทดสอบด้วย `review-imports.test.ts`); ตาราง `srs_cards`/`srs_reviews` เข้าถึงผ่าน `src/db/queries/srs.ts` เท่านั้น
+- `400` body/envelope ผิด; `413`/`415` เหมือน endpoint อื่น
+
+#### `POST /api/reviews/complete`
+
+จบ session ทวนเพื่อนับสตรีค Request (`completeReviewRequestSchema`): `{ sessionId: uuid, startedAt: ISO, completedAt: ISO }`
+Response `200` (`CompleteReviewResponse`): `{ sessionDate: "YYYY-MM-DD", reviewed, remainingDue, streak: { current, longest }, countedForStreak }`
+- `sessionDate` = วันที่ท้องถิ่น (`profiles.timezone`) ของ **รีวิวแรกที่เก็บไว้ของ session** (ไม่ใช่ `startedAt`/`completedAt` ของ client: ใช้เติม response เมื่อ session ไม่มีรีวิวเท่านั้น)
+- `reviewed` = จำนวนรีวิวของ `sessionId` นี้ที่เก็บแล้ว; `remainingDue` = จำนวนการ์ด (ทั้งสองทิศ) ของคำที่เรียนจบแล้วที่ `due` ก่อนเที่ยงคืนท้องถิ่นถัดจาก `sessionDate` และ `created_at <=` เวลารีวิวแรก
+- `countedForStreak` = มีรีวิวของ session บนการ์ดที่ถึงกำหนดจริงตอนนั้น (`state_before.due` ก่อนสิ้นวัน) ≥ 1 **และ** `remainingDue === 0` จึงเรียก `touchStreak(..., "review")` (วันที่มี `lesson`/`practice` อยู่แล้วคงแถวเดิม); ไม่ผ่านก็ตอบ `200` `false` (ไม่ใช่ 409) พร้อม `streak` ปัจจุบัน วันที่ไม่มีการ์ดถึงกำหนดไม่นับ
+- เรียกซ้ำผลเดิม; ไม่เขียน `progress`/`profiles`/`attempts`; ไม่สร้างการ์ด (ไม่เรียก `reconcileCards`)
+
 #### รายละเอียดฝั่ง server (`src/lib/server/`)
 
 - ผู้ใช้ปัจจุบัน: `getCurrentUserId()` (`current-user.ts`) คืน `"local"` และสร้างแถว `user` กับ `profiles` (`start_date` = วันนี้ตามเวลา Asia/Bangkok, `current_day` 1) ตอนเรียกครั้งแรก ปลอดภัยเมื่อเรียกพร้อมกัน; Better Auth ใน M2 แก้เฉพาะฟังก์ชันนี้
