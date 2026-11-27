@@ -51,7 +51,7 @@ english_zero_to_hero/
 │   │   ├── ~offline/            # หน้าที่แสดงเมื่อออฟไลน์และยังไม่มี cache
 │   │   ├── (main)/              # หน้าที่มีแถบเมนูหลัก: / , practice, progress, settings (layout.tsx ใส่ MainNav)
 │   │   ├── (learn)/day/[day]/   # Lesson Player (ไม่มีแถบเมนู)
-│   │   ├── review/              # SRS
+│   │   ├── (learn)/review/      # ทวนคำศัพท์ (SRS) ไม่มีแถบเมนู อยู่ใต้ (learn) ร่วมกับตัวเล่นบทเรียน
 │   │   ├── words/               # Word Bank + หน้ารายละเอียดคำ
 │   │   ├── pronunciation/       # Pronunciation Lab
 │   │   └── api/                 # AI, scoring, STT

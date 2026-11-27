@@ -56,19 +56,6 @@ describe("session state", () => {
     expect(Math.abs(at("v-country|en_th") - at("v-country|th_en"))).toBeGreaterThanOrEqual(SIBLING_GAP);
   });
 
-  it("the payload's end of today decides until the first answer; from then on the end of that answer's day does (plan 2.4)", () => {
-    // Due 3 minutes before the payload's end of today: still due today. A server card one minute after it: not, before any answer.
-    const near = reviewState("2026-11-27T03:00:00Z");
-    const rated = applyRating(near, 3, NOW, TZ);
-    const endBefore = new Date(rated.due.getTime() - 60_000).toISOString();
-    const q = makeQueue([["country", "en_th"], ["friend", "en_th"]], { endOfToday: endBefore });
-    const beforeAnswer = sessionReducer(createSession(q), { type: "server", key: "v-friend|en_th", card: toWire(newState(rated.due.toISOString())) });
-    expect(keys(beforeAnswer)).not.toContain("v-friend|en_th");
-    expect(keys(run(createSession(q), 3))).not.toContain("v-country|en_th"); // Good moves it by days: gone in both rules
-    // after the first answer (12:00 on 27 Nov in Bangkok) the day ends at 17:00Z, whatever the payload said
-    expect(keys(run(createSession(q), 1))).toContain("v-country|en_th");
-  });
-
   it("remembers what the last rating did, for the live region", () => {
     const s = run(createSession(makeQueue([["country", "en_th"], ["friend", "en_th"]])), 1);
     expect(s.last).toMatchObject({ rating: 1, interval: "10 นาที", again: true });

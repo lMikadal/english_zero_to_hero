@@ -6,20 +6,22 @@ import { getDayProgress, hasSessionActivity, sessionFirstAttempts } from "@/db/q
 import { withTransactionRetry } from "@/db/queries/tx";
 import { completePracticeRequestSchema, type CompletePracticeResponse } from "@/lib/attempts/contract";
 import { getLesson } from "@/lib/content/repo";
+import type { Lesson } from "@/lib/content/schema";
 import { replaySections } from "@/lib/practice/replay";
 import { localDate, resolveTimeZone } from "@/lib/progress/dates";
 import { lessonScore } from "@/lib/progress/lesson-score";
 import type { HandlerDeps, HandlerResult } from "./attempts-handler";
 import { clampTimestamp, timestampFloor } from "./clamp";
 
-export async function handleCompletePractice(body: unknown, { db, userId, now }: HandlerDeps): Promise<HandlerResult<CompletePracticeResponse>> {
+/** `content` is a test seam: where the lesson comes from (default: the content files). */
+export async function handleCompletePractice(body: unknown, { db, userId, now, content = { getLesson } }: HandlerDeps & { content?: { getLesson(day: number): Lesson | null } }): Promise<HandlerResult<CompletePracticeResponse>> {
   const parsed = completePracticeRequestSchema.safeParse(body);
   if (!parsed.success) return { status: 400, body: { error: "invalid_body" } };
   const { day, skill, sessionId, completedAt: clientCompletedAt } = parsed.data;
 
   let lesson;
   try {
-    lesson = getLesson(day);
+    lesson = content.getLesson(day);
   } catch (err) {
     console.error(`[practice-complete] lesson for day ${day} failed to load:`, err);
     lesson = null;

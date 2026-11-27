@@ -1,0 +1,310 @@
+{
+  "day": 13,
+  "phase": 1,
+  "week": 2,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 2 review: long vowels, numbers and the verb be",
+    "th": "ทบทวนสัปดาห์ที่ 2: สระยาว ตัวเลข และ verb to be"
+  },
+  "objectives": [
+    {
+      "en": "Tell this week's long vowels apart from the short ones",
+      "th": "แยกเสียงสระยาวของสัปดาห์นี้กับสระสั้นได้"
+    },
+    {
+      "en": "Use am, is and are with I, you, he, she, we and they",
+      "th": "ใช้ am, is, are กับ I, you, he, she, we, they ได้ถูกต้อง"
+    },
+    {
+      "en": "Say numbers up to 100 and ask and tell age",
+      "th": "พูดตัวเลขถึง 100 และถามบอกอายุได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Long vowels and numbers",
+        "th": "สระยาวและตัวเลข"
+      },
+      "exercises": [
+        {
+          "id": "d013-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "ship",
+              "b": "sheep",
+              "answer": "b"
+            },
+            {
+              "a": "full",
+              "b": "fool",
+              "answer": "b"
+            },
+            {
+              "a": "ball",
+              "b": "bell",
+              "answer": "a"
+            },
+            {
+              "a": "work",
+              "b": "walk",
+              "answer": "a"
+            },
+            {
+              "a": "park",
+              "b": "pack",
+              "answer": "a"
+            },
+            {
+              "a": "chip",
+              "b": "cheap",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "ee",
+            "ih",
+            "oo",
+            "or",
+            "er",
+            "ar"
+          ]
+        },
+        {
+          "id": "d013-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม แยกให้ชัด three / thirteen / thirty"
+          },
+          "text": "Three, thirteen, thirty.",
+          "ipa": "/θriː ˌθɜːrˈtiːn ˈθɜːrti/"
+        },
+        {
+          "id": "d013-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียงยาว /iː/ /ɔː/ /ɜː/ และ /ɑː/"
+          },
+          "text": "She is thirty. He is forty. We are in the park.",
+          "ipa": "/ʃiː ɪz ˈθɜːrti hiː ɪz ˈfɔːrti wiː ɑːr ɪn ðə pɑːrk/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d013-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าตัวเลขตัวที่สองคืออะไร"
+          },
+          "audioText": "My number is five, two, seven.",
+          "question": {
+            "en": "What is the second number?",
+            "th": "ตัวเลขตัวที่สองคืออะไร"
+          },
+          "choices": [
+            "Five",
+            "Two",
+            "Seven"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d013-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเบนทำอาชีพอะไร"
+          },
+          "audioText": "Hello! I am Ben. I am a doctor. I am from England.",
+          "question": {
+            "en": "What is Ben?",
+            "th": "เบนทำอาชีพอะไร"
+          },
+          "choices": [
+            "A teacher",
+            "A doctor",
+            "A student"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d013-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "They are in the park. She is happy.",
+          "accept": [
+            "They're in the park. She's happy",
+            "They are in the park. She's happy",
+            "They're in the park. She is happy"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d013-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Hello! I am Mai. I am a teacher.",
+            "Are you a student?",
+            "No, I am not. I am a doctor.",
+            "How old are you?",
+            "I am thirty. And you?",
+            "I am twenty. We are friends."
+          ]
+        },
+        {
+          "id": "d013-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียงตามความจริงของคุณ บอกอายุและบอกว่าเป็นนักเรียนไหม"
+          },
+          "prompt": "How old are you? Are you a student?",
+          "sampleAnswer": "I am thirty. I am not a student.",
+          "keywords": [
+            "am"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d013-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hi! I am Ben. I am not a teacher. I am a doctor. I am thirty.\nMy friend is Mai. She is a teacher. She is twenty.\nWe are not in the school. We are in the park. We are happy.",
+          "questions": [
+            {
+              "question": {
+                "en": "What is Ben?",
+                "th": "เบนทำอาชีพอะไร"
+              },
+              "choices": [
+                "A teacher",
+                "A doctor"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "How old is Mai?",
+                "th": "ไหมอายุเท่าไร"
+              },
+              "choices": [
+                "Twenty",
+                "Thirty"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where are Ben and Mai?",
+                "th": "เบนกับไหมอยู่ที่ไหน"
+              },
+              "choices": [
+                "In the school",
+                "In the park"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d013-write-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-three"
+            },
+            {
+              "vocabId": "v-tea"
+            },
+            {
+              "vocabId": "v-old"
+            },
+            {
+              "vocabId": "v-door"
+            },
+            {
+              "vocabId": "v-teacher"
+            },
+            {
+              "vocabId": "v-park"
+            }
+          ]
+        },
+        {
+          "id": "d013-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "I ___ not a teacher. She ___ a teacher. We ___ friends.",
+          "answer": [
+            "am",
+            "is",
+            "are"
+          ]
+        },
+        {
+          "id": "d013-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "พวกเขาเป็นนักเรียน",
+          "accept": [
+            "They are students",
+            "They're students"
+          ]
+        }
+      ]
+    }
+  ]
+}
