@@ -17,11 +17,11 @@ export function normalizeAnswer(s: string): string {
     .trim();
 }
 
-/** The form two answers are compared in: normalised, then contractions and digits folded (equivalents.ts). */
-const comparable = (s: string): string => canonicalAnswer(normalizeAnswer(s));
+/** The form two answers are compared in: normalised, then (unless `strict`) contractions and digits folded (equivalents.ts). */
+export const comparableAnswer = (s: string, strict = false): string => (strict ? normalizeAnswer(s) : canonicalAnswer(normalizeAnswer(s)));
 
 /** True when `input` equals one of `accepted` after normalising both and folding contractions and digits. Empty input never matches. */
-export function matchesAny(input: string, accepted: readonly string[]): boolean {
-  const n = comparable(input);
-  return n !== "" && accepted.some((a) => comparable(a) === n);
+export function matchesAny(input: string, accepted: readonly string[], opts: { strict?: boolean } = {}): boolean {
+  const n = comparableAnswer(input, opts.strict);
+  return n !== "" && accepted.some((a) => comparableAnswer(a, opts.strict) === n);
 }
