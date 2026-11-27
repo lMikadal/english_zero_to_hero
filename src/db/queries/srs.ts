@@ -1,6 +1,6 @@
 // The ONLY module that reads or writes the review tables as tables (ESLint enforces it: srsCards and srsReviews cannot
 // be imported as values anywhere else). Everything takes a client or a transaction.
-import { and, count, eq, inArray, lt, lte } from "drizzle-orm";
+import { and, count, eq, inArray, lt, lte, min, sql } from "drizzle-orm";
 import type { CardState } from "@/lib/srs/scheduler";
 import { srsCards, srsReviews, type SrsDirection } from "../schema";
 import type { DbOrTx } from "../types";
@@ -56,10 +56,13 @@ export async function insertReview(db: DbOrTx, userId: string, r: NewReview): Pr
   return inserted.length > 0;
 }
 
-/** The `state_after` of the user's review with this id (jsonb), or undefined when there is none (or it is another user's). */
-export async function findReviewStateAfter(db: DbOrTx, userId: string, id: string): Promise<unknown> {
-  const [row] = await db.select({ stateAfter: srsReviews.stateAfter }).from(srsReviews).where(and(eq(srsReviews.userId, userId), eq(srsReviews.id, id)));
-  return row?.stateAfter;
+/** The user's stored review with this id (the card it belongs to and its `state_after` jsonb), or undefined when there is none (or it is another user's). */
+export async function findReview(db: DbOrTx, userId: string, id: string) {
+  const [row] = await db
+    .select({ vocabId: srsReviews.vocabId, direction: srsReviews.direction, stateAfter: srsReviews.stateAfter })
+    .from(srsReviews)
+    .where(and(eq(srsReviews.userId, userId), eq(srsReviews.id, id)));
+  return row;
 }
 
 /** Writes the new scheduling state of a (locked) card. */
@@ -73,9 +76,21 @@ export async function updateCard(db: DbOrTx, userId: string, vocabId: string, di
     .where(and(eq(srsCards.userId, userId), eq(srsCards.vocabId, vocabId), eq(srsCards.direction, direction)));
 }
 
-/** How many reviews of the session are stored. */
-export async function countSessionReviews(db: DbOrTx, userId: string, sessionId: string): Promise<number> {
-  const [row] = await db.select({ n: count() }).from(srsReviews).where(and(eq(srsReviews.userId, userId), eq(srsReviews.sessionId, sessionId)));
+/** How many reviews of the session are stored, and the time of the first one (`reviewed_at`, already clamped by the server). */
+export async function sessionReviewSpan(db: DbOrTx, userId: string, sessionId: string): Promise<{ count: number; first: Date | null }> {
+  const [row] = await db
+    .select({ n: count(), first: min(srsReviews.reviewedAt) })
+    .from(srsReviews)
+    .where(and(eq(srsReviews.userId, userId), eq(srsReviews.sessionId, sessionId)));
+  return { count: row.n, first: row.first ? new Date(row.first) : null };
+}
+
+/** Reviews of the session on a card that was due before `end` when it was reviewed (`state_before.due`): the ones that count as "finishing what was due". */
+export async function countSessionDueReviews(db: DbOrTx, userId: string, sessionId: string, end: Date): Promise<number> {
+  const [row] = await db
+    .select({ n: count() })
+    .from(srsReviews)
+    .where(and(eq(srsReviews.userId, userId), eq(srsReviews.sessionId, sessionId), sql`(${srsReviews.stateBefore}->>'due')::timestamptz < ${end.toISOString()}::timestamptz`));
   return row.n;
 }
 

@@ -116,6 +116,7 @@ describe("a finished session counts for the streak", () => {
     await reviewAll(4);
     const first = await complete();
     const second = randomUUID();
+    await dueNow("v-hello", "en_th", new Date(T1.getTime() + 30_000)); // due again, so the second session has something to finish
     await review([reviewItem("v-hello", "en_th", 4, new Date(T1.getTime() + 60_000), { sessionId: second })], new Date(T1.getTime() + 60_000));
     const r = await complete({ sessionId: second }, new Date(T1.getTime() + 120_000));
     expect(r.streak).toEqual(first.streak);
@@ -144,9 +145,9 @@ describe("which day, which cards", () => {
     expect((await days()).map((d) => d.localDate)).toEqual(["2026-11-25", "2026-11-26"]);
   });
 
-  it("a card created AFTER the session started does not have to be reviewed (the lesson finished mid-session)", async () => {
+  it("a card created AFTER the session's first review does not have to be reviewed (the lesson finished mid-session)", async () => {
     await reviewAll(4, DAY1.slice(0, 4));
-    await db.update(srsCards).set({ createdAt: new Date(START.getTime() + 60_000), due: START }).where(and(eq(srsCards.vocabId, "v-cat"), eq(srsCards.direction, "en_th")));
+    await db.update(srsCards).set({ createdAt: new Date(T1.getTime() - 30_000), due: START }).where(and(eq(srsCards.vocabId, "v-cat"), eq(srsCards.direction, "en_th")));
     expect(await complete()).toMatchObject({ remainingDue: 0, countedForStreak: true });
   });
 
@@ -225,9 +226,8 @@ describe("GUARD: a streak day cannot be earned without finishing that day's revi
     expect(await rowsFor()).toEqual(["2026-11-25/lesson"]);
   });
 
-  it("C) early reviews of cards that were not due do not count, even next to one that was", async () => {
-    await db.update(srsCards).set({ due: new Date("2027-01-01T00:00:00.000Z") }).where(eq(srsCards.direction, "th_en"));
-    await dueNow("v-cat", "en_th", new Date("2027-01-01T00:00:00.000Z")); // nothing is due at all
+  it("C) several early reviews of cards that were not due do not count either", async () => {
+    await db.update(srsCards).set({ due: new Date("2027-01-01T00:00:00.000Z") }); // nothing is due at all
     await review(DAY1.map((w) => reviewItem(w, "th_en", 4, T1)));
     expect(await complete()).toMatchObject({ remainingDue: 0, countedForStreak: false });
   });
