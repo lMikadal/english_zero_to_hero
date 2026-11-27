@@ -255,3 +255,18 @@ describe("TOPICS", () => {
     expect(TOPICS).toContain("function_words");
   });
 });
+
+describe("strict flag", () => {
+  const strictBase = {
+    dictation: { id: "d001-listen-01", type: "dictation", instruction: { th: "ก" }, audioText: "Hi" },
+    translate: { id: "d001-write-01", type: "translate_th_en", instruction: { th: "ก" }, th: "ก", accept: ["Hi"] },
+    blank: { id: "d001-write-02", type: "fill_blank", instruction: { th: "ก" }, text: "A ___", answer: ["b"] },
+  };
+  it.each(Object.entries(strictBase))("%s accepts an optional boolean strict", (_n, ex) => {
+    expect(exerciseSchema.safeParse({ ...ex, strict: true }).success).toBe(true);
+    expect(exerciseSchema.safeParse({ ...ex, strict: "yes" }).success).toBe(false);
+  });
+  it("other types reject it", () => {
+    expect(exerciseSchema.safeParse({ id: "d001-speak-01", type: "shadowing", instruction: { th: "ก" }, lines: ["a"], strict: true }).success).toBe(false);
+  });
+});

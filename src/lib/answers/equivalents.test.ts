@@ -28,7 +28,25 @@ describe("canonicalAnswer: contractions", () => {
     expect(canonicalAnswer("his door")).toBe("his door");
     expect(canonicalAnswer("sam's door")).toBe("sam's door");
   });
-  it("does not expand 's before got (it may be 'has')", () => expect(canonicalAnswer("he's got a pen")).toBe("he's got a pen"));
+  it("'s before been or got is 'has', never 'is'", () => {
+    expect(canonicalAnswer("he's got a pen")).toBe("he has got a pen");
+    expect(canonicalAnswer("he's been to japan")).toBe("he has been to japan");
+    expect(canonicalAnswer("what's happened")).toBe("what's happened");
+    expect(canonicalAnswer("he is been to japan")).toBe("he is been to japan");
+  });
+  it("'s before another past participle or an -ed word is left alone (ambiguous: the author must list both forms)", () => {
+    expect(canonicalAnswer("he's tired")).toBe("he's tired");
+    expect(canonicalAnswer("it's gone")).toBe("it's gone");
+    expect(canonicalAnswer("what's happened")).toBe("what's happened");
+  });
+  it("'d is only folded before like and love", () => {
+    expect(canonicalAnswer("i'd like tea")).toBe("i would like tea");
+    expect(canonicalAnswer("we'd love tea")).toBe("we would love tea");
+    expect(canonicalAnswer("i'd go")).toBe("i'd go");
+  });
+  it("a name's 's before a/an/the/from/in is not guessed", () => {
+    expect(canonicalAnswer("sam's from japan")).toBe("sam's from japan");
+  });
   it("only whole tokens are touched", () => expect(canonicalAnswer("he'sx")).toBe("he'sx"));
 });
 
@@ -42,6 +60,20 @@ describe("canonicalAnswer: number words and digits", () => {
     ["a hundred baht", "one hundred baht"],
   ])("%s -> %s", (input, expected) => expect(canonicalAnswer(input)).toBe(expected));
 
+  it("21-99 are one number whether written 21, twenty-one or twenty one", () => {
+    expect(canonicalAnswer("21")).toBe("twenty one");
+    expect(canonicalAnswer("twenty-one")).toBe("twenty one");
+    expect(canonicalAnswer("twenty one")).toBe("twenty one");
+    expect(canonicalAnswer("99 pens")).toBe("ninety nine pens");
+    expect(canonicalAnswer("ninety-nine pens")).toBe("ninety nine pens");
+  });
+  it("not folded: ordinals, 101+, separators, zero, leading zeros, 'a 100'", () => {
+    expect(canonicalAnswer("0")).toBe("0");
+    expect(canonicalAnswer("05")).toBe("05");
+    expect(canonicalAnswer("101")).toBe("101");
+    expect(canonicalAnswer("1st")).toBe("1st");
+    expect(canonicalAnswer("a 100")).toBe("a one hundred");
+  });
   it("does not touch digits inside longer numbers or words", () => {
     expect(canonicalAnswer("110")).toBe("110");
     expect(canonicalAnswer("1100")).toBe("1100");
@@ -84,5 +116,19 @@ describe("matchesAny with equivalents", () => {
     expect(matchesAny("He is 11", ["He is 1"])).toBe(false);
     expect(matchesAny("He is 110", ["He is ten"])).toBe(false);
     expect(matchesAny("He is eleven", ["He is 1 1"])).toBe(false);
+    expect(matchesAny("He is been to Japan", ["He's been to Japan"])).toBe(false);
+    expect(matchesAny("What is happened", ["What's happened"])).toBe(false);
+    expect(matchesAny("I am to", ["I am two"])).toBe(false);
+    expect(matchesAny("I am for", ["I am four"])).toBe(false);
+    expect(matchesAny("I am 40", ["I am fourteen"])).toBe(false);
+    expect(matchesAny("a 100", ["a hundred"])).toBe(false);
+  });
+  it("'s = has before been/got, both directions", () => {
+    expect(matchesAny("He has been to Japan", ["He's been to Japan"])).toBe(true);
+    expect(matchesAny("He's got a cat", ["He has got a cat"])).toBe(true);
+  });
+  it("strict: only case, punctuation and spaces are forgiven", () => {
+    expect(matchesAny("He's 10", ["He is ten"], { strict: true })).toBe(false);
+    expect(matchesAny("he is ten!", ["He is ten"], { strict: true })).toBe(true);
   });
 });

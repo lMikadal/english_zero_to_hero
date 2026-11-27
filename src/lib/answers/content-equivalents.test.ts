@@ -26,8 +26,14 @@ const NUMBERS: [string, string][] = [
 function variants(sentence: string): string[] {
   let out = [sentence];
   const swaps: [RegExp, string][] = [];
+  // 's is only folded when it can only mean "is": never before got/been (those are "has") and never before a participle or -ed word
+  const NOT_PARTICIPLE = "(?! (?:got|been|gone|done|seen|taken|\\w+ed)\\b)";
   for (const [full, short] of PAIRS) {
-    swaps.push([new RegExp(`(?<![\\w'])${full}(?![\\w'])`, "gi"), short], [new RegExp(`(?<![\\w'])${short}(?![\\w'])`, "gi"), full]);
+    const guard = short.endsWith("'s") ? NOT_PARTICIPLE : "";
+    swaps.push([new RegExp(`(?<![\\w'])${full}(?![\\w'])${guard}`, "gi"), short], [new RegExp(`(?<![\\w'])${short}(?![\\w'])${guard}`, "gi"), full]);
+  }
+  for (const w of ["he", "she", "it", "that", "there", "what", "where", "who", "how"]) {
+    swaps.push([new RegExp(`(?<![\\w'])${w} has (?=been|got)`, "gi"), `${w}'s `], [new RegExp(`(?<![\\w'])${w}'s (?=been|got)`, "gi"), `${w} has `]);
   }
   for (const [word, digit] of NUMBERS) {
     swaps.push([new RegExp(`(?<![\\w'-])${word}(?![\\w'-])`, "gi"), digit], [new RegExp(`(?<![\\w'.-])${digit}(?![\\w'.-])`, "g"), word]);
@@ -40,10 +46,12 @@ function variants(sentence: string): string[] {
 }
 
 type Item = { id: string; ex: Exercise; text: string; blank?: number };
+const isStrict = (ex: Exercise) => "strict" in ex && ex.strict === true;
 function typedAnswers(): Item[] {
   const { lessons } = readContent(root);
   const items: Item[] = [];
   for (const { lesson } of lessons) for (const s of lesson.sections) for (const ex of s.exercises) {
+    if (isStrict(ex)) continue;
     if (ex.type === "dictation") for (const t of [ex.audioText, ...(ex.accept ?? [])]) items.push({ id: ex.id, ex, text: t });
     if (ex.type === "translate_th_en") for (const t of ex.accept) items.push({ id: ex.id, ex, text: t });
     if (ex.type === "fill_blank") ex.answer.forEach((t, i) => items.push({ id: ex.id, ex, text: t, blank: i }));
@@ -71,6 +79,46 @@ describe("real content: contraction and digit variants of every accepted answer 
         if ("error" in g || !g.correct) failures.push(`${id}: "${v}" (variant of "${text}")`);
       }
     }
+    expect(failures).toEqual([]);
+  });
+});
+
+describe("over-acceptance: wrong answers stay wrong", () => {
+  const translate = (accept: string[]) => ({ id: "d001-write-01", type: "translate_th_en", instruction: { th: "ก" }, th: "ก", accept }) as unknown as Exercise;
+  const grade = (accept: string[], input: string) => {
+    const g = gradeExercise(translate(accept), { kind: "text", text: input });
+    return "error" in g ? false : g.correct;
+  };
+  it.each([
+    [["He's been to Japan"], "He is been to Japan"],
+    [["What's happened"], "What is happened"],
+    [["He's got a cat"], "He is got a cat"],
+    [["It's a door"], "Its a door"],
+    [["Its door is big"], "It's door is big"],
+    [["His door"], "He's door"],
+    [["He is two"], "He is to"],
+    [["He is four"], "He is for"],
+    [["He is fourteen"], "He is 40"],
+    [["He is forty"], "He is 14"],
+    [["a hundred"], "a 100"],
+    [["ten"], "110"],
+  ])("%j does not accept %j", (accept, input) => expect(grade(accept, input)).toBe(false));
+
+  it("over real content: swapping a number for a different one is wrong unless it is itself accepted", () => {
+    const next: Record<string, string> = Object.fromEntries(NUMBERS.map(([w], i) => [w, NUMBERS[(i + 1) % NUMBERS.length][0]]));
+    const re = new RegExp(`\\b(${NUMBERS.map(([w]) => w).join("|")})\\b`, "i");
+    const failures: string[] = [];
+    let tried = 0;
+    for (const { id, ex, text, blank } of typedAnswers()) {
+      const m = re.exec(text);
+      if (!m || blank !== undefined || isStrict(ex)) continue;
+      const wrong = text.replace(re, next[m[1].toLowerCase()]);
+      const g = gradeExercise(ex, { kind: "text", text: wrong });
+      tried++;
+      const alsoAccepted = (ex.type === "dictation" ? [ex.audioText, ...(ex.accept ?? [])] : ex.type === "translate_th_en" ? ex.accept : []).some((a) => a === wrong);
+      if (!alsoAccepted && !("error" in g) && g.correct) failures.push(`${id}: "${wrong}"`);
+    }
+    expect(tried).toBeGreaterThan(3);
     expect(failures).toEqual([]);
   });
 });
