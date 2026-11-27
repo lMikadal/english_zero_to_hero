@@ -28,3 +28,9 @@ export const SIBLING_STAGGER_DAYS = 1;
 export const SIBLING_GAP = 4;
 /** A card that is still due today after a rating comes back after this many other cards. */
 export const REQUEUE_GAP = 3;
+/**
+ * A Learning or Relearning card answered again less than this long after its last review is the SAME SESSION: the elapsed
+ * days are 0 even when local midnight lies between the two answers (23:55 then 00:05). Longer gaps, and Review cards, count
+ * local calendar days. Without this, a card graduating across midnight would be given the long-term formula (~7 days, not ~2).
+ */
+export const SAME_SESSION_MAX_MS = 4 * 60 * 60 * 1000;

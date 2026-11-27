@@ -164,4 +164,26 @@ export const GOLDEN_SEQUENCES: { name: string; tz: string; start: string; steps:
       { rating: 3, now: "2026-03-01T10:30:00.000Z", due: "2026-08-11T11:30:00.000Z", stability: 162.9998, difficulty: 2.0906, state: 2, scheduledDays: 163, learningSteps: 0, reps: 5, lapses: 0, elapsedDays: 46 },
     ],
   },
+  {
+    name: "Asia/Bangkok: 3 3 1 3 3 starting 23:55 local (learning and relearning steps cross midnight)",
+    tz: "Asia/Bangkok",
+    start: "2026-01-01T16:55:00.000Z",
+    steps: [
+      { rating: 3, now: "2026-01-01T16:55:00.000Z", due: "2026-01-01T17:05:00.000Z", stability: 2.3065, difficulty: 2.1181, state: 1, scheduledDays: 0, learningSteps: 1, reps: 1, lapses: 0, elapsedDays: 0 },
+      { rating: 3, now: "2026-01-01T17:05:00.000Z", due: "2026-01-03T17:05:00.000Z", stability: 2.3065, difficulty: 2.1112, state: 2, scheduledDays: 2, learningSteps: 0, reps: 2, lapses: 0, elapsedDays: 0 },
+      { rating: 1, now: "2026-01-03T17:05:00.000Z", due: "2026-01-03T17:15:00.000Z", stability: 0.6077, difficulty: 7.3922, state: 3, scheduledDays: 0, learningSteps: 0, reps: 3, lapses: 1, elapsedDays: 2 },
+      { rating: 3, now: "2026-01-03T17:15:00.000Z", due: "2026-01-04T17:15:00.000Z", stability: 0.6598, difficulty: 7.3801, state: 2, scheduledDays: 1, learningSteps: 0, reps: 4, lapses: 1, elapsedDays: 0 },
+      { rating: 3, now: "2026-01-04T17:15:00.000Z", due: "2026-01-07T17:15:00.000Z", stability: 2.4892, difficulty: 7.3679, state: 2, scheduledDays: 3, learningSteps: 0, reps: 5, lapses: 1, elapsedDays: 1 },
+    ],
+  },
+  {
+    name: "America/Los_Angeles: 3 3 3 starting 23:55 PST on the night before the spring DST change",
+    tz: "America/Los_Angeles",
+    start: "2026-03-08T07:55:00.000Z",
+    steps: [
+      { rating: 3, now: "2026-03-08T07:55:00.000Z", due: "2026-03-08T08:05:00.000Z", stability: 2.3065, difficulty: 2.1181, state: 1, scheduledDays: 0, learningSteps: 1, reps: 1, lapses: 0, elapsedDays: 0 },
+      { rating: 3, now: "2026-03-08T08:05:00.000Z", due: "2026-03-10T07:05:00.000Z", stability: 2.3065, difficulty: 2.1112, state: 2, scheduledDays: 2, learningSteps: 0, reps: 2, lapses: 0, elapsedDays: 0 },
+      { rating: 3, now: "2026-03-10T07:05:00.000Z", due: "2026-03-21T07:05:00.000Z", stability: 10.971, difficulty: 2.1043, state: 2, scheduledDays: 11, learningSteps: 0, reps: 3, lapses: 0, elapsedDays: 2 },
+    ],
+  },
 ];

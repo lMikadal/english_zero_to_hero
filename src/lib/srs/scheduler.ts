@@ -15,6 +15,12 @@
 //     across a DST change;
 //   - a due date of one day or more is mapped back to the same local wall-clock time, as a real instant.
 //
+// Same-session rule: calendar-day counting would make a Learning/Relearning card answered at 23:55 and again at 00:05 a
+// "1 day" review, switching FSRS to the long-term formula (the new card would graduate to ~7 days instead of ~2). So when
+// the card is in Learning or Relearning AND the real time since its last review is shorter than SAME_SESSION_MAX_MS
+// (4 hours), the elapsed days are 0, for the FSRS computation and for the stored `elapsedDays`, whatever the dates are.
+// Review cards and longer gaps keep calendar-day counting.
+//
 // The scheduler is built synchronously from ts-fsrs's building blocks (defineScheduler + the FSRS-6 model + the same
 // middlewares DefaultScheduler uses) because DefaultScheduler() is async (it imports the model lazily) and a button
 // label must be computed during render. scheduler.golden.test.ts compares the adapter with vectors generated from
@@ -28,7 +34,7 @@ import {
   schedulerMonotonicIntervalMiddleware, schedulerScheduledDaysMiddleware, schedulerStatsMiddleware,
 } from "ts-fsrs/middlewares";
 import { FSRS6Model } from "ts-fsrs/models/fsrs-6";
-import { SRS_CONFIG } from "./config";
+import { SAME_SESSION_MAX_MS, SRS_CONFIG } from "./config";
 import { fromLocalWall, toLocalWall } from "./zone";
 
 export const RATINGS = [1, 2, 3, 4] as const; // 1 Again, 2 Hard, 3 Good, 4 Easy
@@ -111,8 +117,12 @@ const GRADE: Record<Rating, Grade> = { 1: LibRating.Again, 2: LibRating.Hard, 3:
 
 /** The one place a review is computed; applyRating and previewRatings both go through it, so they cannot disagree. */
 function step(card: CardState, rating: Rating, now: Date, timeZone: string): CardState {
-  const input = toLibrary(card, timeZone);
   const nowWall = toLocalWall(now, timeZone);
+  const input = toLibrary(card, timeZone);
+  const learning = card.state === 1 || card.state === 3;
+  const sameSession = learning && card.lastReview !== null && now.getTime() - card.lastReview.getTime() < SAME_SESSION_MAX_MS;
+  // same session: the library sees the last review at the same local instant, which is 0 days by construction
+  if (sameSession) input.lastReviewAt = nowWall;
   // the day count FSRS itself uses for this review (a difference of local calendar dates), stored as elapsedDays
   const elapsedDays = input.lastReviewAt ? scheduler.chrono.difference(input.lastReviewAt, nowWall) : 0;
   const next = scheduler.review({ card: input, grade: GRADE[rating], now: nowWall }).card;

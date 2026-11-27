@@ -22,6 +22,8 @@ const CONFIG = {
 };
 const DAY = 86_400_000;
 const EARLY_MS = 8 * 3_600_000;
+// must equal SAME_SESSION_MAX_MS in src/lib/srs/config.ts (scheduler.timezone.test.ts pins that one)
+const SAME_SESSION_MAX_MS = 4 * 3_600_000;
 
 const offsets = new Map();
 function offsetMs(ms, tz) {
@@ -58,6 +60,9 @@ const SEQUENCES = [
   { name: "America/Los_Angeles: good x6 across the March 2026 DST change, at the due instant", tz: "America/Los_Angeles", start: "2026-02-20T20:00:00.000Z", ratings: [3, 3, 3, 3, 3, 3] },
   { name: "America/Los_Angeles: easy x4 at 00:30 local on the due day (spring and autumn changes)", tz: "America/Los_Angeles", start: "2026-02-01T20:00:00.000Z", ratings: [4, 4, 4, 4], localTime: "00:30" },
   { name: "Pacific/Auckland: good x5 at 23:30 local (UTC+12/13)", tz: "Pacific/Auckland", start: "2026-01-01T05:00:00.000Z", ratings: [3, 3, 3, 3, 3], localTime: "23:30" },
+  // Learning/Relearning steps that cross local midnight are the same session (elapsed 0): the first answer and the relearning step both cross it
+  { name: "Asia/Bangkok: 3 3 1 3 3 starting 23:55 local (learning and relearning steps cross midnight)", tz: "Asia/Bangkok", start: "2026-01-01T16:55:00.000Z", ratings: [3, 3, 1, 3, 3] },
+  { name: "America/Los_Angeles: 3 3 3 starting 23:55 PST on the night before the spring DST change", tz: "America/Los_Angeles", start: "2026-03-08T07:55:00.000Z", ratings: [3, 3, 3] },
 ];
 
 const scheduler = await DefaultScheduler(CONFIG);
@@ -71,6 +76,8 @@ function review(card, grade, now, tz) {
     scheduledDays: card.scheduledDays, learningStep: card.learningStep,
   };
   const nowShifted = shift(now, tz);
+  // same session: a Learning (1) or Relearning (3) card seen again within SAME_SESSION_MAX_MS counts 0 days, whatever the dates
+  if ((card.state === 1 || card.state === 3) && card.last && now.getTime() - card.last.getTime() < SAME_SESSION_MAX_MS) lib.lastReviewAt = nowShifted;
   const elapsedDays = lib.lastReviewAt ? scheduler.chrono.difference(lib.lastReviewAt, nowShifted) : 0;
   const next = scheduler.review({ card: lib, grade, now: nowShifted }).card;
   const due = next.scheduledDays >= 1 ? unshift(next.dueAt, tz) : new Date(now.getTime() + (next.dueAt.getTime() - nowShifted.getTime()));
