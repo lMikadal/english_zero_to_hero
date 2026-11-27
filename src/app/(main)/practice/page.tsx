@@ -6,7 +6,9 @@ import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
 import { getLesson } from "@/lib/content/repo";
 import type { Lesson } from "@/lib/content/schema";
 import { REPLAY_SKILL_LABEL_TH, replayHref, replaySkills } from "@/lib/practice/replay";
+import { PracticeReviewCard, type ReviewNumbers } from "@/components/review/ReviewEntry";
 import { getCurrentUserId } from "@/lib/server/current-user";
+import { getReviewSummary } from "@/lib/srs/cards";
 
 // Which days are finished depends on the learner: never cache.
 export const dynamic = "force-dynamic";
@@ -15,8 +17,16 @@ type Done = Awaited<ReturnType<typeof listDoneDays>>[number];
 
 export default async function PracticePage() {
   let days: Done[];
+  let summary: ReviewNumbers = null;
   try {
-    days = await listDoneDays(getDb(), await getCurrentUserId());
+    const userId = await getCurrentUserId();
+    days = await listDoneDays(getDb(), userId);
+    try {
+      // The server's clock decides "today" (in the learner's zone, inside getReviewSummary); the same definition as /review.
+      summary = await getReviewSummary(getDb(), userId, new Date());
+    } catch (e) {
+      console.error("Cannot read the review summary:", e); // the lessons below still work; the card says it could not count
+    }
   } catch (e) {
     console.error("Cannot read the finished days:", e);
     return <DbErrorScreen retryHref="/practice" underNav />;
@@ -38,6 +48,7 @@ export default async function PracticePage() {
         <h1 className="text-2xl font-bold tracking-tight">ฝึกเพิ่ม</h1>
         <p className="text-sm text-muted">เล่นทั้งบทจนจบและตอบอย่างน้อยหนึ่งข้อ นับสตรีค · เล่นทีละทักษะไม่นับ · คะแนนเดิมของบทไม่เปลี่ยน</p>
       </header>
+      <PracticeReviewCard summary={summary} />
       <h2 className="text-base font-medium text-muted">เล่นบทที่เรียนแล้วซ้ำ</h2>
       {rows.length === 0 ? (
         <div className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5">

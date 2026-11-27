@@ -438,7 +438,9 @@ describe("getReviewSummary", () => {
   });
 
   it("day 1 just finished: 5 words with cards, none due today (they start tomorrow); once they are due, 10 cards (not 5 words)", async () => {
-    await markDone(1);
+    const completedAt = new Date(NOW.getTime() - 3_600_000);
+    await markDone(1, completedAt);
+    await reconcile(NOW, BKK, { completed: { day: 1, completedAt } }); // what finishing the lesson does
     expect(await agree()).toEqual({ due: 0, withCard: 5 });
     await db.update(srsCards).set({ due: new Date(NOW.getTime() - 3_600_000) }).where(eq(srsCards.userId, userId));
     expect(await agree()).toEqual({ due: 10, withCard: 5 });
