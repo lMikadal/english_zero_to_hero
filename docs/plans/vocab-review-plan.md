@@ -1,6 +1,6 @@
 # แผน: ทวนคำศัพท์ด้วย FSRS (roadmap "Vocabulary SRS (FSRS)", ภาพ 23–24)
 
-สถานะ: แผนของ architect (2026-11-26) PR 1 ทำแล้ว (2026-11-27: ข้อ 1.11, 2.7, 4.4 แก้ตามของจริงที่ตรวจ/คำนวณ) PR 2–6 ยังไม่เริ่ม อ่านคู่กับ `docs/PROGRESS.md` §2/§5, `docs/ARCHITECTURE.md` §4/§5.1, `design/README.md` (ui-v2 "การตัดสินใจของผู้ใช้"), `docs/plans/replay-plan.md` (ใช้รูปแบบเดียวกัน)
+สถานะ: แผนของ architect (2026-11-26) PR 1 ทำแล้ว (2026-11-27: ข้อ 1.11, 2.7, 4.4 แก้ตามของจริงที่ตรวจ/คำนวณ) PR 2 ทำแล้ว (ข้อ 4.5) PR 3–6 ยังไม่เริ่ม อ่านคู่กับ `docs/PROGRESS.md` §2/§5, `docs/ARCHITECTURE.md` §4/§5.1, `design/README.md` (ui-v2 "การตัดสินใจของผู้ใช้"), `docs/plans/replay-plan.md` (ใช้รูปแบบเดียวกัน)
 
 เป้าหมาย: คำศัพท์ (`lesson.vocab`) ของบทที่เรียนจบแล้วกลายเป็นการ์ดทวน **2 ใบต่อคำ** (`en_th` และ `th_en`) ทุกวันผู้เรียนทวนการ์ดที่ถึงกำหนด แต่ละใบ: ด้านหน้า → เปิดดู → ด้านหลัง → ให้คะแนน 1–4 (ประเมินตัวเอง) → ตัวจัดตาราง (FSRS) กำหนดวันทวนครั้งถัดไป
 - `en_th` (ภาพ 23–24): หน้า = คำอังกฤษ + IPA + ปุ่มฟัง, หลัง = คำแปลไทย + ประโยคตัวอย่าง
@@ -225,6 +225,13 @@ export function toStoredState(card: CardState): StoredCardState;                
     - PR 4: `UnsavedNote` ต้องแสดงข้อความของบทเรียนก็ต่อเมื่อมี attempt ค้าง ถ้ามีแต่รีวิวค้าง (`pendingReviews > 0`, `pendingAttempts === 0`) ต้องใช้ถ้อยคำของการทวนคำศัพท์ (ตอนนี้ดู `pendingAttempts` อย่างเดียว)
     - PR 2: `separateSiblings` อาจเลื่อนการ์ดใหม่ขึ้นมาก่อนการ์ดทวน (ข้อ 11a อนุญาต เพราะเรียงใหม่เฉพาะเมื่อคู่ชนกัน) เพิ่มเทสต์ "คิวที่ถูกต้องอยู่แล้วต้องไม่เปลี่ยน" ที่ระดับ `loadReviewQueue`
     - เอกสาร: แพ็กเกจ `@open-spaced-repetition/srs-kit` เป็น BSD-3-Clause อยู่ใน `docs/THIRD_PARTY.md` แล้ว
+
+### 4.5 สิ่งที่ PR 2 ทำจริงและต่างจากแผนเดิม (2026-11-27)
+1. **migration 0004** (`0004_swift_hitman.sql`): `ADD COLUMN created_at ... DEFAULT now() NOT NULL`, `ADD COLUMN session_id uuid`, `ADD CONSTRAINT srs_reviews_card_fk` (FK ประกอบ `(user_id, vocab_id, direction)` → `srs_cards` ON DELETE CASCADE), `CREATE INDEX srs_reviews_user_id_session_id_idx`, drop/add `activity_days_source_valid` (เพิ่ม `review`) และ CHECK `stability >= 0`, `difficulty >= 0` (ข้อ 3.1) ไม่มี DROP TABLE/DROP COLUMN แถวเดิมของ `srs_cards` (ถ้ามี) ได้ `created_at` = เวลา migration ส่วน FK จะล้มดังๆ ถ้ามีรีวิวที่ไม่มีการ์ด (ไม่มีทางเกิดเพราะยังไม่มีโค้ดเขียนสองตารางนี้)
+2. **`reconcileCards(db, userId, now, timeZone, { content?, completed? })`**: เพิ่มพารามิเตอร์ `completed: { day, completedAt }` เพื่อบอกว่าบทไหนเพิ่งจบใน transaction นี้ (คำของบทนั้นเริ่มด้วยกติกา `lesson`, คำอื่นทั้งหมดและทิศที่ขาดของคำที่มีบางทิศอยู่แล้วใช้กติกา `backfill`) และ `content` (ค่าเริ่มต้น = ไฟล์จริง) ให้เทสต์ใส่เนื้อหาปลอมได้ ไม่ได้เพิ่มฟังก์ชัน `getTaughtWords` ใหม่: ลำดับการสอนมาจาก `expectedCardVocabIds` (วัน แล้วตำแหน่งใน `lesson.vocab`) และ `getTaughtWords` เดิมมีเทสต์ลำดับเดียวกันเพิ่ม
+3. **`loadReviewQueue(db, userId, now, content?)`** คืน `ReviewQueue` ตามสัญญา (ข้อ 5.1) IPA เลือกตาม `profiles.accent` ตัวอย่างคือ `examples[0]` ไม่คำนวณ preview ในนี้ (client คำนวณเอง)
+4. **ESLint:** `srsCards`/`srsReviews` import เป็นค่าได้เฉพาะ `src/db/queries/srs.ts`, `schema.ts`, `client.ts`/`test-utils.ts` (namespace import ของ Drizzle) และ `*.int.test.ts` (ไฟล์เหล่านี้ยังถูกห้าม `ts-fsrs`) type import ได้ทุกที่ `queries/srs.ts` มีเฉพาะ `listCards` และ `insertMissingCards` ส่วน `lockCard`/`insertReview`/`updateCard`/`countSessionReviews`/`countDueAt` ของข้อ 5.4 เป็นงานของ PR 3
+5. **ขอบของการแยกคู่ (พบตอนเขียนเทสต์ loader):** `separateSiblings` เป็น greedy จึงคิวที่มีคำละ 2 ใบอยู่ครบทั้ง 5 คำ (10 ใบถึงกำหนดวันเดียวกัน) ปลายคิวเหลือคู่เดียวกันติดกันได้ (ใบที่ 9–10) ทั้งที่การเรียงแบบอื่นแยกได้ ตรงกับถ้อยคำข้อ 11a ("เลี่ยงไม่ได้ตามวิธี greedy") ยอมรับในงานนี้ (R3b) ถ้าผู้ใช้เห็นว่าเป็นปัญหา เปลี่ยนเป็นอัลกอริทึมที่ดูล่วงหน้าใน `queue.ts`
 
 ## 5. สัญญาที่ใช้ร่วมกัน
 
