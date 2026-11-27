@@ -76,6 +76,15 @@ export function getVocabEntry(id: string, root = defaultRoot()): VocabItem | nul
   return vocabIndex(root).get(id) ?? null;
 }
 
+/**
+ * A lookup bound to ONE vocabulary index: build it once, then ask for as many entries as you like. getVocabEntry builds
+ * (outside production) a whole index per call, which is fine for one id and ruinous for a loop over every taught word.
+ */
+export function vocabReader(root = defaultRoot()): (id: string) => VocabItem | null {
+  const index = vocabIndex(root);
+  return (id) => index.get(id) ?? null;
+}
+
 const taught = new Map<string, ReadonlyMap<string, string>>();
 
 /**
