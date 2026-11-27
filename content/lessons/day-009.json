@@ -1,0 +1,331 @@
+{
+  "day": 9,
+  "phase": 1,
+  "week": 2,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "He is, she is! Numbers 6–10. Long vowel /uː/",
+    "th": "He is, she is! ตัวเลข 6–10 และเสียงสระยาว /uː/"
+  },
+  "objectives": [
+    {
+      "en": "Say 'He is…' and 'She is…' about a friend",
+      "th": "พูด 'He is…' และ 'She is…' เกี่ยวกับเพื่อนได้"
+    },
+    {
+      "en": "Hear the difference between /ʊ/ (full) and /uː/ (fool)",
+      "th": "แยกเสียงสั้น /ʊ/ (full) กับเสียงยาว /uː/ (fool) ได้ตอนฟัง"
+    },
+    {
+      "en": "Ask and answer 'How old are you?' with numbers 1–10",
+      "th": "ถามและตอบ 'How old are you?' โดยใช้ตัวเลข 1–10 ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-six",
+    "v-seven",
+    "v-eight",
+    "v-nine",
+    "v-ten",
+    "v-old",
+    "v-he",
+    "v-she",
+    "v-school"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The long vowel /uː/ and numbers 6–10",
+        "th": "เสียงสระยาว /uː/ และตัวเลข 6–10"
+      },
+      "exercises": [
+        {
+          "id": "d009-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "oo",
+          "ipa": "/uː/",
+          "tipTh": "เสียง 'อู' ยาว ห่อปากกลมแล้วยืดเสียงให้นาน ต่างจาก /ʊ/ ในคำว่า good ซึ่งสั้นและห่อปากน้อยกว่า คนไทยมักออกเป็นเสียงเดียวกัน ทำให้ full (เต็ม) ฟังเป็น fool (คนโง่) และ pull (ดึง) ฟังเป็น pool (สระน้ำ) สังเกตว่า two และ you ก็ใช้เสียงนี้ แม้สะกดต่างกัน",
+          "examples": [
+            "two",
+            "you",
+            "school",
+            "too"
+          ]
+        },
+        {
+          "id": "d009-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "full",
+              "b": "fool",
+              "answer": "b"
+            },
+            {
+              "a": "pool",
+              "b": "pull",
+              "answer": "a"
+            },
+            {
+              "a": "foot",
+              "b": "food",
+              "answer": "b"
+            }
+          ]
+        },
+        {
+          "id": "d009-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง six ให้ออกเสียง s ท้ายคำครบ (ไม่ใช่ 'ซิก') และปิดเสียง t ใน eight และ n ใน nine, ten ให้ชัด"
+          },
+          "text": "Six, seven, eight, nine, ten.",
+          "ipa": "/sɪks ˈsevn eɪt naɪn ten/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: how old?",
+        "th": "ฟัง: อายุเท่าไร"
+      },
+      "exercises": [
+        {
+          "id": "d009-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเธออายุเท่าไร"
+          },
+          "audioText": "She is eight. He is ten.",
+          "question": {
+            "en": "How old is she?",
+            "th": "เธออายุเท่าไร"
+          },
+          "choices": [
+            "Seven",
+            "Eight",
+            "Ten"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d009-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครอายุเก้าขวบ"
+          },
+          "audioText": "Ann is my friend. She is nine. Ben is my friend, too. He is seven.",
+          "question": {
+            "en": "Who is nine?",
+            "th": "ใครอายุเก้าขวบ"
+          },
+          "choices": [
+            "Ann",
+            "Ben"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d009-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Six, seven, eight, nine, ten.",
+          "accept": [
+            "6, 7, 8, 9, 10",
+            "6 7 8 9 10",
+            "6,7,8,9,10"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Ask and say ages",
+        "th": "ถามและบอกอายุ"
+      },
+      "exercises": [
+        {
+          "id": "d009-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "How old are you, Ben?",
+            "I am nine. And you?",
+            "I am ten.",
+            "This is my friend, Ann. She is eight.",
+            "He is nine. She is eight."
+          ]
+        },
+        {
+          "id": "d009-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "นับเลข 6 ถึง 10 ด้วยเสียง"
+          },
+          "prompt": "Count from six to ten.",
+          "sampleAnswer": "Six, seven, eight, nine, ten.",
+          "keywords": [
+            "six",
+            "ten"
+          ]
+        },
+        {
+          "id": "d009-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง he, she ให้ยืดเสียง /iː/ และ she ใช้เสียง /ʃ/ (ชู ริมฝีปากเล็กน้อย)"
+          },
+          "text": "He is my friend. She is my friend, too.",
+          "ipa": "/hiː ɪz maɪ frend ʃiː ɪz maɪ frend tuː/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Ann and Ben at school",
+        "th": "แอนกับเบนที่โรงเรียน"
+      },
+      "exercises": [
+        {
+          "id": "d009-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "This is my school. It is big.\nThis is my friend, Ann. She is nine.\nThis is my friend, Ben. He is ten.\nAnn is in my school. Ben is in my school, too.",
+          "questions": [
+            {
+              "question": {
+                "en": "How old is Ben?",
+                "th": "เบนอายุเท่าไร"
+              },
+              "choices": [
+                "Nine",
+                "Ten"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Who is nine?",
+                "th": "ใครอายุเก้าขวบ"
+              },
+              "choices": [
+                "Ann",
+                "Ben"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is the school big?",
+                "th": "โรงเรียนใหญ่ไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: he is, she is",
+        "th": "เขียน: he is, she is"
+      },
+      "exercises": [
+        {
+          "id": "d009-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "friend",
+            "She",
+            "is",
+            "my"
+          ],
+          "answer": "She is my friend"
+        },
+        {
+          "id": "d009-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติม He หรือ She"
+          },
+          "text": "Ann is ten. ___ is my friend. Ben is nine. ___ is my friend, too.",
+          "answer": [
+            "She",
+            "He"
+          ]
+        },
+        {
+          "id": "d009-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เขา (ผู้ชาย) อายุสิบขวบ",
+          "accept": [
+            "He is ten",
+            "He's ten",
+            "He is ten years old",
+            "He's ten years old",
+            "He is 10",
+            "He's 10",
+            "He is 10 years old",
+            "He's 10 years old"
+          ]
+        },
+        {
+          "id": "d009-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-six"
+            },
+            {
+              "vocabId": "v-ten"
+            },
+            {
+              "vocabId": "v-old"
+            },
+            {
+              "vocabId": "v-he"
+            },
+            {
+              "vocabId": "v-she"
+            },
+            {
+              "vocabId": "v-school"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
