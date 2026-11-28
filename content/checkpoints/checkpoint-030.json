@@ -1,0 +1,780 @@
+{
+  "afterDay": 30,
+  "cefr": "preA1",
+  "title": {
+    "en": "Checkpoint 1: days 1–30",
+    "th": "แบบทดสอบประจำเดือน ครั้งที่ 1: วันที่ 1–30"
+  },
+  "estimatedMinutes": 30,
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Sounds",
+        "th": "เสียง"
+      },
+      "weight": 20,
+      "reviewDays": [
+        13,
+        20,
+        27
+      ],
+      "exercises": [
+        {
+          "id": "c030-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bad",
+              "b": "bed",
+              "answer": "b"
+            },
+            {
+              "a": "cat",
+              "b": "cut",
+              "answer": "a"
+            },
+            {
+              "a": "hat",
+              "b": "hot",
+              "answer": "a"
+            },
+            {
+              "a": "men",
+              "b": "man",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "ae",
+            "eh",
+            "ah",
+            "aa"
+          ]
+        },
+        {
+          "id": "c030-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "ship",
+              "b": "sheep",
+              "answer": "b"
+            },
+            {
+              "a": "seat",
+              "b": "sit",
+              "answer": "b"
+            },
+            {
+              "a": "bit",
+              "b": "beat",
+              "answer": "a"
+            },
+            {
+              "a": "leap",
+              "b": "lip",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "ih",
+            "ee"
+          ]
+        },
+        {
+          "id": "c030-pron-03",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bought",
+              "b": "boot",
+              "answer": "b"
+            },
+            {
+              "a": "turn",
+              "b": "torn",
+              "answer": "a"
+            },
+            {
+              "a": "cot",
+              "b": "cart",
+              "answer": "b"
+            },
+            {
+              "a": "mud",
+              "b": "mood",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "oo",
+            "or",
+            "er",
+            "ar",
+            "aa",
+            "ah"
+          ]
+        },
+        {
+          "id": "c030-pron-04",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "think",
+              "b": "sink",
+              "answer": "a"
+            },
+            {
+              "a": "tree",
+              "b": "three",
+              "answer": "b"
+            },
+            {
+              "a": "den",
+              "b": "then",
+              "answer": "b"
+            },
+            {
+              "a": "though",
+              "b": "dough",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "th",
+            "dh",
+            "s",
+            "t",
+            "d"
+          ]
+        },
+        {
+          "id": "c030-pron-05",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "vest",
+              "b": "west",
+              "answer": "a"
+            },
+            {
+              "a": "wine",
+              "b": "vine",
+              "answer": "b"
+            },
+            {
+              "a": "wet",
+              "b": "vet",
+              "answer": "b"
+            },
+            {
+              "a": "worse",
+              "b": "verse",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "v",
+            "w"
+          ]
+        },
+        {
+          "id": "c030-pron-06",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "right",
+              "b": "light",
+              "answer": "a"
+            },
+            {
+              "a": "load",
+              "b": "road",
+              "answer": "b"
+            },
+            {
+              "a": "glass",
+              "b": "grass",
+              "answer": "a"
+            },
+            {
+              "a": "fry",
+              "b": "fly",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        },
+        {
+          "id": "c030-pron-07",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "price",
+              "b": "prize",
+              "answer": "b"
+            },
+            {
+              "a": "eyes",
+              "b": "ice",
+              "answer": "a"
+            },
+            {
+              "a": "seed",
+              "b": "seat",
+              "answer": "a"
+            },
+            {
+              "a": "back",
+              "b": "bag",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "s",
+            "z",
+            "d",
+            "t",
+            "g",
+            "k"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listening",
+        "th": "ฟัง"
+      },
+      "weight": 25,
+      "reviewDays": [
+        13,
+        20,
+        27
+      ],
+      "exercises": [
+        {
+          "id": "c030-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบคำถาม"
+          },
+          "audioText": "Hello! My name is Nok. N, O, K. I am from Chiang Mai. Nice to meet you.",
+          "question": {
+            "en": "How does Nok spell her name?",
+            "th": "โนกสะกดชื่อของเธออย่างไร"
+          },
+          "choices": [
+            "N, O, K",
+            "N, A, K",
+            "M, O, K"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "c030-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบคำถาม"
+          },
+          "audioText": "This is my friend, Ben. He is a doctor. He is thirty. This is my friend, Mai. She is a teacher. She is twenty.",
+          "question": {
+            "en": "How old is Mai?",
+            "th": "ไหมอายุเท่าไร"
+          },
+          "choices": [
+            "Twenty",
+            "Thirty",
+            "Twelve"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "c030-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบคำถาม"
+          },
+          "audioText": "Hi! I am Rose. This is my family. This is my husband, Dan. That boy is my son, Leo. We have one child.",
+          "question": {
+            "en": "How many children do Rose and Dan have?",
+            "th": "โรสกับแดนมีลูกกี่คน"
+          },
+          "choices": [
+            "One",
+            "Two",
+            "Three"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "c030-listen-04",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบคำถาม"
+          },
+          "audioText": "I am in a shop. The red bag is on the table. It is thirty baht. The green bag is under the table. It is forty baht.",
+          "question": {
+            "en": "How much is the bag under the table?",
+            "th": "กระเป๋าที่อยู่ใต้โต๊ะราคาเท่าไร"
+          },
+          "choices": [
+            "Forty baht",
+            "Fourteen baht",
+            "Thirty baht"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "c030-listen-05",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ประโยคที่ได้ยิน"
+          },
+          "audioText": "My brother is fifteen. My sister is thirteen."
+        },
+        {
+          "id": "c030-listen-06",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ประโยคที่ได้ยิน"
+          },
+          "audioText": "These are my parents. They are very happy."
+        },
+        {
+          "id": "c030-listen-07",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ประโยคที่ได้ยิน"
+          },
+          "audioText": "Rose has long black hair and brown eyes."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speaking (self-rated)",
+        "th": "พูด (ประเมินตัวเอง)"
+      },
+      "weight": 0,
+      "reviewDays": [
+        14,
+        21,
+        28
+      ],
+      "exercises": [
+        {
+          "id": "c030-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด (ส่วนพูดไม่นับคะแนน: เมื่อพูดเสร็จให้ประเมินตัวเอง)"
+          },
+          "lines": [
+            "Hello! I am Nan. I am forty.",
+            "I am a teacher in Bangkok.",
+            "This is my friend, Rose. She is thirty."
+          ]
+        },
+        {
+          "id": "c030-speak-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม (ส่วนพูดไม่นับคะแนน)"
+          },
+          "text": "My mother has very long black hair.",
+          "ipa": "/maɪ ˈmʌðər hæz ˈveri lɔːŋ blæk her/",
+          "phonemes": [
+            "dh",
+            "v",
+            "r",
+            "l"
+          ]
+        },
+        {
+          "id": "c030-speak-03",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียง ตอบตามจริงหรือแต่งเรื่องก็ได้ (ไม่นับคะแนน)"
+          },
+          "prompt": "What is your name? Where are you from? How old are you?",
+          "sampleAnswer": "My name is Mai. I am from Thailand. I am twenty.",
+          "keywords": [
+            "name",
+            "from"
+          ]
+        },
+        {
+          "id": "c030-speak-04",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบคำถามด้วยเสียง ตอบตามจริงหรือแต่งเรื่องก็ได้ (ไม่นับคะแนน)"
+          },
+          "prompt": "Who is in your family? What colour is your mother's hair?",
+          "sampleAnswer": "I have a mother, a father and a brother. My mother has long black hair.",
+          "keywords": [
+            "have",
+            "hair"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Reading",
+        "th": "อ่าน"
+      },
+      "weight": 20,
+      "reviewDays": [
+        13,
+        20,
+        27
+      ],
+      "exercises": [
+        {
+          "id": "c030-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's father = พ่อของลีโอ)"
+          },
+          "text": "Hi! My name is Leo. I am nine. I am a student. This is my mother, Rose. She is a teacher. She is thirty. That is my father, Dan. He is a doctor. He is thirty-two. We are in a big house in Bangkok.",
+          "questions": [
+            {
+              "question": {
+                "en": "How old is Leo's father?",
+                "th": "พ่อของลีโออายุเท่าไร"
+              },
+              "choices": [
+                "Thirty-two",
+                "Thirty",
+                "Thirteen"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is Leo's mother?",
+                "th": "แม่ของลีโอทำอาชีพอะไร"
+              },
+              "choices": [
+                "A teacher",
+                "A doctor",
+                "A student"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is the family?",
+                "th": "ครอบครัวอยู่ที่ไหน"
+              },
+              "choices": [
+                "In a big house",
+                "In the park",
+                "In a small shop"
+              ],
+              "answer": 0
+            }
+          ]
+        },
+        {
+          "id": "c030-read-02",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "This is my room. It is small. The walls are green and the floor is brown. My bed is under the window. My ball is under the bed. My book is on the table. An apple is in my bag.",
+          "questions": [
+            {
+              "question": {
+                "en": "Where is the ball?",
+                "th": "ลูกบอลอยู่ที่ไหน"
+              },
+              "choices": [
+                "Under the bed",
+                "On the table",
+                "In the bag"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What colour is the floor?",
+                "th": "พื้นสีอะไร"
+              },
+              "choices": [
+                "Brown",
+                "Green",
+                "White"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is in the bag?",
+                "th": "ในกระเป๋ามีอะไร"
+              },
+              "choices": [
+                "An apple",
+                "A book",
+                "A ball"
+              ],
+              "answer": 0
+            }
+          ]
+        },
+        {
+          "id": "c030-read-03",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Nan's hair = ผมของแนน)"
+          },
+          "text": "Nan is in a shop. She has long brown hair.\nNan: Hello! How much is the blue hat?\nMan: It is sixty baht.\nNan: And the black bag?\nMan: It is ninety baht.\nNan: Thank you.",
+          "questions": [
+            {
+              "question": {
+                "en": "How much is the black bag?",
+                "th": "กระเป๋าสีดำราคาเท่าไร"
+              },
+              "choices": [
+                "Ninety baht",
+                "Nineteen baht",
+                "Sixty baht"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What colour is Nan's hair?",
+                "th": "ผมของแนนสีอะไร"
+              },
+              "choices": [
+                "Brown",
+                "Black",
+                "Blue"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is sixty baht?",
+                "th": "อะไรราคาหกสิบบาท"
+              },
+              "choices": [
+                "The blue hat",
+                "The black bag",
+                "The shop"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Writing",
+        "th": "เขียน"
+      },
+      "weight": 35,
+      "reviewDays": [
+        13,
+        20,
+        27
+      ],
+      "exercises": [
+        {
+          "id": "c030-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "How",
+            "old",
+            "he"
+          ],
+          "answer": "How old is he"
+        },
+        {
+          "id": "c030-write-02",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "The",
+            "cat",
+            "under",
+            "the",
+            "table"
+          ],
+          "answer": "The cat is under the table",
+          "accept": [
+            "Is the cat under the table"
+          ]
+        },
+        {
+          "id": "c030-write-03",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "My",
+            "brother",
+            "short",
+            "black",
+            "hair"
+          ],
+          "answer": "My brother has short black hair"
+        },
+        {
+          "id": "c030-write-04",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ am, is หรือ are ให้ถูก (เขียนเป็นคำเต็ม ไม่ต้องย่อ)"
+          },
+          "text": "I ___ nine. My father ___ a doctor. We ___ happy.",
+          "answer": [
+            "am",
+            "is",
+            "are"
+          ],
+          "strict": true
+        },
+        {
+          "id": "c030-write-05",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติม a หรือ an ให้ถูก (an ใช้หน้าเสียงสระ)"
+          },
+          "text": "I have ___ egg, ___ pen and ___ umbrella.",
+          "answer": [
+            "an",
+            "a",
+            "an"
+          ]
+        },
+        {
+          "id": "c030-write-06",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติม has หรือ have ให้ถูก"
+          },
+          "text": "She ___ long hair. They ___ short hair. I ___ brown eyes.",
+          "answer": [
+            "has",
+            "have",
+            "have"
+          ]
+        },
+        {
+          "id": "c030-write-07",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "นั่นคือลุงของฉัน เขาอายุห้าสิบ",
+          "accept": [
+            "That is my uncle. He is fifty",
+            "That's my uncle. He's fifty",
+            "That is my uncle. He is 50"
+          ]
+        },
+        {
+          "id": "c030-write-08",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "กระเป๋าสีดำใบนั้นราคาเก้าสิบบาท",
+          "accept": [
+            "That black bag is ninety baht",
+            "The black bag is ninety baht",
+            "That bag is black. It is ninety baht"
+          ]
+        },
+        {
+          "id": "c030-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-sister"
+            },
+            {
+              "vocabId": "v-grandfather"
+            },
+            {
+              "vocabId": "v-aunt"
+            },
+            {
+              "vocabId": "v-hand"
+            },
+            {
+              "vocabId": "v-nose"
+            }
+          ]
+        },
+        {
+          "id": "c030-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-yellow"
+            },
+            {
+              "vocabId": "v-umbrella"
+            },
+            {
+              "vocabId": "v-window"
+            },
+            {
+              "vocabId": "v-clock"
+            },
+            {
+              "vocabId": "v-brown"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
