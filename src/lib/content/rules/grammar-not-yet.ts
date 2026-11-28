@@ -28,7 +28,7 @@ export const THIRD_PERSON_S_DAY = 36;
  * names one of them. Add an id here when a new gate is added; rule "grammar-note" rejects any other id in a note.
  */
 export const GRAMMAR_STRUCTURES: Readonly<Record<string, { day: number; what: string }>> = {
-  has: { structure: "has", day: 29, what: 'has: the third-person form of "have"' },
+  has: { day: 29, what: 'has: the third-person form of "have"' },
   "third-person-s": { day: THIRD_PERSON_S_DAY, what: "the Present Simple -s of he / she / it (likes, lives, works)" },
   "es-ending": { day: THIRD_PERSON_S_DAY, what: "the Present Simple -es / -ies of he / she / it (goes, watches, studies)" },
   "do-does-question": { day: THIRD_PERSON_S_DAY, what: 'Present Simple questions with does ("What does she do?")' },

@@ -22,7 +22,7 @@ type Case = {
 const text = (t: string): AttemptAnswer => ({ kind: "text", text: t });
 
 // one case per exercise type that appears in days 1-7 (phoneme_intro is covered separately)
-const cases: Record<Exclude<ExerciseType, "phoneme_intro" | "roleplay" | "spell_word" | "use_in_sentence">, Case> = {
+const cases: Record<Exclude<ExerciseType, "phoneme_intro" | "grammar_note" | "roleplay" | "spell_word" | "use_in_sentence">, Case> = {
   listen_choose: {
     id: "d001-listen-01", right: { kind: "choice", selected: 0 }, wrong: { kind: "choice", selected: 2 }, otherKind: text("Sam"),
     wrongGrade: { correct: false, score: 0 },
