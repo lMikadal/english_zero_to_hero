@@ -36,7 +36,7 @@
           "id": "d035-pron-01",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ระวัง /ð/ ใน mother และ /k/ ใน black ปลายลิ้นระหว่างฟันแล้วสั่นคอ"
+            "th": "ฟังแล้วพูดตาม ระวัง /ð/ ใน mother (ปลายลิ้นระหว่างฟันแล้วสั่นคอ) และ /k/ ท้าย black (คอไม่สั่น เสียงหยุดทันที)"
           },
           "text": "My mother has long black hair and brown eyes.",
           "ipa": "/maɪ ˈmʌðər hæz lɔːŋ blæk her ænd braʊn aɪz/"
@@ -133,7 +133,7 @@
           "instruction": {
             "th": "เล่าเรื่องคนในครอบครัวหนึ่งคนด้วยเสียงประมาณ 30 วินาที: เขาหรือเธออายุเท่าไร ผมและตาสีอะไร สูงหรือเตี้ย"
           },
-          "prompt": "Who is in your family? How old is he or she? What colour is the hair? Is he or she tall?",
+          "prompt": "Who is a man or a woman in your family? How old is he or she? What colour is his or her hair? Is he or she tall?",
           "sampleAnswer": "This is my father. He is fifty. He is tall. He has short black hair and brown eyes.",
           "keywords": [
             "has",
@@ -155,7 +155,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Nan. I am forty and I am a teacher in Bangkok. This is my friend, Rose. She is thirty and she is a teacher too. Rose has long black hair and brown eyes. She is not tall. Her husband, Dan, is a doctor. He is tall and he has short black hair. Their son, Leo, is nine. He has a little brown and white dog. We all love Rose and her family.",
+          "text": "Hello! I am Nan. I am forty and I am a teacher in Bangkok. This is my friend, Rose. She is thirty and she is a teacher too. Rose has long black hair and brown eyes. She is not tall. Her husband, Dan, is a doctor. He is tall and he has short black hair. Their son, Leo, is nine. He has a little brown-and-white dog. We all love Rose and her family.",
           "questions": [
             {
               "question": {
@@ -208,7 +208,7 @@
           "instruction": {
             "th": "เขียน 5–6 ประโยคเกี่ยวกับคนหนึ่งคนในครอบครัวหรือเพื่อนของคุณ: เป็นใคร อายุเท่าไร ผมและตาสีอะไร สูงหรือเตี้ย"
           },
-          "prompt": "Write 5–6 sentences about a person in your family. Who is he or she? How old? What colour is the hair? Is he or she tall?",
+          "prompt": "Write 5–6 sentences about a person in your family. Who is he or she? How old? What colour is his or her hair? Is he or she tall?",
           "minWords": 20
         }
       ]

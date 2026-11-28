@@ -14,8 +14,8 @@
       "th": "บอกความรู้สึกและพูดถึงสัตว์: I am cold, a bird has two legs"
     },
     {
-      "en": "Hear and say the final sounds /l/ and /n/: bell–Ben, mean–meal, pain–pale, will–win",
-      "th": "ฟังและออกเสียง /l/ กับ /n/ ท้ายคำ: bell–Ben, mean–meal, pain–pale, will–win"
+      "en": "Hear and say the final sounds /l/ and /n/: tell–ten, mean–meal, pain–pale, will–win",
+      "th": "ฟังและออกเสียง /l/ กับ /n/ ท้ายคำ: tell–ten, mean–meal, pain–pale, will–win"
     },
     {
       "en": "Use cold, warm, hungry and tired with am, is and are",
@@ -47,7 +47,7 @@
           },
           "phoneme": "l",
           "ipa": "/l/ /n/",
-          "tipTh": "คนไทยมักเปลี่ยน /l/ ท้ายคำเป็น 'น' (ball เป็น 'บอน', animal เป็น 'แอนิเมิน') เพราะตัวสะกดแม่กนของไทยมีแต่ น /l/ ใน animal, small และ tall ให้ปลายลิ้นแตะเหงือกหลังฟันบนแล้วค้างไว้ ลมออกทางข้างลิ้น ส่วน /n/ ใน ten และ one ลิ้นแตะเหงือกเหมือนกัน แต่ลมออกทางจมูก ลองปิดจมูกดู ถ้าเสียงเปลี่ยนแสดงว่าเป็น /n/",
+          "tipTh": "คนไทยมักเปลี่ยน /l/ ท้ายคำเป็น 'น' (ball เป็น 'บอน', animal เป็น 'แอนิเมิน') เพราะตัวสะกดแม่กนของไทย (น ญ ณ ร ล ฬ) ออกเสียงเป็น น ทั้งหมด /l/ ใน animal, small และ tall ให้ปลายลิ้นแตะเหงือกหลังฟันบนแล้วค้างไว้ ลมออกทางข้างลิ้น ส่วน /n/ ใน ten และ one ลิ้นแตะเหงือกเหมือนกัน แต่ลมออกทางจมูก ลองปิดจมูกดู ถ้าเสียงเปลี่ยนแสดงว่าเป็น /n/",
           "examples": [
             "animal",
             "small",
@@ -63,8 +63,8 @@
           },
           "pairs": [
             {
-              "a": "bell",
-              "b": "Ben",
+              "a": "tell",
+              "b": "ten",
               "answer": "a"
             },
             {
@@ -134,9 +134,9 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่านกมีกี่ขา"
           },
-          "audioText": "This is a bird. It is little and yellow. It has two legs and a small head.",
+          "audioText": "This is a bird. It is a little yellow bird. It has two legs and a small head.",
           "question": {
-            "en": "How many legs has the bird?",
+            "en": "How many legs?",
             "th": "นกมีกี่ขา"
           },
           "choices": [
@@ -193,7 +193,7 @@
           "id": "d032-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม an ออกเสียงเบาเป็น 'อะ' แล้วต่อ animal ให้ลื่น และ /l/ ท้าย animal ให้ลิ้นแตะเหงือก"
+            "th": "ฟังแล้วพูดตาม an ออกเสียงเบา ๆ แล้วต่อเสียง n เข้ากับ animal เป็น 'อะแนนิเมิล' และ /l/ ท้าย animal ให้ลิ้นแตะเหงือก"
           },
           "text": "A bird is an animal.",
           "ipa": "/ə bɜːrd ɪz ən ˈænɪml/",
@@ -216,7 +216,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Leo. This is my dog. It is brown and white. It is little. It has four legs and two ears. My dog is hungry and tired. A dog is an animal. I love my dog.",
+          "text": "Hello! I am Leo. This is my dog. It is brown and white. It is a little dog. It has four legs and two ears. My dog is hungry and tired. A dog is an animal. I love my dog.",
           "questions": [
             {
               "question": {
@@ -231,7 +231,7 @@
             },
             {
               "question": {
-                "en": "How many legs has the dog?",
+                "en": "How many legs?",
                 "th": "หมามีกี่ขา"
               },
               "choices": [
@@ -272,11 +272,11 @@
             "is",
             "The",
             "bird",
-            "little"
+            "small"
           ],
-          "answer": "The bird is little",
+          "answer": "The bird is small",
           "accept": [
-            "Is the bird little"
+            "Is the bird small"
           ]
         },
         {

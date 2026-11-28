@@ -55,8 +55,8 @@
               "answer": "a"
             },
             {
-              "a": "bell",
-              "b": "Ben",
+              "a": "tell",
+              "b": "ten",
               "answer": "a"
             },
             {
@@ -189,10 +189,10 @@
           "id": "d034-speak-02",
           "type": "speak_answer",
           "instruction": {
-            "th": "บอกว่าบนหัวของคุณมีอะไรบ้าง ตอบตามจริงหรือแต่งเรื่องก็ได้"
+            "th": "บอกว่าบนใบหน้าของคุณมีอะไรบ้าง ตอบตามจริงหรือแต่งเรื่องก็ได้"
           },
-          "prompt": "What do you have on your head?",
-          "sampleAnswer": "I have hair, two eyes and two ears.",
+          "prompt": "What do you have on your face?",
+          "sampleAnswer": "I have two eyes, a nose and a mouth.",
           "keywords": [
             "have"
           ]
@@ -238,7 +238,7 @@
             },
             {
               "question": {
-                "en": "How many legs has the cat?",
+                "en": "How many legs?",
                 "th": "แมวมีกี่ขา"
               },
               "choices": [

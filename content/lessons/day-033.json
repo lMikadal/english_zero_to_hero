@@ -245,8 +245,8 @@
                 "th": "อะไรไม่สะอาด"
               },
               "choices": [
-                "The hands",
-                "The faces"
+                "Their hands",
+                "Their faces"
               ],
               "answer": 0
             }
@@ -297,7 +297,8 @@
           "th": "ล้างมือของคุณ",
           "accept": [
             "Wash your hands",
-            "Wash your hands, please"
+            "Wash your hands, please",
+            "Please wash your hands"
           ]
         },
         {

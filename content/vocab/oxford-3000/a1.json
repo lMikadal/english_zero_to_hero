@@ -3582,7 +3582,7 @@
     "ipa": { "us": "/ˈbɑːdi/", "uk": "/ˈbɒdi/" },
     "th": "ร่างกาย",
     "topics": ["body_health"],
-    "examples": [{ "en": "This is my body.", "th": "นี่คือร่างกายของฉัน" }, { "en": "He has a big body.", "th": "เขามีตัวใหญ่" }],
+    "examples": [{ "en": "This is my body.", "th": "นี่คือร่างกายของฉัน" }, { "en": "A cat has a small body.", "th": "แมวมีตัวเล็ก" }],
     "collocations": ["a big body"],
     "forms": { "plural": "bodies" }
   },
@@ -3594,7 +3594,7 @@
     "ipa": { "us": "/bæk/", "uk": "/bæk/" },
     "th": "หลัง (ส่วนของร่างกาย)",
     "topics": ["body_health"],
-    "examples": [{ "en": "My bag is on my back.", "th": "กระเป๋าของฉันอยู่บนหลัง" }, { "en": "She has a big back.", "th": "เธอมีแผ่นหลังที่กว้าง" }],
+    "examples": [{ "en": "My bag is on my back.", "th": "กระเป๋าของฉันอยู่บนหลัง" }, { "en": "He has a bag on his back.", "th": "เขามีกระเป๋าอยู่บนหลัง" }],
     "collocations": ["on my back"],
     "forms": { "plural": "backs" }
   },
@@ -3664,7 +3664,7 @@
     "pos": "noun",
     "oxford": { "list": "3000", "level": "A1" },
     "ipa": { "us": "/her/", "uk": "/heə/" },
-    "th": "ผม, เส้นผม",
+    "th": "เส้นผม, ผม",
     "topics": ["body_health"],
     "examples": [{ "en": "She has long black hair.", "th": "เธอมีผมยาวสีดำ" }, { "en": "My hair is short.", "th": "ผมของฉันสั้น" }],
     "collocations": ["long hair", "short hair"]
@@ -3747,7 +3747,7 @@
     "pos": "determiner",
     "oxford": { "list": "3000", "level": "A1" },
     "ipa": { "us": "/ɔːl/", "uk": "/ɔːl/" },
-    "th": "ทั้งหมด, ทุก",
+    "th": "ทั้งหมด, ทุก (คน/อัน)",
     "topics": ["function_words"],
     "examples": [{ "en": "We all have two hands.", "th": "พวกเราทุกคนมีสองมือ" }, { "en": "All my friends are happy.", "th": "เพื่อนทุกคนของฉันมีความสุข" }],
     "collocations": ["all my friends"]
@@ -3769,9 +3769,9 @@
     "pos": "adjective",
     "oxford": { "list": "3000", "level": "A1" },
     "ipa": { "us": "/ˈlɪtl/", "uk": "/ˈlɪtl/" },
-    "th": "เล็กจิ๋ว, น้อย",
+    "th": "ตัวเล็ก ๆ (น่ารัก), น้อย",
     "topics": ["people_family"],
-    "examples": [{ "en": "I have a little cat.", "th": "ฉันมีแมวตัวเล็กจิ๋ว" }, { "en": "The baby is very little.", "th": "ทารกตัวเล็กมาก" }],
+    "examples": [{ "en": "I have a little cat.", "th": "ฉันมีแมวตัวเล็ก ๆ" }, { "en": "The baby is very little.", "th": "ทารกตัวเล็กมาก" }],
     "collocations": ["a little cat"],
     "forms": { "gradable": "no" }
   },
@@ -3867,7 +3867,7 @@
     "ipa": { "us": "/stænd/", "uk": "/stænd/" },
     "th": "ยืน",
     "topics": ["daily_routine"],
-    "examples": [{ "en": "Stand up, please.", "th": "ช่วยลุกขึ้นยืนหน่อย" }, { "en": "We stand in the park.", "th": "พวกเรายืนอยู่ในสวนสาธารณะ" }],
+    "examples": [{ "en": "Stand up, please.", "th": "ช่วยลุกขึ้นยืนหน่อย" }, { "en": "We stand up.", "th": "พวกเราลุกขึ้นยืน" }],
     "collocations": ["stand up"],
     "forms": { "past": "stood", "pastParticiple": "stood" }
   },
@@ -3879,7 +3879,7 @@
     "ipa": { "us": "/ʌp/", "uk": "/ʌp/" },
     "th": "ขึ้น, ข้างบน",
     "topics": ["function_words"],
-    "examples": [{ "en": "Stand up, please.", "th": "ช่วยลุกขึ้นยืนหน่อย" }, { "en": "Look up at the sun.", "th": "เงยหน้ามองดวงอาทิตย์" }],
+    "examples": [{ "en": "Stand up, please.", "th": "ช่วยลุกขึ้นยืนหน่อย" }, { "en": "Look up at the bird.", "th": "เงยหน้ามองนกสิ" }],
     "collocations": ["stand up", "look up"]
   },
   {
