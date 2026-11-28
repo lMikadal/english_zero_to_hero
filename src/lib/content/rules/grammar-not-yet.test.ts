@@ -163,18 +163,16 @@ describe("grammar-not-yet: every learner-facing English field of every exercise 
     ["listen_choose.audioText", lc({ audioText: T } as never), "audioText"],
     ["listen_choose.choices", lc({ choices: [T, "b"] } as never), "choices[0]"],
     ["dictation.audioText", { id: exId(20, "listen", 2), type: "dictation", instruction, audioText: T }, "audioText"],
-    ["dictation.accept", { id: exId(20, "listen", 2), type: "dictation", instruction, audioText: "Hello", accept: ["Hi", T] }, "accept[1]"],
     ["shadowing.lines", { id: exId(20, "speak", 2), type: "shadowing", instruction, lines: ["Hello.", T] }, "lines[1]"],
     ["speak_answer.prompt", { id: exId(20, "speak", 3), type: "speak_answer", instruction, prompt: T, sampleAnswer: "Hi." } as Exercise, "prompt"],
     ["speak_answer.sampleAnswer", { id: exId(20, "speak", 3), type: "speak_answer", instruction, prompt: "Hi.", sampleAnswer: T } as Exercise, "sampleAnswer"],
     ["read_passage.text", passage(20, T), "text"],
     ["read_passage.choices", { ...passage(20, "Hi."), questions: [{ question: { en: "Q?", th: "ค" }, choices: [T, "b"], answer: 0 }] } as Exercise, "questions[0].choices[0]"],
     ["arrange_words.answer", { id: exId(20, "write"), type: "arrange_words", instruction, words: ["She", "has"], answer: T } as Exercise, "answer"],
-    ["arrange_words.accept", { id: exId(20, "write"), type: "arrange_words", instruction, words: ["She", "has"], answer: "Hi there", accept: [T] } as Exercise, "accept[0]"],
     ["fill_blank.text", { id: exId(20, "write", 2), type: "fill_blank", instruction, text: "She has ___", answer: ["a cat"] } as Exercise, "text"],
     ["fill_blank.answer", { id: exId(20, "write", 2), type: "fill_blank", instruction, text: "She ___ a cat", answer: ["has"] } as Exercise, "answer[0]"],
     ["translate_th_en.accept[0]", { id: exId(20, "write", 3), type: "translate_th_en", instruction, th: "ก", accept: [T] } as Exercise, "accept[0]"],
-    ["translate_th_en.accept[1]", { id: exId(20, "write", 3), type: "translate_th_en", instruction, th: "ก", accept: ["She has a cat.".replace("has", "is"), T] } as Exercise, "accept[1]"],
+    // dictation.accept, arrange_words.accept and translate_th_en.accept[1..] are exempt from every gate (see the next describe): they are never shown as a model
   ];
   it.each(cases)("%s", (_name, ex, field) => {
     const out = check(on(20, ex));
@@ -226,5 +224,34 @@ describe("present continuous (week 10, day 64): am / is / are + -ing", () => {
   it("accepts the continuous in an extra accepted answer (a learner who knows it is not marked wrong) but not in the shown text", () => {
     expect(check(on(58, dict(58, "It is rainy today", ["It is rainy today", "It is raining today"])))).toEqual([]);
     expect(check(on(58, dict(58, "It is raining today", [])))).toHaveLength(1);
+  });
+});
+
+describe("extra accepted answers are exempt from every grammar gate; the model answer is not", () => {
+  const tr = (day: number, accept: string[]): Exercise => ({ id: exId(day, "write", 3), type: "translate_th_en", instruction, th: "ก", accept } as Exercise);
+  const dict = (day: number, audioText: string, accept: string[]): Exercise => ({ id: exId(day, "listen", 2), type: "dictation", instruction, audioText, accept });
+  const arr = (day: number, answer: string, accept: string[]): Exercise => ({ id: exId(day, "write"), type: "arrange_words", instruction, words: ["a", "b"], answer, accept } as Exercise);
+  const FORMS = ["She has a cat", "The bag costs ninety baht", "He doesn't work", "She is working"];
+  it("(a) an extra accept with has / costs / does not / the continuous on an early day is no error", () => {
+    const bank = [...BANK, verb("cost")];
+    for (const t of FORMS) {
+      expect(check(on(20, tr(20, ["I have a cat", t])), bank), t).toEqual([]);
+      expect(check(on(20, dict(20, "I have a cat", [t])), bank), t).toEqual([]);
+      expect(check(on(20, arr(20, "I have a cat", [t])), bank), t).toEqual([]);
+    }
+  });
+  it("(b) the same form as the model answer is an error", () => {
+    const bank = [...BANK, verb("cost")];
+    for (const t of FORMS) {
+      expect(check(on(20, tr(20, [t, "I have a cat"])), bank), t).toHaveLength(1);
+      expect(check(on(20, dict(20, t, [])), bank), t).toHaveLength(1);
+      expect(check(on(20, arr(20, t, [])), bank), t).toHaveLength(1);
+    }
+  });
+  it("(c) a checkpoint's extra accept with a gated form is no error, its model answer is", () => {
+    const cp = (accept: string[]) => cpOf([{ id: "c030-write-01", type: "translate_th_en", instruction, th: "ก", accept } as Exercise], 30);
+    const go = (c: ReturnType<typeof cp>) => checkGrammarNotYet(buildContext({ ...data([lessonFile(1, ["v-live"], [say(1, "I live.")])], [vocabFile(BANK)]), checkpoints: [c] }));
+    expect(go(cp(["Ann is here", "Ann lives here"]))).toEqual([]);
+    expect(go(cp(["Ann lives here", "Ann is here"]))).toHaveLength(1);
   });
 });
