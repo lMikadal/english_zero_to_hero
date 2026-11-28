@@ -101,9 +101,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Make the workspace writable for uid 1000
+      # NOT `chown -R` of the whole workspace like the check job: `make e2e` itself writes into the workspace as the runner
+      # user (.env.e2e, backups-e2e/, e2e-server.log) and that would fail with "Permission denied". The only container that
+      # writes into the bind mount is Playwright (uid 1000): its report and traces, so only those two folders are handed over.
+      - name: Make the Playwright output folders writable for uid 1000
         run: |
-          sudo chown -R 1000:1000 "$GITHUB_WORKSPACE"
+          mkdir -p test-results playwright-report
+          sudo chown 1000:1000 test-results playwright-report
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - uses: docker/setup-buildx-action@v3
@@ -143,7 +147,7 @@ jobs:
           path: |
             playwright-report/
             test-results/
-            /tmp/ezh-e2e-server.log
+            e2e-server.log
           if-no-files-found: ignore
           retention-days: 7
 

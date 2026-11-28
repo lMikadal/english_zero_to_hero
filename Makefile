@@ -49,7 +49,7 @@ test-unit: ## Unit + component tests only (no database needed)
 # every run, so the lesson test always starts from a clean learner (day 1, streak 0) and the dev database is never touched.
 # E2E_BUILD=0: do not build the image (CI loads ezh-e2e-app:latest from its layer cache first).
 E2E_BUILD ?= 1
-E2E_LOG ?= /tmp/ezh-e2e-server.log
+E2E_LOG ?= e2e-server.log
 E2E_PROD = $(MAKE) --no-print-directory PROD_ENV=.env.e2e PROD_PROJECT=ezh_e2e
 
 e2e-init: ## Create .env.e2e (own password, database english_zero_to_hero_e2e, port 3196)

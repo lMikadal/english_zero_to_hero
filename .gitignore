@@ -18,4 +18,5 @@ next-env.d.ts
 backups-stage/
 backups-ci/
 backups-e2e/
+e2e-server.log
 .content-validate-summary.md
