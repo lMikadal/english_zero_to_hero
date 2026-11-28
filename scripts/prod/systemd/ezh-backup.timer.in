@@ -1,0 +1,11 @@
+[Unit]
+Description=English Zero to Hero: daily backup of the @WHAT@ database
+
+[Timer]
+OnCalendar=daily
+# spread the start a little, and run a missed day at the next opportunity (the PC was off at midnight)
+RandomizedDelaySec=30min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

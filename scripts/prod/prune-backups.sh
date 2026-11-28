@@ -6,14 +6,22 @@
 # The file named by <protect> (the backup just made) is never deleted, whatever the order of the names says
 # (clock behind, time zone change): it is simply never on the delete list (so with a confused clock a few more than <keep> files may stay).
 # Names start with a UTC time stamp, so name order = age order.
-# Usage: prune-backups.sh <dir> <db name> <keep> [<protect: file name or path>]
+# Automatic backups (ezh-<db>-<time>-auto.dump) have their OWN window and are only touched when the scope is "auto"
+# (the automatic backup passes it; manual runs never delete automatic backups and automatic runs never delete manual ones).
+# Usage: prune-backups.sh <dir> <db name> <keep> [<protect: file name or path>] [<scope: manual (default) | auto>]
 set -eu
 dir="$1"; db="$2"; keep="$3"; protect=$(basename -- "${4:-}")
+scope="${5:-manual}"
+case "$scope" in manual|auto) ;; *) echo "ERROR: scope must be manual or auto, got '$scope'" >&2; exit 1 ;; esac
 case "$db" in ''|*[!a-z0-9_]*) echo "ERROR: odd database name '$db'" >&2; exit 1 ;; esac
 printf %s "$keep" | grep -Eq '^[1-9][0-9]*$' || { echo "ERROR: keep must be a whole number >= 1, got '$keep'" >&2; exit 1; }
 
 window() { # <regex> <keep>
   ls -1 "$dir" 2>/dev/null | grep -E "$1" | sort | head -n -"$2" | { grep -v -x -F -- "$protect" || true; } | while IFS= read -r f; do rm -f -- "$dir/$f"; done
 }
-window "^ezh-$db-[0-9]{8}-[0-9]{6}\.dump\$" "$keep"
-window "^ezh-$db-[0-9]{8}-[0-9]{6}-pre-update\.dump\$" 5
+if [ "$scope" = auto ]; then
+  window "^ezh-$db-[0-9]{8}-[0-9]{6}-auto\.dump\$" "$keep"
+else
+  window "^ezh-$db-[0-9]{8}-[0-9]{6}\.dump\$" "$keep"
+  window "^ezh-$db-[0-9]{8}-[0-9]{6}-pre-update\.dump\$" 5
+fi

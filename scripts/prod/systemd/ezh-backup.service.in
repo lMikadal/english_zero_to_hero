@@ -1,0 +1,11 @@
+[Unit]
+Description=English Zero to Hero: automatic backup of the @WHAT@ database (make @TARGET@)
+Documentation=file://@REPO_PLAIN@/docs/DEPLOYMENT.md
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO_PLAIN@
+# the same make target you can run by hand: it takes no backup when Docker or the stack is not running, and never starts them
+ExecStart=@MAKE@ -C "@REPO_EXEC@" --no-print-directory @TARGET@
+TimeoutStartSec=30min
+Nice=10

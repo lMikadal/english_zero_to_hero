@@ -188,7 +188,7 @@ describe("auto-backup.sh", () => {
     const left = list();
     for (const f of [...manual, ...pre]) expect(left).toContain(f);
     expect(left.filter((f) => f.endsWith("-auto.dump"))).toHaveLength(2); // the new one + the newest old one
-    expect(left).toContain(autos[0] === undefined ? "" : autos[3]); // newest of the old autos (7 days ago)
+    expect(left).toContain(autos[3]); // the newest of the old automatic ones (7 days ago) stays
   });
 
   it("a manual backup never evicts automatic ones", () => {
@@ -214,7 +214,8 @@ describe("auto-backup.sh", () => {
     fs.mkdirSync(path.dirname(lock), { recursive: true });
     const r = spawnSync("sh", ["-c", `exec 9>"${lock}"; flock -n 9 || exit 99; sh "${script("auto-backup.sh")}"`], { env: { PATH: process.env.PATH ?? "", ...e } as unknown as NodeJS.ProcessEnv, encoding: "utf8" });
     expect(r.status).toBe(0);
-    expect(list()).toHaveLength(1); // the inner run took the lock itself only because the outer one released nothing? it must NOT have: see below
+    expect(r.stdout).toMatch(/SKIP.*already running/);
+    expect(list()).toEqual([]); // the lock was held by the outer shell: no second backup
   });
 
   it("the log keeps only the latest ~1000 lines", () => {
@@ -266,10 +267,11 @@ exit 0
   });
 
   it("shows the newest backup (any kind) and its age", () => {
-    seed(fname(hoursAgo(50)), fname(hoursAgo(3), "pre-update"), fname(hoursAgo(26), "auto"));
+    const newest = fname(hoursAgo(3), "pre-update");
+    seed(fname(hoursAgo(50)), newest, fname(hoursAgo(26), "auto"));
     const r = run("auto-backup-status.sh", ["--brief"], env());
     expect(r.code).toBe(0);
-    expect(r.out).toContain(fname(hoursAgo(3), "pre-update").slice(0, -18)); // name prefix is enough; the time differs by seconds
+    expect(r.out).toContain(newest);
     expect(r.out).toMatch(/3 hours/);
     expect(r.out).not.toMatch(/WARNING/);
   });
@@ -399,7 +401,7 @@ describe("wiring in the Makefile, env example and check-env", () => {
     expect(up.indexOf("up -d --wait")).toBeLessThan(up.indexOf("auto-backup.sh"));
     const down = slice("prod-down:", "prod-logs:");
     expect(down).toContain("auto-backup.sh");
-    expect(down.indexOf("auto-backup.sh")).toBeLessThan(down.indexOf("down"));
+    expect(down.indexOf("auto-backup.sh")).toBeLessThan(down.indexOf("$(PROD) down"));
     expect(mk).toMatch(/AUTO_ON_UP \?= \$\(if \$\(filter ezh_prod,\$\(PROD_PROJECT\)\),1,0\)/);
   });
   it("a failing automatic backup in prod-up / prod-down never blocks starting or stopping", () => {

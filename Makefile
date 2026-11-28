@@ -16,7 +16,7 @@ APP_UP = $(shell docker ps -q --filter status=running --filter label=com.docker.
 	--filter "label=com.docker.compose.project.working_dir=$(CURDIR)" 2>/dev/null)
 RUN = $(if $(APP_UP),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
 
-.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod prod-init prod-check prod-build prod-up prod-down prod-logs prod-status prod-migrate prod-backup prod-backup-verify prod-restore prod-update stage-init stage-down
+.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod prod-init prod-check prod-build prod-up prod-down prod-logs prod-status prod-migrate prod-backup prod-backup-verify prod-backup-auto-install prod-backup-auto-uninstall prod-backup-auto-status prod-backup-auto-run prod-restore prod-update stage-init stage-down
 
 help: ## List targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -113,6 +113,12 @@ PROD_PORT = $(call prod_var,APP_PORT,3100)
 PROD_BIND = $(call prod_var,APP_BIND,127.0.0.1)
 PROD_KEEP = $(call prod_var,BACKUP_KEEP,14)
 PROD_ALLOWED = $(call prod_var,ALLOWED_IPS,)
+PROD_KEEP_AUTO = $(call prod_var,BACKUP_KEEP_AUTO,14)
+# automatic daily backup (docs/DEPLOYMENT.md): own log/state files under the git-ignored data/ (prod: backup-auto.*, stage: backup-auto-stage.*)
+PROD_AUTO_TAG = $(if $(filter ezh_prod,$(PROD_PROJECT)),,-$(patsubst ezh_%,%,$(PROD_PROJECT)))
+PROD_AUTO_ENV = KEEP_AUTO='$(PROD_KEEP_AUTO)' STATE_FILE=data/backup-auto$(PROD_AUTO_TAG).state LOG_FILE=data/backup-auto$(PROD_AUTO_TAG).log UNIT=ezh-$(patsubst ezh_%,%,$(PROD_PROJECT))-backup
+# prod-up / prod-down take an automatic backup when the newest one is old; only for the real app by default (stage: make stage-up AUTO_ON_UP=1)
+AUTO_ON_UP ?= $(if $(filter ezh_prod,$(PROD_PROJECT)),1,0)
 PROD_SCRIPT_ENV = COMPOSE_CMD='$(PROD)' DB_NAME='$(PROD_DB)' DB_USER='$(PROD_USER)' BACKUP_DIR=$(PROD_BACKUPS) APP_BIND='$(PROD_BIND)' APP_PORT='$(PROD_PORT)' KEEP='$(PROD_KEEP)'
 
 prod: prod-init prod-build prod-up ## Production, one command: create .env.prod if missing, build the image, start it
@@ -137,6 +143,7 @@ prod-up: prod-check ## Start production (backup if migrations are pending, then 
 	$(PROD) up -d --wait
 	@echo "$(if $(filter ezh_prod,$(PROD_PROJECT)),production,stage ($(PROD_PROJECT))) is up: http://$(PROD_BIND):$(PROD_PORT)"
 	@sh scripts/prod/access-check.sh --note '$(PROD_ALLOWED)'
+	@if [ '$(AUTO_ON_UP)' = 1 ]; then $(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup.sh || echo "WARNING: the automatic backup failed: make $(PROD_PROJECT:ezh_%=%)-backup-auto-status (backup อัตโนมัติล้มเหลว)"; fi
 
 prod-update: prod-check ## After git pull: backup (if data exists), build, start. THE way to update
 	@# only LOOK for a subnet clash first (stops nothing); the one-time network move itself happens inside prod-up, after backup and build
@@ -145,7 +152,8 @@ prod-update: prod-check ## After git pull: backup (if data exists), build, start
 	@$(MAKE) --no-print-directory prod-build PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
 	@$(MAKE) --no-print-directory prod-up SKIP=1 PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
 
-prod-down: ## Stop production (containers are removed, the database volume is kept)
+prod-down: ## Stop production (containers are removed, the database volume is kept); takes an automatic backup first when the newest is old
+	@if [ '$(AUTO_ON_UP)' = 1 ]; then $(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup.sh || echo "WARNING: the automatic backup failed: make $(PROD_PROJECT:ezh_%=%)-backup-auto-status (backup อัตโนมัติล้มเหลว)"; fi
 	$(PROD) down
 
 prod-logs: ## Follow production logs
@@ -155,6 +163,7 @@ prod-status: ## Is production running and healthy?
 	$(PROD) ps -a
 	@curl -fsS --max-time 5 http://$(PROD_BIND):$(PROD_PORT)/api/health && echo " <- /api/health" || echo "app did not answer on $(PROD_BIND):$(PROD_PORT)"
 	@PROBE_EXEC='$(PROD) exec -T postgres' PROBE_GATEWAY='$(PROD_NET_PREFIX).1' sh scripts/prod/access-check.sh http://$(PROD_BIND):$(PROD_PORT) '$(PROD_ALLOWED)'
+	@$(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup-status.sh --brief
 
 prod-migrate: prod-check ## Apply pending database migrations by hand (prod-up already does this)
 	$(PROD) up -d --wait postgres
@@ -168,6 +177,20 @@ prod-restore: prod-check ## Restore backups/<file> (needs FILE=... CONFIRM=<data
 
 prod-backup-verify: prod-check ## Is a backup restorable? FILE=backups/<file>; tries it in a scratch database, real data untouched
 	@$(PROD_SCRIPT_ENV) sh scripts/prod/verify.sh '$(FILE)'
+
+# Automatic daily backup: a systemd USER timer (no sudo) runs `make prod-backup-auto-run`; prod-up / prod-down add a backup when the
+# newest one is old. Only the real project gets a timer; `make stage-backup-auto-run` runs the same script against the stage stack.
+prod-backup-auto-run: prod-check ## (what the timer runs) automatic backup unless Docker/stack is off or the newest backup is < 22 h old
+	@$(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup.sh
+
+prod-backup-auto-install: ## Turn ON the automatic daily backup (systemd user timer, no sudo; production only)
+	@sh scripts/prod/auto-backup-install.sh install '$(PROD_PROJECT)'
+
+prod-backup-auto-uninstall: ## Turn OFF the automatic daily backup (existing backups are kept)
+	@sh scripts/prod/auto-backup-install.sh uninstall '$(PROD_PROJECT)'
+
+prod-backup-auto-status: ## Is the automatic backup installed? Next run, last result, newest backup and its age
+	@$(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup-status.sh
 
 # ---- Stage and ci: throwaway copies of the production stack (never the real data) ---------------------------------
 # stage-<anything> / ci-<anything> = prod-<anything> with their own env file, compose project, image and backup folder:
