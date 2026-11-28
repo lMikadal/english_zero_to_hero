@@ -1,0 +1,225 @@
+{
+  "day": 42,
+  "phase": 1,
+  "week": 6,
+  "type": "challenge",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 6 challenge: tell me about your food",
+    "th": "ภารกิจสัปดาห์ที่ 6: เล่าเรื่องอาหารของคุณ"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read short texts about food and meals",
+      "th": "ฟังและอ่านเรื่องสั้นเกี่ยวกับอาหารและมื้ออาหารได้"
+    },
+    {
+      "en": "Tell about the food you like and do not like aloud in about 30 seconds",
+      "th": "เล่าเรื่องอาหารที่ชอบและไม่ชอบด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write 5–6 sentences about your food with the Present Simple",
+      "th": "เขียน 5–6 ประโยคเกี่ยวกับอาหารของตัวเองด้วย Present Simple ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d042-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /tʃ/ ใน cheese และ chocolate ลิ้นแตะเหงือกแล้วปล่อยลมทันที"
+          },
+          "text": "I don't like cheese or chocolate.",
+          "ipa": "/aɪ doʊnt laɪk tʃiːz ɔːr ˈtʃɔːklət/",
+          "phonemes": [
+            "ch"
+          ]
+        },
+        {
+          "id": "d042-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /ʃ/ ใน she และ wash ปากห่อ ลมไหลต่อเนื่อง และ -es ท้าย washes ออกเสียงเป็นพยางค์เพิ่ม ('วอช-ชิซ')"
+          },
+          "text": "She washes the plate and the bowl.",
+          "ipa": "/ʃiː ˈwɑːʃɪz ðə pleɪt ænd ðə boʊl/",
+          "phonemes": [
+            "sh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to people talk about food",
+        "th": "ฟังเรื่องอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d042-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนดื่มอะไร"
+          },
+          "audioText": "Hello! I am Nan. I eat breakfast at home. I like bread and cheese. I drink coffee. I don't eat meat. I like vegetables and salad. I have lunch at school.",
+          "question": {
+            "en": "What does Nan drink?",
+            "th": "แนนดื่มอะไร"
+          },
+          "choices": [
+            "Coffee",
+            "Tea",
+            "Milk"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d042-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามาลีอาศัยอยู่ที่ไหน (lives = อาศัยอยู่ เพราะประธานเป็นคนเดียว)"
+          },
+          "audioText": "This is my mother, Mali. She is sixty. She lives in Chiang Mai. She cooks soup and rice. She likes vegetables. She drinks tea.",
+          "question": {
+            "en": "Where does Mali live?",
+            "th": "มาลีอาศัยอยู่ที่ไหน"
+          },
+          "choices": [
+            "Chiang Mai",
+            "Bangkok"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d042-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Dan doesn't cook. Rose cooks dinner."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d042-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "Hi, Nan! This is the menu.",
+            "Thanks! I'm thirsty. I want a bottle of water.",
+            "And a salad, please.",
+            "Do you want some chicken?",
+            "No, thank you. I don't eat meat.",
+            "Chicken and rice and a bowl of soup, please.",
+            "A knife, a fork and a spoon, please.",
+            "The waiter gives us a plate.",
+            "The bill, please.",
+            "Thank you!"
+          ]
+        },
+        {
+          "id": "d042-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องอาหารของคุณด้วยเสียงประมาณ 30 วินาที: ชอบอะไร ไม่ชอบอะไร และกินมื้อกลางวันที่ไหน"
+          },
+          "prompt": "What food do you like? What food don't you like? Where do you eat lunch?",
+          "sampleAnswer": "I like rice, chicken and fruit. I don't like cheese. I eat lunch at school.",
+          "keywords": [
+            "like",
+            "eat"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read about a restaurant",
+        "th": "อ่านเรื่องที่ร้านอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d042-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Nan and Rose are in a restaurant. They order lunch. The waiter gives Nan the menu.\nNan: I am thirsty. I want a bottle of water and a salad.\nRose: Chicken and rice, and a bowl of soup, please.\nThe waiter gives Rose a plate, a spoon, a knife and a fork.\nNan: The bill, please.\nThe bill is ninety baht. Nan pays and gives the waiter a hundred baht.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Nan want?",
+                "th": "แนนอยากได้อะไร"
+              },
+              "choices": [
+                "A bottle of water and a salad",
+                "Chicken and rice"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who orders soup?",
+                "th": "ใครสั่งซุป"
+              },
+              "choices": [
+                "Rose",
+                "Nan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How much is the bill?",
+                "th": "บิลราคาเท่าไร"
+              },
+              "choices": [
+                "Ninety baht",
+                "Nineteen baht"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about your food",
+        "th": "เขียนเกี่ยวกับอาหารของคุณ"
+      },
+      "exercises": [
+        {
+          "id": "d042-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยคเกี่ยวกับอาหารของคุณ: ชอบอะไร ไม่ชอบอะไร ใครทำอาหาร และกินอาหารเย็นที่ไหน"
+          },
+          "prompt": "Write 5–6 sentences about your food. What do you like? What don't you like? Who cooks dinner? Where do you eat dinner?",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}

@@ -51,6 +51,7 @@ Rules added: `arrange-question`, `sound-words`, `phoneme-tags`, `cast-consistenc
 - **thai-names is a warning with a known-word filter.** A 3-4 letter Thai name is within two edits of dozens of everyday words, so the rule reports only at one edit (two for 5+ letters, vowel signs and tone marks not counted), never a word of `COMMON_THAI_WORDS` or of the Thai glosses of the vocab bank, and only a warning. Measured recall on the real lessons (every exact name spelling spoiled three ways): 183/306 = 0.598; the misses stand next to a particle outside BEFORE/AFTER. A misspelling that is itself an everyday word is not found.
 - **cast-props** stops a `has` list at the next owner, and does not compare an owner's noun when one sentence gives two colours for it (`a brown dog and a white dog`); two things of one noun spread over two sentences are still compared and can warn wrongly.
 
+<<<<<<< HEAD
 ## Round 7 (grammar_note and lesson load, from the week-6 review)
 
 - **What the new rules WOULD say for weeks 1-5** (run with the "from" constant set to 1; not enforced): `word-exposure` 35 of 197 words (18%) occur fewer than 3 times or in one exercise type only; `week-recycle` 5 of 5 weeks have words that never return on the review or challenge day; `vocab-match-covers-new-words` 0 oversized matches (cap 8) but 20 of 28 teaching days have a new word in no vocab_match. They are quiet because the constants start at day 36 / week 6.
@@ -61,3 +62,8 @@ Rules added: `arrange-question`, `sound-words`, `phoneme-tags`, `cast-consistenc
 - **phoneme-tags sound check** only knows a code through a `phoneme_intro` that declares it (`y` -> `/j/`); an item whose words are not all in the bank and that has no `ipa` is not judged. **sound-words** US/UK: a sound that exists in one accent only is a warning even when the lesson clearly means one accent (for example /r/ in `car` is not in the UK IPA): name the accent in the instruction or pick another word.
 - **phrase-lint** is four regexes; `likes some` is skipped when the sentence has `would` or `'d`, `I order ... please` when it has `can/could/may/shall I`. It will miss a rephrasing and may flag a quotation.
 - The cap of 12 new words per lesson already existed in `validate.ts` (all days, error); `new-words-per-day` only adds the grammar-day cap of 9 from day 43.
+=======
+## Week 6 review: Oxford level doubt
+
+- `plate`, `bowl`, `fork`, `knife`, `spoon`, `bill`, `thirsty` (day 40) are labelled A1 only because `a1.json` and preA1 lessons require it (an A2 label is rejected: "level A2 does not match file name a1.json" and "v-bill is Oxford A2 but the lesson is preA1"). The reviewer thinks they are A2. Verify against the official Oxford 3000 list file when the owner supplies it; if they are A2, relabel and decide where they live (a later week, `a2.json`, or a lesson `cefr` of A2). The levels of all other week-5 and week-6 words were also written from memory.
+>>>>>>> origin/main

@@ -1,0 +1,369 @@
+{
+  "day": 37,
+  "phase": 1,
+  "week": 6,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Do you like coffee? Questions and short answers",
+    "th": "Do you like coffee? คำถามและคำตอบสั้น"
+  },
+  "objectives": [
+    {
+      "en": "Ask and answer Yes/No questions: Do you like…? Does she like…? Yes, I do / No, I don't",
+      "th": "ถามและตอบคำถาม Yes/No ได้: Do you like…? Does she like…? Yes, I do / No, I don't"
+    },
+    {
+      "en": "Tell /ʃ/ from /tʃ/: ship–chip, shoe–chew, share–chair, wash–watch",
+      "th": "แยก /ʃ/ กับ /tʃ/ ได้: ship–chip, shoe–chew, share–chair, wash–watch"
+    },
+    {
+      "en": "Talk about drinks, snacks and your favourite food",
+      "th": "พูดถึงเครื่องดื่ม ขนม และอาหารโปรดได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-coffee",
+    "v-juice",
+    "v-sugar",
+    "v-salt",
+    "v-cheese",
+    "v-cake",
+    "v-pizza",
+    "v-soup",
+    "v-sandwich",
+    "v-chocolate",
+    "v-favourite",
+    "v-sweet"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sounds /ʃ/ and /tʃ/",
+        "th": "เสียง /ʃ/ และ /tʃ/"
+      },
+      "exercises": [
+        {
+          "id": "d037-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "sh",
+          "ipa": "/ʃ/ /tʃ/",
+          "tipTh": "ภาษาไทยมี ช ตัวเดียว แต่ภาษาอังกฤษมีสองเสียง: /tʃ/ ใน cheese, chicken และ sandwich ลิ้นแตะเหงือกก่อนแล้วปล่อยลมทันที (ระเบิดสั้น ๆ) คล้าย ช ของไทย ส่วน /ʃ/ ใน sugar และ wash ไม่มีการแตะ ลมไหลต่อเนื่องเหมือนเสียงบอกให้เงียบ 'ชู่' ผิดบ่อย: sugar ต้องขึ้นต้นด้วย /ʃ/ ไม่ใช่ 'ซูการ์' และ wash ลงท้ายด้วยลมไหลต่อเนื่อง ไม่ใช่เสียงแตะแบบ watch",
+          "examples": [
+            "sugar",
+            "wash",
+            "cheese",
+            "chicken"
+          ]
+        },
+        {
+          "id": "d037-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "ship",
+              "b": "chip",
+              "answer": "a"
+            },
+            {
+              "a": "chew",
+              "b": "shoe",
+              "answer": "b"
+            },
+            {
+              "a": "share",
+              "b": "chair",
+              "answer": "a"
+            },
+            {
+              "a": "watch",
+              "b": "wash",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "sh",
+            "ch"
+          ]
+        },
+        {
+          "id": "d037-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /tʃ/ ใน cheese, sandwich และ chocolate ลิ้นแตะเหงือกแล้วปล่อยลมทันที"
+          },
+          "text": "Cheese sandwich and chocolate cake.",
+          "ipa": "/tʃiːz ˈsænwɪtʃ ænd ˈtʃɔːklət keɪk/",
+          "phonemes": [
+            "ch"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: do you like it?",
+        "th": "ฟัง: คุณชอบไหม"
+      },
+      "exercises": [
+        {
+          "id": "d037-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอาหารโปรดของลีโอคืออะไร (Leo's = ของลีโอ)"
+          },
+          "audioText": "Hi! I am Leo. My favourite food is pizza. I like cheese and chocolate cake. My father drinks coffee with sugar. My mother drinks tea. She likes salt in her soup.",
+          "question": {
+            "en": "What is Leo's favourite food?",
+            "th": "อาหารโปรดของลีโอคืออะไร"
+          },
+          "choices": [
+            "Pizza",
+            "Cake",
+            "Soup"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d037-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-coffee"
+            },
+            {
+              "vocabId": "v-juice"
+            },
+            {
+              "vocabId": "v-sugar"
+            },
+            {
+              "vocabId": "v-salt"
+            },
+            {
+              "vocabId": "v-cheese"
+            },
+            {
+              "vocabId": "v-cake"
+            }
+          ]
+        },
+        {
+          "id": "d037-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังบทสนทนา Yes/No: Do ใช้กับ I/you/we/they และ Does ใช้กับ he/she/it (หลัง does กริยาไม่เติม -s) ตอบสั้น ๆ ได้ว่า Yes, I do. / No, I don't. (don't = do not) แล้วตอบว่าโรสดื่มอะไร"
+          },
+          "audioText": "Nan: Do you like coffee, Rose? Rose: No, I don't. I drink tea. Nan: Do you like juice? Rose: Yes, I do. Orange juice is sweet. Nan: Do you like cake? Rose: Yes, I do. I like chocolate cake.",
+          "question": {
+            "en": "What does Rose drink?",
+            "th": "โรสดื่มอะไร"
+          },
+          "choices": [
+            "Tea",
+            "Coffee",
+            "Juice"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d037-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Do you like cheese sandwiches? Yes, I do."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Yes, I do! No, I don't!",
+        "th": "ใช่ ชอบ! ไม่ ไม่ชอบ!"
+      },
+      "exercises": [
+        {
+          "id": "d037-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Do you like coffee?",
+            "Yes, I do. I like coffee with sugar.",
+            "Do you like juice?",
+            "Yes, I do. I like orange juice.",
+            "Do you like cheese sandwiches?",
+            "Yes, I do. Cheese pizza is my favourite food.",
+            "Does she like chocolate cake?",
+            "Yes, she does. It is sweet.",
+            "Does he like soup?",
+            "Yes, he does. The soup is hot. I like salt in my soup."
+          ]
+        },
+        {
+          "id": "d037-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกอาหารโปรดของคุณ และตอบว่าชอบกาแฟไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What is your favourite food? Do you like coffee?",
+          "sampleAnswer": "My favourite food is pizza. Yes, I do. I like coffee.",
+          "keywords": [
+            "favourite",
+            "like"
+          ]
+        },
+        {
+          "id": "d037-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ขึ้นเสียงสูงท้ายประโยคเพราะเป็นคำถาม Yes/No และ /tʃ/ ใน chocolate ลิ้นแตะเหงือกแล้วปล่อยลม"
+          },
+          "text": "Does he like chocolate cake?",
+          "ipa": "/dʌz hiː laɪk ˈtʃɔːklət keɪk/",
+          "phonemes": [
+            "ch"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Leo's birthday",
+        "th": "วันเกิดของลีโอ"
+      },
+      "exercises": [
+        {
+          "id": "d037-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's birthday = วันเกิดของลีโอ)"
+          },
+          "text": "It is Leo's birthday! He is nine. Rose has a big chocolate cake. It is sweet. Leo likes it. Dan has a cheese sandwich and a cup of coffee. He likes sugar in his coffee. Nan drinks coffee too. Rose drinks tea. Leo drinks orange juice. Rose has some soup. She likes salt in her soup. Pizza is Leo's favourite food.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Dan drink?",
+                "th": "แดนดื่มอะไร"
+              },
+              "choices": [
+                "Coffee",
+                "Tea"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who drinks tea?",
+                "th": "ใครดื่มชา"
+              },
+              "choices": [
+                "Rose",
+                "Nan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is Leo's favourite food?",
+                "th": "อาหารโปรดของลีโอคืออะไร"
+              },
+              "choices": [
+                "Pizza",
+                "Cake"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: do and does",
+        "th": "เขียน: do และ does"
+      },
+      "exercises": [
+        {
+          "id": "d037-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "Does",
+            "he",
+            "like",
+            "cake"
+          ],
+          "answer": "Does he like cake"
+        },
+        {
+          "id": "d037-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำตอบสั้น (ใช่ ฉันชอบ)"
+          },
+          "text": "Do you like coffee? Yes, I ___.",
+          "answer": [
+            "do"
+          ]
+        },
+        {
+          "id": "d037-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ (เธอ = she)"
+          },
+          "th": "เธอชอบเค้กช็อกโกแลตไหม",
+          "accept": [
+            "Does she like chocolate cake"
+          ]
+        },
+        {
+          "id": "d037-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-pizza"
+            },
+            {
+              "vocabId": "v-soup"
+            },
+            {
+              "vocabId": "v-sandwich"
+            },
+            {
+              "vocabId": "v-chocolate"
+            },
+            {
+              "vocabId": "v-favourite"
+            },
+            {
+              "vocabId": "v-sweet"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
