@@ -31,7 +31,8 @@ export type Completion =
   | { kind: "pending" }
   | { kind: "shown"; display: ResultDisplay }
   | { kind: "queued" }
-  | { kind: "rejected"; code: 400 | 409 }
+  /** `error` is the server's reason (the 4xx body's `error`), when it sent one. */
+  | { kind: "rejected"; code: 400 | 409; error?: string }
   /** completeCheckpoint threw: nothing was decided, asking again is safe. */
   | { kind: "error" };
 
@@ -40,7 +41,7 @@ export function completionOf(r: CompleteResult<CompleteCheckpointResponse> | { s
   switch (r.status) {
     case "done": return { kind: "shown", display: displayFromResponse(r.response) };
     case "queued": return { kind: "queued" };
-    case "rejected": return { kind: "rejected", code: r.code };
+    case "rejected": return r.error === undefined ? { kind: "rejected", code: r.code } : { kind: "rejected", code: r.code, error: r.error };
     case "error": return { kind: "error" };
   }
 }
@@ -55,13 +56,13 @@ export const practisedKey = (day: number, skill: ReplaySkill): string => `${day}
 export const percentShown = (score: number): number => Math.floor(score * 100 + 1e-9);
 
 /**
- * What the result screen says when the server refused to complete the sitting, and what it offers. Today the sink only reports
- * the status code, so every reason gets the generic text and a fresh start.
- * TODO(plan D4, "retake_tomorrow"): when the server answers 409 `retake_tomorrow` for a second sitting finished on the same local
- * day and the sink passes the reason on, add one case here: { text: "สอบอีกครั้งได้ตั้งแต่พรุ่งนี้", restart: false } (the screen
- * then offers only "กลับหน้าแรก", no "เริ่มทำใหม่"). `reason` is deliberately a plain string: the contract type is not on main.
+ * What the result screen says when the server refused to complete the sitting, and what it offers.
+ * - 409 `retake_tomorrow` (D4: a second sitting saved on the same local day): the retake line, and no fresh start, since a new
+ *   sitting would be refused the same way until tomorrow; the screen offers only "กลับหน้าแรก".
+ * - everything else (`not_completable`, `invalid_body`, no reason, a reason this client does not know): no answers of this
+ *   sitting on the server, so a NEW sitting (new session id) is the way out.
  */
 export function rejectedMessage(code: 400 | 409, reason?: string): { text: string; restart: boolean } {
-  void code; void reason;
+  if (code === 409 && reason === "retake_tomorrow") return { text: "สอบอีกครั้งได้ตั้งแต่พรุ่งนี้", restart: false };
   return { text: "บันทึกผลไม่ได้ ไม่มีคำตอบของรอบนี้บนเซิร์ฟเวอร์ ลองทำใหม่", restart: true };
 }

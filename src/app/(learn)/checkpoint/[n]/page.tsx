@@ -6,13 +6,14 @@ import { buttonClass } from "@/components/ui/button-styles";
 import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
 import { StatusScreen } from "@/components/ui/StatusScreen";
 import { getDb } from "@/db/client";
-import { findOpenSitting, listCheckpointResults, practisedSince, type StoredCheckpointResult } from "@/db/queries/checkpoints";
+import { checkpointSavedAts, findOpenSitting, listCheckpointResults, practisedSince, type StoredCheckpointResult } from "@/db/queries/checkpoints";
 import { getStreak } from "@/db/queries/progress";
 import type { ReplaySkill } from "@/lib/attempts/contract";
+import { sittingSavedToday } from "@/lib/checkpoints/retake";
 import { isCheckpointPass, weakSkills } from "@/lib/checkpoints/score";
 import { isCheckpointDay, type Checkpoint } from "@/lib/content/checkpoint-schema";
 import { getCheckpoint, getLesson, getVocabLookup } from "@/lib/content/repo";
-import { localDate, resolveTimeZone } from "@/lib/progress/dates";
+import { resolveTimeZone } from "@/lib/progress/dates";
 import { getCurrentUserId } from "@/lib/server/current-user";
 import { getDayStatus, getLearnerProfile } from "../../access";
 
@@ -52,12 +53,14 @@ export default async function CheckpointPage({ params }: { params: Promise<{ n: 
   const now = new Date(); // the server's clock decides "today" for the retake rule
   let status: string;
   let results: StoredCheckpointResult[];
+  let savedAts: { afterDay: number; savedAt: Date }[];
   let timezone: string;
   let userId: string;
   try {
     userId = await getCurrentUserId();
     status = await getDayStatus(afterDay);
     results = await listCheckpointResults(getDb(), userId, afterDay);
+    savedAts = await checkpointSavedAts(getDb(), userId, afterDay);
     timezone = (await getLearnerProfile()).timezone;
   } catch (e) {
     console.error(`Cannot read the state of checkpoint ${afterDay}:`, e);
@@ -87,7 +90,8 @@ export default async function CheckpointPage({ params }: { params: Promise<{ n: 
 
   const latest = results.at(-1) ?? null;
   const zone = resolveTimeZone(timezone);
-  const completedToday = latest !== null && localDate(latest.completedAt, zone) === localDate(now, zone);
+  // The server's own rule (the same function POST /api/checkpoints/complete uses): by when the sitting was SAVED, not the client's completedAt.
+  const completedToday = latest !== null && sittingSavedToday(savedAts.map((r) => r.savedAt), now, zone);
   let nextLesson = false;
   try {
     nextLesson = getLesson(afterDay + 1) !== null;

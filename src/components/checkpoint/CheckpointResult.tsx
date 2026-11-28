@@ -23,7 +23,7 @@ export function CheckpointResult({
 }: { checkpoint: Checkpoint; completion: Completion; practised: ReadonlySet<string>; onRetry(): void; onRestart(): void }) {
   const k = checkpointNumber(checkpoint.afterDay);
   const shown = completion.kind === "shown" ? completion.display : null;
-  const rejection = completion.kind === "rejected" ? rejectedMessage(completion.code) : null;
+  const rejection = completion.kind === "rejected" ? rejectedMessage(completion.code, completion.error) : null;
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-14">
       <h1 className="text-2xl font-bold leading-snug text-fg">ผลแบบทดสอบ ครั้งที่ {k}</h1>
