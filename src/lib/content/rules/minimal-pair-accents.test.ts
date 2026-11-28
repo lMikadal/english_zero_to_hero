@@ -25,6 +25,12 @@ describe("minimal-pair-accents (warning): a pair differs by exactly one sound in
     expect(run(pair("cat", "dog"), [w("cat", "/kæt/"), w("dog", "/dɒɡ/")])).toHaveLength(1);
     expect(run(pair("tomato", "tomatoes"), [w("tomato", "/təˈmɑːtoʊ/", "/təˈmɑːtəʊ/"), w("tomatoes", "/təˈmɑːtoʊz/", "/təˈmɑːtəʊz/")])).toEqual([]);
   });
+  it("counts an r-coloured vowel as ONE sound (US work-walk, bird-bed are one substitution), but not r before a vowel", () => {
+    expect(run(pair("work", "walk"), [w("work", "/wɜːrk/", "/wɜːk/"), w("walk", "/wɔːk/")])).toEqual([]);
+    expect(run(pair("bird", "bed"), [w("bird", "/bɜːrd/", "/bɜːd/"), w("bed", "/bed/")])).toEqual([]);
+    expect(run(pair("very", "vary"), [w("very", "/ˈveri/"), w("vary", "/ˈveəri/", "/ˈveəri/")])).toEqual([]);
+    expect(run(pair("read", "ready"), [w("read", "/riːd/"), w("ready", "/ˈredi/")])).toHaveLength(1);
+  });
   it("skips silently when either word has no vocab entry", () => {
     expect(run(pair("fat", "fast"), [w("fat", "/fæt/")])).toEqual([]);
     expect(run(pair("worth", "worse"), [])).toEqual([]);

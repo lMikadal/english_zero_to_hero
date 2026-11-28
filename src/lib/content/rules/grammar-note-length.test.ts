@@ -52,6 +52,16 @@ describe("grammar-note-length (warning)", () => {
     expect(out[0].message).toContain("✗ → ");
     expect(out[0].message).toContain("✓");
   });
+  it("a compact list is fine: 'A ✗ / B ✗ → A2 ✓ / B2 ✓' and one right form for two wrong ones", () => {
+    expect(run(note({ bodyTh: "ผิดบ่อย: No, I not ✗ / No, she don't ✗ → No, I don't ✓ / No, she doesn't ✓" }))).toEqual([]);
+    expect(run(note({ bodyTh: "ผิดบ่อย: she go ✗ / she gos ✗ → she goes ✓ ออกเสียง goes /ɡoʊz/" }))).toEqual([]);
+  });
+  it("warns for the last wrong form when only the first has its right form", () => {
+    const out = run(note({ bodyTh: "ผิดบ่อย: I have tea always ✗ → I always have tea ✓ และ I never not drink ✗ จบ" }));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).toContain('"I never not drink"');
+    expect(out[0].message).not.toContain('"I have tea always"');
+  });
   it("accepts every wrong form followed by its right form", () => {
     expect(run(note({ bodyTh: "ผิดบ่อย: I have tea always ✗ → I always have tea ✓ และ I don't never drink coffee ✗ → I never drink coffee ✓ ส่วน sometimes วางต้นประโยคได้" }))).toEqual([]);
     expect(run(note({ bodyTh: "ใช้เมื่อพูดถึงสิ่งที่ทำเป็นประจำ ✗ ไม่ใช่ส่วนผิดบ่อย" }))).toEqual([]); // only the ผิดบ่อย segment is read

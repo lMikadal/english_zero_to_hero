@@ -18,7 +18,17 @@ function distance(a: string[], b: string[]): number {
   }
   return prev[b.length];
 }
-const sounds = (ipa: string) => ipaTokens(ipa.replace(/\(r\)/g, ""));
+const VOWEL = /^[aeiouæɑɒɔəɛɜɪʊʌɐ]/;
+/** Sounds of an IPA string: whole phonemes; an r that follows a vowel and is not followed by one makes an r-coloured vowel (US ɜːr, ɑːr), which is ONE sound. */
+function sounds(ipa: string): string[] {
+  const t = ipaTokens(ipa.replace(/\(r\)/g, ""));
+  const out: string[] = [];
+  t.forEach((tok, i) => {
+    if (tok === "r" && out.length > 0 && VOWEL.test(out[out.length - 1]) && !(t[i + 1] && VOWEL.test(t[i + 1]))) out[out.length - 1] += "r";
+    else out.push(tok);
+  });
+  return out;
+}
 
 export function checkMinimalPairAccents(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];

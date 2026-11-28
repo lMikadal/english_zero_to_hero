@@ -3,8 +3,8 @@
 //    except the Thai vowel signs and tone marks that sit on a consonant (ั ิ-ฺ ็-๎), so "กิน" is 2 and "ก่" is 1 and Thai text is not
 //    inflated. Spaces, Latin letters and symbols (✗ → ✓) count as 1 each.
 //  - a table with more than 6 rows, HEADER INCLUDED (row 1 is the header and is drawn as a row).
-//  - a "ผิดบ่อย" (common mistakes) part where a wrong form (✗) has no right form (✓) after it, before the next ✗: write
-//    "wrong ✗ → right ✓" every time (the incident: two cards listed wrong forms with no right form).
+//  - a "ผิดบ่อย" (common mistakes) part where a wrong form (✗) has no right form (✓) anywhere after it: write
+//    "wrong ✗ → right ✓" (a compact "A ✗ / B ✗ → A2 ✓ / B2 ✓" is fine) (the incident: two cards listed wrong forms with no right form).
 // Warnings: a card a little over the limit can still be good; the template is the decision of the owner (2026-11-29).
 import type { Problem } from "../loader";
 import type { RuleContext } from "./context";
@@ -18,20 +18,20 @@ const COMBINING = /[ัิ-ฺ็-๎]/;
 /** User-perceived length of a body: code points without the Thai combining vowel signs and tone marks. */
 export const bodyLength = (s: string): number => [...s].filter((c) => !COMBINING.test(c)).length;
 
-/** The wrong forms (text before each ✗) of the "ผิดบ่อย" part that have no ✓ before the next ✗ or the end. */
+/**
+ * The wrong forms (the Latin text before a ✗) of the "ผิดบ่อย" part that have no ✓ anywhere after them. A compact list is fine
+ * ("A ✗ / B ✗ → A2 ✓ / B2 ✓", or one right form for two wrong ones), so only a ✗ that no ✓ follows counts as unpaired.
+ */
 function unpairedWrongForms(body: string): string[] {
   const at = body.indexOf("ผิดบ่อย");
   if (at < 0) return [];
   const part = body.slice(at + "ผิดบ่อย".length);
-  const pieces = part.split("✗");
+  const lastRight = part.lastIndexOf("✓");
   const out: string[] = [];
-  for (let i = 0; i < pieces.length - 1; i++) {
-    const after = pieces[i + 1];
-    // the text after this ✗ and before the next ✗ must hold the right form; the last piece also holds trailing prose after the final ✓
-    if (!after.includes("✓")) {
-      const wrong = pieces[i].replace(/^[\s:：\/,]+/, "").split(/✓|\s\/\s|[;]/).pop()!.replace(/^.*?(?:และ|ส่วน|หรือ|→)\s+(?=[A-Za-z])/, "").trim();
-      out.push(wrong || pieces[i].trim());
-    }
+  for (let p = part.indexOf("✗"); p >= 0; p = part.indexOf("✗", p + 1)) {
+    if (p < lastRight) continue;
+    const chunk = part.slice(0, p).split(/[^A-Za-z'’,.\- ]/).pop()!.trim();
+    out.push(chunk || "(a wrong form)");
   }
   return out;
 }
