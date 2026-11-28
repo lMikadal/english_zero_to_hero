@@ -1,4 +1,6 @@
 // @vitest-environment node
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { AllowListError, createAllowList, parseIp, stripPort } from "./allowlist";
 
@@ -126,5 +128,16 @@ describe("createAllowList: strict validation (never silently allow)", () => {
   });
   it("one bad entry among good ones fails the whole value and names the entry", () => {
     expect(() => createAllowList("100.101.102.103, oops, 1.2.3.4")).toThrow(/oops/);
+  });
+});
+
+// The same table is run by the shell validator behind check-env.sh (scripts/prod/prod-scripts.test.ts): the two cannot drift.
+describe("shared valid/invalid table (allowlist-cases.json)", () => {
+  const table = JSON.parse(readFileSync(path.join(import.meta.dirname, "allowlist-cases.json"), "utf8")) as { valid: string[]; invalid: string[] };
+  it.each(table.valid)("accepts %j", (raw) => {
+    expect(() => createAllowList(raw)).not.toThrow();
+  });
+  it.each(table.invalid)("rejects %j", (raw) => {
+    expect(() => createAllowList(raw)).toThrow(AllowListError);
   });
 });

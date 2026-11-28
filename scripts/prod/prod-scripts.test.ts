@@ -772,3 +772,179 @@ describe("Makefile: ci stack and stage cleanup", () => {
     expect(job).not.toContain("I_AM_THROWAWAY");
   });
 });
+
+// ---- ALLOWED_IPS (device allow-list), docs/DEPLOYMENT.md -------------------------------------------------------------
+const cases = JSON.parse(fs.readFileSync(path.join(repoRoot, "src/lib/access/allowlist-cases.json"), "utf8")) as { valid: string[]; invalid: string[] };
+
+describe("allowed-ips.sh and check-env.sh: ALLOWED_IPS is validated before anything starts", () => {
+  // the SAME table as src/lib/access/allowlist.test.ts, so the shell validator and the app parser cannot drift apart
+  it.each(cases.valid)("allowed-ips.sh accepts %j", (v) => {
+    const r = run("allowed-ips.sh", [v]);
+    expect(r.err).toBe("");
+    expect(r.code).toBe(0);
+  });
+  it.each(cases.invalid)("allowed-ips.sh rejects %j and names the entry", (v) => {
+    const r = run("allowed-ips.sh", [v]);
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/ALLOWED_IPS/);
+  });
+  it("names the offending entry", () => {
+    expect(run("allowed-ips.sh", ["100.101.102.103, oops"]).err).toContain('"oops"');
+  });
+  it.each(cases.valid)("check-env.sh accepts ALLOWED_IPS=%j", (v) => {
+    expect(run("check-env.sh", [envFile(`${GOOD}ALLOWED_IPS=${v}\n`)]).code).toBe(0);
+  });
+  it.each(cases.invalid.filter((v) => !v.includes("#") && !v.includes("'")))("check-env.sh refuses ALLOWED_IPS=%j", (v) => {
+    const r = run("check-env.sh", [envFile(`${GOOD}ALLOWED_IPS=${v}\n`)]);
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/ALLOWED_IPS/);
+  });
+  it("check-env.sh also refuses a quoted bad value and a malformed TRUSTED_PROXIES", () => {
+    expect(run("check-env.sh", [envFile(`${GOOD}ALLOWED_IPS="100.101.102.103, oops"\n`)]).code).not.toBe(0);
+    expect(run("check-env.sh", [envFile(`${GOOD}ALLOWED_IPS=100.101.102.103\nTRUSTED_PROXIES=nope\n`)]).code).not.toBe(0);
+  });
+  it("check-env.sh accepts a list unset in the file (feature off)", () => {
+    expect(run("check-env.sh", [envFile(GOOD)]).code).toBe(0);
+  });
+  it(".env.prod.example documents ALLOWED_IPS (empty by default) and is still refused only for its password", () => {
+    const ex = fs.readFileSync(path.join(repoRoot, ".env.prod.example"), "utf8");
+    expect(ex).toMatch(/^ALLOWED_IPS=$/m);
+    expect(ex).toContain("tailscale status");
+    expect(run("check-env.sh", [path.join(repoRoot, ".env.prod.example")]).err).toMatch(/POSTGRES_PASSWORD/);
+  });
+});
+
+describe("access-check.sh (prod-status / stage-status / CI self-check)", () => {
+  /** a fake curl that behaves like the app with ALLOWED_IPS=100.101.102.103; `mode` breaks it in one way */
+  function fakeBin(mode: "ok" | "open" | "closed" | "peer-trusted") {
+    const bin = path.join(tmp, "bin");
+    fs.mkdirSync(bin, { recursive: true });
+    fs.writeFileSync(
+      path.join(bin, "curl"),
+      `#!/bin/sh
+xff=""; peer=""; url=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -H) case "$2" in X-Forwarded-For:*) xff="\${2#*: }";; X-Ezh-Peer:*) peer="\${2#*: }";; esac; shift ;;
+    http*) url="$1" ;;
+  esac
+  shift
+done
+echo "$url xff=[$xff] peer=[$peer]" >> "${tmp}/curl.log"
+case "${mode}" in
+  open) printf 200; exit 0 ;;
+  closed) printf 403; exit 0 ;;
+  peer-trusted) [ "$xff" = "192.0.2.1" ] && { printf 403; exit 0; }; printf 200; exit 0 ;;
+esac
+[ -n "$peer" ] && { printf 403; exit 0; }
+[ -z "$xff" ] && { printf 200; exit 0; }
+[ "$xff" = "100.101.102.103" ] && { printf 200; exit 0; }
+printf 403
+`,
+      { mode: 0o755 },
+    );
+    return { PATH: `${bin}:${process.env.PATH ?? ""}`, TMPDIR: tmp };
+  }
+  const check = (mode: "ok" | "open" | "closed" | "peer-trusted", allowed = "100.101.102.103, 100.64.0.0/10", extra: Record<string, string> = {}) =>
+    run("access-check.sh", ["http://127.0.0.1:3100", allowed], { ...fakeBin(mode), ...extra });
+
+  it("passes and says ok when the app enforces the list on / , /api/health and a _next/static path", () => {
+    const r = check("ok");
+    expect(r.code).toBe(0);
+    expect(r.out).toMatch(/access ok/);
+    const log = fs.readFileSync(path.join(tmp, "curl.log"), "utf8");
+    for (const p of ["/api/health", "/_next/static/", "xff=[192.0.2.1]", "xff=[100.101.102.103]", "peer=[127.0.0.1]"]) expect(log).toContain(p);
+    expect(log).toMatch(/127\.0\.0\.1:3100\/ xff=\[192\.0\.2\.1\]/);
+  });
+  it("prints the list it enforces", () => {
+    expect(check("ok").out).toContain("100.101.102.103, 100.64.0.0/10");
+  });
+  it("FAILS (exit 1) when an unlisted address is let in (feature not enforced)", () => {
+    const r = check("open");
+    expect(r.code).toBe(1);
+    expect(r.out + r.err).toMatch(/access FAIL/);
+  });
+  it("FAILS when the host itself is locked out (peer stamp broken: everything 403)", () => {
+    const r = check("closed");
+    expect(r.code).toBe(1);
+    expect(r.out + r.err).toMatch(/access FAIL/);
+  });
+  it("FAILS when a forged X-Ezh-Peer header is believed", () => {
+    expect(check("peer-trusted").code).toBe(1);
+  });
+  it("with an empty list: no requests, one Thai+English reminder, exit 0", () => {
+    const r = check("ok", "");
+    expect(r.code).toBe(0);
+    expect(r.out).toMatch(/ALLOWED_IPS/);
+    expect(r.out).toMatch(/[ก-๙]/);
+    expect(r.out).toMatch(/every device/i);
+    expect(fs.existsSync(path.join(tmp, "curl.log"))).toBe(false);
+  });
+  it("--note prints the list or the reminder without touching the network", () => {
+    expect(run("access-check.sh", ["--note", ""]).out).toMatch(/every device/i);
+    expect(run("access-check.sh", ["--note", "100.101.102.103"]).out).toContain("100.101.102.103");
+  });
+  it("a listed range that contains the test address is reported, not mistaken for a broken app", () => {
+    const r = check("ok", "192.0.2.0/24");
+    expect(r.code).toBe(0);
+    expect(r.out).toMatch(/192\.0\.2\.1/);
+    expect(r.out).toMatch(/skipp/i);
+  });
+  it("PROBE_EXEC: a forged XFF from another container must be refused (403), otherwise FAIL", () => {
+    const probe = (body: string) => {
+      const f = path.join(tmp, "probe.sh");
+      fs.writeFileSync(f, `#!/bin/sh\n${body}\n`, { mode: 0o755 });
+      return f;
+    };
+    const good = check("ok", undefined, { PROBE_EXEC: probe('echo "wget: server returned error: HTTP/1.1 403 Forbidden" >&2; exit 1') });
+    expect(good.code).toBe(0);
+    expect(good.out).toMatch(/other container/i);
+    const bad = check("ok", undefined, { PROBE_EXEC: probe('echo "{\\"ok\\":true}"') });
+    expect(bad.code).toBe(1);
+    expect(bad.out + bad.err).toMatch(/access FAIL/);
+  });
+});
+
+describe("production network: dedicated subnet, narrow trusted proxies, allow-list wiring", () => {
+  const compose = fs.readFileSync(path.join(repoRoot, "docker-compose.prod.yml"), "utf8");
+  const makefile = fs.readFileSync(path.join(repoRoot, "Makefile"), "utf8");
+  const ci = fs.readFileSync(path.join(repoRoot, ".github/workflows/ci.yml"), "utf8");
+
+  it("compose gives the project its own subnet from PROD_NET_PREFIX", () => {
+    expect(compose).toMatch(/ipam:/);
+    expect(compose).toMatch(/subnet:\s*"?\$\{PROD_NET_PREFIX[^}]*\}\.0\/24/);
+  });
+  it("the app gets ALLOWED_IPS and TRUSTED_PROXIES; the default trusts loopback and the network gateway ONLY", () => {
+    expect(compose).toMatch(/ALLOWED_IPS:\s*\$\{ALLOWED_IPS:-\}/);
+    const line = compose.split("\n").find((l) => /TRUSTED_PROXIES:/.test(l)) ?? "";
+    expect(line).toMatch(/127\.0\.0\.0\/8/);
+    expect(line).toMatch(/::1/);
+    expect(line).toMatch(/\$\{PROD_NET_PREFIX[^}]*\}\.1/);
+    expect(line).not.toContain("172.16.0.0/12");
+  });
+  const hasMake = spawnSync("make", ["--version"]).status === 0;
+  const dry = (target: string) =>
+    spawnSync("make", ["-n", "-C", repoRoot, target], { encoding: "utf8", env: { PATH: process.env.PATH ?? "" } as unknown as NodeJS.ProcessEnv }).stdout;
+  it.skipIf(!hasMake)("prod, stage and ci get different /24 networks", () => {
+    const prefix = (t: string) => dry(t).match(/PROD_NET_PREFIX=(\d+\.\d+\.\d+)/)?.[1];
+    const [p, s, c] = [prefix("prod-up"), prefix("stage-up"), prefix("ci-up")];
+    expect(p).toBe("172.30.10");
+    expect(s).toBe("172.30.20");
+    expect(c).toBe("172.30.30");
+  });
+  it("a project with another name still gets its own subnet (derived from the name), never the prod one", () => {
+    expect(makefile).toMatch(/PROD_NET_PREFIX\s*=/);
+    expect(makefile).toContain("cksum");
+  });
+  it.skipIf(!hasMake)("prod-status runs the self-check, prod-up prints the note", () => {
+    expect(dry("prod-status")).toContain("scripts/prod/access-check.sh");
+    expect(dry("prod-up")).toMatch(/access-check\.sh --note/);
+    expect(dry("stage-status")).toContain("scripts/prod/access-check.sh");
+  });
+  it("CI sets ALLOWED_IPS in .env.ci and runs the access self-check (peer stamp must fail closed AND be noticed)", () => {
+    const job = ci.slice(ci.indexOf("prod-image:"));
+    expect(job).toMatch(/ALLOWED_IPS=/);
+    expect(job).toContain("scripts/prod/access-check.sh");
+    expect(job.indexOf("ALLOWED_IPS=")).toBeLessThan(job.indexOf("make ci-up"));
+  });
+});
