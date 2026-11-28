@@ -1,0 +1,324 @@
+{
+  "day": 15,
+  "phase": 1,
+  "week": 3,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "This is my family! The sound /θ/",
+    "th": "This is my family! เสียง /θ/"
+  },
+  "objectives": [
+    {
+      "en": "Say 'This is my…' to introduce people in your family",
+      "th": "แนะนำคนในครอบครัวด้วย 'This is my…' ได้"
+    },
+    {
+      "en": "Hear and say the sound /θ/ in three, thank, thirteen and birthday",
+      "th": "ฟังและออกเสียง /θ/ ในคำว่า three, thank, thirteen และ birthday ได้"
+    },
+    {
+      "en": "Say numbers 11–13 and how old someone is",
+      "th": "พูดตัวเลข 11–13 และบอกอายุของใครสักคนได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-family",
+    "v-sister",
+    "v-husband",
+    "v-wife",
+    "v-birthday",
+    "v-eleven",
+    "v-twelve",
+    "v-thirteen"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sound /θ/",
+        "th": "เสียง /θ/"
+      },
+      "exercises": [
+        {
+          "id": "d015-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "th",
+          "ipa": "/θ/",
+          "tipTh": "เสียงนี้ไม่มีในภาษาไทย: แลบปลายลิ้นออกมาเบา ๆ ให้อยู่ระหว่างฟันบนกับฟันล่าง แล้วเป่าลมผ่านช่องแคบนั้นให้ได้ยินเสียงลมเสียดสี ไม่สั่นคอ คนไทยมักเปลี่ยนเป็น 'ท' (three เป็น 'ทรี'), 'ส' หรือ 'ต' ทำให้ think (คิด) ฟังเป็น sink (จม) และ three (สาม) ฟังเป็น tree (ต้นไม้) ใน birthday เสียงนี้อยู่ท้ายพยางค์แรก ให้ปิดเสียง 'เบิร์ธ' ด้วยลิ้นระหว่างฟันก่อนต่อ 'เดย์' ส่วน th ใน mother, father (ที่จะเรียนพรุ่งนี้) เป็นอีกเสียงหนึ่ง",
+          "examples": [
+            "three",
+            "thank",
+            "thirteen",
+            "birthday"
+          ]
+        },
+        {
+          "id": "d015-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "three",
+              "b": "tree",
+              "answer": "a"
+            },
+            {
+              "a": "sink",
+              "b": "think",
+              "answer": "b"
+            },
+            {
+              "a": "tank",
+              "b": "thank",
+              "answer": "b"
+            },
+            {
+              "a": "mouth",
+              "b": "mouse",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d015-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /θ/ ใน thank และ thirteen ลิ้นต้องแตะระหว่างฟัน ไม่ใช่ 'แทงค์' หรือ 'เทอร์ทีน'"
+          },
+          "text": "Thank you, Ann. I am thirteen.",
+          "ipa": "/θæŋk juː æn aɪ æm ˌθɜːrˈtiːn/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: family and age",
+        "th": "ฟัง: ครอบครัวและอายุ"
+      },
+      "exercises": [
+        {
+          "id": "d015-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแอนเป็นใครของทอม"
+          },
+          "audioText": "This is Tom. This is his wife, Ann. They are happy.",
+          "question": {
+            "en": "Who is Ann?",
+            "th": "แอนเป็นใคร"
+          },
+          "choices": [
+            "His wife",
+            "His sister",
+            "His friend"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d015-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าน้องสาวอายุเท่าไร"
+          },
+          "audioText": "It is my birthday! I am twelve. My sister is eleven.",
+          "question": {
+            "en": "How old is the sister?",
+            "th": "น้องสาวอายุเท่าไร"
+          },
+          "choices": [
+            "Eleven",
+            "Twelve",
+            "Thirteen"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d015-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "This is my sister. She is thirteen."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say who is in your family",
+        "th": "บอกว่าใครอยู่ในครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d015-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "This is my family.",
+            "This is my husband.",
+            "This is my wife.",
+            "This is my sister. She is twelve.",
+            "Is this your sister? Yes, it is.",
+            "Happy birthday!"
+          ]
+        },
+        {
+          "id": "d015-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ชี้ไปที่คนในครอบครัวของคุณ (หรือนึกภาพขึ้นมา) แล้วบอกว่าเป็นใครและอายุเท่าไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Who is this? How old is he or she?",
+          "sampleAnswer": "This is my sister. She is twelve.",
+          "keywords": [
+            "this",
+            "is"
+          ]
+        },
+        {
+          "id": "d015-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง th ใน birthday: ปลายลิ้นแตะระหว่างฟัน (/θ/) แล้วจึงตามด้วย 'เดย์'"
+          },
+          "text": "Happy birthday to you!",
+          "ipa": "/ˈhæpi ˈbɜːrθdeɪ tə juː/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My family",
+        "th": "ครอบครัวของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d015-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Nok. This is my family. This is my husband, Ben. He is a doctor. This is my sister, Mai. She is thirteen. It is her birthday! Happy birthday, Mai!",
+          "questions": [
+            {
+              "question": {
+                "en": "Who is Ben?",
+                "th": "เบนเป็นใคร"
+              },
+              "choices": [
+                "Her husband",
+                "Her friend"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Mai?",
+                "th": "ไหมอายุเท่าไร"
+              },
+              "choices": [
+                "Twelve",
+                "Thirteen"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What is Ben?",
+                "th": "เบนทำอาชีพอะไร"
+              },
+              "choices": [
+                "A doctor",
+                "A teacher"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: this is my…",
+        "th": "เขียน: this is my…"
+      },
+      "exercises": [
+        {
+          "id": "d015-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "my",
+            "This",
+            "sister"
+          ],
+          "answer": "This is my sister"
+        },
+        {
+          "id": "d015-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป (คำสรรพนามที่ใช้แทนผู้หญิง)"
+          },
+          "text": "This is my sister. ___ is thirteen.",
+          "answer": [
+            "She"
+          ]
+        },
+        {
+          "id": "d015-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เธอเป็นภรรยาของเขา",
+          "accept": [
+            "She is his wife"
+          ]
+        },
+        {
+          "id": "d015-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-family"
+            },
+            {
+              "vocabId": "v-sister"
+            },
+            {
+              "vocabId": "v-husband"
+            },
+            {
+              "vocabId": "v-wife"
+            },
+            {
+              "vocabId": "v-birthday"
+            },
+            {
+              "vocabId": "v-twelve"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
