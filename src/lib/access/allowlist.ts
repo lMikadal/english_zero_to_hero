@@ -97,11 +97,11 @@ function parseEntry(entry: string): Range {
   };
   const slash = entry.indexOf("/");
   const addrText = slash === -1 ? entry : entry.slice(0, slash);
-  const ip = parseIp(addrText);
+  const ip = addrText.includes("%") ? null : parseIp(addrText); // a zone id means nothing in an allow-list entry
   if (!ip) return fail("not an IPv4/IPv6 address (ports, hostnames, wildcards and ranges are not allowed)");
   if (slash === -1) return { version: ip.version, network: ip.value, prefix: BITS[ip.version] };
   const prefixText = entry.slice(slash + 1);
-  if (!/^[0-9]{1,3}$/.test(prefixText)) return fail("prefix length must be a whole number");
+  if (!/^(0|[1-9][0-9]{0,2})$/.test(prefixText)) return fail("prefix length must be a whole number without leading zeros");
   let prefix = Number(prefixText);
   // "::ffff:1.2.3.0/120" is an IPv4 range in disguise; anything shorter than /96 cannot be expressed in IPv4
   if (ip.version === 4 && addrText.includes(":")) {

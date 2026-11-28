@@ -101,7 +101,10 @@ PROD_PROJECT ?= ezh_prod
 # next prod-up runs, nor prune the real backups: ezh_prod -> ezh-prod-app:latest + backups/, ezh_stage -> ezh-stage-app:latest + backups-stage/
 PROD_IMAGE = ezh-$(subst _,-,$(patsubst ezh_%,%,$(PROD_PROJECT)))-app:latest
 PROD_BACKUPS = backups$(if $(filter ezh_prod,$(PROD_PROJECT)),,-$(patsubst ezh_%,%,$(PROD_PROJECT)))
-PROD := env PROD_IMAGE=$(PROD_IMAGE) $(COMPOSE) -p $(PROD_PROJECT) -f docker-compose.prod.yml --env-file $(PROD_ENV)
+# Each project gets its own /24 (so the gateway the published port arrives from is known, see docker-compose.prod.yml):
+# prod 172.30.10, stage 172.30.20, ci 172.30.30, any other project name a prefix derived from the name.
+PROD_NET_PREFIX = $(if $(filter ezh_prod,$(PROD_PROJECT)),172.30.10,$(if $(filter ezh_stage,$(PROD_PROJECT)),172.30.20,$(if $(filter ezh_ci,$(PROD_PROJECT)),172.30.30,172.30.$(shell echo $$((40 + $$(printf %s '$(PROD_PROJECT)' | cksum | cut -d' ' -f1) % 200))))))
+PROD := env PROD_IMAGE=$(PROD_IMAGE) PROD_NET_PREFIX=$(PROD_NET_PREFIX) $(COMPOSE) -p $(PROD_PROJECT) -f docker-compose.prod.yml --env-file $(PROD_ENV)
 # every value is read by the same parser the scripts use: scripts/prod/env-get.sh
 prod_var = $(shell sh scripts/prod/env-get.sh '$(PROD_ENV)' $(1) '$(2)')
 PROD_DB = $(call prod_var,POSTGRES_DB,english_zero_to_hero)
@@ -109,6 +112,7 @@ PROD_USER = $(call prod_var,POSTGRES_USER,ezh)
 PROD_PORT = $(call prod_var,APP_PORT,3100)
 PROD_BIND = $(call prod_var,APP_BIND,127.0.0.1)
 PROD_KEEP = $(call prod_var,BACKUP_KEEP,14)
+PROD_ALLOWED = $(call prod_var,ALLOWED_IPS,)
 PROD_SCRIPT_ENV = COMPOSE_CMD='$(PROD)' DB_NAME='$(PROD_DB)' DB_USER='$(PROD_USER)' BACKUP_DIR=$(PROD_BACKUPS) APP_BIND='$(PROD_BIND)' APP_PORT='$(PROD_PORT)' KEEP='$(PROD_KEEP)'
 
 prod: prod-init prod-build prod-up ## Production, one command: create .env.prod if missing, build the image, start it
@@ -131,6 +135,7 @@ prod-up: prod-check ## Start production (backup if migrations are pending, then 
 	@MODE=if-pending $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
 	$(PROD) up -d --wait
 	@echo "$(if $(filter ezh_prod,$(PROD_PROJECT)),production,stage ($(PROD_PROJECT))) is up: http://$(PROD_BIND):$(PROD_PORT)"
+	@sh scripts/prod/access-check.sh --note '$(PROD_ALLOWED)'
 
 prod-update: prod-check ## After git pull: backup (if data exists), build, start. THE way to update
 	@MODE=always $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
@@ -146,6 +151,7 @@ prod-logs: ## Follow production logs
 prod-status: ## Is production running and healthy?
 	$(PROD) ps -a
 	@curl -fsS --max-time 5 http://$(PROD_BIND):$(PROD_PORT)/api/health && echo " <- /api/health" || echo "app did not answer on $(PROD_BIND):$(PROD_PORT)"
+	@PROBE_EXEC='$(PROD) exec -T postgres' sh scripts/prod/access-check.sh http://$(PROD_BIND):$(PROD_PORT) '$(PROD_ALLOWED)'
 
 prod-migrate: prod-check ## Apply pending database migrations by hand (prod-up already does this)
 	$(PROD) up -d --wait postgres

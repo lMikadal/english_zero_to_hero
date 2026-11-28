@@ -53,3 +53,8 @@ case "$bind" in ''|*[!0-9.]*) fail "APP_BIND=$bind in $file must be an IPv4 addr
 
 keep=$(get BACKUP_KEEP 14)
 printf %s "$keep" | grep -Eq '^[1-9][0-9]*$' || fail "BACKUP_KEEP=$keep in $file must be a whole number of at least 1 (no leading zero)"
+
+# who may use the app: validated here, before anything starts, with the same rules as the app itself
+# (an invalid value would otherwise show up as "every page answers 500"). Empty = feature off.
+sh "$here/allowed-ips.sh" "$(get ALLOWED_IPS)" ALLOWED_IPS || fail "ALLOWED_IPS in $file is not valid (see above). Example: ALLOWED_IPS=100.101.102.103, 100.88.5.7  (ค่า ALLOWED_IPS ไม่ถูกต้อง)"
+sh "$here/allowed-ips.sh" "$(get TRUSTED_PROXIES)" TRUSTED_PROXIES || fail "TRUSTED_PROXIES in $file is not valid (see above)"

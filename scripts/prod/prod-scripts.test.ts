@@ -834,11 +834,11 @@ echo "$url xff=[$xff] peer=[$peer]" >> "${tmp}/curl.log"
 case "${mode}" in
   open) printf 200; exit 0 ;;
   closed) printf 403; exit 0 ;;
-  peer-trusted) [ "$xff" = "192.0.2.1" ] && { printf 403; exit 0; }; printf 200; exit 0 ;;
+  peer-trusted) [ -n "$peer" ] && { printf 200; exit 0; }; [ "$xff" = "192.0.2.1" ] && { printf 403; exit 0; }; printf 200; exit 0 ;;
 esac
 [ -n "$peer" ] && { printf 403; exit 0; }
 [ -z "$xff" ] && { printf 200; exit 0; }
-[ "$xff" = "100.101.102.103" ] && { printf 200; exit 0; }
+[ "$xff" = "\${FAKE_LISTED:-100.101.102.103}" ] && { printf 200; exit 0; }
 printf 403
 `,
       { mode: 0o755 },
@@ -885,7 +885,7 @@ printf 403
     expect(run("access-check.sh", ["--note", "100.101.102.103"]).out).toContain("100.101.102.103");
   });
   it("a listed range that contains the test address is reported, not mistaken for a broken app", () => {
-    const r = check("ok", "192.0.2.0/24");
+    const r = check("ok", "192.0.2.0/24", { FAKE_LISTED: "192.0.2.0" });
     expect(r.code).toBe(0);
     expect(r.out).toMatch(/192\.0\.2\.1/);
     expect(r.out).toMatch(/skipp/i);
@@ -945,6 +945,6 @@ describe("production network: dedicated subnet, narrow trusted proxies, allow-li
     const job = ci.slice(ci.indexOf("prod-image:"));
     expect(job).toMatch(/ALLOWED_IPS=/);
     expect(job).toContain("scripts/prod/access-check.sh");
-    expect(job.indexOf("ALLOWED_IPS=")).toBeLessThan(job.indexOf("make ci-up"));
+    expect(job.indexOf("ALLOWED_IPS=")).toBeLessThan(job.indexOf("make ci-up\n"));
   });
 });
