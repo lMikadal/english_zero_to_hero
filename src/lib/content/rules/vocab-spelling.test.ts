@@ -39,6 +39,18 @@ describe("vocab-spelling: a headword in the UK/US table carries the other spelli
   });
 });
 
+describe("vocab-spelling: a US spelling that is also a correct UK word of another sense makes no demand either way", () => {
+  it.each([["practice", "noun"], ["tire", "verb"], ["license", "verb"], ["program", "noun"], ["meter", "noun"], ["tires", "noun"], ["programs", "noun"]])("%s (%s)", (word, pos) => {
+    expect(run(vocabItem({ id: `v-${word}`, word, pos }))).toEqual([]);
+  });
+  it("the UK side of the same pairs still demands the US spelling (tyre, licence, programme, metre, practise are unambiguous)", () => {
+    for (const w of ["tyre", "licence", "programme", "metre", "practise"]) expect(run(vocabItem({ id: `v-${w}`, word: w })), w).toHaveLength(1);
+  });
+  it("unambiguous pairs still demand: colour, grey, mum, favourite, centre, and the US side mom, color, gray", () => {
+    for (const w of ["colour", "grey", "mum", "favourite", "centre", "mom", "color", "gray", "favorite", "center"]) expect(run(vocabItem({ id: `v-${w}`, word: w })), w).toHaveLength(1);
+  });
+});
+
 describe("the spelling keys are word forms (taught-words sees them), unlike gradable", () => {
   it("usSpelling and ukSpelling are surface forms; gradable is not", () => {
     expect(surfaceForms(vocabItem({ id: "v-grey", word: "grey", pos: "adjective", forms: { usSpelling: "gray", gradable: "no" } }))).toEqual(new Set(["grey", "gray"].concat([])));

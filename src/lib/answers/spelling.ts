@@ -47,3 +47,6 @@ export const otherSpelling = (word: string): string | undefined => TO_US.get(wor
 
 /** True for the UK side of a pair (colour), false for the US side (color) and for words not in the table. */
 export const isUkSpelling = (word: string): boolean => TO_US.has(word);
+
+/** Placeholder (tests first). */
+export const isSenseDependent = (_word: string): boolean => false;

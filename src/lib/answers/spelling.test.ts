@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { readContent } from "@/lib/content/loader";
 import { canonicalAnswer } from "./equivalents";
 import { matchesAny } from "./normalize";
-import { SPELLING_PAIRS, foldSpelling, otherSpelling } from "./spelling";
+import { SPELLING_PAIRS, foldSpelling, isSenseDependent, otherSpelling } from "./spelling";
 
 describe("UK and US spellings fold in grading (both directions)", () => {
   it.each([
@@ -18,7 +18,10 @@ describe("UK and US spellings fold in grading (both directions)", () => {
     ["It is jewellery", "It is jewelry"], ["It is a licence", "It is a license"], ["It is defence", "It is defense"],
     ["It is a catalogue", "It is a catalog"], ["It is a dialogue", "It is a dialog"], ["I like yoghurt", "I like yogurt"],
     ["I like doughnuts", "I like donuts"], ["The colours are nice", "The colors are nice"], ["The greyer bag", "The grayer bag"],
-    ["It is a programme", "It is a program"], ["He is coloured", "He is colored"], ["I like maths", "I like math"], ["It is a tyre", "It is a tire"],
+    ["It is a programme", "It is a program"], ["The greys", "The grays"], ["It is an omelette", "It is an omelet"], ["I like chilli", "I like chili"],
+    ["He has a moustache", "He has a mustache"], ["It is cosy", "It is cozy"], ["It is cosier", "It is cozier"], ["My judgement", "My judgment"],
+    ["I enrol", "I enroll"], ["He has an axe", "He has an ax"], ["I am centring it", "I am centering it"], ["He honoured it", "He honored it"],
+    ["I have a catalogued list", "I have a cataloged list"], ["It is moulded", "It is molded"], ["He is neighbouring", "He is neighboring"], ["He is coloured", "He is colored"], ["I like maths", "I like math"], ["It is a tyre", "It is a tire"],
   ])("%s = %s", (a, b) => {
     expect(matchesAny(a, [b]), a).toBe(true);
     expect(matchesAny(b, [a]), b).toBe(true);
@@ -29,7 +32,7 @@ describe("UK and US spellings fold in grading (both directions)", () => {
   });
   it("only whole tokens: no suffix rule", () => {
     for (const [a, b] of [["four", "for"], ["hour", "hor"], ["hours", "hors"], ["your", "yor"], ["flour", "floor"], ["court", "cort"], ["tired", "tire"], ["check", "cheque"],
-      ["colour", "colur"], ["tired", "tyred"], ["story", "storey"]]) {
+      ["colour", "colur"], ["tired", "tyred"], ["story", "storey"], ["chilly", "chilli"], ["chilly", "chili"], ["axes", "axe"], ["judge", "judgement"]]) {
       expect(matchesAny(a, [b]), `${a} vs ${b}`).toBe(false);
     }
     expect(matchesAny("four", ["four"])).toBe(true);
@@ -61,6 +64,10 @@ describe("the closed table", () => {
     expect(otherSpelling("colour")).toBe("color");
     expect(otherSpelling("color")).toBe("colour");
     expect(otherSpelling("hour")).toBeUndefined();
+  });
+  it("sense-dependent pairs (the US spelling is also a correct UK word) are marked", () => {
+    for (const w of ["practice", "tire", "license", "program", "meter", "tires", "programs"]) expect(isSenseDependent(w), w).toBe(true);
+    for (const w of ["color", "gray", "mom", "center", "tyre", "practise"]) expect(isSenseDependent(w), w).toBe(false);
   });
   it("no table word on one side is a DIFFERENT word of the vocab bank (an entry may only hold its own pair)", () => {
     const { vocab } = readContent(path.resolve(import.meta.dirname, "../../../content"));
