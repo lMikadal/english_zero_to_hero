@@ -76,5 +76,5 @@ Rules added: `arrange-question`, `sound-words`, `phoneme-tags`, `cast-consistenc
 
 ## Week 7 review: Oxford level doubt and the new gate
 
-- Words of week 7 labelled A1 from memory whose level is doubtful: `usually` (A2?), `shower`, `arrive`, `drive`, `leave`, `visit`, `ticket`, `taxi`, `bike`, `desk`, `shopping`, `weekend`, `class`, `swim`. Verify against the official Oxford 3000 list when the owner supplies it (same note as week 6).
+- Words of week 7 labelled A1 from memory whose level is doubtful: `usually` (A2?), `arrive` (maybe A2), `taxi` (unsure), `shower`, `drive`, `leave`, `visit`, `ticket`, `bike`, `desk`, `shopping`, `weekend`, `class`, `swim`. Verify against the official Oxford 3000 list when the owner supplies it (same note as week 6).
 - New gate `frequency-adverb` (day 44: always, usually, often, sometimes, never) in `GRAMMAR_STRUCTURES` / `GRAMMAR_NOT_BEFORE`. It only knows the five words, not the word order (`I watch TV always` is not detected) and not `How often`.
