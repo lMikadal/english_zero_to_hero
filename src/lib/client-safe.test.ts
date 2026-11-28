@@ -43,6 +43,9 @@ const CLIENT_SAFE = [
   "components/player/DayPlayer.tsx",
   "components/player/CompletionScreen.tsx",
   "components/exercises/registry.tsx",
+  // the checkpoint screens run in the browser: the queries and the content loader must not reach them
+  "components/checkpoint/CheckpointApp.tsx",
+  "components/checkpoint/view.ts",
 ];
 
 const BUILTINS = new Set(builtinModules.filter((m) => !m.startsWith("_")).flatMap((m) => [m, m.replace(/\/.*$/, "")]));

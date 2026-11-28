@@ -29,6 +29,8 @@ export type PlayerState = {
   startedAt: number;
   answers: Record<string, AnswerRecord>;
   retryBuilt: boolean;
+  /** Exercises already answered in an earlier sitting (checkpoint resume): never shown again, still counted in "ข้อ x / n". */
+  skipIds: ReadonlySet<string>;
 };
 
 /** Every action names the step it was meant for (`PlayItem.key`); one for any other step is ignored. */
@@ -43,22 +45,33 @@ const isUngraded = (type: string) => (UNGRADED_TYPES as readonly string[]).inclu
 const item = (step: Step, attemptNo: 1 | 2): PlayItem => ({ step, attemptNo, key: `${step.exercise.id}-${attemptNo}` });
 
 /** `sections` (default: the lesson's own) lets a replay play one skill's sections. */
-export function buildSteps(lesson: Lesson, isSupported: (type: Exercise["type"]) => boolean = () => true, sections: Section[] = lesson.sections): Step[] {
+export function buildSteps(lesson: Pick<Lesson, "sections">, isSupported: (type: Exercise["type"]) => boolean = () => true, sections: Section[] = lesson.sections): Step[] {
   return sections.flatMap((section) =>
     section.exercises.map((exercise) => ({ exercise, sectionTitle: section.title, supported: isSupported(exercise.type) })),
   );
 }
 
 export function createPlayerState(args: {
-  lesson: Lesson;
+  /** Anything with sections: a lesson, or a checkpoint. */
+  lesson: Pick<Lesson, "sections">;
   /** Only these sections are played (replay of one skill); default: all of the lesson's. */
   sections?: Section[];
   sessionId: string;
   now: number;
   isSupported?: (type: Exercise["type"]) => boolean;
+  /** Default true. false (the monthly checkpoint, D5): no retry round after a wrong answer; the pass ends after the last exercise. */
+  retry?: boolean;
+  /** Exercise ids to step over (a resumed checkpoint sitting): the player starts at the first exercise not in the set. */
+  skipIds?: ReadonlySet<string>;
 }): PlayerState {
   const items = buildSteps(args.lesson, args.isSupported, args.sections).map((s) => item(s, 1));
-  return { items, index: 0, phase: items.length === 0 ? "complete" : "playing", sessionId: args.sessionId, startedAt: args.now, answers: {}, retryBuilt: false };
+  const skipIds = args.skipIds ?? new Set<string>();
+  const first = items.findIndex((i) => !skipIds.has(i.step.exercise.id));
+  return {
+    items, index: Math.max(first, 0), phase: first < 0 ? "complete" : "playing", sessionId: args.sessionId, startedAt: args.now, answers: {},
+    // a pass with no retry round is the same as "the retry round was already built, and it was empty"
+    retryBuilt: args.retry === false, skipIds,
+  };
 }
 
 export function currentItem(state: PlayerState): PlayItem {
@@ -95,14 +108,17 @@ export function firstAttemptScore(state: PlayerState): number | null {
 }
 
 function advance(state: PlayerState, now: number): PlayerState {
-  if (state.index < state.items.length - 1) return { ...state, index: state.index + 1, startedAt: now };
+  // the next exercise that was not answered in an earlier sitting (retry items are never in skipIds' first pass)
+  let next = state.index + 1;
+  while (next < state.items.length && state.items[next].attemptNo === 1 && state.skipIds.has(state.items[next].step.exercise.id)) next++;
+  if (next < state.items.length) return { ...state, index: next, startedAt: now };
   if (state.retryBuilt) return { ...state, phase: "complete" };
   // End of the first pass: one retry round, wrong auto-graded exercises only, in lesson order. Built once.
   const retries = state.items
     .filter((i) => i.attemptNo === 1 && i.step.supported && isRetryable(i.step.exercise.type) && state.answers[i.key]?.grade.correct === false)
     .map((i) => item(i.step, 2));
   if (retries.length === 0) return { ...state, retryBuilt: true, phase: "complete" };
-  return { ...state, items: [...state.items, ...retries], index: state.index + 1, startedAt: now, retryBuilt: true };
+  return { ...state, items: [...state.items, ...retries], index: state.items.length, startedAt: now, retryBuilt: true };
 }
 
 export function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
