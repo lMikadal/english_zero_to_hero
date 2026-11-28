@@ -61,7 +61,7 @@ export const ADJECTIVES: ReadonlySet<string> = new Set((
   "right wrong easy hard difficult cheap expensive clean dirty kind sick ill well great ok okay sorry angry afraid sure pretty beautiful quiet loud " +
   "fast slow strong weak rich poor full empty open safe real true correct high low heavy light dark bright soft sweet delicious famous different same " +
   "special important interesting funny friendly careful lovely red blue green yellow black white brown pink orange purple grey gray hungry fun " +
-  "favourite favorite nervous healthy lucky shy polite honest clever smart cute proud brave calm crazy rude silly all"
+  "favourite favorite next nervous healthy lucky shy polite honest clever smart cute proud brave calm crazy rude silly all"
 ).split(" "));
 const NUMBER_WORD_SET = new Set<string>([...NUMBER_WORDS.flatMap(([, w]) => w.split(" ")), "zero", "hundred", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]);
 const NOT_ING = new Set(["thing", "bring", "spring", "string", "swing"]);

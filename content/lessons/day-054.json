@@ -1,0 +1,352 @@
+{
+  "day": 54,
+  "phase": 1,
+  "week": 8,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "My plan for next week! busy, ready, exam",
+    "th": "แผนของสัปดาห์หน้า! busy, ready, exam"
+  },
+  "objectives": [
+    {
+      "en": "Talk about your plans and a busy week: lesson, exam, meeting, next week",
+      "th": "พูดถึงแผนและสัปดาห์ที่ยุ่งได้: lesson, exam, meeting, next week"
+    },
+    {
+      "en": "Say where people work and when places open: office, bank, opens at nine o'clock",
+      "th": "บอกที่ทำงานและเวลาเปิดของสถานที่ได้: office, bank, opens at nine o'clock"
+    },
+    {
+      "en": "Practise the endings -s /s/ /z/ /ɪz/ and -ed together",
+      "th": "ฝึกเสียงท้าย -s /s/ /z/ /ɪz/ และ -ed รวมกัน"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-next",
+    "v-plan",
+    "v-lesson",
+    "v-exam",
+    "v-meeting",
+    "v-busy",
+    "v-ready",
+    "v-office",
+    "v-bank"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Endings -s and -ed together",
+        "th": "เสียงท้าย -s และ -ed รวมกัน"
+      },
+      "exercises": [
+        {
+          "id": "d054-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "niece",
+              "b": "knees",
+              "answer": "a"
+            },
+            {
+              "a": "walk",
+              "b": "walked",
+              "answer": "b"
+            },
+            {
+              "a": "price",
+              "b": "prize",
+              "answer": "b"
+            },
+            {
+              "a": "looked",
+              "b": "look",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "s",
+            "z",
+            "t"
+          ]
+        },
+        {
+          "id": "d054-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม watches, washes, glasses ต้องมีพยางค์ /ɪz/ ท้ายคำ"
+          },
+          "text": "She watches TV and he washes the glasses.",
+          "ipa": "/ʃiː ˈwɑːtʃɪz ˌtiːˈviː ænd hiː ˈwɑːʃɪz ðə ˈɡlæsɪz/",
+          "phonemes": [
+            "iz"
+          ]
+        },
+        {
+          "id": "d054-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้าย starts ต้องมีทั้ง /t/ และ /s/ (สตาร์ตส์) ไม่ตัดทิ้ง"
+          },
+          "text": "The meeting starts at nine o'clock.",
+          "ipa": "/ðə ˈmiːtɪŋ stɑːrts æt naɪn əˈklɑːk/",
+          "phonemes": [
+            "s"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: a busy week",
+        "th": "ฟัง: สัปดาห์ที่ยุ่ง"
+      },
+      "exercises": [
+        {
+          "id": "d054-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแดนมีประชุมวันไหน"
+          },
+          "audioText": "I am Dan. I am a doctor. My office is near the bank. I have a meeting on Monday at nine o'clock. I am busy on Monday. On Friday I am free.",
+          "question": {
+            "en": "When does Dan have a meeting?",
+            "th": "แดนมีประชุมวันไหน"
+          },
+          "choices": [
+            "On Monday",
+            "On Friday"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d054-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-next"
+            },
+            {
+              "vocabId": "v-plan"
+            },
+            {
+              "vocabId": "v-lesson"
+            },
+            {
+              "vocabId": "v-exam"
+            }
+          ]
+        },
+        {
+          "id": "d054-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอมีสอบวันไหน"
+          },
+          "audioText": "I am Leo. I have a lesson on Tuesday. I have an exam on Friday. Next week I am busy. Today I study at my desk.",
+          "question": {
+            "en": "What does Leo have on Friday?",
+            "th": "ลีโอมีอะไรวันศุกร์"
+          },
+          "choices": [
+            "An exam",
+            "A lesson"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d054-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The bank opens at nine o'clock."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "My plan",
+        "th": "แผนของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d054-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I'm busy today.",
+            "Dan has a meeting on Monday.",
+            "His office is near the bank.",
+            "The bank opens at nine o'clock.",
+            "Leo has an exam on Friday.",
+            "He's ready.",
+            "I have a plan.",
+            "On Saturday evening we watch a film."
+          ]
+        },
+        {
+          "id": "d054-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณมีแผนไหม และวันเสาร์ทำอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Do you have a plan? What do you do on Saturday?",
+          "sampleAnswer": "Yes, I have a plan. On Saturday I watch a film.",
+          "keywords": [
+            "plan",
+            "Saturday"
+          ]
+        },
+        {
+          "id": "d054-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /kst/ ใน next ท้ายคำ (เน็กซ์ท) ไม่ตัดทิ้ง"
+          },
+          "text": "Are you ready? The next lesson starts now.",
+          "ipa": "/ɑːr juː ˈredi ðə nekst ˈlesn stɑːrts naʊ/",
+          "phonemes": [
+            "s"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Rose's busy Monday",
+        "th": "วันจันทร์ที่ยุ่งของโรส"
+      },
+      "exercises": [
+        {
+          "id": "d054-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Dan's office = ที่ทำงานของแดน)"
+          },
+          "text": "Rose is busy on Monday. She has a lesson at eight o'clock. Dan has a meeting at nine o'clock in his office. His office is near the bank. The bank opens at nine o'clock too. Leo has an exam on Friday. He is ready. Next week the family has a plan: on Saturday evening they watch a film.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Rose have at eight o'clock?",
+                "th": "โรสมีอะไรตอนแปดโมง"
+              },
+              "choices": [
+                "A lesson",
+                "A meeting"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is Dan's office?",
+                "th": "ที่ทำงานของแดนอยู่ที่ไหน"
+              },
+              "choices": [
+                "Near the bank",
+                "Near the market"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is the family plan for Saturday?",
+                "th": "แผนของครอบครัววันเสาร์คืออะไร"
+              },
+              "choices": [
+                "Watch a film",
+                "Go shopping"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: plans",
+        "th": "เขียน: แผน"
+      },
+      "exercises": [
+        {
+          "id": "d054-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "My",
+            "father",
+            "a",
+            "meeting"
+          ],
+          "answer": "My father has a meeting"
+        },
+        {
+          "id": "d054-write-02",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "สัปดาห์หน้าฉันมีสอบ",
+          "accept": [
+            "Next week I have an exam",
+            "I have an exam next week"
+          ]
+        },
+        {
+          "id": "d054-write-03",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (ยุ่ง)"
+          },
+          "text": "Dan is ___ on Monday.",
+          "answer": [
+            "busy"
+          ]
+        },
+        {
+          "id": "d054-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-meeting"
+            },
+            {
+              "vocabId": "v-busy"
+            },
+            {
+              "vocabId": "v-ready"
+            },
+            {
+              "vocabId": "v-office"
+            },
+            {
+              "vocabId": "v-bank"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

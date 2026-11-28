@@ -10,6 +10,21 @@ const arrange = (words: string[], answer: string, accept?: string[]): Exercise =
 });
 const check = (ex: Exercise) => checkArrangeWords(buildContext(data([lessonFile(1, [], [ex])], [vocabFile([vocabItem({ id: "v-cat" })])])));
 
+describe("arrange_words calendar words (days and months)", () => {
+  it("accepts a day or month capitalised mid-sentence without a Thai spelling", () => {
+    expect(check(arrange(["play", "I", "football", "on", "Saturday"], "I play football on Saturday"))).toEqual([]);
+    expect(check(arrange(["is", "birthday", "My", "in", "May"], "My birthday is in May"))).toEqual([]);
+  });
+  it("flags a day that only starts the sentence (the tile would show 'saturday')", () => {
+    const out = check(arrange(["I", "football", "play", "Saturday", "On"], "On Saturday I play football"));
+    expect(out).toEqual([]);
+    const only = check(arrange(["is", "Monday", "a", "school", "day"], "Monday is a school day"));
+    expect(only).toHaveLength(1);
+    expect(only[0].message).toContain('"Monday"');
+    expect(only[0].message).toContain("lower case");
+  });
+});
+
 describe("arrange_words proper nouns", () => {
   it("accepts ordinary sentence-initial capitals and I", () => {
     expect(check(arrange(["is", "My", "name", "Sam"], "My name is Sam"))).toEqual([]);
