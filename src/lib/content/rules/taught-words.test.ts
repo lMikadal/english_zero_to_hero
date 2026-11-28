@@ -117,13 +117,13 @@ describe("checkTaughtWords: hint for inflections of taught words", () => {
     vocabItem({ id: "v-cat", word: "cat", examples: ["A cat."] }),
     vocabItem({ id: "v-hop", word: "hop", pos: "verb", examples: ["Stop."] }),
     vocabItem({ id: "v-nice", word: "nice", pos: "adjective", examples: ["Nice."] }),
-    vocabItem({ id: "v-lie", word: "lie", pos: "verb", examples: ["Lie."] }),
+    vocabItem({ id: "v-hot", word: "hot", pos: "adjective", examples: ["Hot."] }),
   ];
   const msg = (text: string) => {
-    const ctx = run([lessonFile(1, ["v-big", "v-cat", "v-hop", "v-nice", "v-lie"], [dictation(1, text)])], items);
+    const ctx = run([lessonFile(1, ["v-big", "v-cat", "v-hop", "v-nice", "v-hot"], [dictation(1, text)])], items);
     return checkTaughtWords(ctx).map((p) => p.message).join("\n");
   };
-  it.each([["bigger", "big"], ["hopping", "hop"], ["nicer", "nice"], ["lying", "lie"], ["cats", "cat"]])("%s is told to be added to the forms of %s", (w, base) => {
+  it.each([["bigger", "big"], ["hopping", "hop"], ["nicer", "nice"], ["hotter", "hot"], ["cats", "cat"]])("%s is told to be added to the forms of %s", (w, base) => {
     if (w === "cats") return; // regular plural is already accepted
     const m = msg(`A ${w}`);
     expect(m).toContain(`"${w}"`);

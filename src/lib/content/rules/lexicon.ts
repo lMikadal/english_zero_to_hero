@@ -43,13 +43,15 @@ function regularForms(base: string, item: VocabItem): string[] {
   if (isVerb) {
     const eDrop = /e$/.test(base) && !/(ee|ye|oe)$/.test(base) && base.length > 2;
     const stem = eDrop ? base.slice(0, -1) : base;
-    out.push(`${stem}ing`);
-    if (DOUBLING.has(base)) out.push(`${base}${base.slice(-1)}ing`);
+    // doubling: the tiny explicit list, or the entry itself lists a doubled past (stopped, hopped); then no undoubled form
+    const doubles = DOUBLING.has(base) || Object.values(listed).some((v) => v.toLowerCase().split("/").some((x) => x.trim() === `${base}${base.slice(-1)}ed`));
+    // lie -> lying, die -> dying, tie -> tying
+    if (doubles) out.push(`${base}${base.slice(-1)}ing`);
+    else out.push(/ie$/.test(base) ? `${base.slice(0, -2)}ying` : `${stem}ing`);
     if (!listed.past && !listed.pastParticiple && base.length > 2) {
       if (/[^aeiou]y$/.test(base)) out.push(`${base.slice(0, -1)}ied`);
       else if (/e$/.test(base)) out.push(`${base}d`);
-      else out.push(`${base}ed`);
-      if (DOUBLING.has(base)) out.push(`${base}${base.slice(-1)}ed`);
+      else out.push(doubles ? `${base}${base.slice(-1)}ed` : `${base}ed`);
     }
   }
   return out;

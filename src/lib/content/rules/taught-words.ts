@@ -23,6 +23,24 @@ function firstDayOfForms(ctx: RuleContext): Map<string, number> {
 const quoted = (words: string[]) => words.map((w) => `"${w}"`).join(", ");
 const FIX = "Teach the word earlier, rewrite the text, or (names, function words) add it to src/lib/content/rules/allowlists.ts.";
 
+/** Candidate base words of an inflected token: strips -s -es -ies -ing -ed -ied -er -est -ier -iest, undoubles, restores -e. */
+function baseCandidates(t: string): string[] {
+  const out: string[] = [];
+  const add = (stem: string) => { if (stem.length >= 2) out.push(stem, `${stem}e`, `${stem}y`, ...(stem.length > 2 && stem.at(-1) === stem.at(-2) ? [stem.slice(0, -1)] : [])); };
+  for (const [suf] of [["ing"], ["ed"], ["er"], ["est"], ["es"], ["s"], ["ied"], ["ier"], ["iest"], ["ies"]] as const) if (t.endsWith(suf) && t.length > suf.length + 1) add(t.slice(0, -suf.length));
+  if (t.endsWith("ying")) out.push(`${t.slice(0, -4)}ie`);
+  return out;
+}
+
+/** For tokens that look like an inflection of a taught word: the advice is to list the form, not to allowlist it. */
+function inflectionHints(bad: string[], heads: ReadonlySet<string>): string {
+  const lines = bad.flatMap((t) => {
+    const base = baseCandidates(t).find((c) => c !== t && heads.has(c));
+    return base ? [`"${t}" looks like a form of the taught word "${base}": add it to that entry's \`forms\` (e.g. comparative, superlative, past, present), not the allowlist.`] : [];
+  });
+  return lines.length ? ` ${lines.join(" ")}` : "";
+}
+
 /** Unknown tokens of `text` for a reader who knows what was taught by `day`; `extra` are always allowed. */
 function unknown(text: string, day: number, firstDay: Map<string, number>, extra: ReadonlySet<string> = new Set()): string[] {
   const seen = new Set<string>();
@@ -37,6 +55,9 @@ function unknown(text: string, day: number, firstDay: Map<string, number>, extra
 export function checkTaughtWords(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
   const firstDay = firstDayOfForms(ctx);
+  const heads = new Set<string>();
+  for (const id of ctx.taughtIn.keys()) { const w = ctx.bank.get(id)?.item.word.toLowerCase(); if (w) for (const p of w.split(/\s+/)) heads.add(p); }
+  const hint = (bad: string[]) => inflectionHints(bad, heads);
 
   for (const [id, { item, file }] of ctx.bank) {
     const taught = ctx.taughtIn.get(id);
@@ -46,7 +67,7 @@ export function checkTaughtWords(ctx: RuleContext): Problem[] {
       if (bad.length) {
         problems.push({
           rule: TAUGHT_WORDS_RULE, file, id,
-          message: `examples[${i}] "${ex.en}" uses words not taught by day ${taught.day} (the day ${id} is first taught): ${quoted(bad)}. ${FIX}`,
+          message: `examples[${i}] "${ex.en}" uses words not taught by day ${taught.day} (the day ${id} is first taught): ${quoted(bad)}. ${FIX}${hint(bad)}`,
         });
       }
     });
@@ -57,13 +78,14 @@ export function checkTaughtWords(ctx: RuleContext): Problem[] {
       for (const ex of section.exercises) {
         const glossed = new Set(glossedWords(ex).flatMap(tokenize));
         const found: string[] = [];
+        const allBad: string[] = [];
         for (const f of learnerEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
           const bad = unknown(f.text, lesson.day, firstDay, glossed);
-          if (bad.length) found.push(`${quoted(bad)} in ${f.field}`);
+          if (bad.length) { found.push(`${quoted(bad)} in ${f.field}`); allBad.push(...bad); }
         }
         if (found.length) {
-          problems.push({ rule: TAUGHT_WORDS_RULE, file, id: ex.id, message: `uses words not taught by day ${lesson.day}: ${found.join("; ")}. ${FIX}` });
+          problems.push({ rule: TAUGHT_WORDS_RULE, file, id: ex.id, message: `uses words not taught by day ${lesson.day}: ${found.join("; ")}. ${FIX}${hint(allBad)}` });
         }
       }
     }
