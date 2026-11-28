@@ -1,0 +1,336 @@
+{
+  "day": 22,
+  "phase": 1,
+  "week": 4,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "What colour is it? The sounds /r/ and /l/",
+    "th": "What colour is it? เสียง /r/ และ /l/"
+  },
+  "objectives": [
+    {
+      "en": "Say the colour of things and tell /r/ from /l/",
+      "th": "บอกสีของสิ่งต่าง ๆ และแยกเสียง /r/ กับ /l/ ได้"
+    },
+    {
+      "en": "Hear the difference in right–light, rock–lock, load–road and long–wrong",
+      "th": "ฟังความต่างของ right–light, rock–lock, load–road และ long–wrong ได้"
+    },
+    {
+      "en": "Say thirty and tell it apart from thirteen",
+      "th": "พูด thirty และแยกให้ออกจาก thirteen"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-colour",
+    "v-red",
+    "v-blue",
+    "v-green",
+    "v-yellow",
+    "v-black",
+    "v-white",
+    "v-thirty"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sounds /r/ and /l/",
+        "th": "เสียง /r/ และ /l/"
+      },
+      "exercises": [
+        {
+          "id": "d022-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "r",
+          "ipa": "/r/",
+          "tipTh": "เสียง /r/ ของอังกฤษไม่เหมือน 'ร' ของไทย: ห้ามรัวหรือสะบัดปลายลิ้น ให้ม้วนปลายลิ้นขึ้นเล็กน้อยโดยไม่แตะเพดานปาก ริมฝีปากห่อนิดหน่อย แล้วออกเสียงต่อเนื่อง ส่วน /l/ ให้ปลายลิ้นแตะเหงือกด้านหลังฟันบนแล้วปล่อยให้ลมไหลออกทางข้างลิ้น คนไทยมักสลับสองเสียงนี้ จึงทำให้ right (ถูกต้อง) ฟังเป็น light (ไฟ) และ road (ถนน) ฟังเป็น load (บรรทุก) (อเมริกันสะกด color, gray) ลองเทียบ red (ลิ้นลอยอยู่กลางปาก ไม่แตะอะไรเลย) กับ blue (ลิ้นแตะเหงือกก่อนแล้วจึงตามด้วย 'ู')",
+          "examples": [
+            "red",
+            "green",
+            "brother",
+            "very"
+          ]
+        },
+        {
+          "id": "d022-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "right",
+              "b": "light",
+              "answer": "a"
+            },
+            {
+              "a": "lock",
+              "b": "rock",
+              "answer": "b"
+            },
+            {
+              "a": "load",
+              "b": "road",
+              "answer": "b"
+            },
+            {
+              "a": "long",
+              "b": "wrong",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        },
+        {
+          "id": "d022-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /r/ ใน red (ลิ้นไม่แตะเพดาน) และ /l/ ใน blue, yellow (ปลายลิ้นแตะเหงือก)"
+          },
+          "text": "A red pen, a blue pen, a yellow pen.",
+          "ipa": "/ə red pen ə bluː pen ə ˈjeloʊ pen/",
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: colours and prices",
+        "th": "ฟัง: สีและราคา"
+      },
+      "exercises": [
+        {
+          "id": "d022-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าประตูสีอะไร"
+          },
+          "audioText": "What colour is the door? It is blue. And the window is white.",
+          "question": {
+            "en": "What colour is the door?",
+            "th": "ประตูสีอะไร"
+          },
+          "choices": [
+            "Blue",
+            "White",
+            "Red"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d022-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าปากกาด้ามสีแดงราคาเท่าไร ระวัง thirteen กับ thirty"
+          },
+          "audioText": "The red pen is thirty baht. The blue pen is thirteen baht.",
+          "question": {
+            "en": "How much is the red pen?",
+            "th": "ปากกาสีแดงราคากี่บาท"
+          },
+          "choices": [
+            "Thirteen",
+            "Thirty",
+            "Three"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d022-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The door is green and the window is yellow."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say the colour",
+        "th": "บอกสี"
+      },
+      "exercises": [
+        {
+          "id": "d022-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "What colour is it?",
+            "It is red.",
+            "It is a red car.",
+            "What colour is the door? It is blue.",
+            "The sun is yellow.",
+            "My cat is black and white."
+          ]
+        },
+        {
+          "id": "d022-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกสีของบ้านและประตูของคุณ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What colour is your house? What colour is your door?",
+          "sampleAnswer": "My house is white. The door is green.",
+          "keywords": [
+            "is"
+          ]
+        },
+        {
+          "id": "d022-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /r/ ใน red, green และ /l/ ใน blue, yellow, black ลิ้นต้องไม่ตกมาที่ 'ล' หรือ 'ร' แบบไทย"
+          },
+          "text": "Red, blue, green, yellow, black, white.",
+          "ipa": "/red bluː ɡriːn ˈjeloʊ blæk waɪt/",
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My house",
+        "th": "บ้านของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d022-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Rose. I am thirty and I am a teacher. This is my house in Bangkok. It is a big house. The door is green. The windows are white. My car is blue. My cat is black and white. I love my house!",
+          "questions": [
+            {
+              "question": {
+                "en": "What colour is the door?",
+                "th": "ประตูสีอะไร"
+              },
+              "choices": [
+                "Green",
+                "White"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Rose?",
+                "th": "โรสอายุเท่าไร"
+              },
+              "choices": [
+                "Thirteen",
+                "Thirty"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What colour is her car?",
+                "th": "รถของเธอสีอะไร"
+              },
+              "choices": [
+                "Blue",
+                "Black"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: what colour?",
+        "th": "เขียน: สีอะไร"
+      },
+      "exercises": [
+        {
+          "id": "d022-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "What",
+            "colour",
+            "it"
+          ],
+          "answer": "What colour is it"
+        },
+        {
+          "id": "d022-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมสี (ในภาพวาดของเด็ก ดวงอาทิตย์เป็นสีเหลือง)"
+          },
+          "text": "The sun is ___.",
+          "answer": [
+            "yellow"
+          ]
+        },
+        {
+          "id": "d022-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "นี่คือประตูสีเขียว",
+          "accept": [
+            "This is a green door",
+            "It is a green door"
+          ]
+        },
+        {
+          "id": "d022-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-colour"
+            },
+            {
+              "vocabId": "v-red"
+            },
+            {
+              "vocabId": "v-blue"
+            },
+            {
+              "vocabId": "v-green"
+            },
+            {
+              "vocabId": "v-yellow"
+            },
+            {
+              "vocabId": "v-thirty"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
