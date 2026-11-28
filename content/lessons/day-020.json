@@ -310,7 +310,8 @@
           },
           "th": "นี่คือลูกสาวของฉัน เธอมีความสุขมาก",
           "accept": [
-            "This is my daughter. She is very happy"
+            "This is my daughter. She is very happy",
+            "This is my daughter. She's very happy"
           ]
         }
       ]
