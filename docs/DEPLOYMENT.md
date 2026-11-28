@@ -66,6 +66,7 @@ Docker **ไม่ได้เปิดเองตอนบูต** เรา�
 ```bash
 # เริ่มใช้
 docker-on
+sudo systemctl start tailscaled   # ถ้าไม่ได้ตั้งให้ Tailscale เปิดเองตอนบูต (หัวข้อ 4.1) ต้องสั่งทุกครั้งหลังเปิดเครื่อง ไม่งั้นมือถือเข้าไม่ได้
 make prod-up      # ถ้าตอนปิดครั้งก่อนไม่ได้สั่ง make prod-down และไม่ได้ลบ container จะไม่ต้องสั่ง (ดูข้างล่าง)
 
 # เลิกใช้
@@ -104,6 +105,8 @@ sudo tailscale up                    # จะพิมพ์ลิงก์ใ�
 sudo tailscale serve --bg 3100
 sudo tailscale serve status   # แสดงที่อยู่ https://<ชื่อเครื่อง>.<tailnet>.ts.net (บางเครื่องไม่ใช้ sudo ก็ได้ ถ้าขึ้นว่าไม่มีสิทธิ์ให้ใส่ sudo)
 ```
+
+**หลังสั่ง `sudo tailscale serve --bg 3100` ควรเห็น** ที่อยู่แบบ `https://<ชื่อเครื่อง>.<tailnet>.ts.net` ถ้ามันพิมพ์ลิงก์ให้ไปเปิดใช้ Serve/HTTPS ของ tailnet ให้เปิดลิงก์นั้น กดเปิดใช้ แล้วสั่งคำสั่งเดิมอีกครั้ง (ข้อความที่เห็นอาจต่างเล็กน้อยตามรุ่น: ผมยังไม่ได้ลองบนเครื่องจริง)
 
 เปิดที่อยู่นั้นบนมือถือ ใช้งานได้เฉพาะอุปกรณ์ในบัญชี Tailscale ของเรา ไม่เปิดสู่อินเทอร์เน็ตสาธารณะ ไม่ต้องแก้ router
 (ตั้งไว้แล้วจะจำข้ามการรีสตาร์ท: ถ้าเครื่องเปิดแต่ Docker ปิด หน้าจะขึ้น error จนกว่าจะ `docker-on`; เลิกใช้ด้วย `sudo tailscale serve reset`)
@@ -203,6 +206,7 @@ make prod-backup-verify FILE=backups/ezh-english_zero_to_hero-20261127-230734.du
 | สั่งแล้วค้าง/ล้มตอน build | เน็ตช้า: รอ หรือสั่ง `make prod-build` ซ้ำ (ใช้ cache ต่อจากเดิม) |
 | แอปเริ่มไม่ขึ้นหลังอัปเดต | `make prod-logs` ดู 100 บรรทัดล่าสุด; ส่งข้อความ error ให้ผม |
 | port 3100 ถูกใช้อยู่ | แก้ `APP_PORT` ใน `.env.prod` แล้ว `make prod-up` (และ `tailscale serve` ให้ตรงกัน) |
+| มือถือเปิดแอปไม่ได้ แต่บนเครื่องเปิดได้ | `sudo systemctl start tailscaled` แล้ว `tailscale status` ต้องเห็นมือถือในรายการ; `sudo tailscale serve status` ต้องเห็นที่อยู่ https://... |
 | ข้อมูลเพี้ยน | `make prod-restore` จาก backup ล่าสุด (หัวข้อ 6) |
 
 ### พื้นที่ดิสก์เต็ม

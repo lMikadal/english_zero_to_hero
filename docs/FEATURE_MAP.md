@@ -95,7 +95,7 @@ make stage-down     # เมื่อเสร็จ: ลบชุดทดล�
 | แอป healthy | `make stage-status` | app `(healthy)`; `{"ok":true}` |
 | หน้าหลัก | `curl` `/`, `/day/1`, `/practice`, `/review`, `/settings` | 200; `/` มี "English Zero to Hero"; `/day/1` มี "ข้อ 1 / 10" (บทเรียนอ่านจาก `content/` ใน image ได้) |
 | stage แยกจากแอปจริง | `docker compose -p ezh_stage ... config --images` เทียบกับ prod; `make -n stage-backup` | stage ใช้ image ของตัวเอง (ezh-stage-app) ไม่ทับ image ของแอปจริง (ezh-prod-app) และ backup ลง `backups-stage/` |
-| round trip จริง | `sh scripts/prod/roundtrip.sh stage` (ตั้ง `COMPOSE_CMD`, `DB_NAME`, `DB_USER`, `BASE_URL`) | marker 7 → 42 หลัง restore; dump ที่ใหม่กว่าถูกปฏิเสธและข้อมูลไม่เปลี่ยน; จบด้วย `ROUNDTRIP OK` |
+| round trip จริง | `make stage-roundtrip` (หรือ `make ci-roundtrip` ใน CI) **ห้ามรันกับแอปจริง (prod) เด็ดขาด ใช้กับ stage หรือ CI เท่านั้น** สคริปต์ปฏิเสธเป้าหมายอื่นเอง | marker 7 → 42 หลัง restore; dump ที่ใหม่กว่าถูกปฏิเสธและข้อมูลไม่เปลี่ยน; จบด้วย `ROUNDTRIP OK` |
 | เป็น production build | `curl -s / \| grep -c hot-reloader` | 0 (ไม่มี dev HMR) |
 | ฟอนต์ self-host | ดึง `url(../media/*.woff2)` จาก CSS ที่ `/_next/static/media/` | 200 `Content-Type: font/woff2` |
 | ไม่รัน root | `docker exec <app> id` | `uid=1000(node)` |
