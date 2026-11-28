@@ -17,7 +17,7 @@ vi.mock("@/components/player/UnsavedNote", () => ({ UnsavedNote: () => null }));
 vi.mock("@/db/client", () => ({ getDb: () => ({}) }));
 vi.mock("@/lib/server/current-user", () => ({ getCurrentUserId: async () => "local" }));
 vi.mock("@/db/queries/home", () => ({
-  getLearnerHome: async () => ({ currentDay: 1, streak: { current: 0, longest: 0 }, activeToday: false, courseComplete: false }),
+  getLearnerHome: async () => ({ currentDay: 1, streak: { current: 0, longest: 0 }, activeToday: false, courseComplete: false, blockingCheckpoint: null, checkpointNote: null }),
 }));
 vi.mock("@/db/queries/practice", () => ({ listDoneDays: async () => [{ day: 1, score: 0.9, completedAt: new Date("2026-11-25T10:00:00Z") }] }));
 vi.mock("@/lib/content/repo", () => ({ getLesson: () => null }));

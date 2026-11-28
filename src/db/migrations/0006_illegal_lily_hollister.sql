@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "attempts_checkpoint_one_answer_idx" ON "attempts" USING btree ("user_id","session_id","exercise_id") WHERE "attempts"."source" IN ('checkpoint', 'checkpoint_retake');

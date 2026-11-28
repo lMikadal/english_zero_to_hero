@@ -1,10 +1,10 @@
 // Rule "arrange-words": proper nouns in arrange_words sentences. The tile UI (src/components/exercises/ui/tile-label.ts)
 // shows every tile in lower case except "I" and a word capitalised in the MIDDLE of the answer or of an accepted
 // sentence. So a name that only ever starts a sentence would be shown as "sam", and a capitalised mid-sentence word is
-// a name the UI keeps. The content must agree: names live in PROPER_NAMES (allowlists.ts) and each name must
+// a name the UI keeps. The content must agree: names live in PROPER_NAMES and days/months in CALENDAR_WORDS (allowlists.ts) and each name must
 // appear mid-sentence in at least one of the sentences.
 import type { Problem } from "../loader";
-import { PROPER_NAMES } from "./allowlists";
+import { CALENDAR_WORDS, PROPER_NAMES } from "./allowlists";
 import type { RuleContext } from "./context";
 
 export const ARRANGE_WORDS_RULE = "arrange-words";
@@ -13,7 +13,7 @@ const strip = (w: string) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
 /** "Ann's" -> "Ann". */
 const owner = (w: string) => strip(w).replace(/['’]s$/i, "");
 const PRONOUN_I = /^I(?:['’]\p{L}+)?$/u;
-const NAMES = new Set(PROPER_NAMES);
+const NAMES = new Set([...PROPER_NAMES, ...CALENDAR_WORDS]);
 
 export function checkArrangeWords(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];

@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { Skill } from "@/db/schema"; // type-only
 import type { Exercise, Section } from "@/lib/content/schema";
-import { allExercises, readLesson, taughtWords } from "@/lib/answers/test-content";
+import { allExercises, checkpointFixture, readLesson, taughtWords } from "@/lib/answers/test-content";
 import { attemptSkill, deriveTags, exerciseEnglishText, exerciseTagText, findExercise, type AttemptSkill } from "./derive";
 
 const tagsOf = (id: string) => {
@@ -185,5 +185,18 @@ describe("exerciseTagText (what implicit vocab tagging reads)", () => {
   });
   it("other types are the same as exerciseEnglishText", () => {
     for (const id of ["d001-pron-02", "d001-listen-02", "d001-speak-02", "d003-write-03"]) expect(exerciseTagText(get(id))).toEqual(exerciseEnglishText(get(id)));
+  });
+});
+
+describe("a checkpoint is not a Lesson: findExercise and deriveTags need only its sections", () => {
+  it("finds a checkpoint exercise and tags it from its own phonemes (a checkpoint has no phoneme_intro)", () => {
+    const found = findExercise(checkpointFixture, "c030-pron-01");
+    expect(found?.exercise.type).toBe("minimal_pair");
+    expect(deriveTags(checkpointFixture, found!.exercise, found!.section, taughtWords(30))).toEqual(["phoneme:ae", "phoneme:eh"]);
+    expect(findExercise(checkpointFixture, "c030-nope-01")).toBeUndefined();
+  });
+  it("accepts a bare { sections } object", () => {
+    const sections: Pick<typeof checkpointFixture, "sections"> = { sections: checkpointFixture.sections };
+    expect(findExercise(sections, "c030-vocab-01")?.section.skill).toBe("writing");
   });
 });

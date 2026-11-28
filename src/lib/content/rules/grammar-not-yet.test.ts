@@ -36,6 +36,21 @@ describe("GRAMMAR_NOT_BEFORE (explicit table, first allowed day from docs/CURRIC
   });
 });
 
+describe("telling the time (week 8, days 50-51)", () => {
+  it("gates o'clock at day 50 and registers both week-8 structures", () => {
+    expect(GRAMMAR_NOT_BEFORE["o'clock"]).toMatchObject({ structure: "clock-time", day: 50 });
+    expect(GRAMMAR_STRUCTURES["clock-time"]).toMatchObject({ day: 50 });
+    expect(GRAMMAR_STRUCTURES["time-prepositions"]).toMatchObject({ day: 51 });
+  });
+  it("flags o'clock on day 49 and is quiet on day 50", () => {
+    const out = check(on(49, say(49, "It is seven o'clock.")));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).toContain("o'clock");
+    expect(out[0].message).toContain("day 50");
+    expect(check(on(50, say(50, "It is seven o'clock.")))).toEqual([]);
+  });
+});
+
 describe("frequency adverbs (week 7, day 44)", () => {
   it("are gated at day 44 with their own structure", () => {
     for (const w of ["always", "usually", "often", "sometimes", "never"]) {

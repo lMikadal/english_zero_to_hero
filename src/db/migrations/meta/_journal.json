@@ -43,6 +43,13 @@
       "when": 1795847101239,
       "tag": "0005_third_enchantress",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795849562673,
+      "tag": "0006_illegal_lily_hollister",
+      "breakpoints": true
     }
   ]
 }

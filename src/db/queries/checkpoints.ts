@@ -155,6 +155,24 @@ export async function hasEarlierAnswer(db: DbOrTx, userId: string, exerciseId: s
   return rows.length > 0;
 }
 
+/** Whether this sitting already has a stored checkpoint answer for the exercise under another attempt id (one answer per exercise per sitting). */
+export async function answeredInSitting(db: DbOrTx, userId: string, sessionId: string, exerciseId: string, exceptId: string): Promise<boolean> {
+  const rows = await db
+    .select({ id: attempts.id })
+    .from(attempts)
+    .where(
+      and(
+        eq(attempts.userId, userId),
+        eq(attempts.sessionId, sessionId),
+        eq(attempts.exerciseId, exerciseId),
+        inArray(attempts.source, [...CHECKPOINT_SOURCES]),
+        ne(attempts.id, exceptId),
+      ),
+    )
+    .limit(1);
+  return rows.length > 0;
+}
+
 /** The given exercises the learner answered as a replay (`practice`) strictly after `since` (the "ฝึกแล้ว" tick on the result page). */
 export async function practisedSince(db: DbOrTx, userId: string, exerciseIds: readonly string[], since: Date): Promise<Set<string>> {
   if (exerciseIds.length === 0) return new Set();

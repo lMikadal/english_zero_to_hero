@@ -3,6 +3,9 @@ import { randomUUID } from "node:crypto";
 import { sql as dsql } from "drizzle-orm";
 import type { Db } from "@/db/types";
 import type { AttemptAnswer, AttemptInput } from "@/lib/attempts/contract";
+import { checkpointFixture } from "@/lib/answers/test-content";
+import type { Checkpoint } from "@/lib/content/checkpoint-schema";
+import { getLesson, getTaughtWords } from "@/lib/content/repo";
 import type { ReviewInput } from "@/lib/srs/contract";
 import { ensureLocalUser } from "./current-user";
 
@@ -65,4 +68,62 @@ export function reviewItem(
   over: Partial<ReviewInput> = {},
 ): ReviewInput {
   return { id: randomUUID(), sessionId: REVIEW_SESSION, vocabId, direction, rating, reviewedAt: new Date(at.getTime() - 60_000).toISOString(), ...over };
+}
+
+// --- monthly checkpoint (docs/plans/checkpoint-plan.md) -------------------------------------------------------------
+
+export const CP_SESSION = "44444444-4444-4444-8444-444444444444";
+
+/** The content seam the checkpoint handlers take: the real lessons, and `checkpointFixture` as the file of day 30 only (or `files`). */
+export function checkpointContent(files: Record<number, Checkpoint | null | "throws"> = { 30: checkpointFixture }) {
+  return {
+    getLesson,
+    getTaughtWords,
+    getCheckpoint(afterDay: number): Checkpoint | null {
+      const f = files[afterDay];
+      if (f === "throws") throw new Error("broken checkpoint file");
+      return f ?? null;
+    },
+  };
+}
+
+/** A fully right answer for every exercise of `checkpointFixture`. */
+export const CP_RIGHT: Record<string, AttemptAnswer> = {
+  "c030-pron-01": { kind: "pairs", selected: ["a", "b", "a"] },
+  "c030-pron-02": { kind: "pairs", selected: ["b", "a", "a"] },
+  "c030-pron-03": { kind: "pairs", selected: ["a", "b"] },
+  "c030-listen-01": { kind: "choice", selected: 0 },
+  "c030-listen-02": { kind: "text", text: "My dog is big" },
+  "c030-listen-03": { kind: "text", text: "Please come, Ben" },
+  "c030-speak-01": { kind: "self", rating: "ok" },
+  "c030-speak-02": { kind: "self", rating: "ok" },
+  "c030-speak-03": { kind: "self", rating: "unsure" },
+  "c030-read-01": { kind: "choices", selected: [0] },
+  "c030-read-02": { kind: "choices", selected: [0] },
+  "c030-read-03": { kind: "choices", selected: [0] },
+  "c030-write-01": { kind: "text", text: "My dog is big" },
+  "c030-write-02": { kind: "texts", texts: ["am"] },
+  "c030-write-03": { kind: "text", text: "This is my friend" },
+  "c030-vocab-01": { kind: "match", pairs: { "v-dog": "v-dog", "v-cat": "v-cat", "v-cup": "v-cup", "v-bus": "v-bus", "v-box": "v-box" } },
+};
+/** An answer of the right kind that is wrong (score 0) for the exercises that are graded. */
+export const CP_WRONG: Record<string, AttemptAnswer> = {
+  "c030-pron-01": { kind: "pairs", selected: ["b", "a", "b"] },
+  "c030-pron-02": { kind: "pairs", selected: ["a", "b", "b"] },
+  "c030-pron-03": { kind: "pairs", selected: ["b", "a"] },
+  "c030-listen-01": { kind: "choice", selected: 1 },
+  "c030-listen-02": { kind: "text", text: "nope" },
+  "c030-listen-03": { kind: "text", text: "nope" },
+  "c030-read-01": { kind: "choices", selected: [1] },
+  "c030-read-02": { kind: "choices", selected: [1] },
+  "c030-read-03": { kind: "choices", selected: [1] },
+  "c030-write-01": { kind: "text", text: "dog my" },
+  "c030-write-02": { kind: "texts", texts: ["is"] },
+  "c030-write-03": { kind: "text", text: "nope" },
+  "c030-vocab-01": { kind: "match", pairs: { "v-dog": "v-cat", "v-cat": "v-dog", "v-cup": "v-bus", "v-bus": "v-cup", "v-box": "v-dog" } },
+};
+
+/** An attempt of the checkpoint sitting `session` (source checkpoint, attempt 1), one minute before NOW unless `createdAt` is given. */
+export function cpItem(exerciseId: string, answer: AttemptAnswer, over: Partial<AttemptInput> = {}): AttemptInput {
+  return attemptItem(exerciseId, answer, { source: "checkpoint", sessionId: CP_SESSION, ...over });
 }

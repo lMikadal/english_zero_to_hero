@@ -67,6 +67,16 @@ export const THAI_NAMES: Readonly<Record<string, string>> = {
   Kate: "เคท", Lisa: "ลิซ่า", Fon: "ฝน", Rose: "โรส", Dan: "แดน", Leo: "ลีโอ", Mali: "มาลี", Ray: "เรย์", Nan: "แนน",
 };
 
+/**
+ * The days of the week and the months. English writes them with a capital letter, so an arrange_words answer that holds one in the
+ * middle of a sentence keeps the capital on its tile (tile-label.ts). They are ordinary vocabulary (taught on days 51-53), so this
+ * list does NOT make them allowed words: it only lets the arrange-words rule treat them like names, without a Thai spelling.
+ */
+export const CALENDAR_WORDS: readonly string[] = [
+  "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+  "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",
+];
+
 /** Names that are not people (no Thai spelling is required). */
 export const PLACE_NAMES: readonly string[] = ["Thailand", "Bangkok", "England", "Japan", "Chiang"];
 
@@ -94,3 +104,13 @@ export const LETTERS: readonly string[] = "abcdefghijklmnopqrstuvwxyz".split("")
 export const ALWAYS_ALLOWED: ReadonlySet<string> = new Set([
   ...FUNCTION_WORDS, ...A1_WORDS_WITHOUT_ENTRY_YET, ...NUMBER_WORDS_WITHOUT_ENTRY, ...PROPER_NAMES.map((n) => n.toLowerCase()), ...LETTERS,
 ]);
+
+/**
+ * Words that must not appear anywhere a learner reads or hears English (rule "word-blocklist", an error): not suitable for a
+ * beginner course, including sound-drill words and minimal pairs, where such a word is easy to pick because it is a short
+ * word that differs by one sound ("help-hell"). Keep it short: the obvious mild swear words, profanities and slurs. Whole words,
+ * lower case. Add a word here when a review finds one; there is no per-item exception, choose another word instead.
+ */
+export const BLOCKED_WORDS: readonly string[] = [
+  "hell", "damn", "shit", "fuck", "bitch", "bastard", "whore", "slut", "cunt", "nigger", "faggot",
+];

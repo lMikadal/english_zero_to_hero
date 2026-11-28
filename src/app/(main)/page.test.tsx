@@ -23,7 +23,7 @@ vi.mock("@/db/queries/home", () => ({
   },
 }));
 
-const fresh: LearnerHome = { currentDay: 1, streak: { current: 0, longest: 0 }, activeToday: false, courseComplete: false };
+const fresh: LearnerHome = { currentDay: 1, streak: { current: 0, longest: 0 }, activeToday: false, courseComplete: false, blockingCheckpoint: null, checkpointNote: null };
 const show = async () => render(await Home());
 
 describe("Home page", () => {
@@ -109,7 +109,7 @@ describe("Home page", () => {
   });
 
   it("after day 365 is done shows a completion message instead of the start button", async () => {
-    query.result = { currentDay: 365, streak: { current: 40, longest: 90 }, activeToday: true, courseComplete: true };
+    query.result = { currentDay: 365, streak: { current: 40, longest: 90 }, activeToday: true, courseComplete: true, blockingCheckpoint: null, checkpointNote: null };
     await show();
     expect(screen.getByText(/เรียนครบ 365 วันแล้ว/)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /เริ่มบทเรียน/ })).not.toBeInTheDocument();
@@ -177,7 +177,7 @@ describe("Home page: vocabulary review entry points (plan 2.6 rule 27, item 7.6)
   });
 
   it("also shown after the whole course is done", async () => {
-    query.result = { currentDay: 365, streak: { current: 40, longest: 90 }, activeToday: true, courseComplete: true };
+    query.result = { currentDay: 365, streak: { current: 40, longest: 90 }, activeToday: true, courseComplete: true, blockingCheckpoint: null, checkpointNote: null };
     getReviewSummary.mockResolvedValue({ due: 7, withCard: 300 });
     await show();
     expect(screen.getByRole("link", { name: "ทวนคำศัพท์ · ถึงกำหนด 7 ใบ" })).toHaveAttribute("href", "/review");

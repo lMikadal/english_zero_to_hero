@@ -5,7 +5,10 @@ import type { Exercise, Lesson, Section } from "@/lib/content/schema";
 /** Same values as `Skill` in src/db/schema.ts (checked by a type test in derive.test.ts). */
 export type AttemptSkill = Section["skill"] | "vocabulary";
 
-export function findExercise(lesson: Lesson, exerciseId: string): { section: Section; exercise: Exercise } | undefined {
+/** A lesson or a checkpoint: only its sections are read. */
+export type HasSections = Pick<Lesson, "sections">;
+
+export function findExercise(lesson: HasSections, exerciseId: string): { section: Section; exercise: Exercise } | undefined {
   for (const section of lesson.sections) {
     const exercise = section.exercises.find((e) => e.id === exerciseId);
     if (exercise) return { section, exercise };
@@ -73,7 +76,7 @@ function tokens(s: string): string[] {
  * word taught on or before the lesson's day (vocab id -> word), so review days still get vocab tags.
  * `weakness:` tags are never derived here (reserved for drill/retest attempts).
  */
-export function deriveTags(lesson: Lesson, ex: Exercise, section: Section, taughtWords: ReadonlyMap<string, string>): string[] {
+export function deriveTags(lesson: HasSections, ex: Exercise, section: Section, taughtWords: ReadonlyMap<string, string>): string[] {
   const tags = new Set<string>();
   // A miss in a sound exercise is a pronunciation miss, not a vocabulary one: no implicit vocab tags there.
   const soundExercise = section.skill === "pronunciation" || ex.type === "minimal_pair" || ex.type === "phoneme_intro";

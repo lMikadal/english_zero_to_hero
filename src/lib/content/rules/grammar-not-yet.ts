@@ -26,6 +26,10 @@ export const THIRD_PERSON_S_DAY = 36;
 /** Week 7 (docs/CURRICULUM.md: days 43-49 "daily routine, adverbs of frequency"): the frequency adverbs are taught on day 44. */
 export const FREQUENCY_ADVERB_DAY = 44;
 
+/** Week 8 (docs/CURRICULUM.md: days 50-56 "time, days, months"): telling the time on day 50, at / on / in on day 51. */
+export const CLOCK_TIME_DAY = 50;
+export const TIME_PREPOSITION_DAY = 51;
+
 /**
  * The grammar structures a grammar_note can explain (`structures` ids) and the first day each is allowed. Every gate below
  * names one of them. Add an id here when a new gate is added; rule "grammar-note" rejects any other id in a note.
@@ -37,6 +41,8 @@ export const GRAMMAR_STRUCTURES: Readonly<Record<string, { day: number; what: st
   "do-does-question": { day: THIRD_PERSON_S_DAY, what: 'Present Simple questions with does ("What does she do?")' },
   "do-not": { day: THIRD_PERSON_S_DAY, what: 'negative do-support ("do not" / "don\'t")' },
   but: { day: THIRD_PERSON_S_DAY, what: 'the linking word "but"' },
+  "clock-time": { day: CLOCK_TIME_DAY, what: "telling the time (What time is it? It is seven o'clock / half past seven)" },
+  "time-prepositions": { day: TIME_PREPOSITION_DAY, what: "at / on / in with times, days and months (at seven o'clock, on Monday, in May)" },
   "frequency-adverb": { day: FREQUENCY_ADVERB_DAY, what: "adverbs of frequency (always, usually, often, sometimes, never) and their place before the main verb / after be" },
 };
 
@@ -66,6 +72,10 @@ export const GRAMMAR_NOT_BEFORE: Readonly<Record<string, GrammarGate>> = {
   but: {
     structure: "but", day: THIRD_PERSON_S_DAY, severity: "warning", what: 'the linking word "but" (the curriculum does not give its day: 36 is a placeholder, ask the curriculum owner)',
     fix: `Use two short sentences, or explain "but" in the \`glossary\` of a read_passage.`,
+  },
+  "o'clock": {
+    structure: "clock-time", day: CLOCK_TIME_DAY, what: 'telling the time with "o\'clock"',
+    fix: `Rewrite the sentence without clock times, or explain "o'clock" in the \`glossary\` of a read_passage.`,
   },
   ...Object.fromEntries(["always", "usually", "often", "sometimes", "never"].map((w) => [w, {
     structure: "frequency-adverb", day: FREQUENCY_ADVERB_DAY, what: `the frequency adverb "${w}" and its word order (before the main verb, after "be")`,

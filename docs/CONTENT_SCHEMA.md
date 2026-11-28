@@ -140,12 +140,12 @@ ERROR content/lessons/day-019.json [d019-read-01]: text "My mother lives in Bang
 ### `grammar_note`: การ์ดอธิบายไวยากรณ์ (ไม่ตรวจคะแนน)
 การ์ดสอนไวยากรณ์ของวันที่เริ่มใช้รูปไวยากรณ์ใหม่ (ตัดสินใจโดยเจ้าของ 2026-11-28: อธิบายเป็นการ์ดของตัวเอง ไม่ฝังไว้ในคำสั่งของข้อฟัง) โครงสร้างเหมือน `phoneme_intro`: แสดง ไม่มีคำตอบ ไม่บันทึก attempt ไม่ติดรอบแก้ตัว (`UNGRADED_TYPES`)
 - `titleTh` (ภาษาไทย, จำเป็น), `bodyTh` (คำอธิบายภาษาไทยล้วน, จำเป็น), `instruction` เหมือนข้ออื่น
-- `table?`: แถวของเซลล์ (`string[][]`) แถวแรกเป็นหัวตารางได้ ทุกแถวมีจำนวนเซลล์เท่ากัน เซลล์ว่างไม่ได้ (ใส่ `-`) เช่น `[["I / you / we / they", "like"], ["he / she / it", "likes"]]` **เซลล์หัวตารางเขียนเป็นภาษาไทย** (เช่น `ประธาน`, `กริยา`) เซลล์ที่ไม่มีตัวอักษรไทยถือเป็นภาษาอังกฤษและถูกตรวจโดย `taught-words`/`grammar-not-yet`
+- `table?`: แถวของเซลล์ (`string[][]`) **แถวแรกเป็นหัวตารางเสมอ** (การ์ดวาดแถวแรกเป็นหัวตาราง) และต้องเขียนเป็นภาษาไทยทุกเซลล์ (ตัวตรวจ `grammar-note` เป็น error) ทุกแถวมีจำนวนเซลล์เท่ากัน เซลล์ว่างไม่ได้ (ใส่ `-`) เช่น `[["I / you / we / they", "like"], ["he / she / it", "likes"]]` **เซลล์หัวตารางเขียนเป็นภาษาไทย** (เช่น `ประธาน`, `กริยา`) เซลล์ที่ไม่มีตัวอักษรไทยถือเป็นภาษาอังกฤษและถูกตรวจโดย `taught-words`/`grammar-not-yet`
 - `examples`: 1–6 รายการ `{ en, th }` เสียงอ่านของ `en` สร้างแบบเดียวกับประโยคตัวอย่างอื่น (ผู้เล่นเรียก TTS ด้วยข้อความ `en` ทีละประโยค)
-- `structures`: id ของโครงสร้างไวยากรณ์ที่การ์ดอธิบาย (อย่างน้อย 1) ต้องเป็น key ของ `GRAMMAR_STRUCTURES` ใน `src/lib/content/rules/grammar-not-yet.ts`: `has` (วัน 29), `third-person-s`, `es-ending`, `do-does-question`, `do-not`, `but` (วัน 36), `frequency-adverb` (วัน 44: always, usually, often, sometimes, never)
+- `structures`: id ของโครงสร้างไวยากรณ์ที่การ์ดอธิบาย (อย่างน้อย 1) ต้องเป็น key ของ `GRAMMAR_STRUCTURES` ใน `src/lib/content/rules/grammar-not-yet.ts`: `has` (วัน 29), `third-person-s`, `es-ending`, `do-does-question`, `do-not`, `but` (วัน 36), `frequency-adverb` (วัน 44: always, usually, often, sometimes, never), `clock-time` (วัน 50: o'clock), `time-prepositions` (วัน 51: at / on / in; ไม่มีประตูคำ ตัวตรวจเห็นเฉพาะเมื่อมีการ์ด)
 - **ตำแหน่ง:** เป็นข้อ **แรก** ของ section ที่ไม่ใช่ `pronunciation` (listening / speaking / reading / writing) และมีได้ **1 การ์ดต่อ section** (หลาย section ในบทเดียวมีการ์ดของตัวเองได้ เช่น วัน 37 มีการ์ดคำถามด้วย does ก่อนข้อฟัง และการ์ด `don't` ก่อนข้อเขียน) แต่ structure หนึ่งอยู่ได้ในการ์ดเดียวของบท และไม่เร็วกว่าวันที่หลักสูตรสอน (`GRAMMAR_STRUCTURES[id].day`) เหตุผล: ผู้เรียนอ่านคำอธิบายก่อนฝึก (เหมือน `phoneme_intro` ที่เปิด section) และ section เสียงนับแท็กเสียง
 - **กฎที่ใช้กับการ์ด:** (1) `taught-words`: ประโยค `examples[].en` และเซลล์ตารางภาษาอังกฤษต้องใช้เฉพาะคำที่สอนถึงวันนั้น (2) `grammar-not-yet`: รูปไวยากรณ์ที่การ์ดระบุใน `structures` ใช้ได้ในการ์ดนั้นเองแม้ยังไม่ถึงวันเปิด (และที่อื่นในบทยังต้องรอวันเปิด) (3) `grammar-note` และ `grammar-note-required` ด้านล่าง
-- **แนวทางเขียนการ์ด (template, ตัดสินใจ 2026-11-29):** `titleTh` บอกกฎใน ≤ 8 คำพร้อมรูปอังกฤษ; `bodyTh` ≤ ~350 ตัวอักษร (5–6 บรรทัดบนมือถือ) เรียงตามลำดับ (1) ใช้เมื่อไร (2) กฎ พร้อมตัวอย่างในบรรทัดไม่เกิน 2 (3) ข้อผิดพลาดที่พบบ่อยเป็น ผิด ✗ → ถูก ✓ (4) การออกเสียง (ถ้ามี) เป็น IPA ห้ามถอดเสียงไทยที่อาศัยตัวสะกด ซ/ส เพราะอ่านเป็น /t/; ศัพท์ไวยากรณ์ (ประธาน, กริยา, กริยาหลัก) ใส่คำอธิบายในวงเล็บครั้งแรกที่ปรากฏในหลักสูตร (การ์ดวัน 29) หลังจากนั้นใช้เปล่าได้; `table` 2–3 คอลัมน์ ≤ 6 แถว หัวตารางเป็นภาษาไทย; `examples` 3–5 ประโยคจากตัวละครและคำที่สอนแล้ว ใส่ประโยคคำถามหรือปฏิเสธเฉพาะเมื่อการ์ดนั้นสอน; ห้ามสอนซ้ำเรื่องของการ์ดก่อนหน้า ใช้คำชี้ 1 บรรทัดแทน (ทบทวน: …) ตัวตรวจยังไม่เตือนความยาว (ข้อเสนอ: เตือนเมื่อ `bodyTh` > 400 ตัวอักษรหรือ `table` > 6 แถว)
+- **แนวทางเขียนการ์ด (template, ตัดสินใจ 2026-11-29):** `titleTh` บอกกฎใน ≤ 8 คำพร้อมรูปอังกฤษ; `bodyTh` ≤ ~350 ตัวอักษร (5–6 บรรทัดบนมือถือ) เรียงตามลำดับ (1) ใช้เมื่อไร (2) กฎ พร้อมตัวอย่างในบรรทัดไม่เกิน 2 (3) ข้อผิดพลาดที่พบบ่อยเป็น ผิด ✗ → ถูก ✓ (4) การออกเสียง (ถ้ามี) เป็น IPA ห้ามถอดเสียงไทยที่อาศัยตัวสะกด ซ/ส เพราะอ่านเป็น /t/; ศัพท์ไวยากรณ์ (ประธาน, กริยา, กริยาหลัก) ใส่คำอธิบายในวงเล็บครั้งแรกที่ปรากฏในหลักสูตร (การ์ดวัน 29) หลังจากนั้นใช้เปล่าได้; `table` 2–3 คอลัมน์ ≤ 6 แถว หัวตารางเป็นภาษาไทย; `examples` 3–5 ประโยคจากตัวละครและคำที่สอนแล้ว ใส่ประโยคคำถามหรือปฏิเสธเฉพาะเมื่อการ์ดนั้นสอน; ห้ามสอนซ้ำเรื่องของการ์ดก่อนหน้า ใช้คำชี้ 1 บรรทัดแทน (ทบทวน: …) ตัวตรวจ `grammar-note-length` เตือนเมื่อ `bodyTh` > 400 ตัวอักษร หรือ `table` > 6 แถว (นับรวมหัวตาราง)
 - Player: การ์ดจริง `GrammarNote.tsx` (ป้าย "ไวยากรณ์", ชื่อเรื่อง, เนื้อหาแยกย่อหน้าตามบรรทัด, ตาราง, ตัวอย่างพร้อมปุ่มเสียง, "ถัดไป"; ดู `docs/FEATURE_MAP.md`)
 
 ### `grammar-note`: โครงสร้างของการ์ด
@@ -292,6 +292,32 @@ ERROR content/lessons/day-021.json [d021-write-02]: answer "ten" is a contractio
 
 ```
 WARN content/lessons/day-027.json [d027-listen-01]: "ลูกบอลของลีโอวอยู่ที่ไหน" writes "ลีโอว", which may be a misspelling of the name "Leo" (its Thai spelling is "ลีโอ", THAI_NAMES in src/lib/content/rules/allowlists.ts). Write "ลีโอ" everywhere; if "ลีโอว" is an ordinary word, add it to COMMON_THAI_WORDS (same file) so it is not reported again.
+```
+
+### `grammar-note-length` (warning): การ์ดต้องสั้นพอสำหรับมือถือ
+เตือนเมื่อ (1) `bodyTh` ยาวเกิน **400** ตัวอักษร (เป้าหมายใน template ~350) นับสิ่งที่ผู้เรียนเห็น: ทุกตัวอักษร ช่องว่าง ตัวละติน และสัญลักษณ์ (`✗ → ✓`) นับตัวละ 1 แต่ **สระบน/ล่างและวรรณยุกต์ภาษาไทยไม่นับ** (`กิน` = 2, `ก่` = 1) (2) `table` มีเกิน **6 แถว นับรวมหัวตาราง** (หัวตารางวาดเป็นแถวหนึ่ง) (3) ส่วน `ผิดบ่อย` มี ✗ ที่ไม่มี ✓ ตามหลังเลย (เหตุการณ์จริง: สองการ์ดลงแต่รูปผิดไม่มีรูปถูก) เขียน `ผิด ✗ → ถูก ✓` เสมอ (แบบย่อ `A ✗ / B ✗ → A2 ✓ / B2 ✓` ใช้ได้)
+
+### `fronted-variant` (warning): ประโยคที่ขึ้นต้นด้วยคำบอกเวลา/ความถี่ต้องรับด้วย
+`arrange_words` และ `translate_th_en` ที่คำตอบมีส่วนที่ย้ายไปต้นประโยคได้ ต้องมีประโยคที่ย้ายแล้วใน `accept` ด้วย: `sometimes` / `usually` (ไม่ได้อยู่ต้นประโยค) และวลีเวลา/สถานที่ **ท้ายประโยค**: `every day|week|morning...`, `at the weekend`, `at weekends`, `at night`, `in the morning|afternoon|evening`, `on Monday(s)`, `after|before X` (เหตุการณ์จริง: 6 ข้อสัปดาห์ 7 ไม่รับ `Sometimes we watch a film` / `Every day I walk to school` ทั้งที่การ์ดสอนไว้เอง) ข้อความบอกประโยคที่ต้องเพิ่ม **ไม่เตือน:** `always`/`never`/`often` (ย้ายแล้วไม่เป็นธรรมชาติ), คำถาม, คำสั่ง, ประโยคที่มี `,` / and / but / or คั่นหน้า adverb, `look/take/ask after`, วลี after/before ที่มี is/are, `dictation` (มีข้อความเดียว) ข้อจำกัดที่ยอมรับ: `after X` ท้ายประโยคอาจขยายนามกรรม (`I like the class after lunch`) ซึ่งการย้ายเปลี่ยนความหมาย
+
+```
+WARN content/lessons/day-048.json [d048-write-03]: "Nan usually takes a train to school" can also start with "usually", but "Usually Nan takes a train to school" is not in accept, so a learner who writes it is marked wrong. Add "Usually Nan takes a train to school" to accept.
+```
+
+### `minimal-pair-accents` (warning): คู่เสียงต้องต่างกันเสียงเดียวทั้ง US และ UK
+ทุก pair ใน `minimal_pair` ที่ **ทั้งสองคำมี entry ในคลัง** ต้องต่างกัน **1 หน่วยเสียงพอดี** (แทนที่/เพิ่ม/ตัด 1 เสียง) ทั้งใน IPA แบบ US และ UK (หน่วยเสียงตามตัวแยกใน `pronunciation.ts`: `tʃ`, `aɪ`, `iː` นับเป็น 1; เครื่องหมายเน้นและ `(r)` ไม่นับ; สระ + r แบบอเมริกัน `ɜːr` นับเป็นเสียงเดียว) เหตุการณ์จริง: `fast`–`fat` เป็น /fæst/–/fæt/ ใน US แต่ /fɑːst/–/fæt/ ใน UK คำที่ไม่มี entry ข้ามเงียบ ๆ (คำฝึกเสียงส่วนใหญ่ไม่ได้สอนอยู่แล้ว; `word-blocklist` ดักคำที่แย่ที่สุด) เป็น warning เพราะแม่นเท่าที่ IPA ของคลังแม่น
+
+### `word-blocklist` (error): คำที่ไม่เหมาะกับหลักสูตรผู้เริ่มต้น
+`BLOCKED_WORDS` ใน `allowlists.ts` (รายการสั้น: `hell`, `damn` และคำหยาบ/คำดูถูกชัดเจน) ห้ามปรากฏในข้อความอังกฤษที่ผู้เรียนเห็นหรือได้ยินทุกช่อง **รวมคำฝึกเสียงและ minimal pair** กับ headword และ `examples` ของคลังคำ เทียบเป็นคำเต็ม (`hello`, `shell`, `Michelle` ไม่ถูกจับ) ไม่มีข้อยกเว้นรายข้อ เลือกคำอื่น (เหตุการณ์จริง: `help`–`hell`)
+
+### `stress-claims` (warning): การเน้นพยางค์ที่เขียนด้วยตัวใหญ่ต้องตรงกับ IPA
+คำในคำสั่ง/`tipTh` ที่ใช้ตัวพิมพ์ใหญ่กลางคำบอกพยางค์เน้น (`WEEKend`, `weekEND`, `baNAna`, `thirTEEN`) ต้องตรงกับตำแหน่ง `ˈ` (primary stress) ของ IPA ในคลังอย่างน้อยหนึ่งสำเนียง และถ้า US กับ UK เน้นต่างพยางค์ (`weekend`: US /ˈwiːkend/, UK /ˌwiːkˈend/) คำสั่งต้องกล่าวถึง **ทั้งสองแบบ** ตรวจเฉพาะคำที่มี entry ในคลัง นับพยางค์จากกลุ่มสระของตัวสะกดก่อนตัวใหญ่ตัวแรก (ประมาณ จึงเป็น warning)
+
+### `cast-facts` (warning): นิสัยของตัวละครมีคำบอกความถี่เดียวตลอดสัปดาห์
+ภายในสัปดาห์เดียวกัน คนเดียวกัน + กริยา + นามที่ตามหลัง ต้องมีคำบอกความถี่เดียว (`always|usually|often|sometimes|never`) รูปที่อ่านได้: `Leo sometimes watches TV`, `Sometimes Leo watches TV`, `Rose is never late`; ผู้กระทำคือชื่อใน `PROPER_NAMES`, `He/She` ตามหลังประโยคที่มีชื่อเดียว, หรือ `I` ที่มีผู้พูดชื่อเดียว (`I am Leo`) / ป้าย `Nan:` (เหตุการณ์จริงที่เกิดทุกสัปดาห์: Leo `often` กับ `sometimes` ดูทีวี, Dan `often` กับ `always` มาถึงเช้า) ไม่อ่านตัวอย่างในการ์ด `grammar_note` (สอนรูปแบบ ไม่ใช่ข้อเท็จจริงของตัวละคร) ตรวจไม่ได้: ความถี่ที่เขียนหลังกริยา (`watches TV sometimes`), วลีความถี่ (`twice a week`), นิสัยเดียวกันที่ใช้กริยา/นามต่างกัน, `they/we`, และข้ามสัปดาห์
+
+```
+WARN content/lessons/day-047.json [d047-read-01]: "Leo" watch tv has two frequencies in days 43-49: "often" in content/lessons/day-044.json [d044-read-01] text ("Leo often watches TV") but "sometimes" in content/lessons/day-047.json [d047-read-01] text ("Leo sometimes watches TV"). Within one week a character's habit keeps one frequency adverb: change one of them.
 ```
 
 ### `vocab-spelling`: หัวคำที่มีสะกดสองแบบต้องบอกอีกแบบใน `forms`
