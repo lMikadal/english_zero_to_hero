@@ -5,6 +5,8 @@ import Page from "./page";
 
 const listDoneDays = vi.hoisted(() => vi.fn());
 const getReviewSummary = vi.hoisted(() => vi.fn());
+const getCheckpointOverview = vi.hoisted(() => vi.fn());
+vi.mock("@/db/queries/checkpoints", () => ({ getCheckpointOverview }));
 vi.mock("@/db/client", () => ({ getDb: () => ({}) }));
 vi.mock("@/lib/server/current-user", () => ({ getCurrentUserId: async () => "local" }));
 vi.mock("@/db/queries/practice", () => ({ listDoneDays }));
@@ -26,6 +28,8 @@ describe("practice page", () => {
     listDoneDays.mockResolvedValue([done(2, 0.8), done(1, 0.94)]);
     getReviewSummary.mockReset();
     getReviewSummary.mockResolvedValue({ due: 12, withCard: 6 });
+    getCheckpointOverview.mockReset();
+    getCheckpointOverview.mockResolvedValue([]);
   });
 
   it("has the h1, a short true rule line and the h2", async () => {
@@ -211,6 +215,52 @@ describe("practice page: the vocabulary review card (plan 2.6 rule 26)", () => {
     expect(review()).not.toHaveTextContent(/\d+ ใบ/);
     expect(within(review()).queryByRole("link", { name: "เริ่มทวน" })).toBeNull();
     expect(screen.getByRole("list")).toBeInTheDocument();
+    error.mockRestore();
+  });
+});
+
+describe("practice page: monthly checkpoints (plan PR 6, D10)", () => {
+  const ov = (afterDay: number, over: Record<string, unknown> = {}) => ({ afterDay, status: "not_taken", sittings: 0, latest: null, best: null, passed: false, completedToday: false, ...over });
+  beforeEach(() => {
+    lessons.throwFor.clear();
+    lessons.override = null;
+    listDoneDays.mockResolvedValue([done(1, 0.94)]);
+    getReviewSummary.mockReset();
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 6 });
+    getCheckpointOverview.mockReset();
+  });
+
+  it("shows a section between the vocabulary review card and the replay list, one row per open checkpoint with its status", async () => {
+    getCheckpointOverview.mockResolvedValue([
+      ov(30, { status: "passed", sittings: 2, latest: 0.6, best: 0.8, passed: true }),
+      ov(60, { status: "not_passed", sittings: 1, latest: 0.699, best: 0.699 }),
+      ov(90),
+    ]);
+    await show();
+    const h2s = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
+    expect(h2s).toEqual(["ทวนคำศัพท์", "แบบทดสอบประจำเดือน", "เล่นบทที่เรียนแล้วซ้ำ"]);
+    const links = within(screen.getByRole("list", { name: "แบบทดสอบประจำเดือน" })).getAllByRole("link");
+    expect(links.map((a) => a.getAttribute("href"))).toEqual(["/checkpoint/30", "/checkpoint/60", "/checkpoint/90"]);
+    expect(links[0]).toHaveTextContent("ผ่าน · ดีที่สุด 80%");
+    expect(links[1]).toHaveTextContent("ยังไม่ผ่าน · ล่าสุด 69%");
+    expect(links[2]).toHaveTextContent("ยังไม่ได้สอบ");
+  });
+
+  it("no checkpoint is open (no file, a broken file, day A not finished): no section, and the page is the old one", async () => {
+    getCheckpointOverview.mockResolvedValue([]);
+    await show();
+    expect(screen.queryByText("แบบทดสอบประจำเดือน")).toBeNull();
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["ทวนคำศัพท์", "เล่นบทที่เรียนแล้วซ้ำ"]);
+    expect(screen.getAllByRole("list")).toHaveLength(1);
+  });
+
+  it("when the checkpoint query fails the section is left out, the rest of the page still works, and the error is logged", async () => {
+    getCheckpointOverview.mockRejectedValue(new Error("db"));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    await show();
+    expect(screen.queryByText("แบบทดสอบประจำเดือน")).toBeNull();
+    expect(screen.getByRole("heading", { level: 2, name: "เล่นบทที่เรียนแล้วซ้ำ" })).toBeInTheDocument();
+    expect(error).toHaveBeenCalled();
     error.mockRestore();
   });
 });

@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { PracticeCheckpointSection } from "@/components/checkpoint/CheckpointEntry";
 import { getDb } from "@/db/client";
+import { getCheckpointOverview, type CheckpointOverviewEntry } from "@/db/queries/checkpoints";
 import { listDoneDays } from "@/db/queries/practice";
 import { buttonClass } from "@/components/ui/button-styles";
 import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
-import { getLesson } from "@/lib/content/repo";
+import { getCheckpoint, getLesson } from "@/lib/content/repo";
 import type { Lesson } from "@/lib/content/schema";
 import { REPLAY_SKILL_LABEL_TH, replayHref, replaySkills } from "@/lib/practice/replay";
 import { PracticeReviewCard, type ReviewNumbers } from "@/components/review/ReviewEntry";
@@ -18,6 +20,7 @@ type Done = Awaited<ReturnType<typeof listDoneDays>>[number];
 export default async function PracticePage() {
   let days: Done[];
   let summary: ReviewNumbers = null;
+  let checkpoints: CheckpointOverviewEntry[] = [];
   try {
     const userId = await getCurrentUserId();
     days = await listDoneDays(getDb(), userId);
@@ -26,6 +29,12 @@ export default async function PracticePage() {
       summary = await getReviewSummary(getDb(), userId, new Date());
     } catch (e) {
       console.error("Cannot read the review summary:", e); // the lessons below still work; the card says it could not count
+    }
+    try {
+      // The server's clock only decides `completedToday`, which this page does not use. A failure leaves the section out.
+      checkpoints = await getCheckpointOverview(getDb(), userId, { getCheckpoint }, new Date());
+    } catch (e) {
+      console.error("Cannot read the monthly checkpoints:", e);
     }
   } catch (e) {
     console.error("Cannot read the finished days:", e);
@@ -49,6 +58,7 @@ export default async function PracticePage() {
         <p className="text-sm text-muted">เล่นทั้งบทจนจบและตอบอย่างน้อยหนึ่งข้อ นับสตรีค · เล่นทีละทักษะไม่นับ · คะแนนเดิมของบทไม่เปลี่ยน</p>
       </header>
       <PracticeReviewCard summary={summary} />
+      <PracticeCheckpointSection entries={checkpoints} />
       <h2 className="text-base font-medium text-muted">เล่นบทที่เรียนแล้วซ้ำ</h2>
       {rows.length === 0 ? (
         <div className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5">

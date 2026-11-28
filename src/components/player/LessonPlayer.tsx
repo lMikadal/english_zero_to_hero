@@ -13,6 +13,7 @@ import { REPLAY_SKILL_LABEL_TH, replaySections } from "@/lib/practice/replay";
 import { isRegistered, renderExercise } from "@/components/exercises/registry";
 import type { VocabLookup } from "@/components/exercises/types";
 import { CompletionScreen, type Completion } from "./CompletionScreen";
+import { PlayerFrame } from "./PlayerFrame";
 import { PracticeCompletionScreen, type PracticeCompletion } from "./PracticeCompletionScreen";
 import {
   createPlayerState, currentItem, elapsedMs, canAdvance, firstAttemptScore, isRetryRound, playerReducer, recordsAttempt,
@@ -191,23 +192,41 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
   const total = position.length;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-4 px-5 pt-4">
-      <header className="flex flex-col gap-2.5">
-        {mode === "practice" && (
+    <PlayerFrame
+      headingRef={heading}
+      title={item.step.sectionTitle.th}
+      x={x}
+      total={total}
+      answered={Boolean(record)}
+      badge={
+        mode === "practice" ? (
           <p className="self-start rounded-full border border-hint/40 bg-hint-soft px-2.5 py-0.5 text-xs font-medium text-hint-fg">
             {skill === null ? "เล่นซ้ำ" : `เล่นซ้ำ · ${REPLAY_SKILL_LABEL_TH[skill]}`}
           </p>
-        )}
-        <h2 ref={heading} tabIndex={-1} className="flex items-center justify-between text-[13px] font-normal text-muted outline-none">
-          <span className="font-medium">{item.step.sectionTitle.th}</span>
-          <span>ข้อ {x} / {total}</span>
-        </h2>
-        <div className="h-1 rounded-full bg-line" aria-hidden>
-          <div className="h-1 rounded-full bg-accent" style={{ width: `${(x / total) * 100}%` }} />
-        </div>
-        {isRetryRound(state) && <p className="text-[13px] font-medium text-hint-fg">ทบทวนข้อที่ตอบผิด</p>}
-      </header>
-
+        ) : null
+      }
+      note={isRetryRound(state) ? <p className="text-[13px] font-medium text-hint-fg">ทบทวนข้อที่ตอบผิด</p> : null}
+      bar={
+        <>
+          <Feedback type={exercise.type} grade={record?.grade} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />
+          {graded && record && (
+            <button
+              ref={nextButton}
+              type="button"
+              disabled={!canAdvance(state)}
+              onClick={goNext}
+              // the focus announcement carries the result (iOS VoiceOver often drops the polite live-region text that changes at the same moment)
+              aria-describedby={FEEDBACK_ID}
+              // Enter submitted the form, focus moved here inside the same keydown: a held key repeats onto this button and must not skip the feedback
+              onKeyDown={(e) => { if (e.repeat && (e.key === "Enter" || e.key === " ")) e.preventDefault(); }}
+              className={buttonClass("primary")}
+            >
+              ถัดไป
+            </button>
+          )}
+        </>
+      }
+    >
       {item.step.supported ? (
         <div key={item.key} className="flex flex-1 flex-col">
           {renderExercise(exercise, { vocab, onAnswer, onContinue: skip, result: record?.grade })}
@@ -219,36 +238,7 @@ export function LessonPlayer({ lesson, mode: modeProp = "lesson", skill: skillPr
           <button type="button" onClick={skip} className={buttonClass("secondary")}>ข้าม</button>
         </Card>
       )}
-
-      {/* Sticky bottom bar: the feedback and ถัดไป stay on screen however long the exercise is. mt-auto keeps it at
-          the bottom of a short page. Only one primary action is shown at a time: the component-owned ตรวจคำตอบ (or
-          rating buttons) in the content above (at the bottom of the step) until the answer is recorded, then ถัดไป
-          here (guard: LessonPlayer.one-action.test.tsx). Once there is feedback the bar becomes a card-coloured
-          panel with a top border. */}
-      <div
-        data-testid="action-bar"
-        className={`sticky bottom-0 mt-auto -mx-5 flex flex-col gap-3 px-5 ${
-          record ? "border-t border-line bg-card pt-3.5" : "bg-bg"
-        } pb-[max(1.5rem,env(safe-area-inset-bottom))]`}
-      >
-        <Feedback type={exercise.type} grade={record?.grade} lines={isRetryable(exercise.type) ? correctAnswerText(exercise) : []} />
-        {graded && record && (
-          <button
-            ref={nextButton}
-            type="button"
-            disabled={!canAdvance(state)}
-            onClick={goNext}
-            // the focus announcement carries the result (iOS VoiceOver often drops the polite live-region text that changes at the same moment)
-            aria-describedby={FEEDBACK_ID}
-            // Enter submitted the form, focus moved here inside the same keydown: a held key repeats onto this button and must not skip the feedback
-            onKeyDown={(e) => { if (e.repeat && (e.key === "Enter" || e.key === " ")) e.preventDefault(); }}
-            className={buttonClass("primary")}
-          >
-            ถัดไป
-          </button>
-        )}
-      </div>
-    </main>
+    </PlayerFrame>
   );
 }
 

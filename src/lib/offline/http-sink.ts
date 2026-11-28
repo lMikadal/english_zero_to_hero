@@ -223,8 +223,15 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
       if (res.status === 401 || res.status === 403) return { next: "pause" };
       if (res.status === 408 || res.status === 429 || res.status >= 500) return { next: "retry", afterMs: retryAfterMs(res) };
       if (res.status >= 400 && res.status < 500) {
+        let error: string | undefined;
+        try {
+          const body = await res.json();
+          if (isObject(body) && typeof body.error === "string") error = body.error;
+        } catch {
+          // no readable body: the status is enough
+        }
         dropHead(1);
-        head.settle({ status: "rejected", code: res.status === 409 ? 409 : 400 });
+        head.settle({ status: "rejected", code: res.status === 409 ? 409 : 400, ...(error ? { error } : {}) });
         return { next: "continue" };
       }
       return { next: "retry" };

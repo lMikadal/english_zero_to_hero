@@ -201,3 +201,54 @@ describe("createPlayerState with sections (replay)", () => {
     expect(s.items.filter((i) => i.attemptNo === 2)).toHaveLength(1);
   });
 });
+
+describe("createPlayerState for a checkpoint (retry: false, skipIds)", () => {
+  const ids = ["d001-listen-01", "d001-listen-02", "d001-pron-02", "d001-pron-02b"];
+  const exercises = ids.map((id) => ({ ...(get(id.replace("b", "")) as Exercise), id })) as Exercise[];
+  const sections = [{ skill: "listening" as const, title: { en: "A", th: "ก" }, exercises: exercises.slice(0, 2) }, { skill: "pronunciation" as const, title: { en: "B", th: "ข" }, exercises: exercises.slice(2) }];
+  const make = (extra: { retry?: boolean; skipIds?: ReadonlySet<string> }) =>
+    createPlayerState({ lesson: { sections }, sessionId: SESSION, now: 1000, isSupported, ...extra });
+
+  it("with retry: false a wrong answer never builds a retry round: the pass ends after the last exercise", () => {
+    let s = make({ retry: false });
+    const total = s.items.length;
+    for (let i = 0; i < total; i++) s = next(answer(s, WRONG));
+    expect(s.phase).toBe("complete");
+    expect(s.items).toHaveLength(total);
+    expect(s.items.every((i) => i.attemptNo === 1)).toBe(true);
+  });
+
+  it("by default (a lesson) the retry round is still built", () => {
+    let s = make({});
+    const total = s.items.length;
+    for (let i = 0; i < total; i++) s = next(answer(s, WRONG));
+    expect(s.items.length).toBeGreaterThan(total);
+  });
+
+  it("skipIds: starts at the first exercise that is not skipped and keeps the whole list for the counter", () => {
+    const s = make({ retry: false, skipIds: new Set([ids[0], ids[1]]) });
+    expect(s.items.map((i) => i.step.exercise.id)).toEqual(ids);
+    expect(currentItem(s).step.exercise.id).toBe(ids[2]);
+    expect(s.index).toBe(2);
+    expect(s.sessionId).toBe(SESSION);
+  });
+
+  it("skipIds: next steps over a skipped exercise in the middle", () => {
+    let s = make({ retry: false, skipIds: new Set([ids[1], ids[2]]) });
+    expect(currentItem(s).step.exercise.id).toBe(ids[0]);
+    s = next(answer(s, RIGHT));
+    expect(currentItem(s).step.exercise.id).toBe(ids[3]);
+    expect(s.index).toBe(3);
+  });
+
+  it("skipIds: when every exercise is already answered the pass is complete at once", () => {
+    const s = make({ retry: false, skipIds: new Set(ids) });
+    expect(s.phase).toBe("complete");
+  });
+
+  it("skipIds: a skipped last exercise ends the pass when the one before it is done", () => {
+    let s = make({ retry: false, skipIds: new Set([ids[3]]) });
+    for (let i = 0; i < 3; i++) s = next(answer(s, RIGHT));
+    expect(s.phase).toBe("complete");
+  });
+});

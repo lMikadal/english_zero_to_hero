@@ -531,7 +531,7 @@ describe("createHttpSink: completePractice", () => {
 
   it("409 settles rejected 409 and 400 settles rejected 400 (dropped from the queue)", async () => {
     const a = setup([{ status: 409, body: { error: "not_replayable" } }]);
-    expect(await a.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 409 });
+    expect(await a.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 409, error: "not_replayable" });
     expect(a.sink.pendingCount()).toBe(0);
     const b = setup([{ status: 400 }]);
     expect(await b.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 400 });
@@ -868,7 +868,7 @@ describe("createHttpSink: completeCheckpoint", () => {
 
   it("409 (not_completable) settles rejected 409, 400 settles rejected 400; both leave the queue", async () => {
     const a = setup([{ status: 409, body: { error: "not_completable" } }]);
-    expect(await a.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 409 });
+    expect(await a.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 409, error: "not_completable" });
     expect(a.sink.pendingCount()).toBe(0);
     const b = setup([{ status: 400 }]);
     expect(await b.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 400 });
@@ -943,5 +943,19 @@ describe("createHttpSink: checkpoint attempt results carry no grade", () => {
     await Promise.resolve();
     await vi.waitFor(() => expect(t.sink.pendingCount()).toBe(0));
     expect(t.calls).toHaveLength(1);
+  });
+});
+
+describe("createHttpSink: a rejected completion carries the server's error code", () => {
+  it("409 retake_tomorrow reaches the caller as error, 409 not_completable too; a 400 or an unreadable body has no error", async () => {
+    const a = setup([{ status: 409, body: { error: "retake_tomorrow" } }]);
+    expect(await a.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 409, error: "retake_tomorrow" });
+    const b = setup([{ status: 409, body: { error: "not_completable" } }]);
+    expect(await b.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 409, error: "not_completable" });
+    const c = setup([{ status: 409, notJson: true }]);
+    expect(await c.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 409 });
+    const d = setup([{ status: 400, body: { error: "invalid_body" } }]);
+    expect(await d.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 400, error: "invalid_body" });
+    expect(a.sink.pendingCount() + b.sink.pendingCount() + c.sink.pendingCount()).toBe(0);
   });
 });

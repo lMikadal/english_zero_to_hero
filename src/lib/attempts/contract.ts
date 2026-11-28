@@ -161,6 +161,12 @@ export const completeCheckpointRequestSchema = z.strictObject({
   completedAt: isoTimestamp,
 });
 export type CompleteCheckpointRequest = z.infer<typeof completeCheckpointRequestSchema>;
+/**
+ * The `error` of a 400 or 409 from POST /api/checkpoints/complete. `retake_tomorrow` (409): another sitting of this checkpoint
+ * was stored today (learner's time zone), so a new sitting can only be completed from tomorrow (D4); `not_completable` (409): no
+ * file, day not done, no answers in this sitting, or the session id belongs to something else.
+ */
+export type CompleteCheckpointError = "invalid_body" | "not_completable" | "retake_tomorrow";
 
 /** One skill of a finished sitting; frozen in `checkpoint_results.skills`. */
 export type CheckpointSkillResult = {

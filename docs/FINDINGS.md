@@ -108,3 +108,16 @@ Rules added: `arrange-question`, `sound-words`, `phoneme-tags`, `cast-consistenc
 - A `minimal_pair` exercise carries one `phonemes` array for all its pairs, so a miss on any pair is attributed to every code of the exercise (`weakness:phoneme:*`). Checkpoint 1 limits the damage by grouping the 30 pairs into 10 exercises of 3-4 pairs with at most three closely related codes each (e.g. `["dh","d"]`, `["g","k"]`), but one miss still marks all codes of its exercise. The proper fix is a per-pair `pairs[].phonemes` field in the schema plus attribution in `derive.ts`; it is not done.
 - `hot–heart` and `pot–part` (pron-03) differ by the vowel in UK English but only by the /r/ colouring in US English; `hut–hot` is the accent-robust pair of that exercise. The /ar/ vs /aa/ contrast cannot be a one-sound pair in both accents with taught words.
 - Checkpoint accept lists contain forms the learner has not been taught (`years old`, `costs`): the validator only checks the first accepted translation against the taught words. They are there so that a correct answer typed by a learner who knows more is not marked wrong.
+
+## Week 9 review: Oxford level doubt and design notes
+
+- Labelled A1 from memory, level doubtful: `rainy`, `cloudy`, `sunny`, `cloud`, `hotel`, `hospital`, `airport`, `museum`, `supermarket`, `cinema`, `library`, `toilet`, `upstairs`, `downstairs`, `sofa`, `photo`, `paint`, `draw`, `fun`, `jacket`, `coat`, `skirt`, `size`, `wet`, `dry`. Verify against the official list when the owner supplies it.
+- Days 61-63 are phase 2 (the validator and `docs/CURRICULUM.md` agree: phase 1 = days 1-60, phase 2 = 61-150) with `cefr: "A1"`. The only phase-dependent lesson rule is `levelAllowed`: an `A1` lesson may teach A1 (or lower) words, a `preA1` lesson only A1 words. The 12-new-words cap and the load rules do not depend on the phase.
+- Word stress and intonation have no exercise type of their own. Stress is practised with a `phoneme_intro` (code `stress`, ipa `/ˈ/`), a `listen_choose` with Thai choices ("first / second syllable") and `repeat_after_me`; intonation uses a `phoneme_intro` whose `ipa` field is the word `intonation`, because the arrow characters are not drawn by the self-hosted fonts (the fonts test fails on them) and the `phoneme-tags` check needs IPA symbols that intonation does not have, so its repeats carry no `phonemes`.
+
+## Week 9 review fixes
+
+- Oxford level doubts added: `rainy`, `cloudy`, `supermarket`, `sofa`, `toilet` (possibly A2, low confidence).
+- The codes `stress` and `intonation` currently enter the weak-point statistics like sounds (`phoneme:stress`); see the note in `docs/PROGRESS.md`. Follow-up for the progress work: label them "การเน้นเสียง" / "เสียงสูงต่ำ" or use a `prosody:` prefix.
+- The arrows ↗ ↘ are not in any self-hosted font: the fonts test only scans `ipa` fields and fails on them there, and elsewhere they would fall back to a system font. Learner-facing text of days 39 and 57-63 therefore says "เสียงขึ้น / เสียงลง" in words. The day 59 intonation intro keeps the word "intonation" in its `ipa` field because no IPA symbol exists for it.
+- Present Simple is used for habits and states only (`On rainy days Leo takes an umbrella`, `Every May Leo has a birthday party`); the continuous is not taught, so one-off "now" events are avoided.

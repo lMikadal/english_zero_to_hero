@@ -1,0 +1,339 @@
+{
+  "day": 60,
+  "phase": 1,
+  "week": 9,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Our house! rooms and sentence stress",
+    "th": "Our house! ห้องต่าง ๆ และการเน้นคำในประโยค"
+  },
+  "objectives": [
+    {
+      "en": "Name the rooms and things in a house and say where they are: upstairs, downstairs",
+      "th": "เรียกชื่อห้องและของในบ้านและบอกว่าอยู่ชั้นไหนได้: upstairs, downstairs"
+    },
+    {
+      "en": "Stress the important words in a sentence: The BEDroom is upstairs",
+      "th": "เน้นคำสำคัญในประโยค: The BEDroom is upstairs"
+    },
+    {
+      "en": "Describe a house in simple sentences",
+      "th": "บรรยายบ้านด้วยประโยคง่าย ๆ ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-bedroom",
+    "v-bathroom",
+    "v-toilet",
+    "v-garden",
+    "v-sofa",
+    "v-computer",
+    "v-upstairs",
+    "v-downstairs"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Sentence stress",
+        "th": "การเน้นคำในประโยค"
+      },
+      "exercises": [
+        {
+          "id": "d060-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตว่าพยางค์ไหนแรง"
+          },
+          "phoneme": "stress",
+          "ipa": "/ˈ/",
+          "tipTh": "ในประโยค เราเน้นเฉพาะคำสำคัญ คือคำนาม กริยาหลัก และคำคุณศัพท์ (The BEDroom is upSTAIRS) ส่วนคำเล็ก ๆ อย่าง the, is, a, to ออกเสียงเบาและเร็ว คนไทยมักเน้นทุกคำเท่ากันเหมือนอ่านทีละพยางค์ ทำให้ประโยคฟังช้าและแข็ง ให้ลากเสียงคำสำคัญ ส่วนคำเล็กรีบผ่านไป",
+          "examples": [
+            "bedroom",
+            "bathroom",
+            "garden",
+            "sofa"
+          ]
+        },
+        {
+          "id": "d060-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม เน้น bedroom และ upstairs ส่วน the กับ is เบาและเร็ว"
+          },
+          "text": "The bedroom is upstairs.",
+          "ipa": "/ðə ˈbedruːm ɪz ˌʌpˈsterz/",
+          "phonemes": [
+            "stress"
+          ]
+        },
+        {
+          "id": "d060-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม เน้น Dan, computer และ office ส่วน has, a, in, his เบา"
+          },
+          "text": "Dan has a computer in his office.",
+          "ipa": "/dæn hæz ə kəmˈpjuːtər ɪn hɪz ˈɑːfɪs/",
+          "phonemes": [
+            "stress"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: our house",
+        "th": "ฟัง: บ้านของเรา"
+      },
+      "exercises": [
+        {
+          "id": "d060-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าห้องนอนของลีโออยู่ที่ไหน (Leo's = ของลีโอ)"
+          },
+          "audioText": "Hi! This is our house. The door is green. The kitchen and the sofa are downstairs. The sofa is grey. My bedroom is upstairs. It is small. The bathroom and the toilet are upstairs too. We have a small garden.",
+          "question": {
+            "en": "Where is Leo's bedroom?",
+            "th": "ห้องนอนของลีโออยู่ที่ไหน"
+          },
+          "choices": [
+            "Upstairs",
+            "Downstairs",
+            "In the garden"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d060-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-bedroom"
+            },
+            {
+              "vocabId": "v-bathroom"
+            },
+            {
+              "vocabId": "v-toilet"
+            },
+            {
+              "vocabId": "v-garden"
+            }
+          ]
+        },
+        {
+          "id": "d060-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าคอมพิวเตอร์ของแดนอยู่ที่ไหน (Dan's = ของแดน)"
+          },
+          "audioText": "I am Dan. I work in the hospital. I have a computer on my desk. At home I watch TV on the sofa. I like our garden.",
+          "question": {
+            "en": "Where is Dan's computer?",
+            "th": "คอมพิวเตอร์ของแดนอยู่ที่ไหน"
+          },
+          "choices": [
+            "On his desk",
+            "On the sofa",
+            "In the garden"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d060-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The bathroom and the toilet are upstairs. The garden is small."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Our house",
+        "th": "บ้านของเรา"
+      },
+      "exercises": [
+        {
+          "id": "d060-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "This is our house.",
+            "The door is green.",
+            "The kitchen is downstairs.",
+            "The sofa is grey.",
+            "Dan has a computer in his office.",
+            "Leo's bedroom is upstairs.",
+            "The bathroom is upstairs too.",
+            "The toilet is upstairs too.",
+            "We have a small garden."
+          ]
+        },
+        {
+          "id": "d060-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าในบ้านของคุณมีอะไร และห้องนอนอยู่ชั้นบนหรือชั้นล่าง ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What is in your house? Is your bedroom upstairs or downstairs?",
+          "sampleAnswer": "I have a sofa and a computer. My bedroom is upstairs.",
+          "keywords": [
+            "sofa",
+            "bedroom"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Leo's house",
+        "th": "บ้านของลีโอ"
+      },
+      "exercises": [
+        {
+          "id": "d060-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's bedroom = ห้องนอนของลีโอ)"
+          },
+          "text": "Leo lives in a white house in Bangkok. The door is green. The kitchen and the sofa are downstairs. The sofa is grey. Leo's bedroom is upstairs. It is small. The bathroom and the toilet are upstairs too. The family has a small garden. Dan has a computer in his office.",
+          "questions": [
+            {
+              "question": {
+                "en": "What colour is the sofa?",
+                "th": "โซฟาสีอะไร"
+              },
+              "choices": [
+                "Grey",
+                "Green",
+                "White"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is the kitchen?",
+                "th": "ห้องครัวอยู่ที่ไหน"
+              },
+              "choices": [
+                "Downstairs",
+                "Upstairs",
+                "In the garden"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does the family have?",
+                "th": "ครอบครัวมีอะไร"
+              },
+              "choices": [
+                "A small garden",
+                "A big garden",
+                "A big hotel"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: our house",
+        "th": "เขียน: บ้านของเรา"
+      },
+      "exercises": [
+        {
+          "id": "d060-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "My",
+            "father",
+            "a",
+            "computer"
+          ],
+          "answer": "My father has a computer"
+        },
+        {
+          "id": "d060-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (สวน; ห้องน้ำ)"
+          },
+          "text": "We have a small ___. The ___ is upstairs.",
+          "answer": [
+            "garden",
+            "bathroom"
+          ]
+        },
+        {
+          "id": "d060-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ห้องนอนของลีโออยู่ชั้นบน",
+          "accept": [
+            "Leo's bedroom is upstairs"
+          ],
+          "strict": true
+        },
+        {
+          "id": "d060-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ห้องครัวและโซฟาอยู่ชั้นล่าง",
+          "accept": [
+            "The kitchen and the sofa are downstairs",
+            "The kitchen and sofa are downstairs",
+            "The sofa and the kitchen are downstairs",
+            "The sofa and kitchen are downstairs"
+          ]
+        },
+        {
+          "id": "d060-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-sofa"
+            },
+            {
+              "vocabId": "v-computer"
+            },
+            {
+              "vocabId": "v-upstairs"
+            },
+            {
+              "vocabId": "v-downstairs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

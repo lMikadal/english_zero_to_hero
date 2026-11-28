@@ -21,6 +21,7 @@ const CLIENT_SAFE = [
   // the checkpoint gate and scorer are pure: the player and the pages share them with the server
   "lib/checkpoints/gate.ts",
   "lib/checkpoints/score.ts",
+  "lib/checkpoints/retake.ts",
   // vocabulary review: the scheduler runs in the browser for the interval under each button
   "lib/srs/config.ts",
   "lib/srs/contract.ts",
@@ -42,6 +43,9 @@ const CLIENT_SAFE = [
   "components/player/DayPlayer.tsx",
   "components/player/CompletionScreen.tsx",
   "components/exercises/registry.tsx",
+  // the checkpoint screens run in the browser: the queries and the content loader must not reach them
+  "components/checkpoint/CheckpointApp.tsx",
+  "components/checkpoint/view.ts",
 ];
 
 const BUILTINS = new Set(builtinModules.filter((m) => !m.startsWith("_")).flatMap((m) => [m, m.replace(/\/.*$/, "")]));

@@ -40,6 +40,14 @@ export type SrsReviewLike = {
   stateBefore: unknown;
 };
 
+/** A finished checkpoint sitting, as the CEFR estimate reads it (`checkpoint_results` rows pass in directly). */
+export type CheckpointResultLike = {
+  /** The checkpoint's day: 30, 60, ... 360 */
+  afterDay: number;
+  /** fraction 0..1 */
+  score: number;
+};
+
 export type ProgressLike = {
   day: number;
   status: ProgressStatusLike;
