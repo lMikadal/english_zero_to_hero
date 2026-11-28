@@ -2,7 +2,7 @@
 // TS property names in src/db/schema.ts so database rows can be passed in directly, but nothing here
 // imports Drizzle: the formulas stay pure and their tests need no database.
 
-export type AttemptSourceLike = "lesson" | "drill" | "retest" | "checkpoint" | "practice";
+export type AttemptSourceLike = "lesson" | "drill" | "retest" | "checkpoint" | "practice" | "checkpoint_retake";
 export type SrsDirectionLike = "en_th" | "th_en" | "listen_spell" | "speak";
 export type ProgressStatusLike = "not_started" | "in_progress" | "done";
 

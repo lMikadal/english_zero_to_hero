@@ -10,6 +10,7 @@ const scratchUrl = withDatabaseName(testDatabaseUrl(), `${new URL(testDatabaseUr
 const EXPECTED_TABLES = [
   "activity_days",
   "attempts",
+  "checkpoint_results",
   "profiles",
   "progress",
   "push_subscriptions",

@@ -72,6 +72,7 @@ describe("completing a lesson", () => {
       progress: { day: 1, status: "done", score: 1, completedAt: at },
       streak: { current: 1, longest: 1 },
       currentDay: 2,
+      pendingCheckpoint: null,
     });
     expect(await progressRow(1)).toMatchObject({ status: "done", score: 1, completedAt: new Date(at) });
     expect(await streak()).toMatchObject({ current: 1, longest: 1, lastActiveDate: "2026-11-25" });
@@ -346,7 +347,7 @@ describe("finishing a lesson creates its review cards (docs/plans/vocab-review-p
 
   it("the response shape does not change (no cards in it)", async () => {
     const body = ok(await complete(req(1)));
-    expect(Object.keys(body).sort()).toEqual(["currentDay", "progress", "streak"]);
+    expect(Object.keys(body).sort()).toEqual(["currentDay", "pendingCheckpoint", "progress", "streak"]);
   });
 
   it("a failure while creating the cards rolls the whole completion back", async () => {

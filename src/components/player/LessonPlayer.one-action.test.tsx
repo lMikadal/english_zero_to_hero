@@ -19,6 +19,7 @@ const sink = (): SyncSink => ({
   sendAttempt: vi.fn(),
   completeLesson: async () => ({ status: "queued" as const }),
   completePractice: async () => ({ status: "queued" as const }),
+  completeCheckpoint: async () => ({ status: "queued" as const }),
   sendReview: () => {},
   completeReview: async () => ({ status: "queued" as const }),
   pendingCount: () => 0,

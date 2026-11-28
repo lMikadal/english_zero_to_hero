@@ -15,6 +15,8 @@
 import {
   API,
   type AttemptInput,
+  type CompleteCheckpointRequest,
+  type CompleteCheckpointResponse,
   type CompleteLessonRequest,
   type CompleteLessonResponse,
   type CompletePracticeRequest,
@@ -68,13 +70,13 @@ export type HttpSink = SyncSink & {
   dispose(): void;
 };
 
-// A completion entry carries its own endpoint and response check, so lesson and practice share the queue rules.
+// A completion entry carries its own endpoint and response check, so lesson, practice and checkpoint share the queue rules.
 // `key` dedups inside the queue (the endpoint plus day and session).
 type CompleteEntry = {
   kind: "complete";
   url: string;
   key: string;
-  req: CompleteLessonRequest | CompletePracticeRequest | CompleteReviewRequest;
+  req: CompleteLessonRequest | CompletePracticeRequest | CompleteCheckpointRequest | CompleteReviewRequest;
   isResponse: (v: unknown) => boolean;
   settle: (r: CompleteResult<never>) => void;
   promise: Promise<CompleteResult<never>>;
@@ -100,6 +102,9 @@ const isCompleteResponse = (v: unknown): v is CompleteLessonResponse =>
   isObject(v) && isObject(v.progress) && isObject(v.streak) && typeof v.currentDay === "number";
 const isPracticeResponse = (v: unknown): v is CompletePracticeResponse =>
   isObject(v) && isObject(v.session) && isObject(v.streak) && typeof v.countedForStreak === "boolean" && !("progress" in v);
+
+const isCheckpointResponse = (v: unknown): v is CompleteCheckpointResponse =>
+  isObject(v) && isObject(v.result) && Array.isArray(v.result.skills) && isObject(v.streak) && !("progress" in v) && !("session" in v);
 
 const isReviewResponse = (v: unknown): v is CompleteReviewResponse =>
   isObject(v) && typeof v.sessionDate === "string" && typeof v.reviewed === "number" && typeof v.remainingDue === "number" && isObject(v.streak) && typeof v.countedForStreak === "boolean";
@@ -320,7 +325,7 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
   function enqueueComplete(
     url: string,
     key: string,
-    req: CompleteLessonRequest | CompletePracticeRequest | CompleteReviewRequest,
+    req: CompleteLessonRequest | CompletePracticeRequest | CompleteCheckpointRequest | CompleteReviewRequest,
     isResponse: (v: unknown) => boolean,
   ): Promise<CompleteResult<never>> {
     const existing = queue.find((e): e is CompleteEntry => e.kind === "complete" && e.key === key);
@@ -370,6 +375,10 @@ export function createHttpSink(options: HttpSinkOptions = {}): HttpSink {
     completePractice: (c) =>
       enqueueComplete(API.completePractice, `${API.completePractice}|${c.day}|${c.sessionId}`, c, isPracticeResponse) as Promise<
         CompleteResult<CompletePracticeResponse>
+      >,
+    completeCheckpoint: (c) =>
+      enqueueComplete(API.completeCheckpoint, `${API.completeCheckpoint}|${c.afterDay}|${c.sessionId}`, c, isCheckpointResponse) as Promise<
+        CompleteResult<CompleteCheckpointResponse>
       >,
     /** Attempts plus completions still queued. */
     pendingCount: () => queue.length,

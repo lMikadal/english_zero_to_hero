@@ -19,6 +19,7 @@ function fakeSink(result: CompleteResult = { status: "queued" }) {
     sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
     completeLesson: vi.fn(async () => result),
     completePractice: async () => ({ status: "queued" as const }),
+    completeCheckpoint: async () => ({ status: "queued" as const }),
     sendReview: () => {},
     completeReview: async () => ({ status: "queued" as const }),
     pendingCount: () => 0,
@@ -41,7 +42,7 @@ const answerDictation = async (text: string) => { await userEvent.type(screen.ge
 
 const DONE: CompleteResult = {
   status: "done",
-  response: { progress: { day: 1, status: "done", score: 0.8, completedAt: "2026-11-25T10:00:00.000Z" }, streak: { current: 3, longest: 5 }, currentDay: 2 } satisfies CompleteLessonResponse,
+  response: { progress: { day: 1, status: "done", score: 0.8, completedAt: "2026-11-25T10:00:00.000Z" }, streak: { current: 3, longest: 5 }, currentDay: 2, pendingCheckpoint: null } satisfies CompleteLessonResponse,
 };
 
 vi.spyOn(window, "scrollTo").mockImplementation(() => {}); // jsdom has no layout
@@ -256,6 +257,7 @@ describe("LessonPlayer", () => {
       sendAttempt: vi.fn(),
       completeLesson: vi.fn(async () => answers.shift() ?? DONE),
       completePractice: async () => ({ status: "queued" as const }),
+      completeCheckpoint: async () => ({ status: "queued" as const }),
       sendReview: () => {},
       completeReview: async () => ({ status: "queued" as const }),
       pendingCount: () => pending,
@@ -285,6 +287,7 @@ describe("LessonPlayer", () => {
       sendAttempt: vi.fn(),
       completeLesson: vi.fn(async () => ({ status: "queued" }) as CompleteResult),
       completePractice: async () => ({ status: "queued" as const }),
+      completeCheckpoint: async () => ({ status: "queued" as const }),
       sendReview: () => {},
       completeReview: async () => ({ status: "queued" as const }),
       pendingCount: () => 1,
