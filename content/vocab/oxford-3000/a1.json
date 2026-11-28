@@ -1963,9 +1963,40 @@
         "th": "เธออายุสิบสาม"
       },
       {
-        "en": "The book is thirteen baht.",
-        "th": "หนังสือเล่มนี้ราคาสิบสามบาท"
+        "en": "The pen is thirteen baht.",
+        "th": "ปากกาด้ามนี้ราคาสิบสามบาท"
       }
+    ]
+  },
+  {
+    "id": "v-this",
+    "word": "this",
+    "pos": "determiner",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ðɪs/",
+      "uk": "/ðɪs/"
+    },
+    "th": "นี่, นี้ (ใกล้)",
+    "topics": [
+      "function_words"
+    ],
+    "examples": [
+      {
+        "en": "This is my sister.",
+        "th": "นี่คือพี่สาว (น้องสาว) ของฉัน"
+      },
+      {
+        "en": "Is this your book?",
+        "th": "นี่คือหนังสือของคุณหรือเปล่า"
+      }
+    ],
+    "collocations": [
+      "this is",
+      "this one"
     ]
   },
   {
@@ -2190,6 +2221,37 @@
     ]
   },
   {
+    "id": "v-that",
+    "word": "that",
+    "pos": "determiner",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ðæt/",
+      "uk": "/ðæt/"
+    },
+    "th": "นั่น, นั้น (ไกล)",
+    "topics": [
+      "function_words"
+    ],
+    "examples": [
+      {
+        "en": "That is my father.",
+        "th": "นั่นคือพ่อของฉัน"
+      },
+      {
+        "en": "Is that your brother?",
+        "th": "นั่นคือพี่ชาย (น้องชาย) ของคุณหรือเปล่า"
+      }
+    ],
+    "collocations": [
+      "that is",
+      "that one"
+    ]
+  },
+  {
     "id": "v-son",
     "word": "son",
     "pos": "noun",
@@ -2269,7 +2331,7 @@
       "us": "/tʃaɪld/",
       "uk": "/tʃaɪld/"
     },
-    "th": "เด็ก (ไม่ระบุเพศ)",
+    "th": "เด็ก, ลูก (ไม่ระบุเพศ)",
     "topics": [
       "people_family"
     ],
@@ -2415,8 +2477,8 @@
         "th": "ลูกสาวของฉันอายุสิบหก"
       },
       {
-        "en": "The book is sixteen baht.",
-        "th": "หนังสือเล่มนี้ราคาสิบหกบาท"
+        "en": "The pen is sixteen baht.",
+        "th": "ปากกาด้ามนี้ราคาสิบหกบาท"
       }
     ]
   },
@@ -2446,6 +2508,42 @@
         "th": "ราคาสิบเจ็ดบาท"
       }
     ]
+  },
+  {
+    "id": "v-have",
+    "word": "have",
+    "pos": "verb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/hæv/",
+      "uk": "/hæv/"
+    },
+    "th": "มี",
+    "topics": [
+      "function_words",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "I have a son.",
+        "th": "ฉันมีลูกชายหนึ่งคน"
+      },
+      {
+        "en": "We have two children.",
+        "th": "พวกเรามีลูกสองคน"
+      }
+    ],
+    "collocations": [
+      "have a son",
+      "have a family"
+    ],
+    "forms": {
+      "past": "had",
+      "pastParticiple": "had"
+    }
   },
   {
     "id": "v-these",
