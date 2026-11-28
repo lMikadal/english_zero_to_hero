@@ -40,9 +40,10 @@ export async function handleCompleteCheckpoint(
   const exerciseIds = checkpoint.sections.flatMap((s) => s.exercises.map((e) => e.id));
 
   const response = await withTransactionRetry(db, async (tx): Promise<CompleteCheckpointResponse | "retake_tomorrow" | null> => {
-    // Lock order: profile (not locked), progress (not locked), checkpoint_results (unique id), then streaks (locked by
-    // touchStreak). A lesson completion locks profile -> progress -> streaks, so the orders never form a cycle.
-    const profile = await getProfile(tx, userId);
+    // Lock order: profile (FOR UPDATE, the lock a lesson completion takes first), progress (not locked), checkpoint_results
+    // (unique id), then streaks (locked by touchStreak). The profile lock serialises this user's completions, so "was a sitting
+    // stored today?" and the insert cannot interleave with another session's completion (D4); the orders never form a cycle.
+    const profile = await getProfile(tx, userId, { lock: "update" });
     const tz = resolveTimeZone(profile.timezone);
     const dayRow = await getDayProgress(tx, userId, afterDay);
     if (dayRow?.status !== "done") return null;
