@@ -121,8 +121,8 @@
           "instruction": {
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
-          "titleTh": "ถามว่าชอบไหมด้วย Do / Does",
-          "bodyTh": "คำถามแบบตอบ Yes/No ใน Present Simple ขึ้นต้นด้วย Do หรือ Does ใช้ Do กับ I, you, we, they (Do you like coffee?) และใช้ Does กับ he, she, it และชื่อคนเดียว (Does she like cake?) สำคัญ: หลัง Does กริยากลับเป็นรูปเดิม ไม่เติม -s (Does she like… ไม่ใช่ Does she likes…) คำตอบสั้น ๆ ใช้ do / does ซ้ำ: Yes, I do. / Yes, she does. ถ้าตอบว่าไม่ใช้ No, I don't. หรือ No, she doesn't. (don't = do not, doesn't = does not) ข้อผิดพลาดที่คนไทยมักทำ: ตอบว่า \"Yes, I like.\" แทน \"Yes, I do.\" และลืมขึ้นเสียงสูงท้ายประโยคคำถาม",
+          "titleTh": "do / does ในคำถาม Yes/No",
+          "bodyTh": "ใช้ถามว่าชอบหรือทำไหม ขึ้นต้นด้วย Do กับ I, you, we, they (Do you like coffee?) และ Does กับ he, she, it และชื่อเดียว (Does she like cake?) ตอบสั้น ๆ ด้วย do / does: Yes, I do. / Yes, she does. ผิดบ่อย: Does she likes cake? ✗ → Does she like cake? ✓ (หลัง does กริยาเป็นรูปเดิม) ตอบว่าไม่: No, I don't. (ดูการ์ดในส่วนพูด)",
           "table": [
             [
               "ประธาน",
@@ -252,8 +252,8 @@
           "instruction": {
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
-          "titleTh": "ตอบว่าไม่ชอบ: No, I don't / No, she doesn't",
-          "bodyTh": "เมื่อไม่ชอบหรือไม่ได้ทำ ใช้ do not (ย่อเป็น don't) กับ I, you, we, they และ does not (ย่อเป็น doesn't) กับ he, she, it และชื่อคนเดียว วันนี้ใช้ตอบคำถามสั้น ๆ ก่อน: Do you like sugar? No, I don't. / Does she like cheese? No, she doesn't. วันที่ 38 จะฝึกประโยคปฏิเสธเต็มรูป ข้อผิดพลาดที่คนไทยมักทำ: ตอบว่า \"No, I not.\" หรือ \"No, she don't.\" ให้จำว่า he / she ใช้ doesn't",
+          "titleTh": "ตอบว่าไม่: don't / doesn't",
+          "bodyTh": "ใช้ตอบคำถามสั้น ๆ ว่า \"ไม่\": No, I don't. (กับ I, you, we, they) และ No, she doesn't. (กับ he, she, it และชื่อเดียว) don't = do not, doesn't = does not วันที่ 38 จะฝึกประโยคปฏิเสธเต็ม ผิดบ่อย: No, I not ✗ / No, she don't ✗ → No, I don't ✓ / No, she doesn't ✓",
           "table": [
             [
               "ประธาน",

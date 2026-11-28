@@ -120,8 +120,8 @@
           "instruction": {
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
-          "titleTh": "กริยาที่เติม -es: goes, does, washes",
-          "bodyTh": "กริยาของ he / she / it ส่วนใหญ่เติม -s แต่กริยาที่ลงท้ายด้วย -o, -s, -sh, -ch, -x ต้องเติม -es (go → goes, do → does, wash → washes) กริยาที่ลงท้ายด้วยสระ + y เติม -s ธรรมดา (buy → buys, pay → pays) การออกเสียง: goes อ่านว่า \"โกซ\" (/ɡoʊz/) และ does อ่านว่า \"ดัซ\" (/dʌz/) ไม่ใช่ \"โดส\" ข้อผิดพลาดที่คนไทยมักทำ: พูด \"she go\" หรือสร้างรูปเอง เช่น \"gos\"",
+          "titleTh": "เติม -es: goes, does, washes",
+          "bodyTh": "กริยาของ he, she, it ที่ลงท้าย -o, -s, -sh, -ch, -x เติม -es (go → goes, wash → washes) ลงท้ายสระ + y เติม -s (buy → buys) ผิดบ่อย: she go ✗ / she gos ✗ → she goes ✓ ออกเสียง goes /ɡoʊz/, does /dʌz/ ท้ายสั่นคอ คำถาม What / Where ใช้ do / does แบบเดียวกับการ์ดวันที่ 37: What do you need? Where does she go?",
           "table": [
             [
               "กริยาเดิม",
@@ -168,8 +168,8 @@
               "th": "แนนซื้อขนมปังและกล้วย"
             },
             {
-              "en": "Dan takes the bus.",
-              "th": "แดนขึ้นรถบัส"
+              "en": "Rose takes the bus.",
+              "th": "โรสขึ้นรถบัส"
             }
           ],
           "structures": [
@@ -221,7 +221,7 @@
           "id": "d039-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่านมราคาเท่าไร (What + do/does + ประธาน + กริยาเดิม)"
+            "th": "ฟังแล้วตอบว่านมราคาเท่าไร"
           },
           "audioText": "I need some milk. I ask the man, \"What is the price of the milk?\" He says, \"It is forty baht.\" I buy the milk. I give him fifty baht.",
           "question": {

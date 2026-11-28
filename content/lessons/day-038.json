@@ -121,7 +121,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "ประโยคปฏิเสธ: do not / does not",
-          "bodyTh": "บอกว่า \"ไม่\" ใน Present Simple ใช้ do not กับ I, you, we, they และ does not กับ he, she, it และชื่อคนเดียว วางไว้หน้ากริยาหลัก และกริยาหลักใช้รูปเดิม ไม่เติม -s (Dan doesn't cook. ไม่ใช่ Dan doesn't cooks) ตอนพูดนิยมใช้รูปย่อ don't และ doesn't ข้อผิดพลาดที่คนไทยมักทำ: ใส่ not ตรง ๆ หลังประธาน เช่น \"He not cook\" ซึ่งต้องมี does อยู่ด้วย",
+          "bodyTh": "ใช้บอกว่า \"ไม่ทำ ไม่ชอบ\": do not (don't) กับ I, you, we, they และ does not (doesn't) กับ he, she, it และชื่อเดียว วางไว้หน้าคำที่บอกการกระทำ (กริยาหลัก) ซึ่งใช้รูปเดิม (Dan doesn't cook.) ผิดบ่อย: He not cook ✗ / Dan doesn't cooks ✗ → Dan doesn't cook ✓",
           "table": [
             [
               "ประธาน",
