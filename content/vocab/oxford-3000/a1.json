@@ -6504,17 +6504,6 @@
     "collocations": ["twenty pounds"]
   },
   {
-    "id": "v-euro",
-    "word": "euro",
-    "pos": "noun",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/ˈjʊroʊ/", "uk": "/ˈjʊərəʊ/" },
-    "th": "ยูโร",
-    "topics": ["numbers_money"],
-    "examples": [{ "en": "The hotel is fifty euros.", "th": "โรงแรมคืนละห้าสิบยูโร" }, { "en": "I have twenty euros.", "th": "ฉันมียี่สิบยูโร" }],
-    "collocations": ["twenty euros"]
-  },
-  {
     "id": "v-cent",
     "word": "cent",
     "pos": "noun",
@@ -6818,5 +6807,17 @@
     "topics": ["work_study"],
     "examples": [{ "en": "Leo learns a new game.", "th": "ลีโอหัดเล่นเกมใหม่" }, { "en": "We learn English in class.", "th": "เราเรียนภาษาอังกฤษในชั้นเรียน" }],
     "collocations": ["learn a new game"]
+  },
+  {
+    "id": "v-euro",
+    "word": "euro",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/ˈjʊroʊ/", "uk": "/ˈjʊərəʊ/" },
+    "th": "ยูโร",
+    "topics": ["numbers_money"],
+    "examples": [{ "en": "The hotel is fifty euros.", "th": "โรงแรมคืนละห้าสิบยูโร" }, { "en": "I have twenty euros.", "th": "ฉันมียี่สิบยูโร" }],
+    "collocations": ["twenty euros"],
+    "forms": { "plural": "euros" }
   }
 ]
