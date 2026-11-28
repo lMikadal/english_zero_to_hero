@@ -9,7 +9,7 @@
 | `day` | number | 1–365 ต้องตรงกับชื่อไฟล์ |
 | `phase` | 1–4 | |
 | `week` | number | 1–53 |
-| `type` | `lesson` \| `review` \| `challenge` \| `checkpoint` | |
+| `type` | `lesson` \| `review` \| `challenge` \| `checkpoint` | `checkpoint` เป็นของเดิม (legacy): สอบรายเดือนอยู่ที่ `content/checkpoints/` ด้วย schema ของตัวเอง (ดู `docs/plans/checkpoint-plan.md` ซึ่งกำลังทำอยู่) ไม่แก้ `schema.ts` |
 | `cefr` | `preA1` \| `A1` \| `A2` \| `B1` \| `B2` \| `C1` | `C1` ใช้ในเฟส 4 ที่สอนคำ Oxford 5000 |
 | `title` | `{ en, th }` | |
 | `objectives` | `{ en, th }[]` | สิ่งที่ผู้เรียนทำได้หลังจบบท |
