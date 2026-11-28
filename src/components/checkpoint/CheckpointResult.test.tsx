@@ -144,4 +144,27 @@ describe("CheckpointResult (plan 3.6, items 36-41)", () => {
     expect(missingLangEn(container)).toEqual([]);
     expect(thaiUnderEn(container)).toEqual([]);
   });
+
+  it.each([
+    [0.699, "69%", "ยังไม่ผ่าน"], [0.7, "70%", "ผ่าน"], [0.9999, "99%", "ผ่าน"], [1, "100%", "ผ่าน"],
+  ])("a total of %s reads %s next to %s (a failing score never shows as the pass mark)", (score, text, verdict) => {
+    show(shown({ score, passed: score >= 0.7, best: score }));
+    expect(screen.getByText(`คะแนนรวม ${text}`)).toBeInTheDocument();
+    expect(screen.getByText(verdict, { exact: true })).toBeInTheDocument();
+  });
+
+  it("a skill at 0.699 reads 69% and is listed under ควรฝึกซ่อม; the best score is floored too", () => {
+    const skills = DONE_RESPONSE.result.skills.map((s) => (s.skill === "reading" ? { ...s, score: 0.699 } : s));
+    show(shown({ skills, sitting: 2, best: 0.6999 }));
+    expect(screen.getByRole("list", { name: "คะแนนรายทักษะ" })).toHaveTextContent("69% · ตอบ 3 จาก 3 ข้อ");
+    expect(screen.getByRole("link", { name: "อ่าน · วันที่ 1" })).toBeInTheDocument();
+    expect(screen.getByText("รอบที่ 2 · ดีที่สุด 69%")).toBeInTheDocument();
+  });
+
+  it("a 409 whose reason this client does not know is handled like the generic one: the message and a fresh start, never a dead end", async () => {
+    const { props } = show({ kind: "rejected", code: 409 });
+    expect(screen.getByRole("alert")).toHaveTextContent("ไม่มีคำตอบของรอบนี้บนเซิร์ฟเวอร์");
+    await userEvent.click(screen.getByRole("button", { name: "เริ่มทำใหม่" }));
+    expect(props.onRestart).toHaveBeenCalledTimes(1);
+  });
 });

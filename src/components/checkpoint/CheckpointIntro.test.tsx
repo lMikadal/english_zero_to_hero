@@ -50,6 +50,10 @@ describe("CheckpointIntro (plan 3.3 item 18)", () => {
     expect(screen.getByText("ครั้งล่าสุด 62% · ยังไม่ผ่าน")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "สอบอีกครั้ง" })).toBeInTheDocument();
   });
+  it("the last score is floored: 0.699 reads 69% next to ยังไม่ผ่าน", () => {
+    show({ last: { score: 0.699, passed: false } });
+    expect(screen.getByText("ครั้งล่าสุด 69% · ยังไม่ผ่าน")).toBeInTheDocument();
+  });
   it("a passed earlier sitting says ผ่าน", () => {
     show({ last: { score: 0.8, passed: true } });
     expect(screen.getByText("ครั้งล่าสุด 80% · ผ่าน")).toBeInTheDocument();
