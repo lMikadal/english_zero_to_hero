@@ -18,8 +18,8 @@
       "th": "พูดถึงกิจกรรมยามว่างได้: play football, swim, talk, call, write"
     },
     {
-      "en": "Say the final clusters /sk/ and /st/: desk–deck, best–bet, fast–fat, list–lit",
-      "th": "ออกเสียงตัวควบท้ายคำ /sk/ /st/ ได้: desk–deck, best–bet, fast–fat, list–lit"
+      "en": "Say the final clusters /sk/ and /st/: desk–deck, best–bet, west–wet, list–lit",
+      "th": "ออกเสียงตัวควบท้ายคำ /sk/ /st/ ได้: desk–deck, best–bet, west–wet, list–lit"
     }
   ],
   "estimatedMinutes": 30,
@@ -79,8 +79,8 @@
               "answer": "b"
             },
             {
-              "a": "fat",
-              "b": "fast",
+              "a": "wet",
+              "b": "west",
               "answer": "b"
             },
             {
@@ -166,7 +166,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าโรสทำอะไรหลังเลิกเรียน"
           },
-          "audioText": "Rose is a teacher. After school she writes at her desk. She often talks to Nan. Then she goes home and cooks dinner. After dinner she sometimes watches TV. Before bed she never drinks coffee.",
+          "audioText": "Rose is a teacher. After school she writes at her desk. She often talks to Nan. Then she goes home and cooks dinner. After dinner she sometimes watches TV. Before bed she has some tea.",
           "question": {
             "en": "What does Rose do after school?",
             "th": "โรสทำอะไรหลังเลิกเรียน"
@@ -310,7 +310,10 @@
             "after",
             "school"
           ],
-          "answer": "My son plays football after school"
+          "answer": "My son plays football after school",
+          "accept": [
+            "After school my son plays football"
+          ]
         },
         {
           "id": "d046-write-02",
@@ -331,7 +334,10 @@
           },
           "th": "หลังอาหารเย็นฉันเล่นเกม",
           "accept": [
-            "After dinner I play a game"
+            "After dinner I play a game",
+            "I play a game after dinner",
+            "After dinner I play games",
+            "I play games after dinner"
           ]
         },
         {

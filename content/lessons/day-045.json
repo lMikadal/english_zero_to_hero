@@ -18,8 +18,8 @@
       "th": "พูดเรื่องถนนและป้ายรถได้: The bus stops near my house"
     },
     {
-      "en": "Say the clusters /str/ and /spr/: street–treat, spray–pray, scream–cream, strain–train",
-      "th": "ออกเสียงตัวควบ /str/ /spr/ ได้: street–treat, spray–pray, scream–cream, strain–train"
+      "en": "Say the clusters /str/, /spr/ and /skr/: street–treat, spray–pray, scream–cream, strain–train",
+      "th": "ออกเสียงตัวควบ /str/ /spr/ /skr/ ได้: street–treat, spray–pray, scream–cream, strain–train"
     }
   ],
   "estimatedMinutes": 30,
@@ -184,7 +184,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "Dan drives a car on the big road."
+          "audioText": "Dan drives his car on the big road."
         }
       ]
     },
@@ -206,10 +206,10 @@
             "I go by train. A ticket is thirty baht.",
             "Is your school far?",
             "Yes, it's far. I arrive early.",
-            "I go by bus. The bus stop is near my house.",
-            "The bus stops on my street.",
+            "My friend Rose goes by bus. The bus stop is near her house.",
+            "The bus stops on her street.",
             "Ray goes by bike.",
-            "My husband drives on the big road.",
+            "Dan drives on the big road.",
             "A taxi is not cheap."
           ]
         },
@@ -230,12 +230,12 @@
           "id": "d045-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ออก arrive ให้ 'อะ-ไรว์' เน้นพยางค์หลัง (aRRIVE) ท้ายคำ /v/ ต้องสั่นคอ"
+            "th": "ฟังแล้วพูดตาม arrive /əˈraɪv/ เน้นพยางค์หลัง ท้ายคำ /v/ สั่นคอ"
           },
           "text": "I arrive by train and take a taxi.",
           "ipa": "/aɪ əˈraɪv baɪ treɪn ænd teɪk ə ˈtæksi/",
           "phonemes": [
-            "t"
+            "v"
           ]
         }
       ]
@@ -253,7 +253,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (Ray's house = บ้านของเรย์)"
           },
-          "text": "Ray is seventy. He goes to the market by bike. The market is near his house. He stops at a shop on the street and buys fruit. Dan drives to work by car. The road is big. His work is far from his house. He arrives early. Rose goes to school by bus. Leo walks to school. A bus ticket is ten baht.",
+          "text": "Ray is seventy. He goes to the market by bike. The market is near his house. He stops at a shop on the street and buys fruit. Dan drives to work. The road is big. He works far from his house. He arrives early. Rose goes to school by bus. Leo walks to school. A bus ticket is ten baht.",
           "questions": [
             {
               "question": {

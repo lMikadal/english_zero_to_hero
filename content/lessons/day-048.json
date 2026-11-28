@@ -130,7 +130,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าแดนไปทำงานอย่างไร"
           },
-          "audioText": "Dan drives to work. The road is big and the street is near his house. His work is far. He always arrives early. He often works late. He usually listens to music in the car. He never takes a taxi or a train. On the weekend he swims. It is his favourite sport.",
+          "audioText": "Dan drives to work. The road is big. He works far from his house. He always arrives early. He often works late. He usually listens to music in the car. He never takes a taxi or a train. On the weekend he swims. It is his favourite sport.",
           "question": {
             "en": "How does Dan go to work?",
             "th": "แดนไปทำงานอย่างไร"
@@ -317,7 +317,10 @@
           "th": "แนนมักจะนั่งรถไฟไปโรงเรียน",
           "accept": [
             "Nan usually takes the train to school",
-            "Nan usually goes to school by train"
+            "Nan usually goes to school by train",
+            "Nan usually takes a train to school",
+            "Usually Nan takes the train to school",
+            "Usually Nan goes to school by train"
           ]
         },
         {

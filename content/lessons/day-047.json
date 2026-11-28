@@ -18,8 +18,8 @@
       "th": "บอกความถี่ของกิจกรรมได้: every week, on the weekend, sometimes, often"
     },
     {
-      "en": "Say the final clusters /lm/ and /lk/: film–fill, milk–mill, help–hell",
-      "th": "ออกเสียงตัวควบท้ายคำ /lm/ /lk/ ได้: film–fill, milk–mill, help–hell"
+      "en": "Say the final clusters /lm/ and /lk/: film–fill, milk–mill, silk–sill",
+      "th": "ออกเสียงตัวควบท้ายคำ /lm/ /lk/ ได้: film–fill, milk–mill, silk–sill"
     }
   ],
   "estimatedMinutes": 30,
@@ -78,15 +78,14 @@
               "answer": "b"
             },
             {
-              "a": "help",
-              "b": "hell",
+              "a": "silk",
+              "b": "sill",
               "answer": "a"
             }
           ],
           "phonemes": [
             "lm",
-            "lk",
-            "lp"
+            "lk"
           ]
         },
         {
@@ -223,7 +222,7 @@
           "id": "d047-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ออก weekend ให้เน้นพยางค์แรก (WEEKend) และ /fr/ ใน free ไม่ใช่ 'ฟี' หรือ 'ฟรี' แบบเสียงเดียว"
+            "th": "ฟังแล้วพูดตาม weekend สำเนียงอเมริกันเน้นพยางค์แรก (WEEKend) สำเนียงอังกฤษมักเน้นพยางค์หลัง (weekEND) ได้ทั้งสองแบบ และ /fr/ ใน free ต้องมีเสียง r ไม่ใช่ 'ฟี' (ตัดเสียง r)"
           },
           "text": "I have free time every weekend.",
           "ipa": "/aɪ hæv friː taɪm ˈevri ˈwiːkend/",
@@ -305,7 +304,10 @@
             "film",
             "sometimes"
           ],
-          "answer": "We sometimes watch a film"
+          "answer": "We sometimes watch a film",
+          "accept": [
+            "Sometimes we watch a film"
+          ]
         },
         {
           "id": "d047-write-02",
@@ -326,7 +328,8 @@
           },
           "th": "ฉันร้องเพลงและเต้นรำทุกสัปดาห์",
           "accept": [
-            "I sing and dance every week"
+            "I sing and dance every week",
+            "Every week I sing and dance"
           ]
         },
         {

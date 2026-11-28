@@ -36,7 +36,7 @@
           "id": "d049-pron-01",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ใน listen ตัว t ไม่ออกเสียง (ลิ-เซิน) และเน้น WEEKend ที่พยางค์แรก"
+            "th": "ฟังแล้วพูดตาม ใน listen ตัว t ไม่ออกเสียง (ลิ-เซิน) และ weekend สำเนียงอเมริกันเน้นพยางค์แรก (WEEKend) สำเนียงอังกฤษมักเน้นพยางค์หลัง (weekEND)"
           },
           "text": "I always listen to music on the weekend.",
           "ipa": "/aɪ ˈɔːlweɪz ˈlɪsn tuː ˈmjuːzɪk ɑːn ðə ˈwiːkend/"
@@ -155,7 +155,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Dan is a doctor. He always drinks coffee in the morning. He drives to work and often arrives early. His work finishes late. On the weekend he swims. It is his favourite sport. Leo plays football every week. Nan has a dance class every week. She sings and dances. Rose has free time on the weekend. She likes shopping and the family often watches a film. They have a good time.",
+          "text": "Dan is a doctor. He always drinks coffee in the morning. He drives to work and always arrives early. He often works late. On the weekend he swims. It is his favourite sport. Leo plays football every week. Nan has a dance class every week. She sings and dances. Rose has free time on the weekend. She likes shopping and the family often watches a film. They have a good time.",
           "questions": [
             {
               "question": {

@@ -54,7 +54,7 @@
           "examples": [
             "sleep",
             "small",
-            "sweet",
+            "slow",
             "snow"
           ]
         },
@@ -119,8 +119,8 @@
           "instruction": {
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
-          "titleTh": "คำบอกความถี่: always, usually, often, sometimes, never",
-          "bodyTh": "คำบอกความถี่ตอบคำถามว่า \"บ่อยแค่ไหน\" (How often…?) เรียงจากมากไปน้อย: always (ทุกครั้ง) → usually (ส่วนใหญ่) → often (บ่อย ๆ) → sometimes (บางครั้ง) → never (ไม่เคยเลย) ตำแหน่งในประโยค: วางไว้หน้ากริยาหลัก (I always have tea. She often watches TV.) แต่ถ้ากริยาคือ be (am / is / are) วางไว้หลัง be (She is never late.) ข้อผิดพลาดที่คนไทยมักทำ: วางไว้ท้ายประโยคตามลำดับคำไทย (\"I watch TV always\") และใช้ never ร่วมกับ don't (\"I don't never…\") ซึ่งผิดเพราะ never มีความหมายปฏิเสธอยู่แล้ว คำถามใช้ How often + do/does + ประธาน + กริยา (How often do you watch TV?) หมายเหตุ: sometimes ยังวางต้นประโยคได้ (Sometimes I watch TV.)",
+          "titleTh": "คำบอกความถี่: always … never",
+          "bodyTh": "คำบอกความถี่บอกว่าทำบ่อยแค่ไหน เรียงจากมากไปน้อย: always (เสมอ) → usually (ปกติ, มักจะ) → often (บ่อย ๆ) → sometimes (บางครั้ง) → never (ไม่…เลย) วางไว้หน้ากริยาหลัก (I always have tea.) แต่วางหลัง am / is / are (She is never late.) ผิดบ่อย: I have tea always ✗ และ I don't never drink coffee ✗ sometimes วางต้นประโยคได้ (Sometimes I watch TV.)",
           "examples": [
             {
               "en": "I always have tea.",
@@ -137,10 +137,6 @@
             {
               "en": "How often do you watch TV?",
               "th": "คุณดูทีวีบ่อยแค่ไหน"
-            },
-            {
-              "en": "I sometimes listen to music.",
-              "th": "บางครั้งฉันฟังเพลง"
             }
           ],
           "structures": [
@@ -154,12 +150,12 @@
             ],
             [
               "always",
-              "ทุกครั้ง",
+              "เสมอ",
               "I always have tea."
             ],
             [
               "usually",
-              "ส่วนใหญ่",
+              "ปกติ, มักจะ",
               "I usually walk to school."
             ],
             [
@@ -174,7 +170,7 @@
             ],
             [
               "never",
-              "ไม่เคยเลย",
+              "ไม่…เลย, ไม่เคย",
               "I never drink coffee."
             ]
           ]
@@ -264,7 +260,7 @@
             "How often do you watch TV?",
             "I sometimes watch TV in the evening.",
             "Do you listen to music?",
-            "Yes, I always listen to music.",
+            "Yes, I often listen to music.",
             "I usually listen to music in the morning.",
             "Do you drink coffee?",
             "No, I never drink coffee.",
@@ -299,7 +295,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (คำบอกความถี่วางหน้ากริยาหลัก: She often watches TV)"
           },
-          "text": "Rose always has tea in the morning. She never drinks coffee. She usually listens to music in the morning. She sometimes watches TV in the evening. Dan always drinks coffee. He often works late. He never cooks. Leo often watches TV. He sometimes listens to music. He never drinks coffee.",
+          "text": "Rose always has tea in the morning. She never drinks coffee. She usually listens to music in the morning. She sometimes watches TV in the evening. Dan always drinks coffee. He often works late. He never cooks. Leo sometimes watches TV. He often listens to music. He never drinks coffee.",
           "questions": [
             {
               "question": {
