@@ -869,6 +869,15 @@ printf 403
     expect(r.code).toBe(1);
     expect(r.out + r.err).toMatch(/access FAIL/);
   });
+  it("an unreachable app prints 000 once, not twice", () => {
+    const bin = path.join(tmp, "bin");
+    fs.mkdirSync(bin, { recursive: true });
+    fs.writeFileSync(path.join(bin, "curl"), "#!/bin/sh\nprintf 000\nexit 7\n", { mode: 0o755 });
+    const r = run("access-check.sh", ["http://127.0.0.1:1", "100.101.102.103"], { PATH: `${bin}:${process.env.PATH ?? ""}` });
+    expect(r.code).toBe(1);
+    expect(r.err).toContain("got 000");
+    expect(r.err).not.toContain("000000");
+  });
   it("FAILS when a forged X-Ezh-Peer header is believed", () => {
     expect(check("peer-trusted").code).toBe(1);
   });
@@ -946,5 +955,44 @@ describe("production network: dedicated subnet, narrow trusted proxies, allow-li
     expect(job).toMatch(/ALLOWED_IPS=/);
     expect(job).toContain("scripts/prod/access-check.sh");
     expect(job.indexOf("ALLOWED_IPS=")).toBeLessThan(job.indexOf("make ci-up\n"));
+  });
+});
+
+describe("net-fix.sh (the project network moves to its dedicated subnet once, without losing data)", () => {
+  // Found on stage: when compose recreates a network with another subnet it restarts postgres WITHOUT its DNS alias, so the
+  // migration fails with "getaddrinfo ENOTFOUND postgres". Stopping the containers first (never the volume) avoids it.
+  function setup(current: string) {
+    const bin = path.join(tmp, "bin");
+    fs.mkdirSync(bin, { recursive: true });
+    fs.writeFileSync(path.join(bin, "docker"), `#!/bin/sh\necho "docker $*" >> "${tmp}/calls.log"\n[ -n "${current}" ] && echo "${current}" || exit 1\n`, { mode: 0o755 });
+    fs.writeFileSync(path.join(bin, "fakecompose"), `#!/bin/sh\necho "compose $*" >> "${tmp}/calls.log"\n`, { mode: 0o755 });
+    return { PATH: `${bin}:${process.env.PATH ?? ""}`, COMPOSE_CMD: path.join(bin, "fakecompose") };
+  }
+  const calls = () => (fs.existsSync(path.join(tmp, "calls.log")) ? fs.readFileSync(path.join(tmp, "calls.log"), "utf8") : "");
+
+  it("does nothing when the network does not exist yet", () => {
+    const r = run("net-fix.sh", ["ezh_prod_default", "172.30.10"], setup(""));
+    expect(r.code).toBe(0);
+    expect(calls()).not.toContain("compose");
+  });
+  it("does nothing when the subnet is already the dedicated one", () => {
+    expect(run("net-fix.sh", ["ezh_prod_default", "172.30.10"], setup("172.30.10.0/24")).code).toBe(0);
+    expect(calls()).not.toContain("compose");
+  });
+  it("stops the containers (compose down, never with volumes) when the subnet differs, and says why", () => {
+    const r = run("net-fix.sh", ["ezh_prod_default", "172.30.10"], setup("172.19.0.0/16"));
+    expect(r.code).toBe(0);
+    expect(calls()).toMatch(/compose down\s*$/m);
+    expect(calls()).not.toMatch(/-v\b|--volumes/);
+    expect(r.out).toMatch(/172\.30\.10/);
+  });
+  it("prod-up and prod-update run it before anything else touches the stack", () => {
+    const mk = fs.readFileSync(path.join(repoRoot, "Makefile"), "utf8");
+    const up = mk.slice(mk.indexOf("prod-up:"), mk.indexOf("prod-update:"));
+    expect(up).toContain("net-fix.sh");
+    expect(up.indexOf("net-fix.sh")).toBeLessThan(up.indexOf("pre-update.sh"));
+    const upd = mk.slice(mk.indexOf("prod-update:"), mk.indexOf("prod-down:"));
+    expect(upd).toContain("net-fix.sh");
+    expect(upd.indexOf("net-fix.sh")).toBeLessThan(upd.indexOf("pre-update.sh"));
   });
 });
