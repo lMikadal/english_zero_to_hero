@@ -10,20 +10,8 @@ import { weekOne } from "@/lib/answers/test-content";
 import { getVocabLookup } from "@/lib/content/repo";
 import type { Exercise } from "@/lib/content/schema";
 import { renderExercise } from "./registry";
+import { smallTargets } from "./touch-target-check";
 import { renderWithAudio } from "./test-helpers";
-
-const INTERACTIVE = "button, a, input, textarea, [role=radio]";
-/** Elements sized another way (none today). Add a selector here only with a reason. */
-const ALLOW: string[] = [];
-/** h-11 (44px) or taller, min- or fixed. */
-const TALL_ENOUGH = /(^|\s)(min-)?h-(1[1-9]|[2-9]\d)(\s|$)/;
-
-export function smallTargets(root: ParentNode): string[] {
-  return Array.from(root.querySelectorAll(INTERACTIVE))
-    .filter((el) => !ALLOW.some((s) => el.matches(s)))
-    .filter((el) => !TALL_ENOUGH.test(el.getAttribute("class") ?? ""))
-    .map((el) => `<${el.tagName.toLowerCase()} class="${el.getAttribute("class") ?? ""}"> ${(el.textContent ?? "").trim().slice(0, 20)}`);
-}
 
 const handlers = { onAnswer: () => {}, onContinue: () => {} };
 const cases = weekOne.flatMap((lesson) => {
