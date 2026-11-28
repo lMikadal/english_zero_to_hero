@@ -1,0 +1,397 @@
+{
+  "day": 72,
+  "phase": 2,
+  "week": 11,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "Last weekend: regular verbs with -ed",
+    "th": "สุดสัปดาห์ที่แล้ว: กริยาเติม -ed"
+  },
+  "objectives": [
+    {
+      "en": "Tell what happened with regular verbs: walked, played, stayed, closed",
+      "th": "เล่าสิ่งที่เกิดขึ้นด้วยกริยาเติม -ed ได้: walked, played, stayed, closed"
+    },
+    {
+      "en": "Spell -ed: like → liked, study → studied, stop → stopped",
+      "th": "สะกด -ed ได้: like → liked, study → studied, stop → stopped"
+    },
+    {
+      "en": "Say the ending -ed as /t/ or /d/",
+      "th": "ออกเสียงท้าย -ed เป็น /t/ หรือ /d/ ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-stay",
+    "v-enjoy",
+    "v-travel",
+    "v-climb",
+    "v-jump",
+    "v-laugh",
+    "v-smile",
+    "v-close"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The ending -ed: /t/ and /d/",
+        "th": "เสียงท้าย -ed: /t/ และ /d/"
+      },
+      "exercises": [
+        {
+          "id": "d072-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "t",
+          "ipa": "/t/ /d/",
+          "tipTh": "-ed ออกเสียงเป็น /t/ หลังเสียงที่ไม่สั่นคอ (jumped, laughed) และเป็น /d/ หลังเสียงที่สั่นคอ (stayed, smiled) ไม่ใช่พยางค์เพิ่ม อย่าตัดทิ้ง (stayed ไม่ใช่ 'สเตย์') และอย่าอ่านว่า 'เอ็ด' (หลัง t และ d เท่านั้นที่เป็น /ɪd/ เช่น wanted เรียนแล้ววันที่ 53)",
+          "examples": [
+            "jumped",
+            "laughed",
+            "stayed",
+            "smiled"
+          ]
+        },
+        {
+          "id": "d072-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม jumped และ laughed ลงท้ายด้วย /t/"
+          },
+          "text": "Leo jumped and laughed.",
+          "ipa": "/ˈliːoʊ dʒʌmpt ænd læft/",
+          "phonemes": [
+            "t"
+          ]
+        },
+        {
+          "id": "d072-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม smiled และ closed ลงท้ายด้วย /d/"
+          },
+          "text": "Rose smiled and closed the door.",
+          "ipa": "/roʊz smaɪld ænd kloʊzd ðə dɔːr/",
+          "phonemes": [
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: last weekend",
+        "th": "ฟัง: สุดสัปดาห์ที่แล้ว"
+      },
+      "exercises": [
+        {
+          "id": "d072-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "อดีตของกริยาปกติ: เติม -ed",
+          "bodyTh": "ใช้เล่าเรื่องในอดีต (yesterday, last week, two days ago) เติม -ed หลังกริยา ใช้เหมือนกันทุกประธาน: I walked. Rose walked.\\nลงท้าย e เติม d (like → liked) พยัญชนะ + y เปลี่ยนเป็น ied (study → studied) กริยาพยางค์เดียว สระ + พยัญชนะตัวเดียว ซ้ำตัวท้าย (stop → stopped) แต่ play → played, wait → waited, visit → visited\\nผิดบ่อย: Yesterday I walk ✗ → Yesterday I walked ✓ และ She studyed ✗ → She studied ✓",
+          "examples": [
+            {
+              "en": "I walked to school yesterday.",
+              "th": "เมื่อวานฉันเดินไปโรงเรียน"
+            },
+            {
+              "en": "Rose liked the film.",
+              "th": "โรสชอบหนังเรื่องนี้"
+            },
+            {
+              "en": "Leo studied English last night.",
+              "th": "เมื่อคืนลีโอเรียนภาษาอังกฤษ"
+            },
+            {
+              "en": "The bus stopped.",
+              "th": "รถบัสหยุด"
+            }
+          ],
+          "structures": [
+            "past-regular"
+          ],
+          "table": [
+            [
+              "ท้ายกริยา",
+              "วิธีเติม",
+              "ตัวอย่าง"
+            ],
+            [
+              "ทั่วไป",
+              "เติม -ed",
+              "walk → walked"
+            ],
+            [
+              "ลงท้าย e",
+              "เติม -d",
+              "like → liked"
+            ],
+            [
+              "พยัญชนะ + y",
+              "y เป็น -ied",
+              "study → studied"
+            ],
+            [
+              "สั้น สระ + พยัญชนะ",
+              "ซ้ำท้าย + -ed",
+              "stop → stopped"
+            ]
+          ]
+        },
+        {
+          "id": "d072-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าสุดสัปดาห์ที่แล้วครอบครัวอยู่ที่ไหน"
+          },
+          "audioText": "Last weekend we stayed at home. It was rainy. Leo jumped on the sofa and Rose laughed. We enjoyed the evening and we watched a film.",
+          "question": {
+            "en": "Where was the family last weekend?",
+            "th": "สุดสัปดาห์ที่แล้วครอบครัวอยู่ที่ไหน"
+          },
+          "choices": [
+            "At home",
+            "At the cinema",
+            "In Chiang Mai"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d072-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-stay"
+            },
+            {
+              "vocabId": "v-enjoy"
+            },
+            {
+              "vocabId": "v-travel"
+            },
+            {
+              "vocabId": "v-climb"
+            },
+            {
+              "vocabId": "v-jump"
+            },
+            {
+              "vocabId": "v-laugh"
+            },
+            {
+              "vocabId": "v-smile"
+            },
+            {
+              "vocabId": "v-close"
+            }
+          ]
+        },
+        {
+          "id": "d072-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครยิ้มให้แนน"
+          },
+          "audioText": "Two days ago Nan travelled to Chiang Mai by train. She visited Mali. Mali smiled at Nan and closed the door. The cat climbed on the chair.",
+          "question": {
+            "en": "Who smiled at Nan?",
+            "th": "ใครยิ้มให้แนน"
+          },
+          "choices": [
+            "Mali",
+            "Rose",
+            "Leo"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d072-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The cat jumped on the sofa and Leo laughed."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: what happened?",
+        "th": "พูด: เกิดอะไรขึ้น"
+      },
+      "exercises": [
+        {
+          "id": "d072-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "We stayed at home last weekend.",
+            "Leo jumped on the sofa.",
+            "Rose laughed and smiled.",
+            "Dan closed the door.",
+            "We enjoyed the evening.",
+            "Nan travelled by train.",
+            "The cat climbed on the chair.",
+            "I walked and I watched TV."
+          ]
+        },
+        {
+          "id": "d072-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "พูดว่าสุดสัปดาห์ที่แล้วคุณดู เล่น หรือฟังอะไร ใช้กริยาเติม -ed ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Say your last weekend: I watched ... and I played ...",
+          "sampleAnswer": "I watched TV and I played football.",
+          "keywords": [
+            "watched",
+            "played"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: a rainy weekend",
+        "th": "อ่าน: สุดสัปดาห์ฝนตก"
+      },
+      "exercises": [
+        {
+          "id": "d072-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Last July the family stayed at home. It was rainy in Bangkok. Leo jumped on the sofa and the cat climbed on the chair. Rose smiled and Dan laughed. In the evening Rose cooked rice and chicken. They enjoyed the dinner. Then Dan closed the door and they watched a film.",
+          "questions": [
+            {
+              "question": {
+                "en": "Where was the family?",
+                "th": "ครอบครัวอยู่ที่ไหน"
+              },
+              "choices": [
+                "At home",
+                "At the market",
+                "In Chiang Mai"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What was the weather?",
+                "th": "อากาศเป็นอย่างไร"
+              },
+              "choices": [
+                "Sunny",
+                "Rainy",
+                "Cold"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Who cooked dinner?",
+                "th": "ใครทำอาหารเย็น"
+              },
+              "choices": [
+                "Dan",
+                "Leo",
+                "Rose"
+              ],
+              "answer": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: the past with -ed",
+        "th": "เขียน: อดีตเติม -ed"
+      },
+      "exercises": [
+        {
+          "id": "d072-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "jumped",
+            "The",
+            "cat",
+            "on",
+            "the",
+            "sofa"
+          ],
+          "answer": "The cat jumped on the sofa",
+          "statementOnly": true
+        },
+        {
+          "id": "d072-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (พัก; ยิ้ม) ใส่ -ed ท้ายกริยา"
+          },
+          "text": "We ___ at a hotel. Rose ___ at Leo.",
+          "answer": [
+            "stayed",
+            "smiled"
+          ]
+        },
+        {
+          "id": "d072-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เราสนุกกับหนังเรื่องนี้",
+          "accept": [
+            "We enjoyed the film",
+            "We enjoyed this film"
+          ]
+        },
+        {
+          "id": "d072-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แดนเดินทางด้วยรถไฟ",
+          "accept": [
+            "Dan travelled by train",
+            "Dan traveled by train"
+          ]
+        },
+        {
+          "id": "d072-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "โรสปิดประตู",
+          "accept": [
+            "Rose closed the door"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -6971,17 +6971,6 @@
     "collocations": ["jump up"]
   },
   {
-    "id": "v-laugh",
-    "word": "laugh",
-    "pos": "verb",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/læf/", "uk": "/lɑːf/" },
-    "th": "หัวเราะ",
-    "topics": ["feelings"],
-    "examples": [{ "en": "We laughed at the film.", "th": "เราหัวเราะกับหนังเรื่องนี้" }, { "en": "Leo laughs a lot.", "th": "ลีโอหัวเราะบ่อย" }],
-    "collocations": ["laugh at a film"]
-  },
-  {
     "id": "v-smile",
     "word": "smile",
     "pos": "verb",
@@ -7225,5 +7214,16 @@
     "topics": ["hobbies_sport"],
     "examples": [{ "en": "We camped near a lake.", "th": "เราตั้งแคมป์ใกล้ทะเลสาบ" }, { "en": "Leo camps with his friends.", "th": "ลีโอไปตั้งแคมป์กับเพื่อน ๆ" }],
     "collocations": ["camp near a lake"]
+  },
+  {
+    "id": "v-laugh",
+    "word": "laugh",
+    "pos": "verb",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/læf/", "uk": "/lɑːf/" },
+    "th": "หัวเราะ",
+    "topics": ["feelings"],
+    "examples": [{ "en": "We laughed at the film.", "th": "เราหัวเราะกับหนังเรื่องนี้" }, { "en": "Leo laughs at the film.", "th": "ลีโอหัวเราะกับหนัง" }],
+    "collocations": ["laugh at a film"]
   }
 ]
