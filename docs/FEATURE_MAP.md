@@ -90,6 +90,21 @@
 | ทุกเส้นทางถูกบังคับ | ขอ `/_next/static/x.js`, `/api/attempts` (POST), `/ไม่มีหน้านี้` ด้วย XFF ที่ไม่อนุญาต | 403 ทั้งหมด |
 | ตั้งค่าผิด | `ALLOWED_IPS='100.101.102.103, oops'` | ทุกคำขอ 500 (รวม `/api/health`), log ขึ้น `invalid entry "oops"`, healthcheck ของ container เป็น unhealthy |
 
+### ใน production stack (stage)
+
+ตั้ง `ALLOWED_IPS` ใน `.env.stage` (เช่น `100.101.102.103, 100.64.0.0/10`) แล้ว `make stage-up` จากนั้น:
+
+| ตรวจอะไร | ทำอย่างไร | พิสูจน์ว่าทำงาน |
+|---|---|---|
+| ค่าผิดถูกปฏิเสธก่อนเริ่ม | `ALLOWED_IPS=100.101.102.103, oops` แล้ว `make stage-up` | `ERROR: ALLOWED_IPS: invalid entry "oops"` จาก `check-env.sh`, exit ไม่เป็นศูนย์, ไม่มี container ถูกสร้าง |
+| ตรวจตัวเอง | `make stage-status` | `access ok: the allow-list is enforced` (เครื่องเอง 200, เลขที่ listed 200, `192.0.2.1` ได้ 403 ที่ `/`, `/api/health`, `/_next/static/...`, header `X-Ezh-Peer` ปลอมได้ 403) |
+| container อื่นปลอม XFF | ในผลของ `make stage-status`; หรือมือ: `docker compose -p ezh_stage -f docker-compose.prod.yml --env-file .env.stage exec -T postgres wget -S -O /dev/null --header="X-Forwarded-For: 100.101.102.103" http://app:3000/api/health` | `another container forging X-Forwarded-For ... was refused (403)`; wget `HTTP/1.1 403 Forbidden` (TRUSTED_PROXIES ของ prod = loopback + gateway ของ network เท่านั้น เช่น `127.0.0.0/8, ::1, 172.30.20.1`) |
+| ว่าง = เตือน | `ALLOWED_IPS=` ว่าง แล้ว `make stage-up` / `stage-status` | บรรทัดเตือนสองภาษา "every device on your tailnet can use the app" |
+| ย้าย network ครั้งแรก | stack เก่าที่ยังใช้ subnet อื่น แล้ว `make stage-up` | `network ezh_stage_default uses ...; moving it to 172.30.20.0/24`, ข้อมูลอยู่ครบ (ไม่ใช้ `-v`) |
+| CI | job `prod-image` | ขั้น "Device allow-list is enforced" ใช้ `scripts/prod/access-check.sh` ตัวเดียวกัน |
+
+เทสต์: `scripts/prod/prod-scripts.test.ts` (ตาราง valid/invalid เดียวกับ `src/lib/access/allowlist-cases.json` ที่ `allowlist.test.ts` ใช้, `access-check.sh`, `net-fix.sh`, compose/Makefile/CI)
+
 เทสต์: `src/lib/access/*.test.ts` (parser/CIDR, การหา client IP, ตัวจำกัด log, peer stamp บน http server จริง), `src/proxy.test.ts` (ไม่มี matcher, ทุก path/method, fail closed, ตรวจตอนสตาร์ท) รายละเอียด: `docs/ARCHITECTURE.md` หัวข้อ 3.0.1
 
 ## ตรวจ production stack (`make prod-*`)
