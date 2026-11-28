@@ -5,7 +5,7 @@ import { z } from "zod";
 export const CEFR_LEVELS = ["preA1", "A1", "A2", "B1", "B2", "C1"] as const;
 export const VOCAB_LEVELS = ["A1", "A2", "B1", "B2", "C1"] as const;
 export const SKILLS = ["pronunciation", "listening", "speaking", "reading", "writing"] as const;
-export const LESSON_TYPES = ["lesson", "review", "challenge", "checkpoint"] as const;
+export const LESSON_TYPES = ["lesson", "review", "challenge"] as const;
 
 /** Topic slugs from docs/VOCABULARY.md section 3. */
 export const TOPICS = [
@@ -16,12 +16,12 @@ export const TOPICS = [
 
 const text = z.string().refine((s) => s.length > 0 && s.trim() === s, "must not be empty or have leading/trailing whitespace");
 const thai = text.refine((s) => /[\u0E00-\u0E7F]/.test(s), "must contain Thai characters");
-const bilingual = z.strictObject({ en: text, th: thai });
+export const bilingual = z.strictObject({ en: text, th: thai });
 export const VOCAB_ID_PATTERN = /^v-[a-z0-9]+(-[a-z0-9]+)*$/;
 const vocabId = z.string().regex(VOCAB_ID_PATTERN, "vocab id must look like v-word or v-word-pos");
-/** `dXXX-<skill>-NN`; also used by the attempts API contract. */
-export const EXERCISE_ID_PATTERN = /^d\d{3}-(pron|listen|speak|read|write|vocab)-\d{2}$/;
-const exerciseId = z.string().regex(EXERCISE_ID_PATTERN, "exercise id must look like dXXX-<skill>-NN, skill = pron|listen|speak|read|write|vocab");
+/** `dXXX-<skill>-NN` (lesson) or `cXXX-<skill>-NN` (monthly checkpoint, XXX = afterDay); also used by the attempts API contract. The validator checks that a file only holds ids of its own kind. */
+export const EXERCISE_ID_PATTERN = /^[dc]\d{3}-(pron|listen|speak|read|write|vocab)-\d{2}$/;
+const exerciseId = z.string().regex(EXERCISE_ID_PATTERN, "exercise id must look like dXXX-<skill>-NN (lesson) or cXXX-<skill>-NN (checkpoint), skill = pron|listen|speak|read|write|vocab");
 const choiceIndex = z.number().int().nonnegative();
 
 const base = {

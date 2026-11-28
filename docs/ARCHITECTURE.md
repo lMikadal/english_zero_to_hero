@@ -37,7 +37,7 @@ english_zero_to_hero/
 │   ├── lessons/            # day-001.json ... day-365.json
 │   ├── vocab/              # คลังคำศัพท์ Oxford 3000/5000 แยกตามระดับ (ดู VOCABULARY.md)
 │   ├── phonemes.json       # ข้อมูล IPA + คู่คำ minimal pair
-│   └── checkpoints/        # ข้อสอบรายเดือน
+│   └── checkpoints/        # แบบทดสอบประจำเดือน checkpoint-030.json … 360 (ว่างได้; ดู CONTENT_SCHEMA.md หัวข้อ Checkpoint)
 ├── public/
 │   ├── audio/              # ไฟล์ TTS ที่สร้างแล้ว (<hash>.mp3)
 │   └── icons/              # ไอคอน PWA (192, 512, maskable, apple-touch-icon)

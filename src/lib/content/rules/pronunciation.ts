@@ -61,8 +61,8 @@ export function checkPronunciation(ctx: RuleContext): Problem[] {
   const ipaByWord = new Map<string, string>();
   for (const { item } of ctx.bank.values()) ipaByWord.set(item.word.toLowerCase(), `${item.ipa.us} ${item.ipa.uk}`);
 
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, sections } of ctx.units) {
+    for (const section of sections) {
       for (const ex of section.exercises) {
         const add = (message: string) => problems.push({ rule: PRONUNCIATION_RULE, file, id: ex.id, message });
         if (ex.type === "repeat_after_me" && ex.ipa) {

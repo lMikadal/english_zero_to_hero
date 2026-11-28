@@ -18,7 +18,7 @@ export const THAI_NAMES_RULE = "thai-names";
 
 /** What may stand directly before / after a name in Thai text (besides the start, the end, a space or a non-Thai character). */
 const BEFORE = ["ของ", "กับ", "และ", "คือ", "ว่า", "ถาม", "ชื่อ", "ให้", "แก่", "เพื่อน", "พี่", "น้อง"];
-const AFTER = ["อายุ", "อยู่", "เป็น", "มา", "ไป", "สะกด", "ทำ", "พูด", "ถาม", "ตอบ", "ใส่", "ชอบ", "มี", "กับ", "และ", "คือ", "ซื้อ", "อาศัย", "สี", "ราคา", "เท่า", "ที่", "ใช่", "ก็", "หรือ", "ได้", "ต้อง", "บอก", "พบ", "เจอ", "รัก", "จะ", "กำลัง", "ไม่", "ใน", "ด้วย"];
+const AFTER = ["อายุ", "อยู่", "เป็น", "มา", "ไป", "สะกด", "ทำ", "พูด", "ถาม", "ตอบ", "ใส่", "ชอบ", "มี", "กับ", "และ", "คือ", "ซื้อ", "อาศัย", "สี", "ราคา", "เท่า", "ที่", "ใช่", "ก็", "หรือ", "ได้", "ต้อง", "บอก", "พบ", "เจอ", "รัก", "จะ", "กำลัง", "ไม่", "ใน", "ด้วย", "ดื่ม", "กิน", "สั่ง", "อยาก", "ไม่ชอบ"];
 
 const THAI = /[฀-๿]/;
 const cp = (s: string) => [...s];
@@ -106,8 +106,8 @@ export function checkThaiNames(ctx: RuleContext, table: Readonly<Record<string, 
   const problems: Problem[] = [];
   const warned = new Set<string>();
   const isWord = isKnownThaiWord(ctx);
-  for (const { file, lesson } of ctx.lessons) {
-    const all = [...strings(lesson)];
+  for (const { file, doc } of ctx.units) {
+    const all = [...strings(doc)];
     const english = all.filter((s) => !THAI.test(s.text));
     const present = new Set(PEOPLE.filter((n) => english.some((s) => new RegExp(`\\b${n}\\b`).test(s.text))));
     for (const name of present) {

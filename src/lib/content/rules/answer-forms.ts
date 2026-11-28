@@ -84,8 +84,8 @@ export function checkAnswerForms(ctx: RuleContext): Problem[] {
     return w !== undefined && nouns.has(w) && !adjectives.has(w) && !AMBIGUOUS_AFTER_NAME.has(w);
   };
 
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, sections } of ctx.units) {
+    for (const section of sections) {
       for (const ex of section.exercises) {
         if (ex.type !== "dictation" && ex.type !== "translate_th_en" && ex.type !== "fill_blank") continue;
         if (ex.strict === true) continue;

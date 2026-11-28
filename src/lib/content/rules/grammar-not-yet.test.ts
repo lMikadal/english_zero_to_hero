@@ -4,6 +4,7 @@ import type { Exercise } from "../schema";
 import type { LoadedLesson } from "../loader";
 import { buildContext } from "./context";
 import { GRAMMAR_NOT_BEFORE, checkGrammarNotYet, thirdPersonS } from "./grammar-not-yet";
+import { cpOf } from "./checkpoint-test-support";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const say = (day: number, text: string, n = 1): Exercise => ({ id: exId(day, "speak", n), type: "repeat_after_me", instruction, text });
@@ -150,4 +151,20 @@ describe("grammar-not-yet: every learner-facing English field of every exercise 
     expect(out[0].message).toContain(field);
     expect(out[0].message).toContain('"has"');
   });
+});
+
+describe("checkGrammarNotYet: checkpoints are checked as a unit of day afterDay", () => {
+  const cp = (text: string, afterDay = 30) => cpOf([{ id: `c${String(afterDay).padStart(3, "0")}-speak-01`, type: "repeat_after_me", instruction, text }], afterDay);
+  const go = (checkpoint: ReturnType<typeof cp>) =>
+    checkGrammarNotYet(buildContext({ ...data([lessonFile(1, ["v-live"], [say(1, "I live.")])], [vocabFile(BANK)]), checkpoints: [checkpoint] }));
+
+  it("flags third-person -s (day 36) in a checkpoint after day 30", () => {
+    const out = go(cp("Ann lives here."));
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ rule: "grammar-not-yet", file: "content/checkpoints/checkpoint-030.json", id: "c030-speak-01" });
+    expect(out[0].message).toContain("day 30");
+    expect(out[0].message).toContain("lives");
+  });
+  it("accepts has (day 29 <= 30)", () => expect(go(cp("Ann has a cat."))).toEqual([]));
+  it("accepts -s in a checkpoint after day 60", () => expect(go(cp("Ann lives here.", 60))).toEqual([]));
 });

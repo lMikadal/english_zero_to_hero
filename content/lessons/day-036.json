@@ -1,0 +1,371 @@
+{
+  "day": 36,
+  "phase": 1,
+  "week": 6,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "I like rice! Present Simple: I like, she likes",
+    "th": "I like rice! Present Simple: I like กับ she likes"
+  },
+  "objectives": [
+    {
+      "en": "Say what you and other people eat, drink and like: I like rice, she likes fruit",
+      "th": "บอกว่าตัวเองและคนอื่นกิน ดื่ม ชอบอะไรได้: I like rice, she likes fruit"
+    },
+    {
+      "en": "Use the Present Simple: I/you/we/they + verb, he/she/it + verb with -s",
+      "th": "ใช้ Present Simple ได้: I/you/we/they + กริยา, he/she/it + กริยาเติม -s"
+    },
+    {
+      "en": "Tell /ʃ/ from /s/: she–see, shoe–Sue, sheet–seat, short–sort",
+      "th": "แยก /ʃ/ กับ /s/ ได้: she–see, shoe–Sue, sheet–seat, short–sort"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-food",
+    "v-rice",
+    "v-bread",
+    "v-meat",
+    "v-chicken",
+    "v-fruit",
+    "v-banana",
+    "v-eat",
+    "v-drink",
+    "v-like",
+    "v-milk",
+    "v-some"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sounds /ʃ/ and /s/",
+        "th": "เสียง /ʃ/ และ /s/"
+      },
+      "exercises": [
+        {
+          "id": "d036-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "sh",
+          "ipa": "/ʃ/ /s/",
+          "tipTh": "ภาษาไทยไม่มี /ʃ/ คนไทยมักออกเป็น 'ซ' (she เป็น 'ซี') หรือ 'ช' แบบที่ลิ้นแตะแล้วระเบิด /ʃ/ ใน she, fish และ wash ริมฝีปากห่อเล็กน้อย ลิ้นยกใกล้เพดานปากแต่ไม่แตะ ปล่อยลมไหลต่อเนื่อง (ชชช) ส่วน /s/ ใน see และ sit ริมฝีปากเหยียดเรียบ ปลายลิ้นอยู่ใกล้ฟันหน้า ลมออกทางช่องแคบกว่า",
+          "examples": [
+            "she",
+            "fish",
+            "shop",
+            "wash"
+          ]
+        },
+        {
+          "id": "d036-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "she",
+              "b": "see",
+              "answer": "a"
+            },
+            {
+              "a": "sip",
+              "b": "ship",
+              "answer": "b"
+            },
+            {
+              "a": "seat",
+              "b": "sheet",
+              "answer": "b"
+            },
+            {
+              "a": "shoe",
+              "b": "Sue",
+              "answer": "a"
+            },
+            {
+              "a": "sort",
+              "b": "short",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "sh",
+            "s"
+          ]
+        },
+        {
+          "id": "d036-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /ʃ/ ใน she และ fish ปากห่อ ลมไหลต่อเนื่อง ไม่ใช่ 'ซี' และ 'ฟิส'"
+          },
+          "text": "She eats fish and rice.",
+          "ipa": "/ʃiː iːts fɪʃ ænd raɪs/",
+          "phonemes": [
+            "sh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: who likes what?",
+        "th": "ฟัง: ใครชอบอะไร"
+      },
+      "exercises": [
+        {
+          "id": "d036-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครชอบไก่ ไวยากรณ์ใหม่ Present Simple (บอกสิ่งที่ชอบหรือทำเป็นประจำ): กับ I, you, we, they ใช้กริยาเดิม (I like) แต่กับ he, she, it หรือชื่อคนเดียว ต้องเติม -s ที่กริยา (Dan likes, she eats)"
+          },
+          "audioText": "I am Rose. I like rice and fish. My husband, Dan, likes meat and chicken. My son, Leo, likes bananas and milk.",
+          "question": {
+            "en": "Who likes chicken?",
+            "th": "ใครชอบไก่"
+          },
+          "choices": [
+            "Rose",
+            "Dan",
+            "Leo"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d036-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-food"
+            },
+            {
+              "vocabId": "v-rice"
+            },
+            {
+              "vocabId": "v-bread"
+            },
+            {
+              "vocabId": "v-meat"
+            },
+            {
+              "vocabId": "v-chicken"
+            },
+            {
+              "vocabId": "v-fruit"
+            }
+          ]
+        },
+        {
+          "id": "d036-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครกินเนื้อสัตว์ (the dog eats: ประธานเป็นสัตว์ตัวเดียว กริยาจึงเติม -s)"
+          },
+          "audioText": "This is my cat. It eats fish and drinks milk. My dog eats meat. The cat and the dog like their food.",
+          "question": {
+            "en": "Who eats meat?",
+            "th": "ใครกินเนื้อสัตว์"
+          },
+          "choices": [
+            "The dog",
+            "The cat"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d036-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "My son eats bread and some fruit. He drinks milk."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "What do you eat?",
+        "th": "คุณกินอะไร"
+      },
+      "exercises": [
+        {
+          "id": "d036-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค (some = บ้าง/สักหน่อย ใช้กับของนับไม่ได้ เช่น some milk, some rice หรือพหูพจน์ some bananas; ใช้ในประโยคบอกเล่าและตอนเสนอ: Do you want some water?)"
+          },
+          "lines": [
+            "I like rice and chicken.",
+            "My son likes bread and milk.",
+            "He eats a banana and some bread.",
+            "My husband likes meat.",
+            "He eats some meat and some rice.",
+            "We drink some milk and some water.",
+            "The food is good. We like our food."
+          ]
+        },
+        {
+          "id": "d036-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณชอบอาหารอะไรและดื่มอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What food do you like? What do you drink?",
+          "sampleAnswer": "I like rice, bread and fruit. I drink some milk.",
+          "keywords": [
+            "like",
+            "drink"
+          ]
+        },
+        {
+          "id": "d036-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ eats และ drinks ต้องมีเสียง -s ชัด ๆ อย่าตัดทิ้ง และ /ʃ/ ใน she ต้องปากห่อ"
+          },
+          "text": "He eats fruit and she drinks milk.",
+          "ipa": "/hiː iːts fruːt ænd ʃiː drɪŋks mɪlk/",
+          "phonemes": [
+            "sh",
+            "s"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My family and food",
+        "th": "ครอบครัวและอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d036-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (สังเกต likes, drinks: กริยาเติม -s เพราะประธานเป็นคนเดียว)"
+          },
+          "text": "Hi! I am Leo. I am nine. This is my family. My mother, Rose, likes rice and fish. She drinks tea. My father, Dan, likes meat and chicken. I like bananas, bread and milk. We eat some fruit too. We all like food!",
+          "questions": [
+            {
+              "question": {
+                "en": "Who likes meat and chicken?",
+                "th": "ใครชอบเนื้อและไก่"
+              },
+              "choices": [
+                "Dan",
+                "Rose"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who drinks tea?",
+                "th": "ใครดื่มชา"
+              },
+              "choices": [
+                "Rose",
+                "Dan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who likes bananas?",
+                "th": "ใครชอบกล้วย"
+              },
+              "choices": [
+                "Leo",
+                "Dan"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: I like, she likes",
+        "th": "เขียน: I like, she likes"
+      },
+      "exercises": [
+        {
+          "id": "d036-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "likes",
+            "My",
+            "son",
+            "bananas"
+          ],
+          "answer": "My son likes bananas"
+        },
+        {
+          "id": "d036-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมกริยา 'กิน' ให้ถูกรูป (she ต้องเติม -s)"
+          },
+          "text": "She ___ rice and fish.",
+          "answer": [
+            "eats"
+          ]
+        },
+        {
+          "id": "d036-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลีโอชอบกล้วยและนม",
+          "accept": [
+            "Leo likes bananas and milk"
+          ]
+        },
+        {
+          "id": "d036-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-banana"
+            },
+            {
+              "vocabId": "v-eat"
+            },
+            {
+              "vocabId": "v-drink"
+            },
+            {
+              "vocabId": "v-like"
+            },
+            {
+              "vocabId": "v-milk"
+            },
+            {
+              "vocabId": "v-some"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
