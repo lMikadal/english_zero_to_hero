@@ -1,0 +1,320 @@
+{
+  "day": 20,
+  "phase": 1,
+  "week": 3,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 3 review: th, v, family and this/that",
+    "th": "ทบทวนสัปดาห์ที่ 3: th, v, ครอบครัว และ this/that"
+  },
+  "objectives": [
+    {
+      "en": "Tell /θ/, /ð/, /v/ and /w/ apart in this week's words",
+      "th": "แยกเสียง /θ/, /ð/, /v/ และ /w/ ในคำของสัปดาห์นี้ได้"
+    },
+    {
+      "en": "Use this, that, these and those with family words",
+      "th": "ใช้ this, that, these, those กับคำเรียกคนในครอบครัวได้"
+    },
+    {
+      "en": "Say numbers 11–19 and talk about the people in a family",
+      "th": "พูดตัวเลข 11–19 และพูดถึงคนในครอบครัวได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "th, v and numbers",
+        "th": "th, v และตัวเลข"
+      },
+      "exercises": [
+        {
+          "id": "d020-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "think",
+              "b": "sink",
+              "answer": "a"
+            },
+            {
+              "a": "then",
+              "b": "den",
+              "answer": "b"
+            },
+            {
+              "a": "very",
+              "b": "berry",
+              "answer": "a"
+            },
+            {
+              "a": "west",
+              "b": "vest",
+              "answer": "a"
+            },
+            {
+              "a": "three",
+              "b": "tree",
+              "answer": "b"
+            },
+            {
+              "a": "those",
+              "b": "doze",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "th",
+            "dh",
+            "v",
+            "w"
+          ]
+        },
+        {
+          "id": "d020-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /ð/ ใน this, brother, that และ father"
+          },
+          "text": "This is my brother and that is my father.",
+          "ipa": "/ðɪs ɪz maɪ ˈbrʌðər ænd ðæt ɪz maɪ ˈfɑːðər/"
+        },
+        {
+          "id": "d020-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /v/ ใน eleven, twelve และ /θ/ ใน thirteen"
+          },
+          "text": "Eleven, twelve, thirteen, fourteen, fifteen.",
+          "ipa": "/ɪˈlevn twelv ˌθɜːrˈtiːn ˌfɔːrˈtiːn ˌfɪfˈtiːn/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d020-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครอายุสิบสาม"
+          },
+          "audioText": "Lisa is eighteen. Her brother is thirteen. Her sister is fifteen.",
+          "question": {
+            "en": "Who is thirteen?",
+            "th": "ใครอายุสิบสาม"
+          },
+          "choices": [
+            "Her sister",
+            "Her brother",
+            "Lisa"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d020-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครเป็นทารก"
+          },
+          "audioText": "Hello! I am Kate. My husband is Sam. We have two children. Our son is twelve. Our daughter is a baby. We live in a house in Bangkok.",
+          "question": {
+            "en": "Who is the baby?",
+            "th": "ใครเป็นทารก"
+          },
+          "choices": [
+            "Her son",
+            "Her daughter",
+            "Her sister"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d020-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "These are my parents. They live in a small house."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d020-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "This is my family.",
+            "This is my father. He is a doctor.",
+            "That is my mother. She is a teacher.",
+            "I have a brother and a sister.",
+            "We live in Bangkok. We are very happy."
+          ]
+        },
+        {
+          "id": "d020-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องครอบครัวของคุณ ตอบตามจริงหรือแต่งเรื่องก็ได้ บอกว่ามีใครบ้างและอายุเท่าไร"
+          },
+          "prompt": "Who is in your family? How old are they?",
+          "sampleAnswer": "I have a mother, a father and a sister. My sister is twelve. We live in a house in Bangkok.",
+          "keywords": [
+            "have",
+            "my"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d020-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "My name is Nok. I am nineteen. I live with my family in a small house in Bangkok. This is my father. He is a doctor. This is my mother. She is a teacher. That is my brother. He is fifteen. That is my sister. She is eleven. I love my family. We are very happy.",
+          "questions": [
+            {
+              "question": {
+                "en": "How old is her sister?",
+                "th": "น้องสาวของเธออายุเท่าไร"
+              },
+              "choices": [
+                "Eleven",
+                "Fifteen"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is her mother a teacher or a doctor?",
+                "th": "แม่ของเธอเป็นครูหรือหมอ"
+              },
+              "choices": [
+                "A teacher",
+                "A doctor"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where do Nok and her family live?",
+                "th": "นกกับครอบครัวอาศัยอยู่ที่ไหน"
+              },
+              "choices": [
+                "Bangkok",
+                "Chiang Mai"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d020-write-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-family"
+            },
+            {
+              "vocabId": "v-sister"
+            },
+            {
+              "vocabId": "v-brother"
+            },
+            {
+              "vocabId": "v-uncle"
+            },
+            {
+              "vocabId": "v-grandfather"
+            },
+            {
+              "vocabId": "v-woman"
+            }
+          ]
+        },
+        {
+          "id": "d020-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป (ช่องที่สองคือคำว่า 'ลูก ๆ' ที่ไม่ระบุเพศ; their = ของพวกเขา)"
+          },
+          "text": "My mother and father are my ___. My brother and I are their ___.",
+          "answer": [
+            "parents",
+            "children"
+          ]
+        },
+        {
+          "id": "d020-write-03",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "are",
+            "Those",
+            "people",
+            "very",
+            "nice"
+          ],
+          "answer": "Those people are very nice",
+          "accept": [
+            "Are those people very nice"
+          ]
+        },
+        {
+          "id": "d020-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "นี่คือลูกสาวของฉัน เธอมีความสุขมาก",
+          "accept": [
+            "This is my daughter. She is very happy",
+            "This is my daughter. She's very happy"
+          ]
+        }
+      ]
+    }
+  ]
+}

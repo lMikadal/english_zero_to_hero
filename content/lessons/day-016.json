@@ -1,0 +1,329 @@
+{
+  "day": 16,
+  "phase": 1,
+  "week": 3,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "That is my mother! The sound /ð/",
+    "th": "That is my mother! เสียง /ð/"
+  },
+  "objectives": [
+    {
+      "en": "Use this for near and that for far: 'This is…', 'That is…'",
+      "th": "ใช้ this กับของ/คนที่อยู่ใกล้ และ that กับที่อยู่ไกล: 'This is…', 'That is…' ได้"
+    },
+    {
+      "en": "Hear and say the sound /ð/ in this, that, mother and father",
+      "th": "ฟังและออกเสียง /ð/ ในคำว่า this, that, mother และ father ได้"
+    },
+    {
+      "en": "Talk about parents and brothers, and say 14 and 15",
+      "th": "พูดถึงพ่อแม่และพี่น้อง และพูดเลข 14 กับ 15 ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-mother",
+    "v-father",
+    "v-brother",
+    "v-parent",
+    "v-with",
+    "v-fourteen",
+    "v-fifteen",
+    "v-that"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sound /ð/",
+        "th": "เสียง /ð/"
+      },
+      "exercises": [
+        {
+          "id": "d016-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "dh",
+          "ipa": "/ð/",
+          "tipTh": "ตำแหน่งลิ้นเหมือน /θ/ เมื่อวาน (ปลายลิ้นแตะระหว่างฟัน) แต่ครั้งนี้ต้อง 'สั่นคอ' วางนิ้วที่คอแล้วออกเสียง จะรู้สึกสั่น คนไทยมักเปลี่ยนเป็น 'ด' (this เป็น 'ดิส') หรือ 'ซ' เสียงนี้อยู่ในคำพื้นฐานที่ใช้บ่อยมาก: the, this, that, they, with, mother, father, brother ท้ายคำ with ก็เป็นเสียงนี้ (คนอเมริกันบางคนออกเป็น /θ/ ก็ถูกเช่นกัน) ให้ลิ้นแตะระหว่างฟันแล้วปล่อยเสียง ไม่ใช่ 'วิด' หรือ 'วิท' ที่ปลายลิ้นแตะเหงือก",
+          "examples": [
+            "this",
+            "that",
+            "mother",
+            "they"
+          ]
+        },
+        {
+          "id": "d016-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "then",
+              "b": "den",
+              "answer": "a"
+            },
+            {
+              "a": "they",
+              "b": "day",
+              "answer": "b"
+            },
+            {
+              "a": "though",
+              "b": "dough",
+              "answer": "a"
+            },
+            {
+              "a": "breathe",
+              "b": "breeze",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d016-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /ð/ ใน this, that, mother และ father สั่นคอทุกคำ ไม่ใช่ 'ดิส แดท'"
+          },
+          "text": "This is my mother. That is my father.",
+          "ipa": "/ðɪs ɪz maɪ ˈmʌðər ðæt ɪz maɪ ˈfɑːðər/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: parents and brothers",
+        "th": "ฟัง: พ่อแม่และพี่น้อง"
+      },
+      "exercises": [
+        {
+          "id": "d016-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าพ่อแม่ของทอมอยู่ที่ไหน"
+          },
+          "audioText": "Hello! I am Tom. This is my mother. That is my father. They are in the park.",
+          "question": {
+            "en": "Where are his mother and father?",
+            "th": "พ่อกับแม่ของเขาอยู่ที่ไหน"
+          },
+          "choices": [
+            "In the park",
+            "In the house",
+            "In the shop"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d016-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าพี่ชายอายุเท่าไร"
+          },
+          "audioText": "I am fourteen. My brother is fifteen. We are with our parents.",
+          "question": {
+            "en": "How old is the brother?",
+            "th": "พี่ชายอายุเท่าไร"
+          },
+          "choices": [
+            "Thirteen",
+            "Fourteen",
+            "Fifteen"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "d016-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "This is my brother. That is my father."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "This and that",
+        "th": "this และ that"
+      },
+      "exercises": [
+        {
+          "id": "d016-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "This is my mother.",
+            "That is my father.",
+            "Is that your brother?",
+            "Yes, it is. He is fifteen.",
+            "I am with my parents."
+          ]
+        },
+        {
+          "id": "d016-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "นึกภาพครอบครัวของคุณ คนที่อยู่ใกล้ใช้ this คนที่อยู่ไกลใช้ that แล้วบอกว่าเป็นใคร"
+          },
+          "prompt": "Who is this? Who is that?",
+          "sampleAnswer": "This is my mother. That is my father. They are my parents.",
+          "keywords": [
+            "this",
+            "that"
+          ]
+        },
+        {
+          "id": "d016-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /ð/ ใน with, mother และ father"
+          },
+          "text": "I am with my mother and father.",
+          "ipa": "/aɪ æm wɪð maɪ ˈmʌðər ænd ˈfɑːðər/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "In the park",
+        "th": "ในสวนสาธารณะ"
+      },
+      "exercises": [
+        {
+          "id": "d016-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Jen. This is my family. This is my father. He is a teacher. That is my mother. She is a doctor. That is my brother, Max. He is fifteen. I am fourteen. We are in the park with our parents. We are happy.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who is a doctor?",
+                "th": "ใครเป็นหมอ"
+              },
+              "choices": [
+                "Her mother",
+                "Her father"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Max?",
+                "th": "แม็กซ์อายุเท่าไร"
+              },
+              "choices": [
+                "Fourteen",
+                "Fifteen"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Where are they?",
+                "th": "พวกเขาอยู่ที่ไหน"
+              },
+              "choices": [
+                "In the park",
+                "In the house"
+              ],
+              "answer": 0
+            }
+          ],
+          "glossary": {
+            "our": "ของพวกเรา"
+          }
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: this and that",
+        "th": "เขียน: this และ that"
+      },
+      "exercises": [
+        {
+          "id": "d016-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "father",
+            "That",
+            "is",
+            "my"
+          ],
+          "answer": "That is my father",
+          "accept": [
+            "Is that my father"
+          ]
+        },
+        {
+          "id": "d016-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "My mother and my father are my ___.",
+          "answer": [
+            "parents"
+          ]
+        },
+        {
+          "id": "d016-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "นั่นคือพี่ชายของฉัน",
+          "accept": [
+            "That is my brother"
+          ]
+        },
+        {
+          "id": "d016-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-mother"
+            },
+            {
+              "vocabId": "v-father"
+            },
+            {
+              "vocabId": "v-brother"
+            },
+            {
+              "vocabId": "v-parent"
+            },
+            {
+              "vocabId": "v-with"
+            },
+            {
+              "vocabId": "v-fifteen"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

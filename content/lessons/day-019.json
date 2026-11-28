@@ -1,0 +1,329 @@
+{
+  "day": 19,
+  "phase": 1,
+  "week": 3,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "How many? Where do they live? /v/ and /w/",
+    "th": "How many? พวกเขาอาศัยอยู่ที่ไหน? เสียง /v/ และ /w/"
+  },
+  "objectives": [
+    {
+      "en": "Ask and answer 'How many…?' about people in a family",
+      "th": "ถามและตอบ 'How many…?' เกี่ยวกับจำนวนคนในครอบครัวได้"
+    },
+    {
+      "en": "Tell /v/ and /w/ apart (vet – wet, viper – wiper)",
+      "th": "แยกเสียง /v/ กับ /w/ ได้ (vet กับ wet, viper กับ wiper)"
+    },
+    {
+      "en": "Say where family members live and say number 19",
+      "th": "บอกว่าคนในครอบครัวอาศัยอยู่ที่ไหน และพูดเลข 19 ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-uncle",
+    "v-aunt",
+    "v-nineteen",
+    "v-many",
+    "v-small",
+    "v-young",
+    "v-live"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "/w/ and /v/",
+        "th": "เสียง /w/ และ /v/"
+      },
+      "exercises": [
+        {
+          "id": "d019-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "w",
+          "ipa": "/w/",
+          "tipTh": "ห่อปากกลมเหมือนเสียง 'ว' ในภาษาไทย (แหวน, ว่าว) โดยฟันไม่แตะริมฝีปาก แล้วคลายปากออกไปหาสระ เสียงนี้คนไทยออกได้ดีอยู่แล้ว ปัญหาคือใช้ 'ว' แทน /v/ ด้วย จึงทำให้ vet (สัตวแพทย์) ฟังเป็น wet (เปียก) วันนี้ให้เทียบสองเสียงคู่กัน: /w/ ปากห่อ ฟันไม่แตะ ส่วน /v/ ฟันบนแตะริมล่าง และสั่นคอ",
+          "examples": [
+            "we",
+            "where",
+            "wife",
+            "window"
+          ]
+        },
+        {
+          "id": "d019-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "vet",
+              "b": "wet",
+              "answer": "b"
+            },
+            {
+              "a": "worse",
+              "b": "verse",
+              "answer": "b"
+            },
+            {
+              "a": "viper",
+              "b": "wiper",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "v",
+            "w"
+          ]
+        },
+        {
+          "id": "d019-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม แยก /w/ ใน we กับ /v/ ใน live และ very ให้ชัด"
+          },
+          "text": "We live in a very small house.",
+          "ipa": "/wiː lɪv ɪn ə ˈveri smɔːl haʊs/",
+          "phonemes": [
+            "v",
+            "w"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: where they live",
+        "th": "ฟัง: พวกเขาอาศัยอยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d019-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลุงกับป้าอาศัยอยู่ที่ไหน"
+          },
+          "audioText": "I live in Bangkok. It is a big city. My uncle and aunt live in Chiang Mai.",
+          "question": {
+            "en": "Where do his uncle and aunt live?",
+            "th": "ลุงกับป้าของเขาอาศัยอยู่ที่ไหน"
+          },
+          "choices": [
+            "Bangkok",
+            "Chiang Mai",
+            "England"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d019-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลูกสาวอายุเท่าไร"
+          },
+          "audioText": "I have three children, two sons and a daughter. My daughter is nineteen. My sons are very young.",
+          "question": {
+            "en": "How old is the daughter?",
+            "th": "ลูกสาวอายุเท่าไร"
+          },
+          "choices": [
+            "Eighteen",
+            "Nineteen",
+            "Twenty"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d019-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "My uncle and aunt live in a small house."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "How many people?",
+        "th": "กี่คน?"
+      },
+      "exercises": [
+        {
+          "id": "d019-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "How many children do you have?",
+            "I have two children.",
+            "My aunt is young.",
+            "My uncle and aunt live in Bangkok.",
+            "We live in a small house."
+          ]
+        },
+        {
+          "id": "d019-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบตามจริงหรือแต่งเรื่องก็ได้ บอกว่าคุณอาศัยอยู่ที่ไหนและมีกี่คนอยู่ด้วยกัน"
+          },
+          "prompt": "Where do you live? How many people live in your house?",
+          "sampleAnswer": "I live in Bangkok. Four people live in my house.",
+          "keywords": [
+            "live"
+          ]
+        },
+        {
+          "id": "d019-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /v/ ใน live (ฟันบนแตะริมล่าง ไม่ใช่ 'ลิฟ' หรือ 'ลิว')"
+          },
+          "text": "How many people live in your house?",
+          "ipa": "/haʊ ˈmeni ˈpiːpl lɪv ɪn jɔːr haʊs/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Ann's family",
+        "th": "ครอบครัวของแอน"
+      },
+      "exercises": [
+        {
+          "id": "d019-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Mai. I am nineteen. I live in Bangkok with my family. We live in a small house. I have a mother, a father and a brother. My brother is very young. He is eleven. My uncle and aunt live in Chiang Mai. Their house is big. They have many friends.",
+          "questions": [
+            {
+              "question": {
+                "en": "How old is Mai?",
+                "th": "ไหมอายุเท่าไร"
+              },
+              "choices": [
+                "Eleven",
+                "Nineteen"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "How old is her brother?",
+                "th": "น้องชายของเธออายุเท่าไร"
+              },
+              "choices": [
+                "Eleven",
+                "Nineteen"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where do her uncle and aunt live?",
+                "th": "ลุงกับป้าของเธออาศัยอยู่ที่ไหน"
+              },
+              "choices": [
+                "Bangkok",
+                "Chiang Mai"
+              ],
+              "answer": 1
+            }
+          ],
+          "glossary": {
+            "their": "ของพวกเขา"
+          }
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: how many, live",
+        "th": "เขียน: how many, live"
+      },
+      "exercises": [
+        {
+          "id": "d019-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "live",
+            "We",
+            "in",
+            "a",
+            "small",
+            "house"
+          ],
+          "answer": "We live in a small house"
+        },
+        {
+          "id": "d019-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "How ___ people are in your family?",
+          "answer": [
+            "many"
+          ]
+        },
+        {
+          "id": "d019-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลุงกับป้าของฉันอาศัยอยู่ที่กรุงเทพฯ",
+          "accept": [
+            "My uncle and aunt live in Bangkok"
+          ]
+        },
+        {
+          "id": "d019-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-uncle"
+            },
+            {
+              "vocabId": "v-aunt"
+            },
+            {
+              "vocabId": "v-many"
+            },
+            {
+              "vocabId": "v-small"
+            },
+            {
+              "vocabId": "v-young"
+            },
+            {
+              "vocabId": "v-live"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1727,5 +1727,1316 @@
     "examples": [{"en": "The box is hot.", "th": "กล่องร้อน"}],
     "collocations": ["a big box"],
     "forms": {"plural": "boxes"}
+  },
+  {
+    "id": "v-family",
+    "word": "family",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈfæməli/",
+      "uk": "/ˈfæməli/"
+    },
+    "th": "ครอบครัว",
+    "topics": [
+      "people_family",
+      "home"
+    ],
+    "examples": [
+      {
+        "en": "This is my family.",
+        "th": "นี่คือครอบครัวของฉัน"
+      },
+      {
+        "en": "We are a happy family.",
+        "th": "พวกเราเป็นครอบครัวที่มีความสุข"
+      }
+    ],
+    "collocations": [
+      "a big family",
+      "a happy family"
+    ],
+    "forms": {
+      "plural": "families"
+    }
+  },
+  {
+    "id": "v-sister",
+    "word": "sister",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈsɪstər/",
+      "uk": "/ˈsɪstə/"
+    },
+    "th": "พี่สาว, น้องสาว",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "I have a sister.",
+        "th": "ฉันมีพี่สาว (หรือน้องสาว) หนึ่งคน"
+      },
+      {
+        "en": "My sister is a teacher.",
+        "th": "พี่สาว (น้องสาว) ของฉันเป็นครู"
+      }
+    ],
+    "collocations": [
+      "my sister",
+      "big sister"
+    ],
+    "forms": {
+      "plural": "sisters"
+    }
+  },
+  {
+    "id": "v-husband",
+    "word": "husband",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈhʌzbənd/",
+      "uk": "/ˈhʌzbənd/"
+    },
+    "th": "สามี",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "Ben is my husband.",
+        "th": "เบนเป็นสามีของฉัน"
+      },
+      {
+        "en": "Her husband is a doctor.",
+        "th": "สามีของเธอเป็นหมอ"
+      }
+    ],
+    "collocations": [
+      "my husband",
+      "a good husband"
+    ],
+    "forms": {
+      "plural": "husbands"
+    }
+  },
+  {
+    "id": "v-wife",
+    "word": "wife",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/waɪf/",
+      "uk": "/waɪf/"
+    },
+    "th": "ภรรยา",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "Ann is my wife.",
+        "th": "แอนเป็นภรรยาของฉัน"
+      },
+      {
+        "en": "His wife is a teacher.",
+        "th": "ภรรยาของเขาเป็นครู"
+      }
+    ],
+    "collocations": [
+      "my wife",
+      "a good wife"
+    ],
+    "forms": {
+      "plural": "wives"
+    }
+  },
+  {
+    "id": "v-birthday",
+    "word": "birthday",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈbɜːrθdeɪ/",
+      "uk": "/ˈbɜːθdeɪ/"
+    },
+    "th": "วันเกิด",
+    "topics": [
+      "time_dates",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "It is my birthday.",
+        "th": "วันนี้เป็นวันเกิดของฉัน"
+      },
+      {
+        "en": "Happy birthday, Mai!",
+        "th": "สุขสันต์วันเกิดนะ ไหม"
+      }
+    ],
+    "collocations": [
+      "Happy birthday!"
+    ],
+    "forms": {
+      "plural": "birthdays"
+    }
+  },
+  {
+    "id": "v-eleven",
+    "word": "eleven",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ɪˈlevn/",
+      "uk": "/ɪˈlevn/"
+    },
+    "th": "สิบเอ็ด (11)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My sister is eleven.",
+        "th": "น้องสาวของฉันอายุสิบเอ็ด"
+      },
+      {
+        "en": "Ten, eleven, twelve!",
+        "th": "สิบ สิบเอ็ด สิบสอง!"
+      }
+    ]
+  },
+  {
+    "id": "v-twelve",
+    "word": "twelve",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/twelv/",
+      "uk": "/twelv/"
+    },
+    "th": "สิบสอง (12)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My friend is twelve.",
+        "th": "เพื่อนของฉันอายุสิบสอง"
+      },
+      {
+        "en": "Eleven, twelve, thirteen!",
+        "th": "สิบเอ็ด สิบสอง สิบสาม!"
+      }
+    ]
+  },
+  {
+    "id": "v-thirteen",
+    "word": "thirteen",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˌθɜːrˈtiːn/",
+      "uk": "/ˌθɜːˈtiːn/"
+    },
+    "th": "สิบสาม (13)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "She is thirteen.",
+        "th": "เธออายุสิบสาม"
+      },
+      {
+        "en": "The pen is thirteen baht.",
+        "th": "ปากกาด้ามนี้ราคาสิบสามบาท"
+      }
+    ]
+  },
+  {
+    "id": "v-this",
+    "word": "this",
+    "pos": "determiner",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ðɪs/",
+      "uk": "/ðɪs/"
+    },
+    "th": "นี่, นี้ (ใกล้)",
+    "topics": [
+      "function_words"
+    ],
+    "examples": [
+      {
+        "en": "This is my sister.",
+        "th": "นี่คือพี่สาว (น้องสาว) ของฉัน"
+      },
+      {
+        "en": "Is this your book?",
+        "th": "นี่คือหนังสือของคุณหรือเปล่า"
+      }
+    ],
+    "collocations": [
+      "this is",
+      "this one"
+    ]
+  },
+  {
+    "id": "v-mother",
+    "word": "mother",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈmʌðər/",
+      "uk": "/ˈmʌðə/"
+    },
+    "th": "แม่",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "This is my mother.",
+        "th": "นี่คือแม่ของฉัน"
+      },
+      {
+        "en": "My mother is a teacher.",
+        "th": "แม่ของฉันเป็นครู"
+      }
+    ],
+    "collocations": [
+      "my mother",
+      "a good mother"
+    ],
+    "forms": {
+      "plural": "mothers"
+    }
+  },
+  {
+    "id": "v-father",
+    "word": "father",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈfɑːðər/",
+      "uk": "/ˈfɑːðə/"
+    },
+    "th": "พ่อ",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "That is my father.",
+        "th": "นั่นคือพ่อของฉัน"
+      },
+      {
+        "en": "My father is a doctor.",
+        "th": "พ่อของฉันเป็นหมอ"
+      }
+    ],
+    "collocations": [
+      "my father",
+      "a good father"
+    ],
+    "forms": {
+      "plural": "fathers"
+    }
+  },
+  {
+    "id": "v-brother",
+    "word": "brother",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈbrʌðər/",
+      "uk": "/ˈbrʌðə/"
+    },
+    "th": "พี่ชาย, น้องชาย",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "He is my brother.",
+        "th": "เขาเป็นพี่ชาย (หรือน้องชาย) ของฉัน"
+      },
+      {
+        "en": "My brother is a student.",
+        "th": "พี่ชาย (น้องชาย) ของฉันเป็นนักเรียน"
+      }
+    ],
+    "collocations": [
+      "my brother",
+      "big brother"
+    ],
+    "forms": {
+      "plural": "brothers"
+    }
+  },
+  {
+    "id": "v-parent",
+    "word": "parent",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈperənt/",
+      "uk": "/ˈpeərənt/"
+    },
+    "th": "พ่อหรือแม่ (คนใดคนหนึ่ง)",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "A parent is a mother or a father.",
+        "th": "parent คือพ่อหรือแม่"
+      },
+      {
+        "en": "My parents are teachers.",
+        "th": "พ่อแม่ของฉันเป็นครู"
+      }
+    ],
+    "collocations": [
+      "my parents",
+      "a good parent"
+    ],
+    "forms": {
+      "plural": "parents"
+    }
+  },
+  {
+    "id": "v-with",
+    "word": "with",
+    "pos": "preposition",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/wɪð/",
+      "uk": "/wɪð/"
+    },
+    "th": "กับ (เช่น ไปกับ อยู่กับ)",
+    "topics": [
+      "function_words"
+    ],
+    "examples": [
+      {
+        "en": "I am with my friend.",
+        "th": "ฉันอยู่กับเพื่อน"
+      },
+      {
+        "en": "She is in the park with her mother.",
+        "th": "เธออยู่ในสวนสาธารณะกับแม่"
+      }
+    ],
+    "collocations": [
+      "with my family",
+      "with a friend"
+    ]
+  },
+  {
+    "id": "v-fourteen",
+    "word": "fourteen",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˌfɔːrˈtiːn/",
+      "uk": "/ˌfɔːˈtiːn/"
+    },
+    "th": "สิบสี่ (14)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My friend is fourteen.",
+        "th": "เพื่อนของฉันอายุสิบสี่"
+      },
+      {
+        "en": "The tea is fourteen baht.",
+        "th": "ชาแก้วนี้ราคาสิบสี่บาท"
+      }
+    ]
+  },
+  {
+    "id": "v-fifteen",
+    "word": "fifteen",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˌfɪfˈtiːn/",
+      "uk": "/ˌfɪfˈtiːn/"
+    },
+    "th": "สิบห้า (15)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "It is fifteen baht.",
+        "th": "ราคาสิบห้าบาท"
+      },
+      {
+        "en": "The boy is fifteen.",
+        "th": "เด็กผู้ชายคนนั้นอายุสิบห้า"
+      }
+    ]
+  },
+  {
+    "id": "v-that",
+    "word": "that",
+    "pos": "determiner",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ðæt/",
+      "uk": "/ðæt/"
+    },
+    "th": "นั่น, นั้น (ไกล)",
+    "topics": [
+      "function_words"
+    ],
+    "examples": [
+      {
+        "en": "That is my father.",
+        "th": "นั่นคือพ่อของฉัน"
+      },
+      {
+        "en": "Is that your brother?",
+        "th": "นั่นคือพี่ชาย (น้องชาย) ของคุณหรือเปล่า"
+      }
+    ],
+    "collocations": [
+      "that is",
+      "that one"
+    ]
+  },
+  {
+    "id": "v-son",
+    "word": "son",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/sʌn/",
+      "uk": "/sʌn/"
+    },
+    "th": "ลูกชาย",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "I have a son.",
+        "th": "ฉันมีลูกชายหนึ่งคน"
+      },
+      {
+        "en": "My son is a student.",
+        "th": "ลูกชายของฉันเป็นนักเรียน"
+      }
+    ],
+    "collocations": [
+      "my son",
+      "a good son"
+    ],
+    "forms": {
+      "plural": "sons"
+    }
+  },
+  {
+    "id": "v-daughter",
+    "word": "daughter",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈdɔːtər/",
+      "uk": "/ˈdɔːtə/"
+    },
+    "th": "ลูกสาว",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "She is my daughter.",
+        "th": "เธอเป็นลูกสาวของฉัน"
+      },
+      {
+        "en": "My daughter is a doctor.",
+        "th": "ลูกสาวของฉันเป็นหมอ"
+      }
+    ],
+    "collocations": [
+      "my daughter",
+      "a good daughter"
+    ],
+    "forms": {
+      "plural": "daughters"
+    }
+  },
+  {
+    "id": "v-child",
+    "word": "child",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/tʃaɪld/",
+      "uk": "/tʃaɪld/"
+    },
+    "th": "เด็ก, ลูก (ไม่ระบุเพศ)",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "The child is happy.",
+        "th": "เด็กคนนั้นมีความสุข"
+      },
+      {
+        "en": "I have two children.",
+        "th": "ฉันมีลูกสองคน"
+      }
+    ],
+    "collocations": [
+      "a happy child",
+      "two children"
+    ],
+    "forms": {
+      "plural": "children"
+    }
+  },
+  {
+    "id": "v-baby",
+    "word": "baby",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈbeɪbi/",
+      "uk": "/ˈbeɪbi/"
+    },
+    "th": "ทารก, เด็กอ่อน",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "The baby is in the car.",
+        "th": "ทารกอยู่ในรถ"
+      },
+      {
+        "en": "We have a baby girl.",
+        "th": "พวกเรามีลูกสาวตัวน้อย"
+      }
+    ],
+    "collocations": [
+      "a baby girl",
+      "a baby boy"
+    ],
+    "forms": {
+      "plural": "babies"
+    }
+  },
+  {
+    "id": "v-love",
+    "word": "love",
+    "pos": "verb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/lʌv/",
+      "uk": "/lʌv/"
+    },
+    "th": "รัก",
+    "topics": [
+      "feelings",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "I love my family.",
+        "th": "ฉันรักครอบครัวของฉัน"
+      },
+      {
+        "en": "We love our dog.",
+        "th": "พวกเรารักหมาของเรา"
+      }
+    ],
+    "collocations": [
+      "love my family",
+      "love you"
+    ],
+    "forms": {
+      "past": "loved",
+      "pastParticiple": "loved"
+    }
+  },
+  {
+    "id": "v-very",
+    "word": "very",
+    "pos": "adverb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈveri/",
+      "uk": "/ˈveri/"
+    },
+    "th": "มาก (วางหน้าคำคุณศัพท์)",
+    "topics": [
+      "function_words",
+      "feelings"
+    ],
+    "examples": [
+      {
+        "en": "I am very happy.",
+        "th": "ฉันมีความสุขมาก"
+      },
+      {
+        "en": "The park is very big.",
+        "th": "สวนสาธารณะแห่งนี้ใหญ่มาก"
+      }
+    ],
+    "collocations": [
+      "very good",
+      "very happy"
+    ]
+  },
+  {
+    "id": "v-sixteen",
+    "word": "sixteen",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˌsɪksˈtiːn/",
+      "uk": "/ˌsɪksˈtiːn/"
+    },
+    "th": "สิบหก (16)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My daughter is sixteen.",
+        "th": "ลูกสาวของฉันอายุสิบหก"
+      },
+      {
+        "en": "The pen is sixteen baht.",
+        "th": "ปากกาด้ามนี้ราคาสิบหกบาท"
+      }
+    ]
+  },
+  {
+    "id": "v-seventeen",
+    "word": "seventeen",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˌsevnˈtiːn/",
+      "uk": "/ˌsevnˈtiːn/"
+    },
+    "th": "สิบเจ็ด (17)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My son is seventeen.",
+        "th": "ลูกชายของฉันอายุสิบเจ็ด"
+      },
+      {
+        "en": "It is seventeen baht.",
+        "th": "ราคาสิบเจ็ดบาท"
+      }
+    ]
+  },
+  {
+    "id": "v-have",
+    "word": "have",
+    "pos": "verb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/hæv/",
+      "uk": "/hæv/"
+    },
+    "th": "มี",
+    "topics": [
+      "function_words",
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "I have a son.",
+        "th": "ฉันมีลูกชายหนึ่งคน"
+      },
+      {
+        "en": "We have two children.",
+        "th": "พวกเรามีลูกสองคน"
+      }
+    ],
+    "collocations": [
+      "have a son",
+      "have a family"
+    ],
+    "forms": {
+      "past": "had",
+      "pastParticiple": "had"
+    }
+  },
+  {
+    "id": "v-these",
+    "word": "these",
+    "pos": "determiner",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ðiːz/",
+      "uk": "/ðiːz/"
+    },
+    "th": "พวกนี้, เหล่านี้",
+    "topics": [
+      "function_words"
+    ],
+    "examples": [
+      {
+        "en": "These are my parents.",
+        "th": "นี่คือพ่อแม่ของฉัน"
+      },
+      {
+        "en": "These books are big.",
+        "th": "หนังสือเหล่านี้เล่มใหญ่"
+      }
+    ],
+    "collocations": [
+      "these people"
+    ]
+  },
+  {
+    "id": "v-those",
+    "word": "those",
+    "pos": "determiner",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ðoʊz/",
+      "uk": "/ðəʊz/"
+    },
+    "th": "พวกนั้น, เหล่านั้น",
+    "topics": [
+      "function_words"
+    ],
+    "examples": [
+      {
+        "en": "Those are my friends.",
+        "th": "นั่นคือเพื่อนของฉัน (หลายคน)"
+      },
+      {
+        "en": "Those cars are big.",
+        "th": "รถพวกนั้นคันใหญ่"
+      }
+    ],
+    "collocations": [
+      "those people"
+    ]
+  },
+  {
+    "id": "v-man",
+    "word": "man",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/mæn/",
+      "uk": "/mæn/"
+    },
+    "th": "ผู้ชาย (ผู้ใหญ่)",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "The man is a doctor.",
+        "th": "ผู้ชายคนนั้นเป็นหมอ"
+      },
+      {
+        "en": "That man is my father.",
+        "th": "ผู้ชายคนนั้นคือพ่อของฉัน"
+      }
+    ],
+    "collocations": [
+      "a nice man"
+    ],
+    "forms": {
+      "plural": "men"
+    }
+  },
+  {
+    "id": "v-woman",
+    "word": "woman",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈwʊmən/",
+      "uk": "/ˈwʊmən/"
+    },
+    "th": "ผู้หญิง (ผู้ใหญ่)",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "The woman is a teacher.",
+        "th": "ผู้หญิงคนนั้นเป็นครู"
+      },
+      {
+        "en": "That woman is my mother.",
+        "th": "ผู้หญิงคนนั้นคือแม่ของฉัน"
+      }
+    ],
+    "collocations": [
+      "a nice woman"
+    ],
+    "forms": {
+      "plural": "women"
+    }
+  },
+  {
+    "id": "v-people",
+    "word": "people",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈpiːpl/",
+      "uk": "/ˈpiːpl/"
+    },
+    "th": "ผู้คน, คนหลายคน",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "These people are my friends.",
+        "th": "คนเหล่านี้คือเพื่อนของฉัน"
+      },
+      {
+        "en": "The people in the park are happy.",
+        "th": "ผู้คนในสวนสาธารณะมีความสุข"
+      }
+    ],
+    "collocations": [
+      "nice people"
+    ]
+  },
+  {
+    "id": "v-grandmother",
+    "word": "grandmother",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈɡrænmʌðər/",
+      "uk": "/ˈɡrænmʌðə/"
+    },
+    "th": "ยาย, ย่า",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "My grandmother is very old.",
+        "th": "ยาย (ย่า) ของฉันอายุมากแล้ว"
+      },
+      {
+        "en": "I love my grandmother.",
+        "th": "ฉันรักยาย (ย่า) ของฉัน"
+      }
+    ],
+    "collocations": [
+      "my grandmother"
+    ],
+    "forms": {
+      "plural": "grandmothers"
+    }
+  },
+  {
+    "id": "v-grandfather",
+    "word": "grandfather",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈɡrænfɑːðər/",
+      "uk": "/ˈɡrænfɑːðə/"
+    },
+    "th": "ตา, ปู่",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "My grandfather is a doctor.",
+        "th": "ตา (ปู่) ของฉันเป็นหมอ"
+      },
+      {
+        "en": "I love my grandfather.",
+        "th": "ฉันรักตา (ปู่) ของฉัน"
+      }
+    ],
+    "collocations": [
+      "my grandfather"
+    ],
+    "forms": {
+      "plural": "grandfathers"
+    }
+  },
+  {
+    "id": "v-eighteen",
+    "word": "eighteen",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˌeɪˈtiːn/",
+      "uk": "/ˌeɪˈtiːn/"
+    },
+    "th": "สิบแปด (18)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "My brother is eighteen.",
+        "th": "พี่ชายของฉันอายุสิบแปด"
+      },
+      {
+        "en": "The cup is eighteen baht.",
+        "th": "ถ้วยใบนี้ราคาสิบแปดบาท"
+      }
+    ]
+  },
+  {
+    "id": "v-uncle",
+    "word": "uncle",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈʌŋkl/",
+      "uk": "/ˈʌŋkl/"
+    },
+    "th": "ลุง, น้าชาย, อาผู้ชาย",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "My uncle is a doctor.",
+        "th": "ลุง (น้าหรืออา) ของฉันเป็นหมอ"
+      },
+      {
+        "en": "My uncle and aunt are in Bangkok.",
+        "th": "ลุงกับป้าของฉันอยู่ที่กรุงเทพฯ"
+      }
+    ],
+    "collocations": [
+      "my uncle"
+    ],
+    "forms": {
+      "plural": "uncles"
+    }
+  },
+  {
+    "id": "v-aunt",
+    "word": "aunt",
+    "pos": "noun",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ænt/",
+      "uk": "/ɑːnt/"
+    },
+    "th": "ป้า, น้าสาว, อาผู้หญิง",
+    "topics": [
+      "people_family"
+    ],
+    "examples": [
+      {
+        "en": "My aunt is a teacher.",
+        "th": "ป้า (น้าหรืออา) ของฉันเป็นครู"
+      },
+      {
+        "en": "My aunt is very nice.",
+        "th": "ป้าของฉันใจดีมาก"
+      }
+    ],
+    "collocations": [
+      "my aunt"
+    ],
+    "forms": {
+      "plural": "aunts"
+    }
+  },
+  {
+    "id": "v-nineteen",
+    "word": "nineteen",
+    "pos": "number",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˌnaɪnˈtiːn/",
+      "uk": "/ˌnaɪnˈtiːn/"
+    },
+    "th": "สิบเก้า (19)",
+    "topics": [
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "She is nineteen.",
+        "th": "เธออายุสิบเก้า"
+      },
+      {
+        "en": "The tea is nineteen baht.",
+        "th": "ชาแก้วนี้ราคาสิบเก้าบาท"
+      }
+    ]
+  },
+  {
+    "id": "v-many",
+    "word": "many",
+    "pos": "determiner",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/ˈmeni/",
+      "uk": "/ˈmeni/"
+    },
+    "th": "หลาย, เยอะ (ใช้กับสิ่งที่นับได้)",
+    "topics": [
+      "function_words",
+      "numbers_money"
+    ],
+    "examples": [
+      {
+        "en": "How many children do you have?",
+        "th": "คุณมีลูกกี่คน"
+      },
+      {
+        "en": "I have many friends.",
+        "th": "ฉันมีเพื่อนหลายคน"
+      }
+    ],
+    "collocations": [
+      "how many",
+      "many people"
+    ]
+  },
+  {
+    "id": "v-small",
+    "word": "small",
+    "pos": "adjective",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/smɔːl/",
+      "uk": "/smɔːl/"
+    },
+    "th": "เล็ก",
+    "topics": [
+      "shopping",
+      "home"
+    ],
+    "examples": [
+      {
+        "en": "My house is small.",
+        "th": "บ้านของฉันเล็ก"
+      },
+      {
+        "en": "It is a small cup.",
+        "th": "มันเป็นถ้วยใบเล็ก"
+      }
+    ],
+    "collocations": [
+      "a small house",
+      "a small cup"
+    ],
+    "forms": {
+      "comparative": "smaller",
+      "superlative": "smallest"
+    }
+  },
+  {
+    "id": "v-young",
+    "word": "young",
+    "pos": "adjective",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/jʌŋ/",
+      "uk": "/jʌŋ/"
+    },
+    "th": "อายุน้อย, หนุ่มสาว",
+    "topics": [
+      "people_family",
+      "time_dates"
+    ],
+    "examples": [
+      {
+        "en": "My aunt is young.",
+        "th": "ป้าของฉันยังอายุน้อย"
+      },
+      {
+        "en": "The teacher is very young.",
+        "th": "ครูคนนี้อายุน้อยมาก"
+      }
+    ],
+    "collocations": [
+      "a young man",
+      "a young woman"
+    ],
+    "forms": {
+      "comparative": "younger",
+      "superlative": "youngest"
+    }
+  },
+  {
+    "id": "v-live",
+    "word": "live",
+    "pos": "verb",
+    "oxford": {
+      "list": "3000",
+      "level": "A1"
+    },
+    "ipa": {
+      "us": "/lɪv/",
+      "uk": "/lɪv/"
+    },
+    "th": "อาศัยอยู่",
+    "topics": [
+      "places_city",
+      "home"
+    ],
+    "examples": [
+      {
+        "en": "I live in Bangkok.",
+        "th": "ฉันอาศัยอยู่ในกรุงเทพฯ"
+      },
+      {
+        "en": "We live in a small house.",
+        "th": "พวกเราอยู่บ้านหลังเล็ก"
+      }
+    ],
+    "collocations": [
+      "live in Bangkok",
+      "live with my family"
+    ],
+    "forms": {
+      "past": "lived",
+      "pastParticiple": "lived"
+    }
   }
 ]
