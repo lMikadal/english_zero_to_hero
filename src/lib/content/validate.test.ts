@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import type { Exercise, Lesson, Topic, VocabItem } from "./schema";
+import type { LoadedCheckpoint } from "./loader";
 import { checkContent, formatProblem, summarize, type LoadedLesson, type LoadedVocab } from "./validate";
 
 const bi = { en: "Hello", th: "สวัสดี" };
@@ -339,5 +340,46 @@ describe("checkContent: stricter answer rules (S3, S6, S10)", () => {
   it("arrange_words: answer must be single-spaced", () => {
     const out = check({ type: "arrange_words", words: ["My", "name"], answer: "My  name" });
     expect(out.join("\n")).toContain("single");
+  });
+});
+
+describe("checkContent: checkpoints", () => {
+  const bank = [vocabOf([word("v-hello"), word("v-name"), word("v-cat")])];
+  const cp = (exercises: Exercise[], file = "content/checkpoints/checkpoint-030.json"): LoadedCheckpoint => ({
+    file, checkpoint: { afterDay: 30, cefr: "preA1", title: bi, estimatedMinutes: 30, sections: [{ skill: "listening", title: bi, weight: 100, reviewDays: [1], exercises }] },
+  });
+  const dict = (id: string): Exercise => ({ id, type: "dictation", instruction, audioText: "Hi." });
+  const run = (checkpoints: LoadedCheckpoint[], lessons = [lessonOf(1, { vocab: ["v-hello", "v-name", "v-cat"] })]) =>
+    checkContent({ lessons, vocab: bank, checkpoints }).map(formatProblem);
+
+  it("no checkpoints (field absent or empty): nothing changes", () => {
+    expect(run([])).toEqual([]);
+    expect(checkContent({ lessons: [lessonOf(1)], vocab: bank }).map(formatProblem)).toEqual([]);
+  });
+  it("a consistent checkpoint has no structural problems", () => {
+    expect(run([cp([dict("c030-listen-01")])])).toEqual([]);
+  });
+  it("flags a duplicate exercise id inside one checkpoint and across two files, naming the first file", () => {
+    const a = cp([dict("c030-listen-01"), dict("c030-listen-01")]);
+    expect(run([a])[0]).toMatch(/duplicate exercise id c030-listen-01 \(also in content\/checkpoints\/checkpoint-030\.json\)/);
+    const b = cp([dict("c030-listen-01")], "content/checkpoints/checkpoint-060.json");
+    expect(run([cp([dict("c030-listen-01")]), b]).join("\n")).toMatch(/checkpoint-060\.json \[c030-listen-01\]: duplicate exercise id/);
+  });
+  it("flags a c-id in a lesson file (checkpoint ids belong in checkpoint files)", () => {
+    const l = lessonOf(1, {}, [dict("c001-listen-01")]);
+    const out = text([l], bank);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatch(/\[c001-listen-01\].*lesson.*must start with d001-/);
+  });
+  it("does not report a lesson id that matches the day twice", () => {
+    expect(text([lessonOf(1)], bank)).toEqual([]);
+  });
+  it("applies the answer checks to checkpoint exercises (arrange_words must use exactly the tiles)", () => {
+    const bad: Exercise = { id: "c030-write-01", type: "arrange_words", instruction, words: ["a", "b"], answer: "a c" };
+    expect(run([cp([bad])]).join("\n")).toMatch(/checkpoint-030\.json \[c030-write-01\]: answer "a c" does not use exactly the given words/);
+  });
+  it("flags a vocab_match word that is not in the bank (words not yet taught are the rule's job, rules/checkpoint.ts)", () => {
+    const vm: Exercise = { id: "c030-vocab-01", type: "vocab_match", instruction, pairs: [{ vocabId: "v-cat" }, { vocabId: "v-nope" }] };
+    expect(run([cp([vm])]).join("\n")).toMatch(/checkpoint-030\.json \[c030-vocab-01\]: v-nope is not in the vocab bank/);
   });
 });

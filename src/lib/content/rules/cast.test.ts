@@ -4,6 +4,7 @@ import type { Exercise } from "../schema";
 import type { LoadedLesson } from "../loader";
 import { buildContext } from "./context";
 import { ageClaims, checkCast } from "./cast";
+import { cpOf } from "./checkpoint-test-support";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const read = (day: number, text: string, n = 1): Exercise => ({
@@ -90,5 +91,14 @@ describe("cast-consistency: one name, one age within a week (days 7k+1 .. 7k+7)"
     const out = checkCast(buildContext(data(ls, [vocabFile([item])])));
     expect(out).toHaveLength(1);
     expect(out[0].message).toContain("v-cat");
+  });
+});
+
+describe("checkCast does not look at checkpoints (they span weeks)", () => {
+  it("a checkpoint age that disagrees with a lesson of its week is not reported (the same two texts as lessons are)", () => {
+    const bank = [vocabFile([vocabItem({ id: "v-cat" })])];
+    expect(check(lessons([29, "Ann is nine."], [30, "Ann is twelve."]))).not.toEqual([]);
+    const cp = cpOf([{ ...read(30, "Ann is twelve."), id: "c030-read-01" }]);
+    expect(checkCast(buildContext({ ...data(lessons([29, "Ann is nine."]), bank), checkpoints: [cp] }))).toEqual([]);
   });
 });
