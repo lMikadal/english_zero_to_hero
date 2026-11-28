@@ -1,7 +1,7 @@
 import { AllowListError, createAllowList, type AllowList } from "./allowlist";
 import { DEFAULT_TRUSTED_PROXIES, FORWARDED_HEADER, PEER_HEADER, resolveClient } from "./client-ip";
 
-export type AccessEnv = { ALLOWED_IPS?: string; TRUSTED_PROXIES?: string };
+export type AccessEnv = Readonly<Record<string, string | undefined>>;
 export type Decision = { allowed: true } | { allowed: false; ip: string | null };
 
 const cache = new Map<string, AllowList>();

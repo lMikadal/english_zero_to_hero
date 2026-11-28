@@ -5,14 +5,15 @@ import path from "node:path";
 import { NextRequest } from "next/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { register } from "./instrumentation";
-import { config, proxy } from "./proxy";
+import * as proxyModule from "./proxy";
+import { proxy } from "./proxy";
 
 const req = (p: string, headers: Record<string, string> = {}, method = "GET") => new NextRequest(`http://localhost:3000${p}`, { method, headers });
 afterEach(() => vi.unstubAllEnvs());
 
 describe("proxy (the single enforcement point)", () => {
   it("has no matcher: it runs for pages, API routes, _next assets and public files alike", () => {
-    expect(config).toBeUndefined();
+    expect("config" in proxyModule).toBe(false);
     const src = readFileSync(path.join(__dirname, "proxy.ts"), "utf8");
     expect(src).not.toMatch(/matcher/);
   });
