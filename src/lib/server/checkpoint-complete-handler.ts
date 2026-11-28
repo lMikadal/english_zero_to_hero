@@ -1,12 +1,13 @@
 // POST /api/checkpoints/complete: ends a checkpoint sitting (docs/plans/checkpoint-plan.md 3.5). It freezes the score into
 // `checkpoint_results` and touches the streak; it never writes progress, profiles, attempts or the review cards. The eslint rule
 // no-restricted-imports bans those writers from every checkpoint-* file.
-import { getCheckpointResult, insertCheckpointResult, listCheckpointResults, sittingRows, type StoredCheckpointResult } from "@/db/queries/checkpoints";
+import { checkpointSavedAts, getCheckpointResult, insertCheckpointResult, listCheckpointResults, sittingRows, type StoredCheckpointResult } from "@/db/queries/checkpoints";
 import { getDayProgress } from "@/db/queries/practice";
 import { getProfile, touchStreak } from "@/db/queries/progress";
 import { withTransactionRetry } from "@/db/queries/tx";
-import { completeCheckpointRequestSchema, type CompleteCheckpointResponse } from "@/lib/attempts/contract";
+import { completeCheckpointRequestSchema, type CompleteCheckpointError, type CompleteCheckpointResponse } from "@/lib/attempts/contract";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
+import { sittingSavedToday } from "@/lib/checkpoints/retake";
 import { isCheckpointPass, scoreCheckpoint } from "@/lib/checkpoints/score";
 import type { Checkpoint } from "@/lib/content/checkpoint-schema";
 import { getCheckpoint, getLesson } from "@/lib/content/repo";
@@ -25,7 +26,8 @@ export async function handleCompleteCheckpoint(
   const parsed = completeCheckpointRequestSchema.safeParse(body);
   if (!parsed.success) return { status: 400, body: { error: "invalid_body" } };
   const { afterDay, sessionId, completedAt: clientCompletedAt } = parsed.data;
-  const notCompletable = { status: 409 as const, body: { error: "not_completable" } };
+  const conflict = (error: CompleteCheckpointError) => ({ status: 409 as const, body: { error } });
+  const notCompletable = conflict("not_completable");
 
   let file: Checkpoint | null = null;
   try {
@@ -37,7 +39,7 @@ export async function handleCompleteCheckpoint(
   const checkpoint = file;
   const exerciseIds = checkpoint.sections.flatMap((s) => s.exercises.map((e) => e.id));
 
-  const response = await withTransactionRetry(db, async (tx): Promise<CompleteCheckpointResponse | null> => {
+  const response = await withTransactionRetry(db, async (tx): Promise<CompleteCheckpointResponse | "retake_tomorrow" | null> => {
     // Lock order: profile (not locked), progress (not locked), checkpoint_results (unique id), then streaks (locked by
     // touchStreak). A lesson completion locks profile -> progress -> streaks, so the orders never form a cycle.
     const profile = await getProfile(tx, userId);
@@ -50,13 +52,20 @@ export async function handleCompleteCheckpoint(
     if (!stored) {
       const rows = await sittingRows(tx, userId, afterDay, sessionId, exerciseIds);
       if (rows.length === 0) return null; // an empty request must not unlock the next day
+      // D4: from the next local day only. The date is the day the server stores this sitting (its own clock, in the learner's
+      // current time zone) against the days it stored earlier sittings: a sitting begun before midnight and completed after it
+      // counts for the new day, and nothing the client claims (completedAt, createdAt) can move it. The same session id sent
+      // again was answered above, so a repeat of a stored sitting is never refused. The attempts stay stored, so the same
+      // session can be completed tomorrow.
+      const earlier = await checkpointSavedAts(tx, userId, afterDay, sessionId);
+      if (sittingSavedToday(earlier.map((r) => r.savedAt), now, tz)) return "retake_tomorrow";
       const { score, skills } = scoreCheckpoint(checkpoint, rows);
       const times = rows.map((r) => r.createdAt.getTime());
       const startedAt = new Date(Math.min(...times));
       const lastAttempt = new Date(Math.max(...times));
       const clamped = clampTimestamp(clientCompletedAt, now, timestampFloor(now, profile.startDate, tz));
       const completedAt = clamped < lastAttempt ? lastAttempt : clamped;
-      await insertCheckpointResult(tx, { id: sessionId, userId, afterDay, score, skills, startedAt, completedAt });
+      await insertCheckpointResult(tx, { id: sessionId, userId, afterDay, score, skills, startedAt, completedAt, createdAt: now });
       // false from the insert: someone finished the same sitting a moment ago (read theirs), or the id is another user's (undefined: refuse)
       stored = await getCheckpointResult(tx, userId, sessionId);
       if (!stored) return null;
@@ -91,6 +100,7 @@ export async function handleCompleteCheckpoint(
     };
   });
 
+  if (response === "retake_tomorrow") return conflict("retake_tomorrow");
   if (!response) return notCompletable;
   return { status: 200, body: response };
 }

@@ -531,7 +531,7 @@ describe("createHttpSink: completePractice", () => {
 
   it("409 settles rejected 409 and 400 settles rejected 400 (dropped from the queue)", async () => {
     const a = setup([{ status: 409, body: { error: "not_replayable" } }]);
-    expect(await a.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 409 });
+    expect(await a.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 409, error: "not_replayable" });
     expect(a.sink.pendingCount()).toBe(0);
     const b = setup([{ status: 400 }]);
     expect(await b.sink.completePractice(practiceReq)).toEqual({ status: "rejected", code: 400 });

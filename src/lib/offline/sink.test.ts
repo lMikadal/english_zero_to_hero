@@ -39,7 +39,7 @@ it("CompleteResult is done | queued | rejected(400|409)", () => {
   expectTypeOf<CompleteResult>().toEqualTypeOf<
     | { status: "done"; response: CompleteLessonResponse }
     | { status: "queued" }
-    | { status: "rejected"; code: 400 | 409 }
+    | { status: "rejected"; code: 400 | 409; error?: string }
   >();
 });
 
@@ -47,6 +47,6 @@ it("CompleteResult is generic over the response and defaults to the lesson one",
   expectTypeOf<CompleteResult<CompletePracticeResponse>>().toEqualTypeOf<
     | { status: "done"; response: CompletePracticeResponse }
     | { status: "queued" }
-    | { status: "rejected"; code: 400 | 409 }
+    | { status: "rejected"; code: 400 | 409; error?: string }
   >();
 });
