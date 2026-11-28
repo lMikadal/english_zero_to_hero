@@ -312,7 +312,8 @@ PR 1 ──► PR 2 ──► PR 3 ──┐
 - เอกสาร: ARCHITECTURE §4 (ตาราง, ค่าของ source), §5.1 (endpoint, กติกา `c…`, การล็อก); PROGRESS §1 (`checkpoint_retake`), §3 (ไม่นับ), §5 (สตรีค)
 - ตรวจกับของจริง (วางไฟล์ร่างของ PR 7 ชั่วคราว; ฐานข้อมูล dev ใหม่): จบวัน 1–30 ด้วย `POST /api/lessons/complete` ทีละวัน → คำตอบของวัน 30 มี `"pendingCheckpoint":30`; จบวัน 31 → 409 `locked_day`; POST attempt `c030-listen-01` → `created`; `POST /api/checkpoints/complete` → 200 มี `result.score`, `skills` 5 แถว, `nextDay: 31`; เรียกซ้ำผลเดิม; `select after_day, score from checkpoint_results` 1 แถว; `select source, count(*) from attempts where exercise_id like 'c030%' group by 1`; จบวัน 31 ได้ 200; `select day, score, completed_at from progress where day = 30` ไม่เปลี่ยนก่อน/หลัง
 
-### PR 3b `feat/checkpoint-cefr` (backend-dev, คู่ขนาน)
+### PR 3b `feat/checkpoint-cefr` (backend-dev, คู่ขนาน) — [x] ทำแล้ว 2026-11-28 (รอ merge)
+บันทึก: `estimateCefr(knownWords, progress, checkpoints)` ไม่มีผู้เรียกอื่นนอกเทสต์ (ยังไม่มีหน้าจอใช้) จึงไม่ต้องอ่าน DB เพิ่ม; `percentToNext` สูงสุด 99 ถ้ายังไม่ผ่านแบบทดสอบของระดับถัดไป (วัน D นับเป็นบทปกติรวมในความคืบหน้าบทเรียน); ผ่าน = `isCheckpointPass` (ใช้ร่วมกับหน้าผล) ส่วน `listCheckpointResults` ของ PR 2 ส่งเข้าฟังก์ชันได้ตรงๆ
 สัญญา: แถว CEFR ของข้อ 3.8; เพิ่ม `CheckpointResultLike = { afterDay: number; score: number }` ใน `src/lib/progress/types.ts`
 - เทสต์ก่อน (`cefr.test.ts`): วัน 60 done คะแนนบท 100% แต่ไม่มีผลแบบทดสอบ → ยัง preA1; ผล 0.7 + 400 คำ → A1; สองรอบ (0.5 แล้ว 0.8) → ผ่าน; ครบทุกอย่างยกเว้นแบบทดสอบ → `percentToNext` 99
 - ตรวจ: `make test-unit` (ไม่มีหน้าจอใช้สูตรนี้ จึงไม่มีอะไรให้ดูในแอป เขียนไว้ใน PR)
