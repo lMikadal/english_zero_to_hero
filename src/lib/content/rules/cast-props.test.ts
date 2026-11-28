@@ -4,6 +4,8 @@ import type { Exercise } from "../schema";
 import type { LoadedLesson } from "../loader";
 import { COLOUR_WORDS, checkCastProps, propClaims } from "./cast-props";
 import { buildContext } from "./context";
+import path from "node:path";
+import { readContent } from "../loader";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const claims = (t: string) => propClaims(t).map((c) => [c.owner, c.noun, c.colour]);
@@ -61,5 +63,13 @@ describe("cast-props: one owner, one noun, one colour within a week", () => {
 describe("COLOUR_WORDS", () => {
   it("is the closed list of colour words (spellings folded), all of them vocab-bank words except the US spelling", () => {
     expect(COLOUR_WORDS).toEqual(expect.arrayContaining(["red", "blue", "green", "yellow", "black", "white", "brown", "orange", "pink", "grey"]));
+  });
+});
+
+describe("COLOUR_WORDS and the real vocab bank", () => {
+  it("every colour word except the US spelling is an entry of the bank", () => {
+    const { vocab } = readContent(path.resolve(import.meta.dirname, "../../../../content"));
+    const heads = new Set(vocab.flatMap(({ items }) => items.map((i) => i.word.toLowerCase())));
+    expect(COLOUR_WORDS.filter((c) => c !== "gray" && !heads.has(c))).toEqual([]);
   });
 });

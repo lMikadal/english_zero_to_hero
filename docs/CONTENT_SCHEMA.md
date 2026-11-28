@@ -111,6 +111,17 @@ ERROR content/lessons/day-009.json [d009-speak-02]: uses words not taught by day
 ERROR content/vocab/oxford-3000/a1.json [v-fine]: examples[1] "My dog is fine." uses words not taught by day 2 (the day v-fine is first taught): "dog". ...
 ```
 
+### `cast-props` (warning): ของของตัวละครมีสีเดียวตลอดสัปดาห์
+ภายในสัปดาห์เดียวกัน เจ้าของคนเดียวกัน + สิ่งของเดียวกันต้องมีสีเดียวกัน ถ้าพบสองสี **เตือน (warning)** ระบุทั้งสองตำแหน่ง (ใช้ warning เพราะตัวละครซื้อของใหม่ได้ เช่น แนนซื้อกระเป๋าสีชมพูวัน 26) สีมาจากรายการปิด `COLOUR_WORDS` (คำสีในคลังคำ; `grey`=`gray`) รูปที่อ่านได้แน่:
+- `Nan's umbrella is orange` · `Nan has a green umbrella` (รวมรายการ `a red bag, a blue pen and an orange umbrella`)
+- `I am Nan. I have a green umbrella` / `My bag is brown` / `My pink bag is new` เมื่อข้อความมีผู้พูดชื่อเดียว (`I am Nan`) หรือใช้ป้ายบทสนทนา `Nan: My bag is pink.`
+
+**ตรวจไม่ได้:** `I have an umbrella. It is orange.`, `Her/His bag is brown` (ต้องอ้างถึงสรรพนาม), นามพหูพจน์ที่ไม่มีเจ้าของ (`The chairs are white`), นามที่มี adjective คั่น (`Nan's big bag is red`), ของของ `we`
+
+```
+WARN content/lessons/day-028.json [d028-read-01]: "Nan"'s umbrella has two colours in days 22-28: orange in content/lessons/day-023.json [d023-read-01] text ("Nan's umbrella is orange") but green in content/lessons/day-028.json [d028-read-01] text ("I have a green umbrella"). Within one week a character's thing keeps its colour: change one of them (or use another noun or name if these are different things).
+```
+
 ### `grammar-not-yet`: รูปคำที่ต้องใช้ไวยากรณ์ที่ยังไม่สอน
 `taught-words` ถือว่ารูปผันเป็นคำเดียวกับคำที่สอน (`lives` = `live`) ซึ่งถูกสำหรับคำถามว่า "ผู้เรียนเคยเจอคำนี้หรือยัง" แต่ไม่รู้ว่า `He lives ...` ต้องใช้ -s บุรุษที่สามของ Present Simple ที่หลักสูตรสอนสัปดาห์ 6 (วัน 36–42) จึงแยกเป็นกฎของตัวเอง (เป็นประตูไวยากรณ์ "รูปนี้ใช้ได้ตั้งแต่วันไหน" พร้อมคำแนะนำของตัวเอง ไม่ปนกับเรื่องคำศัพท์) ตารางอยู่ที่ `GRAMMAR_NOT_BEFORE` ใน `src/lib/content/rules/grammar-not-yet.ts` (รูป → วันแรกที่ใช้ได้ ตาม `docs/CURRICULUM.md` หัวข้อ 4):
 - `has` ไม่ก่อนวัน 29 (สัปดาห์ 5 have/has); `does`, `goes` ไม่ก่อนวัน 36
