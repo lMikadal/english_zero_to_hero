@@ -61,6 +61,7 @@ e2e-down: ## Remove the E2E stack AND its volume (only ever the project ezh_e2e)
 	@rm -f backups-e2e/*.dump backups-e2e/*.partial; rmdir backups-e2e 2>/dev/null || true
 
 e2e: e2e-init ## Playwright E2E at 360px against a production build, in a throwaway stack (see above)
+	mkdir -p e2e-artifacts
 	$(COMPOSE) run --rm --no-deps app true
 	-@$(MAKE) --no-print-directory e2e-down
 	@if [ '$(E2E_BUILD)' = 1 ]; then $(E2E_PROD) prod-build; fi

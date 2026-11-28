@@ -12,6 +12,7 @@ backups/
 data/
 playwright-report/
 test-results/
+e2e-artifacts/
 *.tsbuildinfo
 next-env.d.ts
 .claude/worktrees/
