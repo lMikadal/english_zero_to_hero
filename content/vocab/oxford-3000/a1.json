@@ -5275,7 +5275,7 @@
     "ipa": { "us": "/ˈaʊər/", "uk": "/ˈaʊə/" },
     "th": "ชั่วโมง",
     "topics": ["time_dates"],
-    "examples": [{ "en": "The train takes one hour.", "th": "รถไฟใช้เวลาหนึ่งชั่วโมง" }, { "en": "One hour is a long time.", "th": "หนึ่งชั่วโมงเป็นเวลาที่นาน" }],
+    "examples": [{ "en": "The train takes an hour.", "th": "รถไฟใช้เวลาหนึ่งชั่วโมง" }, { "en": "One hour is a long time.", "th": "หนึ่งชั่วโมงเป็นเวลาที่นาน" }],
     "collocations": ["one hour"],
     "forms": { "plural": "hours" }
   },
@@ -5344,7 +5344,7 @@
     "ipa": { "us": "/təˈmɑːroʊ/", "uk": "/təˈmɒrəʊ/" },
     "th": "พรุ่งนี้",
     "topics": ["time_dates"],
-    "examples": [{ "en": "Tomorrow I wake up early.", "th": "พรุ่งนี้ฉันตื่นเช้า" }, { "en": "I am free tomorrow.", "th": "พรุ่งนี้ฉันว่าง" }],
+    "examples": [{ "en": "Tomorrow is a good day.", "th": "พรุ่งนี้เป็นวันที่ดี" }, { "en": "I am free tomorrow.", "th": "พรุ่งนี้ฉันว่าง" }],
     "collocations": ["see you tomorrow"]
   },
   {
@@ -5691,7 +5691,7 @@
     "ipa": { "us": "/plæn/", "uk": "/plæn/" },
     "th": "แผน, แผนการ",
     "topics": ["work_study"],
-    "examples": [{ "en": "Do you have a plan?", "th": "คุณมีแผนไหม" }, { "en": "My plan is a film on Saturday.", "th": "แผนของฉันคือดูหนังวันเสาร์" }],
+    "examples": [{ "en": "Do you have a plan?", "th": "คุณมีแผนไหม" }, { "en": "We have a plan.", "th": "พวกเรามีแผน" }],
     "collocations": ["a plan for the weekend"],
     "forms": { "plural": "plans" }
   },
@@ -5715,7 +5715,7 @@
     "ipa": { "us": "/ɪɡˈzæm/", "uk": "/ɪɡˈzæm/" },
     "th": "การสอบ, ข้อสอบ",
     "topics": ["work_study"],
-    "examples": [{ "en": "Leo has an exam on Friday.", "th": "ลีโอมีสอบวันศุกร์" }, { "en": "The exam is today.", "th": "การสอบคือวันนี้" }],
+    "examples": [{ "en": "Leo has an exam on Friday.", "th": "ลีโอมีสอบวันศุกร์" }, { "en": "The exam is today.", "th": "สอบวันนี้" }],
     "collocations": ["have an exam"],
     "forms": { "plural": "exams" }
   },
@@ -5763,7 +5763,7 @@
     "ipa": { "us": "/ˈɑːfɪs/", "uk": "/ˈɒfɪs/" },
     "th": "ที่ทำงาน, สำนักงาน",
     "topics": ["work_study", "places_city"],
-    "examples": [{ "en": "Dan is in the office.", "th": "แดนอยู่ที่ที่ทำงาน" }, { "en": "The office is near the bank.", "th": "ที่ทำงานอยู่ใกล้ธนาคาร" }],
+    "examples": [{ "en": "Dan is in the office.", "th": "แดนอยู่ที่ออฟฟิศ" }, { "en": "The office is near the bank.", "th": "ที่ทำงานอยู่ใกล้ธนาคาร" }],
     "collocations": ["in the office"],
     "forms": { "plural": "offices" }
   },
