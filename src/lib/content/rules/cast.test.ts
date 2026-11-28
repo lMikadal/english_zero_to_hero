@@ -33,6 +33,14 @@ describe("ageClaims", () => {
     expect(ageClaims("It is a pen. She is nine.")).toEqual([]);
     expect(ageClaims("This is my friend, Ann. She is happy.")).toEqual([]);
   });
+  it("strips dialogue speaker labels, so 'Mai: This is the boy, Tom. He is ten.' reads Tom (not two names)", () => {
+    expect(ageClaims("Mai: This is the boy, Tom. He is ten.").map((c) => [c.name, c.age])).toEqual([["Tom", 10]]);
+    expect(ageClaims("Mai: Hi!\nBen: Hello, Mai.\nMai: This is my friend, Ann. She is nine.").map((c) => [c.name, c.age])).toEqual([["Ann", 9]]);
+  });
+  it("a labelled line's 'I am N' belongs to its speaker", () => {
+    expect(ageClaims("Ben: Are you twenty?\nAnn: No, I am not. I am thirty.").map((c) => [c.name, c.age])).toEqual([["Ann", 30]]);
+    expect(ageClaims("Mai: I am a teacher. I'm 25.\nBen: I am a doctor. I am thirty.").map((c) => [c.name, c.age])).toEqual([["Mai", 25], ["Ben", 30]]);
+  });
   it("skips a first-person age when two different speakers introduce themselves in the text", () => {
     expect(ageClaims("I am Ann. I am ten. I am Ben. I am eleven.")).toEqual([]);
   });
