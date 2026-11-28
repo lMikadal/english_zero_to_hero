@@ -76,6 +76,17 @@ export const PLACE_NAMES: readonly string[] = ["Thailand", "Bangkok", "England",
  */
 export const THAI_NAME_IS_A_WORD: readonly string[] = ["Mai", "Nok", "Lek", "Fon"];
 
+/**
+ * Everyday Thai words (and particles) that stand where a name can stand and are one edit from a name (แดง "red" ~ แดน, เจ็ด "seven" ~ เจน,
+ * จริง "true" ~ จิม ...). Rule "thai-names" never reports one of these as a misspelled name; it also never reports a word that
+ * occurs in the Thai of the vocab bank. Add a word here when the rule reports a real word, never to hide a misspelled name.
+ */
+export const COMMON_THAI_WORDS: readonly string[] = [
+  "แดง", "แดด", "ดิน", "แปด", "เจ็ด", "เป็น", "จริง", "เคย", "เทา", "แม่", "ทอง", "เรียน", "แอบ", "แซง", "โรง", "มาลัย", "เบาะ", "จิ้ม",
+  "เบา", "เน้น", "เช่น", "เติม", "แทน", "แหวน", "เล่น", "เห็น", "เย็น", "เว้น", "เดิน", "เด็ก", "เจอ", "เพิ่ม", "เกิน", "เกม", "แจก", "แจ้ง", "แถม", "แก่", "แต่ง",
+  "ทอด", "นอน", "นัก", "นั่ง", "พิมพ์", "พิเศษ", "ลีลา", "ลิง", "ลิ้น", "โรค", "มาก", "มาด", "มารยาท", "จิตใจ",
+];
+
 /** Every single letter is allowed: the alphabet and spelling exercises (B, U, S). */
 export const LETTERS: readonly string[] = "abcdefghijklmnopqrstuvwxyz".split("");
 

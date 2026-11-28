@@ -15,6 +15,8 @@ describe("thaiNameMismatches: a near-miss of a listed Thai spelling, found betwe
     expect(names("ลูกบอลของลีโอวอยู่ที่ไหน")).toEqual([["ลีโอว", "Leo"]]);
     expect(names("กระเป๋าของนันสีอะไร")).toEqual([["นัน", "Nan"]]);
     expect(names("นันอายุเท่าไร")).toEqual([["นัน", "Nan"]]);
+    expect(names("ตอบว่าเคธอยู่ที่ไหน", ["Leo", "Nan", "Ann", "Dan", "Pim", "Rose"], { ...forms, Kate: "เคท" })).toEqual([]);
+    expect(thaiNameMismatches("ตอบว่าเคธอยู่ที่ไหน", { Kate: "เคท" })).toEqual([{ found: "เคธ", name: "Kate" }]);
   });
   it("accepts the exact spelling, and a name followed by a word that starts like a letter of it (ลีโอ + อยู่)", () => {
     expect(names("ลูกบอลของลีโออยู่ที่ไหน")).toEqual([]);
@@ -32,7 +34,8 @@ describe("thaiNameMismatches: a near-miss of a listed Thai spelling, found betwe
     expect(names("ไม่ใช่ครับ ไหม")).toEqual([]);
   });
   it("an everyday word one edit from a name is not a name (เบา 'light' ~ เบน)", () => {
-    expect(names("ท้ายคำสั้นและเบา", ["Ben"], { Ben: "เบน" })).toEqual([]);
+    expect(thaiNameMismatches("ท้ายคำสั้นและเบา", { Ben: "เบน" }, { Ben: "เบน" }, (w) => w === "เบา")).toEqual([]);
+    expect(thaiNameMismatches("ท้ายคำสั้นและเบา", { Ben: "เบน" })).toEqual([{ found: "เบา", name: "Ben" }]);
   });
   it("names whose Thai spelling is an everyday word are not checked (ไหม the particle)", () => {
     expect(names("โรงเรียนใหญ่ไหม", ["Mai"])).toEqual([]);
@@ -47,11 +50,11 @@ const read = (th: string): Exercise => ({ id: exId(1, "read"), type: "read_passa
 const check = (ex: Exercise, table: Record<string, string> = { Leo: "ลีโอ" }, day = 1) => checkThaiNames(buildContext(data([lessonFile(day, [], [ex])], [vocabFile([vocabItem({ id: "v-cat" })])])), table);
 
 describe("thai-names: lesson check", () => {
-  it("errors on a mismatch, naming the file, exercise, both spellings and where to fix", () => {
+  it("warns on a mismatch (never an error), naming the file, exercise, both spellings and where to fix", () => {
     const out = check(read("ลูกบอลของลีโอวอยู่ที่ไหน"));
     expect(out.length).toBeGreaterThan(0);
     expect(out[0]).toMatchObject({ rule: "thai-names", file: "content/lessons/day-001.json", id: "d001-read-01" });
-    expect(out[0].severity).toBeUndefined();
+    expect(out[0].severity).toBe("warning");
     expect(out[0].message).toContain("ลีโอว");
     expect(out[0].message).toContain("ลีโอ");
     expect(out[0].message).toContain('"Leo"');

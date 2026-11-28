@@ -1,15 +1,17 @@
-// Rule "thai-names": one Thai spelling per character name. THAI_NAMES (allowlists.ts) lists the spelling of every person
-// of PROPER_NAMES. In a lesson whose English text contains a name, a Thai string that writes something one or two edits away
-// from that name's spelling (ลีโอว for ลีโอ, นัน for แนน) is a misspelling: ERROR. A person who appears in a lesson but has no
-// entry in THAI_NAMES is a WARNING that says what to add and where.
-// Thai has no spaces, so the check is deliberately conservative. A candidate must: sit between the start of the string or a
-// known particle on the left (ของ/กับ/และ/คือ/ว่า ...) and the end of the string or a known particle on the right (อายุ/อยู่/เป็น/สี ...); be 1-2 edits from the spelling, share
-// at least len-1 letters with it in order, and be neither the exact spelling nor the spelling of ANY listed name (แอน is
-// one edit from แนน). Names whose spelling is an everyday word (ไหม, นก, เล็ก, ฝน) are not checked for misspellings.
+// Rule "thai-names" (WARNING): one Thai spelling per character name. THAI_NAMES (allowlists.ts) lists the spelling of every person
+// of PROPER_NAMES. In a lesson whose English text contains a name, a Thai string that writes something ONE edit away (two for
+// spellings of 5+ letters) from that name's spelling (ลีโอว for ลีโอ, นัน for แนน, เคธ for เคท) may be a misspelling. A person who
+// appears in a lesson but has no entry in THAI_NAMES also gets a warning that says what to add and where.
+// A 3-4 letter name is within two edits of dozens of everyday words (แดง ~ แดน, เจ็ด ~ เจน, จริง ~ จิม), so the rule is
+// deliberately conservative and is only a warning. A candidate must: sit between the start of the string or a known particle on
+// the left (ของ/กับ/และ/คือ/ว่า ...) and the end of the string or a known particle on the right (อายุ/อยู่/เป็น/สี ...); share at
+// least len-1 letters with the spelling in order; be neither the spelling of ANY listed name (แอน is one edit from แนน) nor a known
+// Thai word: COMMON_THAI_WORDS (allowlists.ts) or any part of the Thai of the vocab bank (isKnownThaiWord). Names whose spelling is
+// an everyday word (ไหม, นก, เล็ก, ฝน) are not checked for misspellings.
 // NOT detected: a misspelling next to a particle that is not in the lists below, a name spelled correctly but for the wrong
-// person, a Thai name in a string with no English counterpart in the same lesson.
+// person, a Thai name in a string with no English counterpart in the same lesson, a misspelling that is also a known word.
 import type { Problem } from "../loader";
-import { PLACE_NAMES, PROPER_NAMES, THAI_NAMES, THAI_NAME_IS_A_WORD } from "./allowlists";
+import { COMMON_THAI_WORDS, PLACE_NAMES, PROPER_NAMES, THAI_NAMES, THAI_NAME_IS_A_WORD } from "./allowlists";
 import type { RuleContext } from "./context";
 
 export const THAI_NAMES_RULE = "thai-names";
@@ -18,14 +20,12 @@ export const THAI_NAMES_RULE = "thai-names";
 const BEFORE = ["ของ", "กับ", "และ", "คือ", "ว่า", "ถาม", "ชื่อ", "ให้", "แก่", "เพื่อน", "พี่", "น้อง"];
 const AFTER = ["อายุ", "อยู่", "เป็น", "มา", "ไป", "สะกด", "ทำ", "พูด", "ถาม", "ตอบ", "ใส่", "ชอบ", "มี", "กับ", "และ", "คือ", "ซื้อ", "อาศัย", "สี", "ราคา", "เท่า", "ที่", "ใช่", "ก็", "หรือ", "ได้", "ต้อง", "บอก", "พบ", "เจอ", "รัก", "จะ", "กำลัง", "ไม่", "ใน", "ด้วย"];
 
-/**
- * Ordinary Thai words that are one edit from a name and can stand where a name stands (เบา "light" ~ เบน). A word is added
- * here only when the rule fired on it in real content and it really is that word; never to silence a misspelling.
- */
-const NOT_A_NAME: ReadonlySet<string> = new Set(["เบา"]);
-
 const THAI = /[฀-๿]/;
 const cp = (s: string) => [...s];
+
+/** Vowel signs and tone marks that sit on a consonant (ั ิ ี ึ ื ุ ู ็ ่ ้ ๊ ๋ ์): a dropped or added one is the commonest slip, so it counts as no edit. */
+const MARK = /[\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]/;
+const letters = (cps: string[]) => cps.filter((c) => !MARK.test(c));
 
 function editDistance(a: string[], b: string[]): number {
   let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
@@ -47,11 +47,20 @@ function lcs(a: string[], b: string[]): number {
   return prev[b.length];
 }
 
+/** Whether a Thai string is an ordinary word: COMMON_THAI_WORDS, or a part of any Thai gloss (`th`) of the vocab bank (not the example sentences: those contain the names themselves). */
+export function isKnownThaiWord(ctx: RuleContext): (s: string) => boolean {
+  const common = new Set(COMMON_THAI_WORDS);
+  const chunks: string[] = [];
+  for (const { item } of ctx.bank.values()) for (const t of [item.th]) chunks.push(...t.split(/[^\u0E00-\u0E7F]+/).filter(Boolean));
+  const unique = [...new Set(chunks)];
+  return (s) => common.has(s) || unique.some((c) => c.includes(s));
+}
+
 /**
  * Misspellings of the listed spellings in `text`. `forms` are the names to check (name -> Thai spelling); `known` are the
  * spellings that count as correct Thai names whatever the lesson (default: `forms`).
  */
-export function thaiNameMismatches(text: string, forms: Readonly<Record<string, string>>, known: Readonly<Record<string, string>> = forms): { found: string; name: string }[] {
+export function thaiNameMismatches(text: string, forms: Readonly<Record<string, string>>, known: Readonly<Record<string, string>> = forms, isWord: (s: string) => boolean = () => false): { found: string; name: string }[] {
   const chars = cp(text);
   const knownSet = new Set([...Object.values(known), ...Object.values(forms)]);
   const out: { found: string; name: string }[] = [];
@@ -60,16 +69,17 @@ export function thaiNameMismatches(text: string, forms: Readonly<Record<string, 
   for (const [name, form] of Object.entries(forms)) {
     if (THAI_NAME_IS_A_WORD.includes(name)) continue;
     const f = cp(form);
-    if (f.length < 3) continue;
+    if (letters(f).length < 3) continue;
     for (let i = 0; i < chars.length; i++) {
       if (!THAI.test(chars[i]) || !boundaryBefore(i)) continue;
       for (let len = f.length + 1; len >= f.length - 1; len--) {
         const w = chars.slice(i, i + len);
         if (w.length !== len || !w.every((c) => THAI.test(c)) || !boundaryAfter(i + len)) continue;
         const s = w.join("");
-        if (knownSet.has(s) || NOT_A_NAME.has(s)) continue;
-        const d = editDistance(w, f);
-        if (d >= 1 && d <= 2 && lcs(w, f) >= f.length - 1) {
+        if (knownSet.has(s) || isWord(s)) continue;
+        const wl = letters(w), fl = letters(f);
+        const d = editDistance(wl, fl);
+        if ((d <= 1 || (d === 2 && f.length >= 5)) && lcs(wl, fl) >= fl.length - 1) {
           out.push({ found: s, name });
           i += len - 1;
           break;
@@ -95,6 +105,7 @@ const PEOPLE = PROPER_NAMES.filter((n) => !PLACE_NAMES.includes(n));
 export function checkThaiNames(ctx: RuleContext, table: Readonly<Record<string, string>> = THAI_NAMES): Problem[] {
   const problems: Problem[] = [];
   const warned = new Set<string>();
+  const isWord = isKnownThaiWord(ctx);
   for (const { file, lesson } of ctx.lessons) {
     const all = [...strings(lesson)];
     const english = all.filter((s) => !THAI.test(s.text));
@@ -110,10 +121,10 @@ export function checkThaiNames(ctx: RuleContext, table: Readonly<Record<string, 
     const forms = Object.fromEntries(Object.entries(table).filter(([n]) => present.has(n)));
     for (const s of all) {
       if (!THAI.test(s.text)) continue;
-      for (const m of thaiNameMismatches(s.text, forms, table)) {
+      for (const m of thaiNameMismatches(s.text, forms, table, isWord)) {
         problems.push({
-          rule: THAI_NAMES_RULE, file, id: s.id,
-          message: `"${s.text}" writes "${m.found}", which looks like a misspelling of the name "${m.name}" (its Thai spelling is "${table[m.name]}", THAI_NAMES in src/lib/content/rules/allowlists.ts). Write "${table[m.name]}" everywhere; if "${m.found}" is a different word, reword the sentence.`,
+          rule: THAI_NAMES_RULE, file, id: s.id, severity: "warning",
+          message: `"${s.text}" writes "${m.found}", which may be a misspelling of the name "${m.name}" (its Thai spelling is "${table[m.name]}", THAI_NAMES in src/lib/content/rules/allowlists.ts). Write "${table[m.name]}" everywhere; if "${m.found}" is an ordinary word, add it to COMMON_THAI_WORDS (same file) so it is not reported again.`,
         });
       }
     }
