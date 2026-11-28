@@ -4,7 +4,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { VocabLookup } from "@/components/exercises/types";
-import type { AttemptInput, CompleteCheckpointResponse } from "@/lib/attempts/contract";
+import type { AttemptInput, CompleteCheckpointRequest, CompleteCheckpointResponse } from "@/lib/attempts/contract";
 import type { Exercise } from "@/lib/content/schema";
 import type { CompleteResult, SyncSink } from "@/lib/offline/sink";
 
@@ -23,7 +23,7 @@ export const DONE_RESPONSE: CompleteCheckpointResponse = {
       { skill: "listening", weight: 25, score: 0.9, answered: 3, total: 3, selfOk: null },
       { skill: "speaking", weight: 0, score: null, answered: 3, total: 3, selfOk: 2 },
       { skill: "reading", weight: 20, score: 0.9, answered: 3, total: 3, selfOk: null },
-      { skill: "writing", weight: 35, score: 0.6, answered: 4, total: 4, selfOk: null },
+      { skill: "writing", weight: 35, score: 0.75, answered: 4, total: 4, selfOk: null },
     ],
   },
   streak: { current: 4, longest: 6 },
@@ -39,7 +39,7 @@ export function fakeCheckpointSink(result: CompleteResult<CompleteCheckpointResp
     sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
     completeLesson: async () => ({ status: "queued" as const }),
     completePractice: async () => ({ status: "queued" as const }),
-    completeCheckpoint: vi.fn(async () => result),
+    completeCheckpoint: vi.fn(async (...args: [CompleteCheckpointRequest]) => (void args, result)),
     sendReview: () => {},
     completeReview: async () => ({ status: "queued" as const }),
     pendingCount: () => pending,

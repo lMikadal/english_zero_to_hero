@@ -101,7 +101,7 @@ describe("CheckpointPlayer", () => {
     const { sink } = setup();
     sink.completeCheckpoint.mockRejectedValueOnce(new Error("boom"));
     await playAll(0);
-    await screen.findByText("บันทึกผลไม่สำเร็จ");
+    await screen.findByText(/บันทึกผลไม่สำเร็จ/);
     await userEvent.click(screen.getByRole("button", { name: "ลองอีกครั้ง" }));
     await screen.findByRole("heading", { level: 1, name: "ผลแบบทดสอบ ครั้งที่ 1" });
     expect(sink.completeCheckpoint).toHaveBeenCalledTimes(2);

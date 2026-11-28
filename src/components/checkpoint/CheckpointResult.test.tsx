@@ -50,7 +50,7 @@ describe("CheckpointResult (plan 3.6, items 36-41)", () => {
     expect(rows[0]).toHaveTextContent("80% · ตอบ 3 จาก 3 ข้อ");
     expect(within(rows[0]).getByRole("progressbar")).toHaveAttribute("aria-valuenow", "80");
     expect(rows[4]).toHaveTextContent("เขียน");
-    expect(rows[4]).toHaveTextContent("60% · ตอบ 4 จาก 4 ข้อ");
+    expect(rows[4]).toHaveTextContent("75% · ตอบ 4 จาก 4 ข้อ");
     expect(rows[2]).toHaveTextContent("พูด");
     expect(rows[2]).toHaveTextContent("ประเมินตัวเอง พูดได้ 2 จาก 3 ข้อ · ไม่นับคะแนน");
     expect(within(rows[2]).queryByRole("progressbar")).toBeNull();

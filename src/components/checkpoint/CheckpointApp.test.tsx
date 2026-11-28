@@ -10,7 +10,7 @@ import { displayFromResponse, exerciseIds } from "./view";
 const refresh = vi.hoisted(() => vi.fn());
 vi.mock("next/navigation", async (importOriginal) => ({ ...(await importOriginal<typeof import("next/navigation")>()), useRouter: () => ({ refresh }) }));
 const fake = vi.hoisted(() => ({ current: null as null | ReturnType<typeof import("./test-support").fakeCheckpointSink> }));
-vi.mock("@/lib/offline/http-sink", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/lib/offline/http-sink")>()), getSyncSink: () => fake.current!.sink }));
+vi.mock("@/lib/offline/http-sink", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/lib/offline/http-sink")>()), getSyncSink: () => ({ ...fake.current!.sink, getState: () => ({ pending: 0, pendingAttempts: 0, pendingReviews: 0, pendingReviewCompletions: 0 }) }) }));
 vi.spyOn(window, "scrollTo").mockImplementation(() => {}); // jsdom has no layout
 
 const all = checkpointFixture.sections.flatMap((s) => s.exercises);
