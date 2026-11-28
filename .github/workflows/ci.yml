@@ -169,6 +169,23 @@ jobs:
       - name: Smoke test
         run: sh scripts/prod/smoke.sh http://127.0.0.1:3100
 
+      # backup -> wipe -> restore with the real make targets, so the pg_dump / pg_restore flags run on every PR
+      - name: Backup, wipe, restore round trip
+        run: |
+          set -eu
+          P="docker compose -p ezh_prod -f docker-compose.prod.yml --env-file .env.prod"
+          psql_q() { $P exec -T postgres psql -U ezh -d english_zero_to_hero -tAc "$1"; }
+          before=$(psql_q "select count(*) from drizzle.__drizzle_migrations")
+          [ "$before" -ge 1 ]
+          make prod-backup
+          file=$(ls -1 backups/ezh-english_zero_to_hero-*.dump | grep -v -e pre- | tail -n 1)
+          make prod-backup-verify FILE="$file"
+          $P stop app
+          psql_q "drop schema public cascade; create schema public; drop schema drizzle cascade" > /dev/null
+          make prod-restore FILE="$file" CONFIRM=english_zero_to_hero
+          [ "$(psql_q 'select count(*) from drizzle.__drizzle_migrations')" = "$before" ]
+          sh scripts/prod/smoke.sh http://127.0.0.1:3100
+
       - name: Production logs (on failure)
         if: failure()
         run: docker compose -p ezh_prod -f docker-compose.prod.yml --env-file .env.prod logs --no-color --tail=200 || true

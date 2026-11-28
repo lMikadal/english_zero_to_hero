@@ -82,24 +82,25 @@
 ใช้ตรวจว่า image และ stack สำหรับใช้งานจริงทำงานครบ **โดยไม่แตะฐานข้อมูลจริง**: ใช้ project/ฐานข้อมูล/port ทดลองของตัวเอง
 
 ```bash
-make prod-init PROD_ENV=.env.stage          # สร้างไฟล์ env ทดลอง (git ละเว้น) แล้วแก้ POSTGRES_DB=english_zero_to_hero_stage, APP_PORT=3190
-make prod-build PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
-make prod-up    PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
+make stage-init     # สร้าง .env.stage (รหัสสุ่ม, POSTGRES_DB=english_zero_to_hero_stage, APP_PORT=3190)
+make stage-build
+make stage-up
 sh scripts/prod/smoke.sh http://127.0.0.1:3190
+make stage-down     # เมื่อเสร็จ: ลบชุดทดลองพร้อม volume ezh_stage_pgdata (ไม่มี target ไหนลบ volume ของ prod)
 ```
 
 | สิ่งที่ตรวจ | วิธี | ควรเห็น |
 |---|---|---|
-| migration รันก่อนแอป | `docker compose -p ezh_stage -f docker-compose.prod.yml --env-file .env.stage logs migrate` | `applied N migration(s)` (รันซ้ำ: `already up to date`); `migrate` สถานะ `Exited (0)` |
-| แอป healthy | `make prod-status ...` | app `(healthy)`; `{"ok":true}` |
+| migration รันก่อนแอป | `make stage-logs` (หรือ `docker compose -p ezh_stage -f docker-compose.prod.yml --env-file .env.stage logs migrate`) | `applied N migration(s)` (รันซ้ำ: `already up to date`); `migrate` สถานะ `Exited (0)` |
+| แอป healthy | `make stage-status` | app `(healthy)`; `{"ok":true}` |
 | หน้าหลัก | `curl` `/`, `/day/1`, `/practice`, `/review`, `/settings` | 200; `/` มี "English Zero to Hero"; `/day/1` มี "ข้อ 1 / 10" (บทเรียนอ่านจาก `content/` ใน image ได้) |
 | เป็น production build | `curl -s / \| grep -c hot-reloader` | 0 (ไม่มี dev HMR) |
 | ฟอนต์ self-host | ดึง `url(../media/*.woff2)` จาก CSS ที่ `/_next/static/media/` | 200 `Content-Type: font/woff2` |
 | ไม่รัน root | `docker exec <app> id` | `uid=1000(node)` |
-| backup/restore | จบบทวัน 1 ด้วย `POST /api/lessons/complete` → `make prod-backup ...` → ล้างตาราง → `make prod-restore FILE=... CONFIRM=<ชื่อ db>` | ไฟล์ `.dump` เจ้าของ uid 1000; `progress` done=1 และ `srs_cards`=10 กลับมา |
-| ล้างทดลอง | `make prod-down ...` แล้ว `docker volume rm ezh_stage_pgdata` | volume ของ dev (`english_zero_to_hero_pgdata`) และ prod (`ezh_prod_pgdata`) ไม่ถูกแตะ |
+| backup/restore | จบบทวัน 1 ด้วย `POST /api/lessons/complete` → `make stage-backup` → `make stage-backup-verify FILE=...` → ล้างตาราง → `make stage-restore FILE=... CONFIRM=english_zero_to_hero_stage` (จบด้วย migration + แอป healthy) | ไฟล์ `.dump` เจ้าของ uid 1000; `progress` done=1 และ `srs_cards`=10 กลับมา |
+| ล้างทดลอง | `make stage-down` | volume ของ dev (`english_zero_to_hero_pgdata`) และ prod (`ezh_prod_pgdata`) ไม่ถูกแตะ |
 
-เทสต์: `scripts/prod/prod-scripts.test.ts` (ตรวจรหัสผ่าน, backup/restore/prune, ต้องมี `CONFIRM`), job `prod-image` ใน CI
+เทสต์: `scripts/prod/prod-scripts.test.ts` (ตรวจรหัสผ่าน, backup/restore/prune/verify/pre-update, ต้องมี `CONFIRM`, ห้าม `-v` กับ prod), `src/db/migration-safety.test.ts` (migration ที่ลบข้อมูลต้องมี `-- destructive: reviewed`), job `prod-image` ใน CI
 
 ## ตรวจโดยเครื่อง (ไม่ต้องจำ)
 
