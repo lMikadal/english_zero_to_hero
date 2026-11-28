@@ -6,7 +6,9 @@ import { buttonClass } from "@/components/ui/button-styles";
 import type { Checkpoint } from "@/lib/content/checkpoint-schema";
 import { CHECKPOINT_RESUME_HOURS } from "@/lib/progress/config";
 import { REPLAY_SKILL_LABEL_TH } from "@/lib/practice/replay";
-import { percentShown, resumeNumber, totalExercises } from "./view";
+import { MonthlyTitle } from "./MonthlyTitle";
+import { checkpointNumber, percentShown, resumeNumber, totalExercises } from "./view";
+
 
 const RULES = [
   "ระหว่างทำจะไม่บอกว่าถูกหรือผิด ดูผลรวมตอนจบ",
@@ -31,7 +33,8 @@ export function CheckpointIntro({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-14">
       <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold leading-snug text-fg">{checkpoint.title.th}</h1>
+        {/* built from the number, not from title.th: a file title may already carry the day range, which the line below says once */}
+        <h1 className="text-2xl font-bold leading-snug text-fg"><MonthlyTitle k={checkpointNumber(checkpoint.afterDay)} /></h1>
         <p className="text-[15px] text-muted">บทเรียนวันที่ 1–{checkpoint.afterDay} · {total} ข้อ · ประมาณ {checkpoint.estimatedMinutes} นาที</p>
         <p className="text-pretty text-sm leading-relaxed text-muted">ไม่มีเวลาจำกัด ทำเท่าที่ทำได้ ผลนี้ช่วยให้รู้ว่าควรทบทวนส่วนไหน</p>
         {last ? (

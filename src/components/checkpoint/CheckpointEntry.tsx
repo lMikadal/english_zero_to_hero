@@ -1,6 +1,7 @@
 // The doors to /checkpoint/A from the main screens (docs/plans/checkpoint-plan.md PR 6, D10). Server components: they only show
 // what the page read from the database. Percentages are rounded down (percentShown), like on the result screen.
 import Link from "next/link";
+import { MonthlyTitle } from "./MonthlyTitle";
 import { checkpointNumber, percentShown } from "./view";
 
 const CHEVRON = (
@@ -16,7 +17,7 @@ export function HomeCheckpointCard({ afterDay }: { afterDay: number }) {
     <section aria-label="แบบทดสอบประจำเดือน" className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5">
       <div>
         <p className="text-sm font-medium text-muted">วันที่ 1–{afterDay}</p>
-        <h2 className="text-balance text-2xl font-bold leading-snug">แบบทดสอบประจำเดือน ครั้งที่ {k}</h2>
+        <h2 className="text-2xl font-bold leading-snug"><MonthlyTitle k={k} /></h2>
       </div>
       <p className="text-pretty text-sm leading-relaxed text-muted">ทำแบบทดสอบให้จบ ได้กี่คะแนนก็ได้ แล้ว<span className="whitespace-nowrap">บทเรียนวันที่ {afterDay + 1}</span> จะเปิดให้</p>
       <Link href={`/checkpoint/${afterDay}`} className="flex min-h-12 w-full items-center justify-center rounded-xl bg-accent px-4 text-lg font-semibold text-on-accent">

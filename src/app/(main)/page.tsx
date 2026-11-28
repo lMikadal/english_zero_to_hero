@@ -112,7 +112,8 @@ export default async function Home() {
       {home.activeToday && (
         <p className="flex items-center gap-2 rounded-xl border border-good bg-good-soft px-3.5 py-3 text-sm font-medium text-good-fg">
           <span aria-hidden="true">✓</span>
-          วันนี้เรียนแล้ว เรียนบทถัดไปต่อได้เลย
+          {/* the card above says the next lesson is locked: keep the reward, point it at the checkpoint */}
+          {home.blockingCheckpoint !== null ? "วันนี้เรียนแล้ว ทำแบบทดสอบประจำเดือนต่อได้เลย" : "วันนี้เรียนแล้ว เรียนบทถัดไปต่อได้เลย"}
         </p>
       )}
       <UnsavedNote />
