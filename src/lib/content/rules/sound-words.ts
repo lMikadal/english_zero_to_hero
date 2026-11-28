@@ -2,7 +2,8 @@
 //   "ระวังเสียง /v/ ใน five, seven, sixteen และ seventeen"  /  "Watch /v/ in five, seven and sixteen"
 // Every listed word that has a vocab entry must have the symbol (as a whole phoneme, see ipaContains) in its US or UK
 // IPA, or the instruction teaches a sound the word does not have (the real incident: "sixteen" has no /v/).
-// ERROR when the entry's IPA lacks the sound; WARNING when the word has no entry (it could not be checked).
+// ERROR when the entry's IPA lacks the sound in BOTH accents; WARNING when only one of US / UK has it ("sandwich" /tʃ/ vs UK /dʒ/);
+// WARNING when the word has no entry (it could not be checked).
 // Not a claim, so skipped: a sound named after "ไม่ใช่" / "ต่างจาก" / "not" (a contrast, the word does NOT have it), and
 // a list that starts with "the/a/an/word" ("in the word ..." is a place). Escape hatch: none; fix the list or the entry.
 // Texts checked: instruction.th, instruction.en and tipTh of every exercise. Section titles and objectives are not.
@@ -50,18 +51,27 @@ export function checkSoundWords(ctx: RuleContext): Problem[] {
         for (const text of textsOf(ex)) {
           for (const { symbol, words } of soundClaims(text)) {
             const wrong: string[] = [];
+            const oneAccent: string[] = [];
             const unknown: string[] = [];
             for (const w of words) {
               const entries = byWord.get(w);
-              if (!entries) unknown.push(w);
-              else if (!entries.some((ipa) => ipaContains(ipa.us, symbol) || ipaContains(ipa.uk, symbol))) {
-                wrong.push(`"${w}" (ipa ${entries.map((e) => (e.us === e.uk ? e.us : `${e.us} US, ${e.uk} UK`)).join("; ")})`);
-              }
+              if (!entries) { unknown.push(w); continue; }
+              const us = entries.some((e) => ipaContains(e.us, symbol));
+              const uk = entries.some((e) => ipaContains(e.uk, symbol));
+              const shown = entries.map((e) => (e.us === e.uk ? e.us : `${e.us} US, ${e.uk} UK`)).join("; ");
+              if (!us && !uk) wrong.push(`"${w}" (ipa ${shown})`);
+              else if (us !== uk) oneAccent.push(`"${w}" has it only in the ${us ? "US" : "UK"} IPA (ipa ${shown}); the ${us ? "UK" : "US"} IPA does not contain it`);
             }
             if (wrong.length) {
               problems.push({
                 rule: SOUND_WORDS_RULE, file, id: ex.id,
                 message: `the text names /${symbol}/ in a list of words, but the vocab bank's IPA says ${wrong.join("; ")} ${wrong.length === 1 ? "does" : "do"} not contain /${symbol}/. Remove ${wrong.length === 1 ? "that word" : "those words"} from the list, or name the sound the word really has.`,
+              });
+            }
+            if (oneAccent.length) {
+              problems.push({
+                rule: SOUND_WORDS_RULE, file, id: ex.id, severity: "warning",
+                message: `the text names /${symbol}/ in a list of words, but ${oneAccent.join("; ")}. Choose a word that has the sound in both accents, or say which accent the sound belongs to.`,
               });
             }
             if (unknown.length) {

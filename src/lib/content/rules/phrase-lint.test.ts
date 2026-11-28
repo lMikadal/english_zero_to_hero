@@ -11,7 +11,7 @@ const run = (...texts: string[]) => checkPhraseLint(buildContext(data([lessonFil
 describe("phrase-lint (warnings): phrasings an A1 lesson should not teach", () => {
   it.each([
     ["He likes some tea.", "likes some"], ["I like some coffee.", "like some"], ["I order a coffee, please.", "I order"],
-    ["Do you not like tea?", "do you not"], ["How many cats has my sister?", "How many"], ["How many books has the teacher?", "How many"],
+    ["Do you not like tea?", "Do you not"], ["How many cats has my sister?", "How many"], ["How many books has the teacher?", "How many"],
   ])("flags %s", (text, hint) => {
     const out = run(text);
     expect(out, text).toHaveLength(1);

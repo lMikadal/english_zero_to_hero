@@ -77,9 +77,11 @@ describe("sound-words: every listed word that has a vocab entry must contain the
     expect(out[0].message).toContain('"sixteen"');
     expect(out[0].message).toContain('"this"');
   });
-  it("accepts when US or UK IPA contains the sound as a whole phoneme", () => {
+  it("accepts when both accents contain the sound as a whole phoneme; one accent only is a warning", () => {
     expect(check([repeat("ระวัง /v/ ใน five, seven และ seventeen")])).toEqual([]);
-    expect(check([repeat("Watch /r/ in water", "Watch /r/ in water")], [word("water", "/ˈwɔːtər/", "/ˈwɔːtə/")])).toEqual([]);
+    expect(check([repeat("Watch /r/ in water", "Watch /r/ in water")], [word("water", "/ˈwɔːtər/", "/ˈwɔːtər/")])).toEqual([]);
+    const out = check([repeat("Watch /r/ in water", "Watch /r/ in water")], [word("water", "/ˈwɔːtər/", "/ˈwɔːtə/")]);
+    expect(out.map((p) => p.severity)).toEqual(["warning", "warning"]); // th and en text, one warning each
   });
   it("uses whole phonemes: /ɪ/ is not in 'five' (aɪ), /t/ is not in a tʃ word", () => {
     expect(check([repeat("ระวัง /ɪ/ ใน five")])).toHaveLength(1);
