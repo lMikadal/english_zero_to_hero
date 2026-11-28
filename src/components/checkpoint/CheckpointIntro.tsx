@@ -33,7 +33,7 @@ export function CheckpointIntro({
       <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold leading-snug text-fg">{checkpoint.title.th}</h1>
         <p className="text-[15px] text-muted">บทเรียนวันที่ 1–{checkpoint.afterDay} · {total} ข้อ · ประมาณ {checkpoint.estimatedMinutes} นาที</p>
-        <p className="text-sm leading-relaxed text-muted">ไม่มีเวลาจำกัด ทำเท่าที่ทำได้ ผลนี้ช่วยให้รู้ว่าควรทบทวนส่วนไหน</p>
+        <p className="text-pretty text-sm leading-relaxed text-muted">ไม่มีเวลาจำกัด ทำเท่าที่ทำได้ ผลนี้ช่วยให้รู้ว่าควรทบทวนส่วนไหน</p>
         {last ? (
           <p className="self-start rounded-full border border-line bg-surface px-3 py-1 text-[13px] font-medium text-fg">
             ครั้งล่าสุด {Math.round(last.score * 100)}% · {last.passed ? "ผ่าน" : "ยังไม่ผ่าน"}
@@ -47,7 +47,7 @@ export function CheckpointIntro({
           {RULES.map((r) => (
             <li key={r} className="flex gap-2.5 text-[15px] leading-relaxed text-fg">
               <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-accent" />
-              <span>{r}</span>
+              <span className="text-pretty">{r}</span>
             </li>
           ))}
         </ul>
