@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { Card } from "./ui/Card";
 import { CheckButton } from "./ui/CheckButton";
 import { ExerciseShell } from "./ui/ExerciseShell";
@@ -20,7 +20,8 @@ function layout(parts: string[]) {
   });
 }
 
-export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_blank">) {
+export function FillBlank({ exercise, onAnswer, result, reveal = true }: ExerciseProps<"fill_blank">) {
+  const seen = shown(result, reveal);
   const parts = exercise.text.split(BLANK);
   const blanks = parts.length - 1;
   const segments = layout(parts);
@@ -36,8 +37,8 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
   }
 
   const toneOf = (i: number): Tone => {
-    if (!result) return "idle";
-    return rightWrong(result.items ? result.items[i] === true : result.correct);
+    if (!seen) return "idle";
+    return rightWrong(seen.items ? seen.items[i] === true : seen.correct);
   };
 
   return (
@@ -67,7 +68,7 @@ export function FillBlank({ exercise, onAnswer, result }: ExerciseProps<"fill_bl
                   onChange={(e) => setTexts(texts.map((t, j) => (j === i ? e.target.value : t)))}
                   className={`mx-1 inline-block min-h-11 w-28 max-w-full rounded-[9px] border px-2 text-center align-middle font-medium ${fieldToneClass(toneOf(i))}`}
                 />
-                {result ? <span className="mr-1.5"><Mark ok={toneOf(i) === "right"} /></span> : null}
+                {seen ? <span className="mr-1.5"><Mark ok={toneOf(i) === "right"} /></span> : null}
                 {segments[i + 1].lead}
               </span>
             ) : null}

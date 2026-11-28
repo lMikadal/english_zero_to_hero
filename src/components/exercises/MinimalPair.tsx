@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
 import { Card } from "./ui/Card";
 import { CheckButton } from "./ui/CheckButton";
@@ -14,7 +14,8 @@ import { rightWrong, type Tone } from "./ui/tone";
 
 type Pick = "a" | "b";
 
-export function MinimalPair({ exercise, onAnswer, onContinue, result }: ExerciseProps<"minimal_pair">) {
+export function MinimalPair({ exercise, onAnswer, onContinue, result, reveal = true }: ExerciseProps<"minimal_pair">) {
+  const seen = shown(result, reveal);
   const first = exercise.pairs[0];
   const audio = useExerciseAudio(first[first.answer]);
   const [picks, setPicks] = useState<(Pick | null)[]>(() => exercise.pairs.map(() => null));
@@ -34,7 +35,7 @@ export function MinimalPair({ exercise, onAnswer, onContinue, result }: Exercise
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <AudioFallback audio={audio} onSkip={onContinue} note={GRADED_NO_AUDIO_NOTE} />
       {exercise.pairs.map((pair, i) => {
-        const itemOk = result?.items ? result.items[i] : undefined;
+        const itemOk = seen?.items ? seen.items[i] : undefined;
         const itemTone: Tone = itemOk === undefined ? "idle" : rightWrong(itemOk);
         const pickIndex = picks[i] === null ? null : picks[i] === "a" ? 0 : 1;
         return (
