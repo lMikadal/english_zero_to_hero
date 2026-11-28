@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getDb } from "@/db/client";
 import { getLearnerHome, type LearnerHome } from "@/db/queries/home";
+import { HomeCheckpointCard, HomeCheckpointLink } from "@/components/checkpoint/CheckpointEntry";
 import { UnsavedNote } from "@/components/player/UnsavedNote";
 import { HomeReviewLink, type ReviewNumbers } from "@/components/review/ReviewEntry";
 import { DbErrorScreen } from "@/components/ui/DbErrorScreen";
@@ -51,6 +52,9 @@ export default async function Home() {
         <p className="rounded-2xl border border-good bg-good-soft p-4 text-lg font-semibold text-good-fg">
           เรียนครบ {COURSE_DAYS} วันแล้ว ยินดีด้วย!
         </p>
+      ) : home.blockingCheckpoint !== null ? (
+        // a monthly checkpoint holds day A+1 back (any score unlocks it): it is today's one primary action
+        <HomeCheckpointCard afterDay={home.blockingCheckpoint} />
       ) : (
         <section aria-label="บทเรียนวันนี้" className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5">
           <div className="flex items-end justify-between gap-3">
@@ -91,6 +95,7 @@ export default async function Home() {
           </Link>
         </section>
       )}
+      {home.blockingCheckpoint === null && <HomeCheckpointLink note={home.checkpointNote} />}
       <HomeReviewLink summary={review} />
       <dl className={`grid gap-3 ${review ? "grid-cols-3" : "grid-cols-2"}`}>
         {[

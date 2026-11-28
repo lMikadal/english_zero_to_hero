@@ -8,7 +8,7 @@ import { isDayUnlocked } from "@/lib/attempts/unlock";
 import { getLesson, getVocabLookup } from "@/lib/content/repo";
 import type { Lesson } from "@/lib/content/schema";
 import { REPLAY_SKILL_LABEL_TH, parseReplaySkill, replayHref, replaySkills } from "@/lib/practice/replay";
-import { getCurrentDay, getDayStatus } from "../../access";
+import { getDayStatus, getGate } from "../../access";
 import { vocabIdsFor } from "./vocab-ids";
 
 // The lock depends on the learner, so this page must never be cached.
@@ -28,18 +28,32 @@ export default async function DayPage({ params, searchParams }: { params: Promis
   if (skill === "invalid") notFound();
 
   let currentDay: number;
+  let blocking: number | null;
+  let playableDay: number;
   try {
-    currentDay = await getCurrentDay();
+    ({ currentDay, blocking, playableDay } = await getGate());
   } catch (e) {
     console.error("Cannot read the learner's current day:", e);
     return <DbErrorScreen retryHref={replayHref(day, skill)} />;
+  }
+  // A monthly checkpoint holds the next day back: say so and give the way in (the one primary action).
+  if (blocking !== null && day === currentDay) {
+    return (
+      <StatusScreen
+        icon="📝"
+        title="ทำแบบทดสอบประจำเดือนก่อน"
+        actions={<Link href={`/checkpoint/${blocking}`} className={buttonClass("primary")}>ไปทำแบบทดสอบ</Link>}
+      >
+        <p className={TEXT}>ทำแบบทดสอบหลังบทเรียนวันที่ {blocking} ให้จบ (ได้กี่คะแนนก็ได้) แล้วบทวันที่ {day} จะเปิดให้</p>
+      </StatusScreen>
+    );
   }
   if (!isDayUnlocked(day, currentDay)) {
     return (
       <StatusScreen
         icon="🔒"
         title="ยังไม่ปลดล็อก"
-        actions={<Link href={`/day/${currentDay}`} className={buttonClass("primary")}>ไปบทเรียนวันที่ {currentDay}</Link>}
+        actions={<Link href={`/day/${playableDay}`} className={buttonClass("primary")}>ไปบทเรียนวันที่ {playableDay}</Link>}
       >
         <p className={TEXT}>เรียนบทก่อนหน้าให้จบตามลำดับก่อน แล้วบทวันที่ {day} จะเปิดให้</p>
       </StatusScreen>
