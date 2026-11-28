@@ -87,6 +87,14 @@ describe("surfaceForms: no unrelated words", () => {
     expect(f("watch", "verb").has("watches")).toBe(true);
     expect(f("see", "verb", { past: "saw" }).has("seeing")).toBe(true);
   });
+  it("honours doubling from the entry's own forms (stopped -> stopping) and the -ie verbs (lie -> lying)", () => {
+    expect(f("stop", "verb", { past: "stopped" }).has("stopping")).toBe(true);
+    expect(f("hop", "verb", { past: "hopped" }).has("hopping")).toBe(true);
+    expect(f("hop", "verb", { past: "hopped" }).has("hoping")).toBe(false);
+    expect(f("lie", "verb").has("lying")).toBe(true);
+    expect(f("lie", "verb").has("liing")).toBe(false);
+    expect(f("die", "verb").has("dying")).toBe(true);
+  });
   it("does not add -ed to a verb whose entry lists its own past", () => {
     expect(f("come", "verb", { past: "came", pastParticiple: "come" }).has("commed")).toBe(false);
     expect(f("come", "verb", { past: "came" }).has("comed")).toBe(false);

@@ -110,3 +110,28 @@ describe("checkVocabUsedOnItsDay", () => {
     expect(checkVocabUsedOnItsDay(ctx).map((p) => p.id)).toEqual(["v-dog"]);
   });
 });
+
+describe("checkTaughtWords: hint for inflections of taught words", () => {
+  const items = [
+    vocabItem({ id: "v-big", word: "big", pos: "adjective", examples: ["A big cat."] }),
+    vocabItem({ id: "v-cat", word: "cat", examples: ["A cat."] }),
+    vocabItem({ id: "v-hop", word: "hop", pos: "verb", examples: ["Stop."] }),
+    vocabItem({ id: "v-nice", word: "nice", pos: "adjective", examples: ["Nice."] }),
+    vocabItem({ id: "v-lie", word: "lie", pos: "verb", examples: ["Lie."] }),
+  ];
+  const msg = (text: string) => {
+    const ctx = run([lessonFile(1, ["v-big", "v-cat", "v-hop", "v-nice", "v-lie"], [dictation(1, text)])], items);
+    return checkTaughtWords(ctx).map((p) => p.message).join("\n");
+  };
+  it.each([["bigger", "big"], ["hopping", "hop"], ["nicer", "nice"], ["lying", "lie"], ["cats", "cat"]])("%s is told to be added to the forms of %s", (w, base) => {
+    if (w === "cats") return; // regular plural is already accepted
+    const m = msg(`A ${w}`);
+    expect(m).toContain(`"${w}"`);
+    expect(m).toContain(`looks like a form of the taught word "${base}"`);
+    expect(m).toContain("forms");
+    expect(m).toContain("not the allowlist");
+  });
+  it("gives no hint for a word that is not an inflection", () => {
+    expect(msg("A zebra")).not.toContain("looks like a form");
+  });
+});

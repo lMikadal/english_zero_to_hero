@@ -80,6 +80,35 @@ describe("runValidate: warnings", () => {
   });
 });
 
+describe("runValidate: job summary", () => {
+  it("writes the counts and the warnings to the summary file when one is given (GITHUB_STEP_SUMMARY)", () => {
+    const entry = (id: string, th: string) => ({
+      id, word: id.slice(2), pos: "noun", oxford: { list: "3000", level: "A1" }, ipa: { us: "/x/", uk: "/x/" }, th, topics: ["greetings"],
+      examples: [{ en: "A.", th: "ก" }],
+    });
+    const ex = (n: number, text: string) => ({ id: `d001-listen-0${n}`, type: "dictation", instruction: { th: "ก" }, audioText: text });
+    fs.mkdirSync(path.join(root, "vocab/oxford-3000"), { recursive: true });
+    fs.writeFileSync(path.join(root, "vocab/oxford-3000/a1.json"), JSON.stringify([entry("v-cat", "ไม่ (ก)"), entry("v-dog", "ไม่ (ข)")]));
+    fs.writeFileSync(path.join(root, "lessons/day-001.json"), JSON.stringify({
+      day: 1, phase: 1, week: 1, type: "lesson", cefr: "preA1", title: { en: "x", th: "ก" }, objectives: [{ en: "x", th: "ก" }],
+      estimatedMinutes: 20, vocab: ["v-cat", "v-dog"], sections: [{ skill: "listening", title: { en: "x", th: "ก" }, exercises: [ex(1, "A cat"), ex(2, "A dog")] }],
+    }));
+    const summary = path.join(path.dirname(root), "summary.md");
+    fs.writeFileSync(summary, "existing\n");
+    expect(runValidate(root, () => {}, summary)).toBe(0);
+    const text = fs.readFileSync(summary, "utf8");
+    expect(text.startsWith("existing\n")).toBe(true); // appended, not overwritten
+    expect(text).toContain("content: OK (1 warning(s))");
+    expect(text).toContain("near-clash");
+    expect(text).toContain("lessons: 1");
+  });
+  it("lists the errors too when the check fails", () => {
+    const summary = path.join(path.dirname(root), "summary.md");
+    expect(runValidate(root, () => {}, summary)).toBe(1);
+    expect(fs.readFileSync(summary, "utf8")).toMatch(/problem\(s\) found/);
+  });
+});
+
 describe("contentRootFromArgs (S12)", () => {
   it("defaults to ./content and accepts a directory argument", () => {
     expect(contentRootFromArgs([], "/repo")).toBe("/repo/content");
