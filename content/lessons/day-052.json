@@ -1,0 +1,362 @@
+{
+  "day": 52,
+  "phase": 1,
+  "week": 8,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "My birthday is in May! January to June",
+    "th": "My birthday is in May! เดือนมกราคมถึงมิถุนายน"
+  },
+  "objectives": [
+    {
+      "en": "Say the months January to June and when a birthday is: in May",
+      "th": "เรียกชื่อเดือนมกราคมถึงมิถุนายนและบอกเดือนเกิดได้: in May"
+    },
+    {
+      "en": "Talk about spring, summer and a year of twelve months",
+      "th": "พูดถึงฤดูใบไม้ผลิ ฤดูร้อน และหนึ่งปีสิบสองเดือนได้"
+    },
+    {
+      "en": "Say the -ed endings /t/ and /d/: walk–walked, play–played, call–called, look–looked",
+      "th": "ออกเสียง -ed ท้ายคำ /t/ กับ /d/ ได้: walk–walked, play–played, call–called, look–looked"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-january",
+    "v-february",
+    "v-march",
+    "v-april",
+    "v-may",
+    "v-june",
+    "v-month",
+    "v-year",
+    "v-spring",
+    "v-summer"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Endings -ed: /t/ and /d/",
+        "th": "เสียง -ed: /t/ และ /d/"
+      },
+      "exercises": [
+        {
+          "id": "d052-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "t",
+          "ipa": "/t/ /d/",
+          "tipTh": "คำกริยาเติม -ed (ที่จะได้ใช้ในอดีตกาลภายหลัง) ออกเสียงท้ายเป็น /t/ หลังเสียงที่ไม่สั่นคอ (walked, looked) และเป็น /d/ หลังเสียงที่สั่นคอ (played, called) คนไทยมักไม่ออกเสียงท้าย (played เป็น 'เพลย์') วันนี้ฝึกแยกเสียงท้ายเท่านั้น ยังไม่ต้องสร้างประโยคอดีต",
+          "examples": [
+            "walked",
+            "looked",
+            "played",
+            "called"
+          ]
+        },
+        {
+          "id": "d052-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "walk",
+              "b": "walked",
+              "answer": "b"
+            },
+            {
+              "a": "play",
+              "b": "played",
+              "answer": "b"
+            },
+            {
+              "a": "called",
+              "b": "call",
+              "answer": "a"
+            },
+            {
+              "a": "looked",
+              "b": "look",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "t",
+            "d"
+          ]
+        },
+        {
+          "id": "d052-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม walked กับ looked ลงท้าย /t/ (ไม่สั่นคอ) played กับ called ลงท้าย /d/ (สั่นคอ)"
+          },
+          "text": "Walked, looked, played, called.",
+          "ipa": "/wɔːkt lʊkt pleɪd kɔːld/",
+          "phonemes": [
+            "t",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: birthdays",
+        "th": "ฟัง: วันเกิด"
+      },
+      "exercises": [
+        {
+          "id": "d052-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าวันเกิดของลีโออยู่เดือนอะไร (Leo's = ของลีโอ)"
+          },
+          "audioText": "Hi! I am Leo. This is our birthday calendar. Dan's birthday is in January. Ray's birthday is in February. Rose's birthday is in March. Mali's birthday is in April. My birthday is in May. Nan's birthday is in June.",
+          "question": {
+            "en": "When is Leo's birthday?",
+            "th": "วันเกิดของลีโออยู่เดือนอะไร"
+          },
+          "choices": [
+            "In May",
+            "In March"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d052-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-january"
+            },
+            {
+              "vocabId": "v-february"
+            },
+            {
+              "vocabId": "v-march"
+            },
+            {
+              "vocabId": "v-april"
+            },
+            {
+              "vocabId": "v-may"
+            },
+            {
+              "vocabId": "v-june"
+            }
+          ]
+        },
+        {
+          "id": "d052-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรงเรียนเริ่มเดือนอะไร"
+          },
+          "audioText": "A year has twelve months. In England spring is warm and summer is hot. In Bangkok March, April and May are very hot. School starts in May and finishes in March.",
+          "question": {
+            "en": "When does school start?",
+            "th": "โรงเรียนเริ่มเดือนอะไร"
+          },
+          "choices": [
+            "In May",
+            "In March"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d052-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Leo's birthday is in May."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Birthdays and months",
+        "th": "วันเกิดและเดือน"
+      },
+      "exercises": [
+        {
+          "id": "d052-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค (Dan's birthday = วันเกิดของแดน)"
+          },
+          "lines": [
+            "This is our birthday calendar.",
+            "Dan's birthday is in January.",
+            "Ray's birthday is in February.",
+            "Rose's birthday is in March.",
+            "Mali's birthday is in April.",
+            "My birthday is in May.",
+            "Nan's birthday is in June.",
+            "A year has twelve months.",
+            "In spring it's warm.",
+            "In summer it's hot."
+          ]
+        },
+        {
+          "id": "d052-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าวันเกิดของคุณอยู่เดือนอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What month is your birthday in?",
+          "sampleAnswer": "My birthday is in May.",
+          "keywords": [
+            "birthday",
+            "month"
+          ]
+        },
+        {
+          "id": "d052-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /spr/ ใน spring ไม่เติมสระ 'สะ' และ /m/ ท้าย warm ปิดริมฝีปาก"
+          },
+          "text": "Spring is warm and summer is hot.",
+          "ipa": "/sprɪŋ ɪz wɔːrm ænd ˈsʌmər ɪz hɑːt/",
+          "phonemes": [
+            "spr"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "The family calendar",
+        "th": "ปฏิทินของครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d052-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Dan's birthday = วันเกิดของแดน)"
+          },
+          "text": "A year has twelve months. This is the family calendar. Dan's birthday is in January and Ray's birthday is in February. Rose's birthday is in March and Mali's birthday is in April. Leo's birthday is in May and Nan's birthday is in June. In England spring is warm and summer is hot. In Bangkok March, April and May are very hot.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who has a birthday in April?",
+                "th": "ใครมีวันเกิดในเดือนเมษายน"
+              },
+              "choices": [
+                "Mali",
+                "Rose"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What month is Nan's birthday in?",
+                "th": "วันเกิดของแนนอยู่เดือนอะไร"
+              },
+              "choices": [
+                "June",
+                "May"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Which months are very hot in Bangkok?",
+                "th": "เดือนไหนร้อนมากในกรุงเทพฯ"
+              },
+              "choices": [
+                "March, April and May",
+                "January and February"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: months",
+        "th": "เขียน: เดือน"
+      },
+      "exercises": [
+        {
+          "id": "d052-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "A",
+            "year",
+            "twelve",
+            "months"
+          ],
+          "answer": "A year has twelve months"
+        },
+        {
+          "id": "d052-write-02",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "วันเกิดของลีโออยู่ในเดือนพฤษภาคม",
+          "accept": [
+            "Leo's birthday is in May"
+          ]
+        },
+        {
+          "id": "d052-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันว่ายน้ำในฤดูร้อน",
+          "accept": [
+            "I swim in summer",
+            "In summer I swim"
+          ]
+        },
+        {
+          "id": "d052-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-month"
+            },
+            {
+              "vocabId": "v-year"
+            },
+            {
+              "vocabId": "v-spring"
+            },
+            {
+              "vocabId": "v-summer"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

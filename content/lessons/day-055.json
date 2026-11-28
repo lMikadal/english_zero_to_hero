@@ -1,0 +1,333 @@
+{
+  "day": 55,
+  "phase": 1,
+  "week": 8,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 8 review: time, days and months",
+    "th": "ทบทวนสัปดาห์ที่ 8: เวลา วัน และเดือน"
+  },
+  "objectives": [
+    {
+      "en": "Tell the time and say what you do on each day",
+      "th": "บอกเวลาและบอกว่าทำอะไรวันไหนได้"
+    },
+    {
+      "en": "Use at, on and in with times, days and months",
+      "th": "ใช้ at, on, in กับเวลา วัน และเดือนได้"
+    },
+    {
+      "en": "Say the endings -s (/s/ /z/ /ɪz/) and -ed (/t/ /d/ /ɪd/)",
+      "th": "ออกเสียงท้ายคำ -s (/s/ /z/ /ɪz/) และ -ed (/t/ /d/ /ɪd/) ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Endings -s and -ed",
+        "th": "เสียงท้ายคำ -s และ -ed"
+      },
+      "exercises": [
+        {
+          "id": "d055-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "hiss",
+              "b": "his",
+              "answer": "a"
+            },
+            {
+              "a": "play",
+              "b": "played",
+              "answer": "b"
+            },
+            {
+              "a": "saws",
+              "b": "sauce",
+              "answer": "b"
+            },
+            {
+              "a": "call",
+              "b": "called",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "s",
+            "z",
+            "t",
+            "d"
+          ]
+        },
+        {
+          "id": "d055-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม watches ต้องมีสองพยางค์ (WATCH-iz) และ Sunday เน้นพยางค์แรก"
+          },
+          "text": "She watches TV on Sunday.",
+          "ipa": "/ʃiː ˈwɑːtʃɪz ˌtiːˈviː ɑːn ˈsʌndeɪ/",
+          "phonemes": [
+            "iz"
+          ]
+        },
+        {
+          "id": "d055-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้าย opens เป็น /z/ สั่นคอ และ half ออก /h/ ต้นคำ"
+          },
+          "text": "The bank opens at half past nine.",
+          "ipa": "/ðə bæŋk ˈoʊpənz æt hæf pæst naɪn/",
+          "phonemes": [
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d055-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสมีอะไรวันนี้ (Rose's = ของโรส)"
+          },
+          "audioText": "Rose wakes up at six o'clock. She leaves home at seven o'clock. The bus takes half an hour. School starts at eight o'clock. Today Rose is busy: she has a lesson and a meeting. Now it is half past three. School finishes now. Tomorrow is Saturday. Rose goes shopping.",
+          "question": {
+            "en": "What does Rose have today?",
+            "th": "วันนี้โรสมีอะไร"
+          },
+          "choices": [
+            "A lesson and a meeting",
+            "An exam"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d055-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแดนมีแผนอะไรสัปดาห์หน้า"
+          },
+          "audioText": "Dan has a meeting on Monday at nine o'clock in his office. His office is near the bank. The bank opens at nine o'clock too. Next week Dan has a plan. On Sunday he swims. He is ready.",
+          "question": {
+            "en": "What does Dan do on Sunday?",
+            "th": "แดนทำอะไรวันอาทิตย์"
+          },
+          "choices": [
+            "He swims",
+            "He has a meeting"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d055-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Leo has an exam on Friday. He is ready."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d055-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I get up at six o'clock.",
+            "My train takes one hour.",
+            "On Tuesday I have a lesson.",
+            "On Wednesday I have a dance class.",
+            "On Thursday I'm busy.",
+            "The calendar is on the wall.",
+            "My birthday is in June.",
+            "A year has twelve months."
+          ]
+        },
+        {
+          "id": "d055-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอะไรวันจันทร์และวันเสาร์ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you do on Monday? What do you do on Saturday?",
+          "sampleAnswer": "On Monday I go to work. On Saturday I go shopping.",
+          "keywords": [
+            "Monday",
+            "Saturday"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d055-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Leo wakes up at half past six. He leaves home at a quarter past seven and walks to school. School starts at eight o'clock. On Tuesday he has a lesson. On Friday he has an exam. On Saturday he plays football. On Sunday he calls Mali. His birthday is in May. In summer he swims.",
+          "questions": [
+            {
+              "question": {
+                "en": "What time does Leo leave home?",
+                "th": "ลีโอออกจากบ้านกี่โมง"
+              },
+              "choices": [
+                "A quarter past seven",
+                "Half past six"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo have on Friday?",
+                "th": "ลีโอมีอะไรวันศุกร์"
+              },
+              "choices": [
+                "An exam",
+                "A lesson"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo do on Sunday?",
+                "th": "ลีโอทำอะไรวันอาทิตย์"
+              },
+              "choices": [
+                "He calls Mali",
+                "He plays football"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d055-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-o-clock"
+            },
+            {
+              "vocabId": "v-half"
+            },
+            {
+              "vocabId": "v-monday"
+            },
+            {
+              "vocabId": "v-friday"
+            },
+            {
+              "vocabId": "v-calendar"
+            },
+            {
+              "vocabId": "v-month"
+            },
+            {
+              "vocabId": "v-summer"
+            },
+            {
+              "vocabId": "v-holiday"
+            }
+          ]
+        },
+        {
+          "id": "d055-write-01",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (เจ็ดโมงสิบห้า)"
+          },
+          "text": "It is a ___ past seven.",
+          "answer": [
+            "quarter"
+          ]
+        },
+        {
+          "id": "d055-write-02",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "starts",
+            "School",
+            "at",
+            "eight",
+            "o'clock"
+          ],
+          "answer": "School starts at eight o'clock",
+          "accept": [
+            "At eight o'clock school starts"
+          ]
+        },
+        {
+          "id": "d055-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันมีสอบวันศุกร์",
+          "accept": [
+            "I have an exam on Friday",
+            "On Friday I have an exam"
+          ]
+        },
+        {
+          "id": "d055-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "วันเกิดของแนนอยู่ในเดือนมิถุนายน",
+          "accept": [
+            "Nan's birthday is in June"
+          ]
+        }
+      ]
+    }
+  ]
+}

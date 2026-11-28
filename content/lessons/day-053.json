@@ -1,0 +1,340 @@
+{
+  "day": 53,
+  "phase": 1,
+  "week": 8,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "The family year! July to December and the seasons",
+    "th": "ปีของครอบครัว! กรกฎาคมถึงธันวาคม และฤดูกาล"
+  },
+  "objectives": [
+    {
+      "en": "Say the months July to December and talk about the holiday",
+      "th": "เรียกชื่อเดือนกรกฎาคมถึงธันวาคมและพูดถึงวันหยุดพักผ่อนได้"
+    },
+    {
+      "en": "Name the four seasons: spring, summer, autumn, winter",
+      "th": "เรียกชื่อฤดูทั้งสี่ได้: spring, summer, autumn, winter"
+    },
+    {
+      "en": "Say the ending -ed /ɪd/: wanted, needed, started, visited",
+      "th": "ออกเสียง -ed ท้ายคำเป็น /ɪd/ ได้: wanted, needed, started, visited"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-july",
+    "v-august",
+    "v-september",
+    "v-october",
+    "v-november",
+    "v-december",
+    "v-autumn",
+    "v-winter",
+    "v-season",
+    "v-holiday"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Ending -ed: /ɪd/",
+        "th": "เสียง -ed: /ɪd/"
+      },
+      "exercises": [
+        {
+          "id": "d053-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "id",
+          "ipa": "/ɪd/",
+          "tipTh": "คำกริยาที่ลงท้ายด้วย t หรือ d (want, need, start, visit) เติม -ed แล้วออกเสียงเป็นพยางค์เพิ่ม /ɪd/ (wanted = WANT-id สองพยางค์) คนไทยมักตัดทิ้ง (wanted เป็น 'วอนท์') ให้นับพยางค์ให้ครบ วันนี้ฝึกคำเดี่ยวก่อน ยังไม่ต้องสร้างประโยคอดีต",
+          "examples": [
+            "wanted",
+            "needed",
+            "started",
+            "visited"
+          ]
+        },
+        {
+          "id": "d053-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ทุกคำมีสองหรือสามพยางค์ ท้ายคำ /ɪd/ ต้องมีเสียงสั่นคอ ไม่ตัดทิ้ง"
+          },
+          "text": "Wanted, needed, started, visited.",
+          "ipa": "/ˈwɑːntɪd ˈniːdɪd ˈstɑːrtɪd ˈvɪzɪtɪd/",
+          "phonemes": [
+            "id"
+          ]
+        },
+        {
+          "id": "d053-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม แยกคำที่ท้ายเสียงเดียว (walked, played) กับคำที่เพิ่มพยางค์ (wanted, needed)"
+          },
+          "text": "Walked, wanted, played, needed.",
+          "ipa": "/wɔːkt ˈwɑːntɪd pleɪd ˈniːdɪd/",
+          "phonemes": [
+            "id",
+            "t",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: the family year",
+        "th": "ฟัง: ปีของครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d053-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าครอบครัวทำอะไรในเดือนธันวาคม"
+          },
+          "audioText": "Hi! I am Leo. I go to school in July, August, September and November. We have a holiday in October. In December we visit my grandmother Mali in Chiang Mai.",
+          "question": {
+            "en": "What does the family do in December?",
+            "th": "ครอบครัวทำอะไรในเดือนธันวาคม"
+          },
+          "choices": [
+            "They visit Mali",
+            "They go to school"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d053-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-july"
+            },
+            {
+              "vocabId": "v-august"
+            },
+            {
+              "vocabId": "v-september"
+            },
+            {
+              "vocabId": "v-october"
+            },
+            {
+              "vocabId": "v-november"
+            },
+            {
+              "vocabId": "v-december"
+            }
+          ]
+        },
+        {
+          "id": "d053-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าฤดูไหนหนาว"
+          },
+          "audioText": "A year has four seasons in England: spring, summer, autumn and winter. Summer is hot. Winter is cold. I like autumn.",
+          "question": {
+            "en": "What season is cold?",
+            "th": "ฤดูไหนหนาว"
+          },
+          "choices": [
+            "Winter",
+            "Summer"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d053-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "It is cold in winter in England."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "The family year",
+        "th": "ปีของครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d053-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I go to school in July and August.",
+            "I go to school in September and November.",
+            "In October we have a holiday.",
+            "In December we visit my grandmother Mali.",
+            "A year has four seasons.",
+            "Spring, summer, autumn and winter.",
+            "Winter is cold in England.",
+            "I like autumn."
+          ]
+        },
+        {
+          "id": "d053-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณชอบฤดูไหน และทำอะไรตอนวันหยุดพักผ่อน ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What season do you like? What do you do on holiday?",
+          "sampleAnswer": "I like winter. On holiday I visit my family.",
+          "keywords": [
+            "season",
+            "holiday"
+          ]
+        },
+        {
+          "id": "d053-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ออก holiday ให้เน้นพยางค์แรก (HOLiday) และ has ท้ายเป็น /z/ สั่นคอ"
+          },
+          "text": "The family has a holiday in October.",
+          "ipa": "/ðə ˈfæməli hæz ə ˈhɑːlədeɪ ɪn ɑːkˈtoʊbər/",
+          "phonemes": [
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "The year",
+        "th": "หนึ่งปี"
+      },
+      "exercises": [
+        {
+          "id": "d053-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "A year has twelve months. In England a year has four seasons: spring, summer, autumn and winter. Winter is cold. In Thailand it is hot in March, April and May. Leo goes to school in July, August, September and November. The family has a holiday in October. In December the family visits Mali in Chiang Mai.",
+          "questions": [
+            {
+              "question": {
+                "en": "How many seasons does a year have in England?",
+                "th": "ในอังกฤษหนึ่งปีมีกี่ฤดู"
+              },
+              "choices": [
+                "Four",
+                "Twelve"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "When does the family have a holiday?",
+                "th": "ครอบครัวมีวันหยุดพักผ่อนเมื่อไร"
+              },
+              "choices": [
+                "In October",
+                "In December"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where does Mali live?",
+                "th": "มาลีอาศัยอยู่ที่ไหน"
+              },
+              "choices": [
+                "In Chiang Mai",
+                "In Bangkok"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: months and seasons",
+        "th": "เขียน: เดือนและฤดู"
+      },
+      "exercises": [
+        {
+          "id": "d053-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "A",
+            "year",
+            "four",
+            "seasons"
+          ],
+          "answer": "A year has four seasons"
+        },
+        {
+          "id": "d053-write-02",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เรามีวันหยุดพักผ่อนในเดือนตุลาคม",
+          "accept": [
+            "We have a holiday in October",
+            "In October we have a holiday"
+          ]
+        },
+        {
+          "id": "d053-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันชอบฤดูหนาว",
+          "accept": [
+            "I like winter"
+          ]
+        },
+        {
+          "id": "d053-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-autumn"
+            },
+            {
+              "vocabId": "v-winter"
+            },
+            {
+              "vocabId": "v-season"
+            },
+            {
+              "vocabId": "v-holiday"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

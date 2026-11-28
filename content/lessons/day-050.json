@@ -1,0 +1,400 @@
+{
+  "day": 50,
+  "phase": 1,
+  "week": 8,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "What time is it? o'clock, half past",
+    "th": "What time is it? ถามและบอกเวลา"
+  },
+  "objectives": [
+    {
+      "en": "Ask and tell the time: What time is it? It is seven o'clock / half past seven",
+      "th": "ถามและบอกเวลาได้: What time is it? It is seven o'clock / half past seven"
+    },
+    {
+      "en": "Talk about now, today and tomorrow",
+      "th": "พูดถึง now, today และ tomorrow ได้"
+    },
+    {
+      "en": "Say the plural -s sounds /s/ and /z/: niece–knees, price–prize, hiss–his, sauce–saws",
+      "th": "ออกเสียง -s ท้ายคำ /s/ กับ /z/ ได้: niece–knees, price–prize, hiss–his, sauce–saws"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-o-clock",
+    "v-hour",
+    "v-half",
+    "v-past",
+    "v-quarter",
+    "v-now",
+    "v-today",
+    "v-tomorrow"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Endings -s: /s/ and /z/",
+        "th": "เสียง -s ท้ายคำ: /s/ และ /z/"
+      },
+      "exercises": [
+        {
+          "id": "d050-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "s",
+          "ipa": "/s/ /z/",
+          "tipTh": "คนไทยมักไม่ออกเสียง -s ท้ายคำ (cats เป็น 'แคท') ภาษาอังกฤษออกเสียง -s ต่างกันตามเสียงก่อนหน้า: หลังเสียงที่ไม่สั่นคอ (t, k, p) เป็น /s/ เช่น cats, books ส่วนหลังเสียงที่สั่นคอ (g, n และสระ) เป็น /z/ เช่น dogs, bags, plays วางมือที่คอ: /z/ ต้องรู้สึกสั่น /s/ ไม่สั่น",
+          "examples": [
+            "cats",
+            "books",
+            "dogs",
+            "bags"
+          ]
+        },
+        {
+          "id": "d050-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "niece",
+              "b": "knees",
+              "answer": "a"
+            },
+            {
+              "a": "prize",
+              "b": "price",
+              "answer": "b"
+            },
+            {
+              "a": "hiss",
+              "b": "his",
+              "answer": "a"
+            },
+            {
+              "a": "saws",
+              "b": "sauce",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "s",
+            "z"
+          ]
+        },
+        {
+          "id": "d050-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้าย cats เป็น /s/ (ไม่สั่นคอ) ท้าย dogs เป็น /z/ (สั่นคอ) อย่าตัด -s ทิ้ง"
+          },
+          "text": "The cats and the dogs eat fish.",
+          "ipa": "/ðə kæts ænd ðə dɔːɡz iːt fɪʃ/",
+          "phonemes": [
+            "s",
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: what time?",
+        "th": "ฟัง: กี่โมง"
+      },
+      "exercises": [
+        {
+          "id": "d050-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "ถามและบอกเวลา: What time is it?",
+          "bodyTh": "ใช้ถามและบอกเวลา: ถามว่า What time is it? ตอบว่า It is + เวลา ถ้าตรงชั่วโมงใช้ o'clock (It is seven o'clock.) ถ้าครึ่งชั่วโมงใช้ half past (It is half past seven.) ผิดบ่อย: It is seven clock ✗ → It is seven o'clock ✓ และ seven half ✗ → half past seven ✓",
+          "examples": [
+            {
+              "en": "What time is it?",
+              "th": "ตอนนี้กี่โมง"
+            },
+            {
+              "en": "It is seven o'clock.",
+              "th": "เจ็ดโมงตรง"
+            },
+            {
+              "en": "It is half past seven.",
+              "th": "เจ็ดโมงครึ่ง"
+            },
+            {
+              "en": "It is ten past eight.",
+              "th": "แปดโมงสิบ"
+            }
+          ],
+          "structures": [
+            "clock-time"
+          ],
+          "table": [
+            [
+              "เวลา",
+              "พูดว่า"
+            ],
+            [
+              "7:00",
+              "seven o'clock"
+            ],
+            [
+              "7:15",
+              "a quarter past seven"
+            ],
+            [
+              "7:30",
+              "half past seven"
+            ],
+            [
+              "7:10",
+              "ten past seven"
+            ],
+            [
+              "7:45",
+              "a quarter to eight"
+            ]
+          ]
+        },
+        {
+          "id": "d050-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรงเรียนเริ่มกี่โมง"
+          },
+          "audioText": "I am Rose. I wake up at six o'clock. I leave home at seven o'clock. The bus takes half an hour. School starts at eight o'clock. It finishes at half past three.",
+          "question": {
+            "en": "What time does school start?",
+            "th": "โรงเรียนเริ่มกี่โมง"
+          },
+          "choices": [
+            "At eight o'clock",
+            "At seven o'clock"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d050-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-o-clock"
+            },
+            {
+              "vocabId": "v-hour"
+            },
+            {
+              "vocabId": "v-half"
+            },
+            {
+              "vocabId": "v-past"
+            }
+          ]
+        },
+        {
+          "id": "d050-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าตอนนี้กี่โมง"
+          },
+          "audioText": "Nan: What time is it now, Leo? Leo: It is a quarter past seven. Nan: Is it late? Leo: No. School starts at eight o'clock. I leave home now. Nan: My train takes one hour. Today I leave at half past six. Tomorrow I leave at half past six too.",
+          "question": {
+            "en": "What time is it now?",
+            "th": "ตอนนี้กี่โมง"
+          },
+          "choices": [
+            "A quarter past seven",
+            "Half past seven",
+            "Seven o'clock"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d050-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "It is six o'clock. Rose wakes up now."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "What time is it?",
+        "th": "กี่โมงแล้ว"
+      },
+      "exercises": [
+        {
+          "id": "d050-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I wake up at half past six.",
+            "I leave home at a quarter past seven.",
+            "What time is it now?",
+            "It's a quarter past seven.",
+            "School starts at eight o'clock.",
+            "It finishes at half past three.",
+            "Today I'm tired.",
+            "Tomorrow I wake up early."
+          ]
+        },
+        {
+          "id": "d050-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณตื่นกี่โมง และงานหรือโรงเรียนเริ่มกี่โมง ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What time do you get up? What time does school or work start?",
+          "sampleAnswer": "I get up at six o'clock. Work starts at eight o'clock.",
+          "keywords": [
+            "time",
+            "o'clock"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Dan's morning",
+        "th": "ตอนเช้าของแดน"
+      },
+      "exercises": [
+        {
+          "id": "d050-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Dan gets up at half past six. He leaves home at seven o'clock. He drives to work. It takes half an hour. He arrives at half past seven. He always arrives early. He finishes work at six o'clock. He often finishes at seven. Today he is tired. Tomorrow he has free time.",
+          "questions": [
+            {
+              "question": {
+                "en": "What time does Dan leave home?",
+                "th": "แดนออกจากบ้านกี่โมง"
+              },
+              "choices": [
+                "At seven o'clock",
+                "At half past six"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How long does the drive take?",
+                "th": "ขับรถใช้เวลานานเท่าไร"
+              },
+              "choices": [
+                "Half an hour",
+                "One hour"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What time does Dan arrive?",
+                "th": "แดนมาถึงกี่โมง"
+              },
+              "choices": [
+                "At half past seven",
+                "At eight o'clock"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: the time",
+        "th": "เขียน: เวลา"
+      },
+      "exercises": [
+        {
+          "id": "d050-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "What",
+            "time",
+            "it"
+          ],
+          "answer": "What time is it"
+        },
+        {
+          "id": "d050-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (เจ็ดโมงครึ่ง)"
+          },
+          "text": "It is half ___ seven.",
+          "answer": [
+            "past"
+          ]
+        },
+        {
+          "id": "d050-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ตอนนี้เจ็ดโมงครึ่ง",
+          "accept": [
+            "It is half past seven",
+            "It's half past seven",
+            "It is half past seven now",
+            "It's half past seven now",
+            "Now it is half past seven",
+            "Now it's half past seven"
+          ]
+        },
+        {
+          "id": "d050-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-quarter"
+            },
+            {
+              "vocabId": "v-now"
+            },
+            {
+              "vocabId": "v-today"
+            },
+            {
+              "vocabId": "v-tomorrow"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

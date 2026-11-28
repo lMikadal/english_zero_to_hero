@@ -78,3 +78,10 @@ Rules added: `arrange-question`, `sound-words`, `phoneme-tags`, `cast-consistenc
 
 - Words of week 7 labelled A1 from memory whose level is doubtful: `usually` (A2?), `arrive` (maybe A2), `taxi` (unsure), `shower`, `drive`, `leave`, `visit`, `ticket`, `bike`, `desk`, `shopping`, `weekend`, `class`, `swim`. Verify against the official Oxford 3000 list when the owner supplies it (same note as week 6).
 - New gate `frequency-adverb` (day 44: always, usually, often, sometimes, never) in `GRAMMAR_STRUCTURES` / `GRAMMAR_NOT_BEFORE`. It only knows the five words, not the word order (`I watch TV always` is not detected) and not `How often`.
+
+## Week 8 review: Oxford level doubt and design notes
+
+- Labelled A1 from memory, level doubtful: `quarter`, `o'clock`, `holiday`, `autumn`, `calendar`, `lesson`, `exam`, `meeting`, `busy`, `ready`, `office`, `bank`, `season`, `plan`, and the months and days (A1 in the usual lists). `minute` was left out on purpose: it is a heteronym (/ˈmɪnɪt/ and /maɪˈnjuːt/) that the TTS may misread.
+- New gates in `GRAMMAR_STRUCTURES`: `clock-time` (day 50, the word gate is `o'clock`) and `time-prepositions` (day 51, no word gate: at / on / in cannot be found by a word list, so `grammar-note-required` cannot see it; the card was written because the curriculum asks for it).
+- The -ed endings (/t/ /d/ /ɪd/) are taught as sound only, in word lists and sound drills, because the Past Simple is not in the curriculum before phase 2. Days 52-53 therefore contain past forms (walked, played, wanted) only in drills.
+- Days of the week and months are capitalised words: an `arrange_words` answer with one in the middle needs it in `PROPER_NAMES` (which would also demand a Thai spelling), so week 8 has no arrange item with a day or month inside the sentence; `translate_th_en` and `fill_blank` are case-insensitive and carry them.

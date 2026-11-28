@@ -1,0 +1,216 @@
+{
+  "day": 56,
+  "phase": 1,
+  "week": 8,
+  "type": "challenge",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 8 challenge: tell me about your week and your year",
+    "th": "ภารกิจสัปดาห์ที่ 8: เล่าเรื่องสัปดาห์และปีของคุณ"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read short texts about a week and a year",
+      "th": "ฟังและอ่านเรื่องสั้นเกี่ยวกับสัปดาห์และหนึ่งปีได้"
+    },
+    {
+      "en": "Tell your week, your birthday month and your holiday aloud in about 30 seconds",
+      "th": "เล่าสัปดาห์ เดือนเกิด และวันหยุดพักผ่อนของตัวเองด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write 5–6 sentences about your week and your year with at, on and in",
+      "th": "เขียน 5–6 ประโยคเกี่ยวกับสัปดาห์และปีของตัวเองด้วย at, on, in ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d056-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้าย swims, plays เป็น /z/ สั่นคอ และ Saturday เน้นพยางค์แรก"
+          },
+          "text": "Dan swims on Sunday and Leo plays football on Saturday.",
+          "ipa": "/dæn swɪmz ɑːn ˈsʌndeɪ ænd ˈliːoʊ pleɪz ˈfʊtbɔːl ɑːn ˈsætərdeɪ/"
+        },
+        {
+          "id": "d056-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้าย visits มีเสียง /ts/ ไม่ตัดทิ้ง และ December เน้นพยางค์ที่สอง (deCEMber)"
+          },
+          "text": "In December the family visits Mali.",
+          "ipa": "/ɪn dɪˈsembər ðə ˈfæməli ˈvɪzɪts ˈmɑːli/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a year",
+        "th": "ฟังเรื่องหนึ่งปี"
+      },
+      "exercises": [
+        {
+          "id": "d056-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนมีวันหยุดพักผ่อนเดือนอะไร"
+          },
+          "audioText": "Hello! I am Nan. My birthday is in June. In January and February I am busy. In March I am free. In October I have a holiday. In December I visit my friend.",
+          "question": {
+            "en": "What month is Nan's holiday in?",
+            "th": "แนนมีวันหยุดพักผ่อนเดือนอะไร"
+          },
+          "choices": [
+            "October",
+            "December"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d056-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรงเรียนเริ่มเดือนอะไร"
+          },
+          "audioText": "I am Rose. School starts in May. April is very hot. In July, August, September and November Leo goes to school. A year has four seasons in England: spring, summer, autumn and winter. Winter is cold. I like spring.",
+          "question": {
+            "en": "When does school start?",
+            "th": "โรงเรียนเริ่มเดือนอะไร"
+          },
+          "choices": [
+            "In May",
+            "In April"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d056-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "In October the family has a holiday."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d056-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "Hi, Nan! What time is it now?",
+            "It's half past seven. School starts at eight o'clock.",
+            "What do you do on Wednesday?",
+            "I have a dance class.",
+            "What do you do on Saturday and Sunday?",
+            "I watch a film. I'm free tomorrow.",
+            "What month is your birthday in?",
+            "It's in June. Thank you!"
+          ]
+        },
+        {
+          "id": "d056-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องสัปดาห์ของคุณด้วยเสียงประมาณ 30 วินาที: ตื่นกี่โมง ทำอะไรวันไหน วันเกิดอยู่เดือนอะไร และมีวันหยุดพักผ่อนเดือนอะไร"
+          },
+          "prompt": "What time do you get up? What do you do on Saturday? What month is your birthday in? What month do you have a holiday in?",
+          "sampleAnswer": "I get up at six o'clock. On Saturday I go shopping. My birthday is in May. I have a holiday in October.",
+          "keywords": [
+            "o'clock",
+            "birthday"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read about a year",
+        "th": "อ่านเรื่องหนึ่งปี"
+      },
+      "exercises": [
+        {
+          "id": "d056-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Dan is busy on Monday. He has a meeting at nine o'clock. On Sunday he swims. His birthday is in January. Rose goes shopping on Saturday. Her birthday is in March. Ray goes to the market on Friday. His birthday is in February. Mali lives in Chiang Mai. Her birthday is in April. Leo has an exam next week. His birthday is in May. Nan has a dance class on Wednesday. Her birthday is in June. In summer it is hot. In winter it is cold.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Dan do on Sunday?",
+                "th": "แดนทำอะไรวันอาทิตย์"
+              },
+              "choices": [
+                "He swims",
+                "He goes shopping"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who has a birthday in March?",
+                "th": "ใครมีวันเกิดในเดือนมีนาคม"
+              },
+              "choices": [
+                "Rose",
+                "Leo"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo have next week?",
+                "th": "ลีโอมีอะไรสัปดาห์หน้า"
+              },
+              "choices": [
+                "An exam",
+                "A meeting"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about your week and year",
+        "th": "เขียนเกี่ยวกับสัปดาห์และปีของคุณ"
+      },
+      "exercises": [
+        {
+          "id": "d056-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยคเกี่ยวกับสัปดาห์และปีของคุณ: ตื่นกี่โมง ทำอะไรวันไหน วันเกิดอยู่เดือนอะไร ชอบฤดูไหน ใช้ at, on, in ให้ถูก"
+          },
+          "prompt": "Write 5–6 sentences about your week and your year. What time do you get up? What do you do on Monday and on Saturday? What month is your birthday in? What season do you like?",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}

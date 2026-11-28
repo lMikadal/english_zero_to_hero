@@ -1,0 +1,371 @@
+{
+  "day": 51,
+  "phase": 1,
+  "week": 8,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Monday to Sunday! on Monday, at, in",
+    "th": "Monday to Sunday! ชื่อวัน และ at / on / in"
+  },
+  "objectives": [
+    {
+      "en": "Name the seven days and say what you do on each day",
+      "th": "เรียกชื่อวันทั้งเจ็ดและบอกว่าทำอะไรวันไหนได้"
+    },
+    {
+      "en": "Use at, on and in with times and days: at seven o'clock, on Monday, in the morning",
+      "th": "ใช้ at, on, in กับเวลาและวันได้: at seven o'clock, on Monday, in the morning"
+    },
+    {
+      "en": "Say the ending -es /ɪz/: watches, washes, buses, dances",
+      "th": "ออกเสียง -es /ɪz/ ท้ายคำได้: watches, washes, buses, dances"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-monday",
+    "v-tuesday",
+    "v-wednesday",
+    "v-thursday",
+    "v-friday",
+    "v-saturday",
+    "v-sunday",
+    "v-calendar"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Ending -es: /ɪz/",
+        "th": "เสียง -es: /ɪz/"
+      },
+      "exercises": [
+        {
+          "id": "d051-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "iz",
+          "ipa": "/ɪz/",
+          "tipTh": "คำที่ลงท้ายด้วยเสียง s, z, ʃ, tʃ (watch, wash, bus, dance) เติม -es แล้วออกเสียงเป็นพยางค์เพิ่มอีกหนึ่งพยางค์ /ɪz/ คนไทยมักไม่ออกเสียงท้าย (watches เป็น 'วอช') ให้นับพยางค์: WATCH-es สองพยางค์ ต่างจาก cats ที่ยังมีพยางค์เดียว",
+          "examples": [
+            "watches",
+            "washes",
+            "buses",
+            "dances"
+          ]
+        },
+        {
+          "id": "d051-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม watches ต้องมีสองพยางค์ (WATCH-iz) ท้ายคำสั่นคอ ไม่ใช่ 'วอช'"
+          },
+          "text": "She watches TV on Friday.",
+          "ipa": "/ʃiː ˈwɑːtʃɪz ˌtiːˈviː ɑːn ˈfraɪdeɪ/",
+          "phonemes": [
+            "iz"
+          ]
+        },
+        {
+          "id": "d051-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม washes และ glasses ลงท้าย /ɪz/ ทั้งสองคำ นับให้ได้สองพยางค์"
+          },
+          "text": "He washes the glasses on Sunday.",
+          "ipa": "/hiː ˈwɑːʃɪz ðə ˈɡlæsɪz ɑːn ˈsʌndeɪ/",
+          "phonemes": [
+            "iz"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: my week",
+        "th": "ฟัง: สัปดาห์ของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d051-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "at / on / in กับเวลา",
+          "bodyTh": "ใช้บอกว่าเหตุการณ์เกิดเมื่อไร: at กับเวลาบนนาฬิกา (at seven o'clock) on กับวัน (on Monday) in กับช่วงของวัน เดือน ปี ฤดู (in the morning, in May) ผิดบ่อย: in Monday ✗ → on Monday ✓ และ at the morning ✗ → in the morning ✓ ไม่ต้องใช้ on กับ today, tomorrow, every day",
+          "examples": [
+            {
+              "en": "I wake up at six o'clock.",
+              "th": "ฉันตื่นหกโมง"
+            },
+            {
+              "en": "I go to school on Monday.",
+              "th": "ฉันไปโรงเรียนวันจันทร์"
+            },
+            {
+              "en": "I eat breakfast in the morning.",
+              "th": "ฉันกินอาหารเช้าตอนเช้า"
+            },
+            {
+              "en": "On Saturday I play football.",
+              "th": "วันเสาร์ฉันเล่นฟุตบอล"
+            }
+          ],
+          "structures": [
+            "time-prepositions"
+          ],
+          "table": [
+            [
+              "ใช้กับ",
+              "คำ",
+              "ตัวอย่าง"
+            ],
+            [
+              "เวลาบนนาฬิกา",
+              "at",
+              "at seven o'clock"
+            ],
+            [
+              "วัน",
+              "on",
+              "on Monday"
+            ],
+            [
+              "ช่วงของวัน",
+              "in",
+              "in the morning"
+            ],
+            [
+              "เดือน ปี ฤดู",
+              "in",
+              "(เรียนวันที่ 52–53)"
+            ]
+          ]
+        },
+        {
+          "id": "d051-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสทำอะไรวันเสาร์"
+          },
+          "audioText": "Rose goes to school on Monday, Tuesday, Wednesday, Thursday and Friday. On Saturday she goes shopping. On Sunday she has free time.",
+          "question": {
+            "en": "What does Rose do on Saturday?",
+            "th": "โรสทำอะไรวันเสาร์"
+          },
+          "choices": [
+            "She goes shopping",
+            "She goes to school"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d051-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-monday"
+            },
+            {
+              "vocabId": "v-tuesday"
+            },
+            {
+              "vocabId": "v-wednesday"
+            },
+            {
+              "vocabId": "v-thursday"
+            }
+          ]
+        },
+        {
+          "id": "d051-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอทำอะไรวันอาทิตย์"
+          },
+          "audioText": "I am Leo. I go to school on Monday, Tuesday, Wednesday, Thursday and Friday. I play football on Saturday. On Sunday I call my grandmother. Saturday and Sunday are the weekend.",
+          "question": {
+            "en": "What does Leo do on Sunday?",
+            "th": "ลีโอทำอะไรวันอาทิตย์"
+          },
+          "choices": [
+            "He calls his grandmother",
+            "He plays football"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d051-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "On Wednesday Nan has a dance class."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "My week",
+        "th": "สัปดาห์ของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d051-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I go to school on Monday, Tuesday, Wednesday, Thursday and Friday.",
+            "Saturday and Sunday are the weekend.",
+            "On Saturday I play football.",
+            "On Sunday I call my grandmother.",
+            "The calendar is on the wall.",
+            "I look at the calendar every day.",
+            "I have free time on the weekend."
+          ]
+        },
+        {
+          "id": "d051-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอะไรวันเสาร์และวันอาทิตย์ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you do on Saturday? What do you do on Sunday?",
+          "sampleAnswer": "On Saturday I go shopping. On Sunday I watch a film.",
+          "keywords": [
+            "Saturday",
+            "Sunday"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "The calendar",
+        "th": "ปฏิทิน"
+      },
+      "exercises": [
+        {
+          "id": "d051-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Rose has a calendar on the wall. A week has seven days. Monday, Tuesday, Wednesday, Thursday and Friday are school days. Rose goes to school by bus. Saturday and Sunday are the weekend. On Saturday Rose goes shopping at the market. On Sunday Dan swims and Leo calls his grandmother. On Wednesday Nan has a dance class. On Friday Ray goes to the market by bike.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Dan do on Sunday?",
+                "th": "แดนทำอะไรวันอาทิตย์"
+              },
+              "choices": [
+                "He swims",
+                "He goes shopping"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who has a dance class on Wednesday?",
+                "th": "ใครมีคลาสเต้นรำวันพุธ"
+              },
+              "choices": [
+                "Nan",
+                "Rose"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Ray do on Friday?",
+                "th": "เรย์ทำอะไรวันศุกร์"
+              },
+              "choices": [
+                "He goes to the market",
+                "He swims"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: on Monday",
+        "th": "เขียน: on Monday"
+      },
+      "exercises": [
+        {
+          "id": "d051-write-01",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำบุพบท (วันจันทร์)"
+          },
+          "text": "I go to school ___ Monday.",
+          "answer": [
+            "on"
+          ]
+        },
+        {
+          "id": "d051-write-02",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันเล่นฟุตบอลวันเสาร์",
+          "accept": [
+            "I play football on Saturday",
+            "On Saturday I play football"
+          ]
+        },
+        {
+          "id": "d051-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แนนมีคลาสเต้นรำวันพุธ",
+          "accept": [
+            "Nan has a dance class on Wednesday",
+            "On Wednesday Nan has a dance class"
+          ]
+        },
+        {
+          "id": "d051-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-friday"
+            },
+            {
+              "vocabId": "v-saturday"
+            },
+            {
+              "vocabId": "v-sunday"
+            },
+            {
+              "vocabId": "v-calendar"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
