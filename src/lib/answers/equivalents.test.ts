@@ -122,6 +122,15 @@ describe("matchesAny with equivalents", () => {
     expect(matchesAny("I am for", ["I am four"])).toBe(false);
     expect(matchesAny("I am 40", ["I am fourteen"])).toBe(false);
     expect(matchesAny("a 100", ["a hundred"])).toBe(false);
+    for (const [wrong, right] of [
+      ["He is come home", "He's come home"], ["He is had lunch", "He's had lunch"], ["He is sat down", "He's sat down"],
+      ["He is bought a car", "He's bought a car"], ["She is finished her homework", "She's finished her homework"],
+    ]) expect(matchesAny(wrong, [right]), wrong).toBe(false);
+  });
+  it("'s before a participle is not folded either way: 'He has come home' needs to be listed", () => {
+    expect(matchesAny("He has come home", ["He's come home"])).toBe(false);
+    expect(matchesAny("He has come home", ["He's come home", "He has come home"])).toBe(true);
+    expect(matchesAny("He's come home", ["He has come home"])).toBe(false);
   });
   it("'s = has before been/got, both directions", () => {
     expect(matchesAny("He has been to Japan", ["He's been to Japan"])).toBe(true);

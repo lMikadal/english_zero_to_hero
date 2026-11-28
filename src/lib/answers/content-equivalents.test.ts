@@ -27,7 +27,7 @@ function variants(sentence: string): string[] {
   let out = [sentence];
   const swaps: [RegExp, string][] = [];
   // 's is only folded when it can only mean "is": never before got/been (those are "has") and never before a participle or -ed word
-  const NOT_PARTICIPLE = "(?! (?:got|been|gone|done|seen|taken|\\w+ed)\\b)";
+  const NOT_PARTICIPLE = "(?! (?:got|been|gone|done|seen|taken|come|had|sat|bought|\\w+ed)\\b)";
   for (const [full, short] of PAIRS) {
     const guard = short.endsWith("'s") ? NOT_PARTICIPLE : "";
     swaps.push([new RegExp(`(?<![\\w'])${full}(?![\\w'])${guard}`, "gi"), short], [new RegExp(`(?<![\\w'])${short}(?![\\w'])${guard}`, "gi"), full]);
@@ -93,6 +93,11 @@ describe("over-acceptance: wrong answers stay wrong", () => {
     [["He's been to Japan"], "He is been to Japan"],
     [["What's happened"], "What is happened"],
     [["He's got a cat"], "He is got a cat"],
+    [["He's come home"], "He is come home"],
+    [["He's had lunch"], "He is had lunch"],
+    [["He's sat down"], "He is sat down"],
+    [["He's bought a car"], "He is bought a car"],
+    [["He's come home"], "He has come home"],
     [["It's a door"], "Its a door"],
     [["Its door is big"], "It's door is big"],
     [["His door"], "He's door"],

@@ -22,7 +22,10 @@ describe("answer-forms: contractions", () => {
     const out = check(translate(["He's tired"]));
     expect(out).toHaveLength(1);
     expect(out[0]).toMatchObject({ rule: "answer-forms", file: "content/lessons/day-001.json", id: "d001-write-01" });
-    expect(out[0].message).toContain("he is tired");
+    expect(out[0].message).toContain("ambiguous");
+    expect(out[0].message).toContain("X has");
+    expect(out[0].message).toContain("X is");
+    expect(out[0].message).not.toContain("he is tired"); // never print a concrete sentence that may be ungrammatical
     expect(out[0].message).toContain("strict");
     expect(check(translate(["He's tired", "He is tired"]))).toEqual([]);
     expect(check(translate(["He's tired"], true))).toEqual([]);
@@ -33,7 +36,7 @@ describe("answer-forms: contractions", () => {
   it("flags the full form too, because it would not match the contraction", () => {
     const out = check(translate(["It is tired"]));
     expect(out).toHaveLength(1);
-    expect(out[0].message).toContain("it's tired");
+    expect(out[0].message).toContain("it's");
     expect(check(translate(["It is tired", "It's tired"]))).toEqual([]);
   });
   it("flags a contraction that is not in the table", () => {
@@ -47,6 +50,47 @@ describe("answer-forms: contractions", () => {
     expect(check(translate(["Sam's from Japan"]))).toHaveLength(1);
     expect(check(translate(["Sam's from Japan", "Sam is from Japan"]))).toEqual([]);
     expect(messages(translate(["Sam's pen"]))).toContain("possessive");
+  });
+});
+
+describe("answer-forms: reverse directions that grading does not fold", () => {
+  it("X has + participle needs the 's form (He has finished -> He's finished)", () => {
+    const out = check(translate(["She has finished"]));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).toContain("she's finished");
+    expect(check(translate(["She has finished", "She's finished"]))).toEqual([]);
+    expect(check(translate(["She has finished"], true))).toEqual([]);
+  });
+  it("stays quiet where grading folds: has been/got, would like/love, is + non-participle", () => {
+    expect(check(translate(["He has been here", "She has got a cat", "I would like tea", "I would love tea", "He is ten"]))).toEqual([]);
+  });
+  it("would after a pronoun needs the 'd form", () => {
+    expect(check(translate(["I would go"]))).toHaveLength(1);
+    expect(check(translate(["I would go", "I'd go"]))).toEqual([]);
+  });
+  it("Name is ... needs Name's ...", () => {
+    const out = check(translate(["Sam is happy"]));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).toContain("sam's happy");
+    expect(check(translate(["Sam is happy", "Sam's happy"]))).toEqual([]);
+  });
+});
+
+describe("answer-forms: possessive or contraction", () => {
+  const bank = [
+    vocabItem({ id: "v-pen", word: "pen", pos: "noun" }), vocabItem({ id: "v-cat", word: "cat", pos: "noun" }),
+    vocabItem({ id: "v-big", word: "big", pos: "adjective" }), vocabItem({ id: "v-happy", word: "happy", pos: "adjective" }),
+  ];
+  const run = (ex: Exercise) => checkAnswerForms(buildContext(data([lessonFile(1, [], [ex])], [vocabFile(bank)])));
+  it("Name's + noun (or adjective + noun) from the bank is a possessive: no error", () => {
+    expect(run(translate(["It is Ann's pen"]))).toEqual([]);
+    expect(run(translate(["It is Ann's big cat"]))).toEqual([]);
+  });
+  it("Name's + a/the/from/not/adjective alone is a contraction: demands the full form", () => {
+    for (const t of ["Ann's from Japan", "Ann's a doctor", "Ann's in the park", "Ann's not here", "Ann's happy", "Ann's big"]) expect(run(translate([t])), t).toHaveLength(1);
+  });
+  it("a plural possessive (students') is not an unknown contraction", () => {
+    expect(run(translate(["These are the students' pens"]))).toEqual([]);
   });
 });
 
@@ -74,6 +118,14 @@ describe("answer-forms: numbers", () => {
     expect(check(translate(["It is the first"]))).toHaveLength(1);
     expect(check(translate(["It is the 1st"]))).toHaveLength(1);
     expect(check(translate(["It is the first", "It is the 1st"]))).toEqual([]);
+  });
+  it("ordinals beyond twentieth are covered", () => {
+    expect(check(translate(["It is the 21st"]))).toHaveLength(1);
+    expect(check(translate(["It is the twenty-first", "It is the 21st"]))).toEqual([]);
+    expect(check(translate(["It is the thirtieth"]))).toHaveLength(1);
+    expect(check(translate(["It is the thirtieth", "It is the 30th"]))).toEqual([]);
+    expect(check(translate(["It is the twenty first", "It is the 21st"]))).toEqual([]);
+    expect(check(translate(["It is the 101st"]))).toHaveLength(1);
   });
   it("accepts both zero spellings when both are listed", () => {
     expect(check(translate(["I have zero pens", "I have 0 pens"]))).toEqual([]);
