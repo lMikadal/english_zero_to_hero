@@ -16,7 +16,7 @@ import type { RuleContext } from "./context";
 import { ALWAYS_ALLOWED } from "./allowlists";
 import { glossedWords, learnerEnglish, type LearnerField } from "./learner-text";
 import type { Exercise } from "../schema";
-import { tokenize } from "./lexicon";
+import { surfaceForms, tokenize } from "./lexicon";
 
 export const GRAMMAR_NOT_YET_RULE = "grammar-not-yet";
 
@@ -29,6 +29,10 @@ export const FREQUENCY_ADVERB_DAY = 44;
 /** Week 8 (docs/CURRICULUM.md: days 50-56 "time, days, months"): telling the time on day 50, at / on / in on day 51. */
 export const CLOCK_TIME_DAY = 50;
 export const TIME_PREPOSITION_DAY = 51;
+
+/** Week 10 (phase 2): the present continuous on day 64, its questions and negatives on day 65. */
+export const PRESENT_CONTINUOUS_DAY = 64;
+export const CONTINUOUS_QUESTION_DAY = 65;
 
 /**
  * The grammar structures a grammar_note can explain (`structures` ids) and the first day each is allowed. Every gate below
@@ -43,6 +47,8 @@ export const GRAMMAR_STRUCTURES: Readonly<Record<string, { day: number; what: st
   but: { day: THIRD_PERSON_S_DAY, what: 'the linking word "but"' },
   "clock-time": { day: CLOCK_TIME_DAY, what: "telling the time (What time is it? It is seven o'clock / half past seven)" },
   "time-prepositions": { day: TIME_PREPOSITION_DAY, what: "at / on / in with times, days and months (at seven o'clock, on Monday, in May)" },
+  "present-continuous": { day: PRESENT_CONTINUOUS_DAY, what: "the present continuous statement (am / is / are + verb-ing: She is reading)" },
+  "continuous-question": { day: CONTINUOUS_QUESTION_DAY, what: "present continuous questions, short answers and negatives (What are you doing? Is he reading? No, he isn't)" },
   "frequency-adverb": { day: FREQUENCY_ADVERB_DAY, what: "adverbs of frequency (always, usually, often, sometimes, never) and their place before the main verb / after be" },
 };
 
@@ -57,7 +63,12 @@ export type GrammarGate = {
   fix: string;
   /** "warning" when the day is not from the curriculum (a decision still to be taken). */
   severity?: "warning";
+  /** Only a form right after am / is / are (also after "not"): "is raining", not "I like swimming" or "the morning". */
+  afterBe?: true;
 };
+
+const BE_FORMS: ReadonlySet<string> = new Set(["am", "is", "are"]);
+const CONTINUOUS_FIX = `Rewrite the sentence with the Present Simple or with be + adjective (for example "It is rainy"), or explain the form in the \`glossary\` of a read_passage.`;
 
 const THIRD_PERSON_FIX = `Rewrite the sentence with I / you / we / they and the base verb (for example "They live in Bangkok"), or explain the form in the \`glossary\` of a read_passage.`;
 
@@ -77,6 +88,9 @@ export const GRAMMAR_NOT_BEFORE: Readonly<Record<string, GrammarGate>> = {
     structure: "clock-time", day: CLOCK_TIME_DAY, what: 'telling the time with "o\'clock"',
     fix: `Rewrite the sentence without clock times, or explain "o'clock" in the \`glossary\` of a read_passage.`,
   },
+  ...Object.fromEntries(["raining", "snowing"].map((w) => [w, {
+    structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, what: `the present continuous "be ${w}"`, fix: CONTINUOUS_FIX,
+  } satisfies GrammarGate])),
   ...Object.fromEntries(["always", "usually", "often", "sometimes", "never"].map((w) => [w, {
     structure: "frequency-adverb", day: FREQUENCY_ADVERB_DAY, what: `the frequency adverb "${w}" and its word order (before the main verb, after "be")`,
     fix: `Rewrite the sentence without "${w}" (for example "I eat rice."), or explain the word in the \`glossary\` of a read_passage.`,
@@ -109,6 +123,15 @@ function gates(ctx: RuleContext): Map<string, GrammarGate & { base?: string }> {
     if (NOT_A_VERB_FORM.has(form) || ALWAYS_ALLOWED.has(form) || bankWords.has(form)) continue; // a word in its own right
     if (!out.has(form)) out.set(form, { structure: /(s|x|z|ch|sh|o)$|[^aeiou]y$/.test(base) ? "es-ending" : "third-person-s", day: THIRD_PERSON_S_DAY, base, what: `the third-person -s form of "${base}"`, fix: THIRD_PERSON_FIX });
   }
+  // the present continuous: the -ing form of every verb entry, only right after am / is / are
+  for (const { item } of ctx.bank.values()) {
+    const base = item.word.toLowerCase().split(/\s+/)[0];
+    if (item.pos !== "verb" || base === "be") continue;
+    for (const form of surfaceForms(item)) {
+      if (!form.endsWith("ing") || form === base || bankWords.has(form) || ALWAYS_ALLOWED.has(form) || out.has(form)) continue;
+      out.set(form, { structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, base, what: `the present continuous "be ${form}"`, fix: CONTINUOUS_FIX });
+    }
+  }
   return out;
 }
 
@@ -126,6 +149,16 @@ export function checkedEnglish(ex: Exercise): LearnerField[] {
   }
 }
 
+/**
+ * An extra accepted answer: never shown to the learner as a model, it only stops a learner who knows more from being marked
+ * wrong, so it is exempt from every grammar gate (and from "grammar-note-required"). The model answer is the exercise's
+ * `answer` (arrange_words), `audioText` (dictation) and `accept[0]` (translate_th_en); everything else in an `accept` list is extra.
+ */
+export function isExtraAccept(ex: Exercise, field: string): boolean {
+  if (!field.startsWith("accept[")) return false;
+  return !(ex.type === "translate_th_en" && field === "accept[0]");
+}
+
 type Gates = Map<string, GrammarGate & { base?: string }>;
 
 /** The gated forms `text` uses, in reading order, once each (whatever the day). */
@@ -136,7 +169,8 @@ export function usedForms(text: string, gate: Gates, allowed: ReadonlySet<string
     const t = word === "do" && tokens[i + 1] === "not" ? "do not" : word; // the one two-word gate
     const g = gate.get(t);
     if (!g || allowed.has(t) || allowedStructures.has(g.structure) || found.includes(t)) return;
-    if (g.base !== undefined && i > 0 && NOUN_CONTEXT.has(tokens[i - 1])) return;
+    if (g.afterBe && !(BE_FORMS.has(tokens[i - 1] ?? "") || (tokens[i - 1] === "not" && BE_FORMS.has(tokens[i - 2] ?? "")))) return;
+    if (g.base !== undefined && !g.afterBe && i > 0 && NOUN_CONTEXT.has(tokens[i - 1])) return;
     found.push(t);
   });
   return found;
@@ -175,6 +209,7 @@ export function checkGrammarNotYet(ctx: RuleContext): Problem[] {
         const noteStructures = new Set(ex.type === "grammar_note" ? ex.structures : []); // a note may show the form it explains
         for (const f of checkedEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
+          if (isExtraAccept(ex, f.field)) continue;
           const forms = early(f.text, day, gate, glossed, noteStructures);
           if (forms.length) report(file, ex.id, day, `${f.field} "${f.text}"`, forms);
         }

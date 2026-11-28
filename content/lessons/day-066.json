@@ -1,0 +1,388 @@
+{
+  "day": 66,
+  "phase": 2,
+  "week": 10,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "In the shop: prices and money",
+    "th": "ในร้านค้า: ราคาและเงิน"
+  },
+  "objectives": [
+    {
+      "en": "Ask about a price and say what something costs",
+      "th": "ถามราคาและบอกราคาของสิ่งของได้"
+    },
+    {
+      "en": "Name money: dollars, pounds, euros and cents",
+      "th": "เรียกชื่อเงินได้: dollars, pounds, euros, cents"
+    },
+    {
+      "en": "Hear the stress in numbers: fifteen and fifty",
+      "th": "ฟังตำแหน่งเสียงหนักในตัวเลขได้: fifteen และ fifty"
+    }
+  ],
+  "estimatedMinutes": 35,
+  "vocab": [
+    "v-expensive",
+    "v-sell",
+    "v-cost",
+    "v-customer",
+    "v-dollar",
+    "v-pound",
+    "v-euro",
+    "v-cent",
+    "v-pair",
+    "v-card"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Numbers: fifteen or fifty?",
+        "th": "ตัวเลข: fifteen หรือ fifty"
+      },
+      "exercises": [
+        {
+          "id": "d066-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "stress",
+          "ipa": "/ˈ/",
+          "tipTh": "ตัวเลข -teen เน้นพยางค์หลัง (fifTEEN, sixTEEN) ส่วน -ty เน้นพยางค์แรก (FIFty, SIXty) เวลาบอกราคา ถ้าเน้นผิดคนฟังจะได้ยินเป็นอีกเลขหนึ่ง ฟังและพูดตามสองคู่นี้ให้เสียงหนักเบาต่างกัน",
+          "examples": [
+            "fifteen",
+            "fifty",
+            "sixteen",
+            "sixty"
+          ]
+        },
+        {
+          "id": "d066-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม fifteen เน้นพยางค์หลัง (fifTEEN)"
+          },
+          "text": "The shirt costs fifteen dollars.",
+          "ipa": "/ðə ʃɜːrt kɔːsts fɪfˈtiːn ˈdɑːlərz/",
+          "phonemes": [
+            "stress"
+          ]
+        },
+        {
+          "id": "d066-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม fifty เน้นพยางค์แรก (FIFty)"
+          },
+          "text": "The shirt costs fifty dollars.",
+          "ipa": "/ðə ʃɜːrt kɔːsts ˈfɪfti ˈdɑːlərz/",
+          "phonemes": [
+            "stress"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: in the shop",
+        "th": "ฟัง: ในร้านค้า"
+      },
+      "exercises": [
+        {
+          "id": "d066-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเสื้อราคาเท่าไร ระวัง fifteen กับ fifty"
+          },
+          "audioText": "The shirt is fifty dollars.",
+          "question": {
+            "en": "How much is the shirt?",
+            "th": "เสื้อตัวนี้ราคาเท่าไร"
+          },
+          "choices": [
+            "Fifteen dollars",
+            "Fifty dollars"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d066-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเสื้อโค้ตราคาเท่าไร"
+          },
+          "audioText": "A customer is in a shop in England. She wants a coat. The coat costs eighty pounds. It is expensive. She pays by card.",
+          "question": {
+            "en": "What does the coat cost?",
+            "th": "เสื้อโค้ตราคาเท่าไร"
+          },
+          "choices": [
+            "Eighty pounds",
+            "Eighty dollars",
+            "Eighty euros"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d066-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-expensive"
+            },
+            {
+              "vocabId": "v-sell"
+            },
+            {
+              "vocabId": "v-cost"
+            },
+            {
+              "vocabId": "v-customer"
+            },
+            {
+              "vocabId": "v-dollar"
+            }
+          ]
+        },
+        {
+          "id": "d066-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าร้านขายอะไร"
+          },
+          "audioText": "This shop sells clothes and shoes. A pair of shoes costs forty euros. A shirt costs twenty euros. One euro is one hundred cents.",
+          "question": {
+            "en": "What does the shop sell?",
+            "th": "ร้านขายอะไร"
+          },
+          "choices": [
+            "Food",
+            "Clothes and shoes",
+            "Books"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d066-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The shop sells shoes. A pair of shoes costs forty dollars."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: how much is it?",
+        "th": "พูด: ราคาเท่าไร"
+      },
+      "exercises": [
+        {
+          "id": "d066-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "How much is it?",
+            "It costs ninety baht.",
+            "The shirt is expensive.",
+            "This shop sells shoes.",
+            "I have a pair of black shoes.",
+            "One dollar is one hundred cents.",
+            "The customer pays by card.",
+            "Twenty euros, please.",
+            "The coat costs eighty pounds."
+          ]
+        },
+        {
+          "id": "d066-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณซื้ออะไรที่ตลาด และราคาเท่าไร"
+          },
+          "prompt": "What do you buy at the market? How much is it?",
+          "sampleAnswer": "I buy fruit at the market. It costs fifty baht.",
+          "keywords": [
+            "buy",
+            "baht"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: Nan in the shop",
+        "th": "อ่าน: แนนในร้าน"
+      },
+      "exercises": [
+        {
+          "id": "d066-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Nan is a customer in a shop in the town. The shop sells clothes. Nan tries on a green dress. The dress costs two hundred baht. It is expensive. Then Nan tries on a red skirt. The skirt costs ninety baht. It is not expensive. Nan buys the red skirt. She pays by card.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who is the customer?",
+                "th": "ใครคือลูกค้า"
+              },
+              "choices": [
+                "Nan",
+                "Rose",
+                "Mali"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does the dress cost?",
+                "th": "ชุดเดรสราคาเท่าไร"
+              },
+              "choices": [
+                "Eighty baht",
+                "Two hundred baht",
+                "Fifty baht"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What does Nan buy?",
+                "th": "แนนซื้ออะไร"
+              },
+              "choices": [
+                "The red skirt",
+                "The green dress",
+                "A pair of shoes"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: prices",
+        "th": "เขียน: ราคา"
+      },
+      "exercises": [
+        {
+          "id": "d066-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "The",
+            "shirt",
+            "costs",
+            "ninety",
+            "baht"
+          ],
+          "answer": "The shirt costs ninety baht"
+        },
+        {
+          "id": "d066-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (เซนต์; คู่)"
+          },
+          "text": "One dollar is one hundred ___. A ___ of shoes costs forty euros.",
+          "answer": [
+            "cents",
+            "pair"
+          ]
+        },
+        {
+          "id": "d066-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ร้านนี้ขายรองเท้า",
+          "accept": [
+            "This shop sells shoes",
+            "The shop sells shoes"
+          ]
+        },
+        {
+          "id": "d066-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เสื้อโค้ตตัวนี้แพง",
+          "accept": [
+            "This coat is expensive",
+            "The coat is expensive"
+          ]
+        },
+        {
+          "id": "d066-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลูกค้าจ่ายด้วยบัตร",
+          "accept": [
+            "The customer pays by card",
+            "The customer pays with a card"
+          ]
+        },
+        {
+          "id": "d066-write-06",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "หนังสือเล่มนี้ราคาสิบปอนด์",
+          "accept": [
+            "This book costs ten pounds",
+            "The book costs ten pounds",
+            "This book is ten pounds",
+            "The book is ten pounds"
+          ]
+        },
+        {
+          "id": "d066-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-pound"
+            },
+            {
+              "vocabId": "v-euro"
+            },
+            {
+              "vocabId": "v-cent"
+            },
+            {
+              "vocabId": "v-pair"
+            },
+            {
+              "vocabId": "v-card"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

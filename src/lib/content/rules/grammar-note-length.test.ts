@@ -23,14 +23,15 @@ describe("bodyLength counts what the learner sees: Thai vowel signs and tone mar
   });
 });
 
-describe("grammar-note-length (warning)", () => {
+describe("grammar-note-length (a body over 400 characters is an error; the other checks warn)", () => {
   it("is quiet at exactly 400 characters and 6 rows, and without a table", () => {
     expect(run(note({ bodyTh: "ก".repeat(400), table: Array.from({ length: 6 }, () => ["ก", "ข"]) }))).toEqual([]);
   });
   it("warns for a body of 401 characters, saying the count and the target", () => {
     const out = run(note({ bodyTh: "ก".repeat(401) }));
     expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ rule: "grammar-note-length", severity: "warning", file: "content/lessons/day-036.json", id: "d036-read-01" });
+    expect(out[0]).toMatchObject({ rule: "grammar-note-length", file: "content/lessons/day-036.json", id: "d036-read-01" });
+    expect(out[0].severity).toBeUndefined();
     expect(out[0].message).toContain("401");
     expect(out[0].message).toContain("400");
     expect(out[0].message).toContain("350");

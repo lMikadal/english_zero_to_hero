@@ -12,7 +12,7 @@
 import type { Problem } from "../loader";
 import type { Exercise } from "../schema";
 import type { RuleContext } from "./context";
-import { GRAMMAR_STRUCTURES, checkedEnglish, grammarGates, usedForms } from "./grammar-not-yet";
+import { GRAMMAR_STRUCTURES, checkedEnglish, grammarGates, isExtraAccept, usedForms } from "./grammar-not-yet";
 
 export const GRAMMAR_NOTE_RULE = "grammar-note";
 export const GRAMMAR_NOTE_REQUIRED_RULE = "grammar-note-required";
@@ -68,7 +68,7 @@ export function checkGrammarNoteRequired(ctx: RuleContext): Problem[] {
       for (const ex of section.exercises) {
         if (ex.type === "grammar_note") continue;
         for (const f of checkedEnglish(ex)) {
-          if (f.drill || f.bilingual) continue;
+          if (f.drill || f.bilingual || isExtraAccept(ex, f.field)) continue; // an extra accepted answer introduces nothing
           for (const form of usedForms(f.text, gate)) {
             const structure = gate.get(form)!.structure;
             if (!first.has(structure)) first.set(structure, { form, id: ex.id, field: f.field });

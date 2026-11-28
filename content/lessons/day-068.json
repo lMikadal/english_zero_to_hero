@@ -1,0 +1,386 @@
+{
+  "day": 68,
+  "phase": 2,
+  "week": 10,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "Where is it? directions and the map",
+    "th": "อยู่ที่ไหน: บอกทางและแผนที่"
+  },
+  "objectives": [
+    {
+      "en": "Ask where a place is and answer with turn, between, opposite and behind",
+      "th": "ถามว่าสถานที่อยู่ที่ไหนและตอบด้วย turn, between, opposite, behind ได้"
+    },
+    {
+      "en": "Say the four directions: north, south, east, west",
+      "th": "บอกทิศทั้งสี่ได้: north, south, east, west"
+    },
+    {
+      "en": "Say the sound /θ/ in north and south",
+      "th": "ออกเสียง /θ/ ในคำว่า north และ south ได้"
+    }
+  ],
+  "estimatedMinutes": 35,
+  "vocab": [
+    "v-map",
+    "v-turn",
+    "v-between",
+    "v-opposite",
+    "v-behind",
+    "v-north",
+    "v-south",
+    "v-east",
+    "v-west",
+    "v-centre"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sound /θ/ in north and south",
+        "th": "เสียง /θ/ ในคำว่า north และ south"
+      },
+      "exercises": [
+        {
+          "id": "d068-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "th",
+          "ipa": "/θ/",
+          "tipTh": "north และ south ลงท้ายด้วยเสียง /θ/ ให้วางปลายลิ้นเบา ๆ ระหว่างฟัน แล้วเป่าลมออก ไม่ใช่ 'นอร์ท' หรือ 'เซาท์' ที่ลงท้ายด้วย ท หรือ ส ถ้าไม่ได้โผล่ปลายลิ้นระหว่างฟัน เสียงจะเปลี่ยนเป็นคำอื่น",
+          "examples": [
+            "north",
+            "south",
+            "three",
+            "Thursday"
+          ]
+        },
+        {
+          "id": "d068-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม north ลงท้ายด้วย /θ/ ปลายลิ้นระหว่างฟัน"
+          },
+          "text": "Chiang Mai is north of Bangkok.",
+          "ipa": "/ˈtʃjɑːŋ ˈmaɪ ɪz nɔːrθ əv bæŋˈkɑːk/",
+          "phonemes": [
+            "th"
+          ]
+        },
+        {
+          "id": "d068-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม south ลงท้ายด้วย /θ/ เช่นกัน"
+          },
+          "text": "The bank is south of the hospital.",
+          "ipa": "/ðə bæŋk ɪz saʊθ əv ðə ˈhɑːspɪtl/",
+          "phonemes": [
+            "th"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: where is it?",
+        "th": "ฟัง: อยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d068-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าธนาคารอยู่ที่ไหน"
+          },
+          "audioText": "A man: Hello! Where is the bank, please? Rose: Go to the market. Turn left. The bank is between the hospital and the shop. The cafe is opposite the bank.",
+          "question": {
+            "en": "Where is the bank?",
+            "th": "ธนาคารอยู่ที่ไหน"
+          },
+          "choices": [
+            "Between the hospital and the shop",
+            "Opposite the station",
+            "Behind the hotel"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d068-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-map"
+            },
+            {
+              "vocabId": "v-turn"
+            },
+            {
+              "vocabId": "v-between"
+            },
+            {
+              "vocabId": "v-opposite"
+            },
+            {
+              "vocabId": "v-behind"
+            }
+          ]
+        },
+        {
+          "id": "d068-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าตอนเช้าดวงอาทิตย์อยู่ทางทิศไหน"
+          },
+          "audioText": "The sun is in the east in the morning. In the evening, it is in the west.",
+          "question": {
+            "en": "Where is the sun in the morning?",
+            "th": "ตอนเช้าดวงอาทิตย์อยู่ทางทิศไหน"
+          },
+          "choices": [
+            "East",
+            "West",
+            "South"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d068-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอะไรอยู่ทางเหนือของธนาคาร"
+          },
+          "audioText": "Leo has a map of the town. The market and the hospital are in the centre of the town. The hospital is north of the bank. The bank is south of the hospital.",
+          "question": {
+            "en": "What is north of the bank?",
+            "th": "อะไรอยู่ทางเหนือของธนาคาร"
+          },
+          "choices": [
+            "The hospital",
+            "The shop",
+            "The cafe"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d068-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Turn left at the bank. The cafe is opposite the bank."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: directions",
+        "th": "พูด: บอกทาง"
+      },
+      "exercises": [
+        {
+          "id": "d068-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Where is the bank?",
+            "Turn left at the market.",
+            "Turn right at the station.",
+            "The bank is between the hospital and the shop.",
+            "The cafe is opposite the bank.",
+            "The hospital is in the centre of the town.",
+            "The garden is behind the house.",
+            "Leo has a map of the town.",
+            "Bangkok is south of Chiang Mai."
+          ]
+        },
+        {
+          "id": "d068-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าร้านกาแฟอยู่ที่ไหน (ดูข้อมูลจากบทเรียน)"
+          },
+          "prompt": "Where is the cafe?",
+          "sampleAnswer": "The cafe is opposite the bank.",
+          "keywords": [
+            "opposite",
+            "bank"
+          ]
+        },
+        {
+          "id": "d068-speak-03",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบว่าสวนอยู่ที่ไหน (ดูข้อมูลบ้านของลีโอ)"
+          },
+          "prompt": "Where is the garden? Is it behind the house?",
+          "sampleAnswer": "The garden is behind the house.",
+          "keywords": [
+            "garden",
+            "behind"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: a map of the town",
+        "th": "อ่าน: แผนที่ของเมือง"
+      },
+      "exercises": [
+        {
+          "id": "d068-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Leo has a map of the town. The centre of the town has a market and a hospital. The hospital is north of the bank. The bank is between the hospital and the shop. The cafe is opposite the bank. The library is near the museum. The station is east of the market, near the hospital. The airport is west of the town.",
+          "questions": [
+            {
+              "question": {
+                "en": "What is opposite the bank?",
+                "th": "อะไรอยู่ตรงข้ามธนาคาร"
+              },
+              "choices": [
+                "The hotel",
+                "The cafe",
+                "The library"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Where is the airport?",
+                "th": "สนามบินอยู่ที่ไหน"
+              },
+              "choices": [
+                "West of the town",
+                "East of the town",
+                "In the centre"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is between the hospital and the shop?",
+                "th": "อะไรอยู่ระหว่างโรงพยาบาลกับร้านค้า"
+              },
+              "choices": [
+                "The market",
+                "The bank",
+                "The cafe"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: where is it?",
+        "th": "เขียน: อยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d068-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "Turn",
+            "left",
+            "at",
+            "the",
+            "bank"
+          ],
+          "answer": "Turn left at the bank"
+        },
+        {
+          "id": "d068-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (ตะวันออก; ตะวันตก)"
+          },
+          "text": "The sun is in the ___ in the morning and in the ___ in the evening.",
+          "answer": [
+            "east",
+            "west"
+          ]
+        },
+        {
+          "id": "d068-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "สวนอยู่ข้างหลังบ้าน",
+          "accept": [
+            "The garden is behind the house"
+          ]
+        },
+        {
+          "id": "d068-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ธนาคารอยู่ระหว่างโรงพยาบาลกับร้านค้า",
+          "accept": [
+            "The bank is between the hospital and the shop",
+            "The bank is between the shop and the hospital"
+          ]
+        },
+        {
+          "id": "d068-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ร้านกาแฟอยู่ตรงข้ามธนาคาร",
+          "accept": [
+            "The cafe is opposite the bank"
+          ]
+        },
+        {
+          "id": "d068-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-north"
+            },
+            {
+              "vocabId": "v-south"
+            },
+            {
+              "vocabId": "v-east"
+            },
+            {
+              "vocabId": "v-west"
+            },
+            {
+              "vocabId": "v-centre"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -18,6 +18,9 @@ import { checkWordBlocklist } from "./word-blocklist";
 import { checkGrammarNotYet } from "./grammar-not-yet";
 import { checkPhonemeTagSounds, checkPhonemeTags } from "./phoneme-tags";
 import { checkPhraseLint } from "./phrase-lint";
+import { checkStativeContinuous } from "./stative-continuous";
+import { checkStrictContraction } from "./strict-contraction";
+import { checkTryOn } from "./try-on";
 import { checkPronunciation } from "./pronunciation";
 import { checkThaiNames } from "./thai-names";
 import { checkVocabForms } from "./vocab-forms";
@@ -28,5 +31,5 @@ import { checkTaughtWords, checkVocabUsedOnItsDay } from "./taught-words";
 
 export function checkContentRules(data: ContentData): Problem[] {
   const ctx = buildContext(data);
-  return [...checkTaughtWords(ctx), ...checkGrammarNotYet(ctx), ...checkGrammarNote(ctx), ...checkGrammarNoteRequired(ctx), ...checkGrammarNoteLength(ctx), ...checkWordBlocklist(ctx), ...checkFrontedVariant(ctx), ...checkMinimalPairAccents(ctx), ...checkStressClaims(ctx), ...checkVocabUsedOnItsDay(ctx), ...checkGlossUniqueness(ctx), ...checkPronunciation(ctx), ...checkSoundWords(ctx), ...checkPhonemeTags(ctx), ...checkPhonemeTagSounds(ctx), ...checkPhraseLint(ctx), ...checkArrangeWords(ctx), ...checkArrangeQuestion(ctx), ...checkAnswerForms(ctx), ...checkCast(ctx), ...checkCastProps(ctx), ...checkCastFacts(ctx), ...checkThaiNames(ctx), ...checkVocabForms(ctx), ...checkVocabSpelling(ctx), ...checkWordExposure(ctx), ...checkWeekRecycle(ctx), ...checkVocabMatch(ctx), ...checkNewWordsPerDay(ctx), ...checkCheckpoints(ctx)];
+  return [...checkTaughtWords(ctx), ...checkGrammarNotYet(ctx), ...checkGrammarNote(ctx), ...checkGrammarNoteRequired(ctx), ...checkGrammarNoteLength(ctx), ...checkWordBlocklist(ctx), ...checkFrontedVariant(ctx), ...checkMinimalPairAccents(ctx), ...checkStressClaims(ctx), ...checkVocabUsedOnItsDay(ctx), ...checkGlossUniqueness(ctx), ...checkPronunciation(ctx), ...checkSoundWords(ctx), ...checkPhonemeTags(ctx), ...checkPhonemeTagSounds(ctx), ...checkPhraseLint(ctx), ...checkTryOn(ctx), ...checkStativeContinuous(ctx), ...checkStrictContraction(ctx), ...checkArrangeWords(ctx), ...checkArrangeQuestion(ctx), ...checkAnswerForms(ctx), ...checkCast(ctx), ...checkCastProps(ctx), ...checkCastFacts(ctx), ...checkThaiNames(ctx), ...checkVocabForms(ctx), ...checkVocabSpelling(ctx), ...checkWordExposure(ctx), ...checkWeekRecycle(ctx), ...checkVocabMatch(ctx), ...checkNewWordsPerDay(ctx), ...checkCheckpoints(ctx)];
 }
