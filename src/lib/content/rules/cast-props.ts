@@ -5,7 +5,8 @@
 //   "I am Nan. I have a green umbrella"        (I have ..., owner = the single "I am NAME" speaker, or the label "Nan:" of a dialogue line)
 //   "My bag is brown" / "My pink bag is new"   (My NOUN is COLOUR / My COLOUR NOUN, same speaker rule)
 // Colours: COLOUR_WORDS, the closed list of the colour words of the vocab bank (grey and gray are one). Warning, not error:
-// a character may buy a new bag (day 26) and two people can share a name. NOT detected (docs/FINDINGS.md): "It is orange"
+// a character may buy a new bag (day 26) and two people can share a name. An owner who has several things of the same
+// noun in ONE sentence ("Nan has a brown dog and a white dog") has two things, so that owner+noun is not compared. NOT detected (docs/FINDINGS.md): "It is orange"
 // after "I have an umbrella", "Her/His NOUN is COLOUR" (needs a pronoun reference), plurals vs singular owners ("The chairs
 // are white"), nouns with an adjective in between ("Nan's big bag is red"), colours in a question, a thing owned by "we".
 import { foldSpelling } from "@/lib/answers/spelling";
@@ -27,8 +28,10 @@ const NOUN = String.raw`([a-z]+)`;
 const NOT_A_NOUN = new Set(["and", "or", "too", "in", "on", "at", "is", "are", "it", "baht"]);
 const ITEM = new RegExp(String.raw`\b(?:a|an|the|two|three|four|five|my)\s+${COLOUR}\s+${NOUN}\b`, "g");
 const OWNED = new RegExp(String.raw`\b${NAME}'s\s+${NOUN}\s+(?:is|are)\s+${COLOUR}\b`, "g");
-const HAS = new RegExp(String.raw`\b${NAME}\s+has\s+(.*)$`);
-const I_HAVE = /\bI have\s+(.*)$/;
+/** A list of things ends where the next owner starts ("... a red bag and Rose has a blue bag", "..., and Rose a blue bag") or at the end of the sentence. */
+const UNTIL_NEXT_OWNER = String.raw`(.*?)(?=,?\s+(?:and\s+)?${NAME}\b|$)`;
+const HAS = new RegExp(String.raw`\b${NAME}\s+has\s+${UNTIL_NEXT_OWNER}`, "g");
+const I_HAVE = new RegExp(String.raw`\bI have\s+${UNTIL_NEXT_OWNER}`);
 const MY_IS = new RegExp(String.raw`\bMy\s+${NOUN}\s+(?:is|are)\s+${COLOUR}\b`);
 const MY_COLOUR = new RegExp(String.raw`\bMy\s+${COLOUR}\s+${NOUN}\b`);
 const SPEAKER = new RegExp(String.raw`\b(?:I am|I'm|My name is|My name's)\s+${NAME}\b`, "g");
@@ -56,11 +59,10 @@ export function propClaims(text: string): PropClaim[] {
     for (const sentence of (label ? line.slice(label[0].length) : line).split(/(?<=[.!?])\s+/)) {
       const s = sentence.trim().replace(/[.!?]+$/, "");
       for (const m of s.matchAll(OWNED)) add(m[1], m[2], m[3], m[0]);
-      const has = HAS.exec(s);
-      if (has) items(has[1], has[2], s);
+      const have = speaker ? I_HAVE.exec(s) : null;
+      if (speaker && have) items(speaker, have[1], s);
+      for (const has of s.matchAll(HAS)) items(has[1], has[2], s);
       if (!speaker) continue;
-      const have = I_HAVE.exec(s);
-      if (have) items(speaker, have[1], s);
       const my = MY_IS.exec(s);
       if (my) add(speaker, my[1], my[2], my[0]);
       const myc = MY_COLOUR.exec(s);
@@ -92,6 +94,7 @@ export function checkCastProps(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
   for (const [key, claims] of seen) {
     const [, owner, n] = key.split("|");
+    if (claims.some((a) => claims.some((b) => a !== b && a.sentence === b.sentence && a.where === b.where && a.colour !== b.colour))) continue; // two things of the same noun
     const first = claims[0];
     const differing = claims.filter((c) => c.colour !== first.colour);
     if (differing.length === 0) continue;
