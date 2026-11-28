@@ -45,12 +45,28 @@ const S_FORM = /^(he|she|it|that|there|here|what|where|who|how|name)'s$/;
 export const S_BASES: readonly string[] = ["he", "she", "it", "that", "there", "here", "what", "where", "who", "how", "name"];
 export const isSForm = (t: string): boolean => S_FORM.test(t);
 const WOULD = /^(i|you|he|she|we|they)'d$/;
-const IRREGULAR_PARTICIPLES = new Set(["gone", "done", "seen", "taken", "given", "eaten", "written", "spoken", "known", "broken", "made", "found", "left", "lost", "met", "heard", "said", "told"]);
 const NOT_ED = new Set(["speed", "breed", "indeed", "hundred"]);
 
-/** A word after 's that may be a past participle (so 's may be "has"): -ed words of 5+ letters and common irregular ones. */
+/**
+ * Irregular past forms and participles (and the -ed look-alikes' counterparts that do not end in -ed). A word here means
+ * "'s before it is ambiguous (is / has), do not fold". ONE table for grading and for the answer-forms rule; a test proves
+ * every past / pastParticiple form of the vocab bank is either an -ed word or listed here. Be generous: extra entries only
+ * make the validator ask authors to list both forms.
+ */
+export const PARTICIPLES: ReadonlySet<string> = new Set((
+  "been had done gone come seen got gotten made said taken given known thought told found left felt become put kept begun began " +
+  "brought bought written sat stood heard run read met paid sent built spent lost cut eaten drunk driven spoken broken chosen " +
+  "forgotten fallen grown shown slept sold taught understood won worn caught held let set hit hurt cost flown drawn thrown " +
+  "risen ridden sung swum sunk sworn torn woken woven wrung shaken shot shut shrunk slid split spread sprung stuck stung struck " +
+  "swept swung bent bet bitten bled blown bred burnt burst dealt dug dreamt dived fed fled flung forgiven fought frozen " +
+  "hung hidden knelt laid lain led leapt lent lit mistaken overcome proven proved quit rung rode sawn sewn shone shorn slain " +
+  "slit smelt sown spat spelt spilt spun stolen strung strode swollen thrust trodden upset wept withdrawn " +
+  "forgot got saw ate took gave knew wrote spoke broke chose drove flew grew threw drew rose rang sang swam wore began did went came was were"
+).split(" "));
+
+/** A word after 's that may be a past participle (so 's may be "has"): the table, or an -ed word of 5+ letters. */
 export function isParticipleLike(w: string): boolean {
-  return IRREGULAR_PARTICIPLES.has(w) || (w.length >= 5 && w.endsWith("ed") && !NOT_ED.has(w));
+  return PARTICIPLES.has(w) || (w.length >= 5 && w.endsWith("ed") && !NOT_ED.has(w));
 }
 
 function numberTokens(t: string): string[] | undefined {
