@@ -6,7 +6,7 @@ import { buildContext } from "./context";
 import { checkThaiNames, thaiNameMismatches } from "./thai-names";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
-const forms = { Leo: "ลีโอ", Nan: "แนน", Ann: "แอน", Dan: "แดน", Pim: "พิม", Mai: "ไหม", Rose: "โรส" };
+const forms: Record<string, string> = { Leo: "ลีโอ", Nan: "แนน", Ann: "แอน", Dan: "แดน", Pim: "พิม", Mai: "ไหม", Rose: "โรส" };
 const names = (text: string, present = Object.keys(forms), table = forms) =>
   thaiNameMismatches(text, Object.fromEntries(Object.entries(table).filter(([n]) => present.includes(n)))).map((m) => [m.found, m.name]);
 
