@@ -77,6 +77,21 @@
 
 เทสต์: `src/app/layout.test.tsx` (cookie → `data-theme`), `src/lib/theme/theme.test.ts`, `src/lib/theme/tokens.test.ts` (ค่าสีตรงตาราง design, dark ใน media query ตรงกับ `[data-theme=dark]`, contrast WCAG AA ทุกคู่ตัวอักษร/พื้นทั้งสองธีม, ขอบช่องกรอก `control` >= 3:1)
 
+## จำกัดอุปกรณ์ (`ALLOWED_IPS`)
+
+ปิดเป็นค่าเริ่มต้น (ไม่ตั้ง = ทุกอย่างเหมือนเดิม) ตรวจด้วยแอปจริงโดยไม่แตะ DB: รัน container แยกบนพอร์ตว่าง เช่น `docker compose run --rm --no-deps -e ALLOWED_IPS=100.101.102.103 -p 127.0.0.1:3055:3000 app` แล้ว `curl` จาก host (ใช้ `/api/health` ไม่ต้องใช้ DB)
+
+| ตรวจอะไร | ทำอย่างไร | พิสูจน์ว่าทำงาน |
+|---|---|---|
+| ปิดฟีเจอร์ | ไม่ตั้ง `ALLOWED_IPS`, `curl -si localhost:3055/api/health` | 200 `{"ok":true}` |
+| host เอง (ไม่มี XFF) | ตั้ง `ALLOWED_IPS=100.101.102.103`, `curl -si localhost:3055/api/health` | 200 (peer = gateway ของ Docker bridge ไม่มี XFF = เครื่อง host เอง) |
+| อุปกรณ์ที่อนุญาต (จำลอง `tailscale serve`) | `curl -si -H 'X-Forwarded-For: 100.101.102.103' localhost:3055/api/health` | 200 |
+| อุปกรณ์ที่ไม่อนุญาต | `curl -si -H 'X-Forwarded-For: 100.200.1.1' localhost:3055/` | 403, `text/html`, h1 "อุปกรณ์นี้ไม่ได้รับอนุญาตให้ใช้แอป", มี `100.200.1.1`; log "[access] denied ip=100.200.1.1 path=/" |
+| ทุกเส้นทางถูกบังคับ | ขอ `/_next/static/x.js`, `/api/attempts` (POST), `/ไม่มีหน้านี้` ด้วย XFF ที่ไม่อนุญาต | 403 ทั้งหมด |
+| ตั้งค่าผิด | `ALLOWED_IPS='100.101.102.103, oops'` | container ไม่สตาร์ท, log ขึ้น `invalid entry "oops"` |
+
+เทสต์: `src/lib/access/*.test.ts` (parser/CIDR, การหา client IP, ตัวจำกัด log, peer stamp บน http server จริง), `src/proxy.test.ts` (ไม่มี matcher, ทุก path/method, fail closed, ตรวจตอนสตาร์ท) รายละเอียด: `docs/ARCHITECTURE.md` หัวข้อ 3.0.1
+
 ## ตรวจโดยเครื่อง (ไม่ต้องจำ)
 
 - `src/lib/theme/color-scan.test.ts`: ห้ามมีสี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]`, hex หรือ `rgb()/hsl()/oklch()` ใน `src/` นอก `src/app/globals.css` (มี self-test ว่าจับตัวอย่างผิดได้) ชุดสีเริ่มต้นของ Tailwind ถูกลบใน `@theme` (utility สีดิบอย่าง `bg-white` จึงไม่สร้าง CSS) แต่ค่า arbitrary (`bg-[#fff]`, `bg-[red]`) ยังแสดงผลได้ ตัวตรวจจึงเป็นสิ่งที่กันไว้ และตรวจอีกทิศด้วย: class สีทุกตัวต้องเป็น token จริงหรือ utility ที่ไม่ใช่สีที่ระบุไว้ชัด (กัน token ที่พิมพ์ผิด เช่น `text-primary`) รวม `style={{ color }}` และ `fill=`/`stroke=` ที่เป็นค่าตรงๆ ข้อจำกัด: class ที่ประกอบจากสตริง (`"bg-" + x`) และค่าที่เป็นตัวแปรตรวจไม่ได้
