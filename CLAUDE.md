@@ -16,7 +16,7 @@
 ## กฎ
 - เนื้อหาบทเรียนทั้งหมดอยู่ใน `content/` เป็น JSON ห้ามเก็บเนื้อหาไว้ใน DB หรือ hardcode ใน component
 - เมื่อแก้ schema ต้องอัปเดต `docs/CONTENT_SCHEMA.md` และ `src/lib/content/schema.ts` พร้อมกัน
-- Exercise ID ต้องไม่ซ้ำกันทั้ง repo (รูปแบบ `dXXX-<skill>-NN`)
+- Exercise ID ต้องไม่ซ้ำกันทั้ง repo (รูปแบบ `dXXX-<skill>-NN` ในบทเรียน, `cXXX-<skill>-NN` ในแบบทดสอบ `content/checkpoints/`)
 - คำศัพท์เก็บไว้ที่ `content/vocab/` ที่เดียว บทเรียนอ้างถึงด้วย ID เท่านั้น และแต่ละคำสอนเป็นคำใหม่ได้ครั้งเดียว
 - คำแปลไทย ตัวอย่างประโยค และ collocation ต้องเขียนเอง ห้ามคัดลอกคำนิยามหรือตัวอย่างจากพจนานุกรม Oxford
 - ข้อความที่แสดงผู้เรียนต้องมีภาษาไทยกำกับ (`{ en, th }`)
