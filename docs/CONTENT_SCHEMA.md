@@ -54,10 +54,10 @@
 
 | พับให้เท่ากัน (เขียนรูปเดียวพอ) | ไม่พับ (ต้องใส่ทุกรูปใน `accept` หรือตั้ง `strict: true`; ตัวตรวจกฎ `answer-forms` บังคับ) |
 |---|---|
-| คำย่อที่มีความหมายเดียว: `I'm`=`I am`, `you're`, `he's`/`she's`/`it's`/`that's`/`what's`... = `... is`, `isn't`, `aren't`, `don't`, `doesn't`, `can't`=`cannot`, `won't`, `I'll`... (ตาราง `CONTRACTIONS`) | `'s` ก่อน past participle หรือคำ `-ed` (`He's tired`, `He's gone`: is หรือ has?) ทั้งสองทิศทาง |
+| คำย่อที่มีความหมายเดียว: `I'm`=`I am`, `you're`, `he's`/`she's`/`it's`/`that's`/`what's`... = `... is`, `isn't`, `aren't`, `don't`, `doesn't`, `can't`=`cannot`, `won't`, `I'll`... (ตาราง `CONTRACTIONS`) | `'s` ก่อน past participle (ตาราง `PARTICIPLES` ใน `equivalents.ts`: `come`, `had`, `sat`, `bought`... ทุกคำที่ผันไม่ปกติ) หรือคำ `-ed` ตั้งแต่ 5 ตัวอักษร (`He's tired`, `He's gone`: is หรือ has?) ทั้งสองทิศทาง: `He's come home` ไม่เท่ากับ `He has come home` และไม่เท่ากับ `He is come home` (ผิดไวยากรณ์ จึงตรวจว่าไม่ถูกรับ) |
 | `'s` ก่อน `been`/`got` = `has` (`He's been` = `He has been`; ไม่เท่ากับ `He is been`) | `'d` ยกเว้นก่อน `like`/`love` (`I'd like` = `I would like`) |
-| `name's` (`My name's Ann` = `My name is Ann`) | ชื่อ + `'s` (`Sam's from Japan` อาจเป็น possessive) ต้องใส่รูปเต็ม `Sam is ...` หรือ `strict` |
-| ตัวเลข 1–20, 30–90, 100: `10`=`ten`, `a hundred`=`one hundred`=`100` | ลำดับที่ (`first`/`1st`), `zero`/`0`, เลข 101 ขึ้นไป, เลขที่มี `:` `,` `.` (`3:30`, `1,000`), เลขนำหน้าด้วย 0 |
+| `name's` (`My name's Ann` = `My name is Ann`) | ชื่อ + `'s` (`Sam's from Japan` อาจเป็น possessive) ต้องใส่รูปเต็ม `Sam is ...` หรือ `strict`; กลับทิศก็เหมือนกัน: `Sam is happy` ไม่เท่ากับ `Sam's happy`, `He has finished` ไม่เท่ากับ `He's finished`, `I would go` ไม่เท่ากับ `I'd go` |
+| ตัวเลข 1–20, 30–90, 100: `10`=`ten`, `a hundred`=`one hundred`=`100` | ลำดับที่ทุกตัว (`first`/`1st`, `twenty-first`/`21st`, `thirtieth`/`30th`), `zero`/`0`, เลข 101 ขึ้นไป, เลขที่มี `:` `,` `.` (`3:30`, `1,000`), เลขนำหน้าด้วย 0 |
 | 21–99: `21`=`twenty-one`=`twenty one` | `a 100` (ไม่เท่ากับ `100`), `110` (ไม่เท่ากับ `ten`) |
 | `its` ≠ `it's`, `his` ≠ `he's` (ไม่แตะ) | |
 
@@ -147,11 +147,26 @@ ERROR content/lessons/day-001.json [d001-write-01]: "Sam" is a proper name that 
 
 ### `answer-forms`: รูปคำตอบที่ตัวตรวจไม่พับให้
 ตรวจ `accept`/`audioText`/`answer` ของ `dictation`, `translate_th_en`, `fill_blank` (ข้ามข้อที่ตั้ง `strict: true`) ตามตารางข้อ 7 ของหัวข้อการเทียบคำตอบ: ถ้ามีรูปที่ไม่พับ ต้องใส่รูปคู่กันใน `accept` ด้วย หรือตั้ง `strict: true` และ `fill_blank` ที่เฉลยเป็นคำย่อ/คำเต็ม/ตัวเลข ต้องตั้ง `strict` ให้ชัด
+- `'s` ก่อน participle หรือคำ `-ed`, `X has + participle`, `X is + participle` (X = he/she/it/that/there/here/what/where/who/how/name หรือชื่อ), `pronoun would` (ไม่ใช่ก่อน like/love), `Name is`, `'d`: ต้องมีทั้งสองรูป ข้อความของตัวตรวจ **ไม่ยกประโยคตัวอย่างที่อาจผิดไวยากรณ์** ให้เลือกรูปเต็มที่ถูกเอง: `X has ...` (perfect) หรือ `X is ...` (adjective/passive)
+- possessive: `Name's` ตามด้วยคำนามจากคลังคำ (หรือ adjective + คำนาม) ถือเป็นความเป็นเจ้าของ ไม่ผิด (`It is Ann's pen`); ตามด้วย a/the/from/in/not/adjective ล้วน ถือเป็นคำย่อ ต้องใส่ `Name is ...`; พหูพจน์ `students'` ผ่าน
+- ลำดับที่ 1st–100th และ `twenty first` = `twenty-first`
 
 ```
-ERROR content/lessons/day-020.json [d020-write-03]: "He's tired": "he's" before "tired" can be "he is" or "he has", so it is not folded. Also accept the full form ("he is tired"), or set "strict": true on this exercise (then only the listed spellings are accepted).
+ERROR content/lessons/day-020.json [d020-write-03]: "He's tired": "he's" before "tired" is ambiguous ("he is" or "he has"), so grading does not fold it. Also accept whichever full form is correct: "X has ..." (perfect) or "X is ..." (adjective or passive), or set "strict": true on this exercise (then only the listed spellings are accepted).
 ERROR content/lessons/day-021.json [d021-write-02]: answer "ten" is a contraction, a full form or a number; grading would fold it with its other spelling. Decide explicitly: set "strict": true (only "ten") or "strict": false (the other spelling is accepted too).
 ```
+
+### `vocab-forms`: adjective ต้องลงรูปเปรียบเทียบ
+adjective ทุกคำใน `forms` ต้องมี `comparative` และ `superlative` (ให้ `taught-words` รู้ว่า `bigger` คือ `big`) หรือ `"gradable": "no"` ถ้าเทียบไม่ได้ (`dead`)
+
+```
+ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.comparative / forms.superlative. Add them (e.g. "comparative": "bigger", "superlative": "biggest") or, for an adjective that cannot be compared, "gradable": "no".
+```
+
+เมื่อ `taught-words` พบคำที่ดูเหมือนรูปผันของคำที่สอนแล้ว (เช่น `bigger`, `hopping`) ข้อความจะบอกให้เติมรูปนั้นใน `forms` ของ entry ไม่ใช่ใส่ allowlist
+
+### รายงานใน CI
+`make validate` เขียนรายงาน (จำนวนและ warning) ลง `.content-validate-summary.md` และ CI ต่อท้ายไฟล์นี้ใน job summary ของ GitHub เพื่อให้ผู้ตรวจ PR เห็น warning (warning ไม่ทำให้ check ล้ม) เมื่อรันนอก CI ตั้งตัวแปร `CONTENT_VALIDATE_SUMMARY=<ไฟล์>` หรือ `GITHUB_STEP_SUMMARY` ได้เอง
 
 ## VocabItem
 
