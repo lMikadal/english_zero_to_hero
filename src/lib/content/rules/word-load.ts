@@ -6,8 +6,8 @@
 //                                           one vocab_match has at most 8 pairs (a longer match does not fit a 360px screen).
 //  "new-words-per-day"             ERROR    from day 43: a lesson with a grammar_note (it introduces a grammar form) teaches at
 //                                           most 9 new words. The general cap of 12 per lesson (all days) is enforced in validate.ts.
-// Counting uses learnerEnglish (every English text of every exercise, sound drills and the examples of a grammar_note included,
-// vocab_match excluded) and the entry's usage forms (so "cats" counts for "cat" and "wakes" for "wake up").
+// word-exposure counts only what the learner hears, reads as text, says or produces (see exposureByExercise); week-recycle counts
+// every English text of the review days (learnerEnglish: vocab_match excluded) and the entry's usage forms (so "cats" counts for "cat" and "wakes" for "wake up").
 import type { Problem } from "../loader";
 import type { RuleContext } from "./context";
 import { learnerEnglish } from "./learner-text";
@@ -36,11 +36,23 @@ function tokensByExercise(lesson: { sections: { exercises: Parameters<typeof lea
   return lesson.sections.flatMap((s) => s.exercises.map((ex) => ({ type: ex.type, tokens: learnerEnglish(ex).flatMap((f) => tokenize(f.text)) })));
 }
 
+/**
+ * What the learner really meets a word in: what they hear (audioText, lines), read as passage or dialogue text, say or produce
+ * (prompts, answers, accepted sentences). NOT counted, because the learner only glances at them: bilingual question and goal
+ * texts, answer choices, sound drills (phoneme examples, minimal pairs) and the examples of a grammar_note.
+ */
+function exposureByExercise(lesson: { sections: { exercises: Parameters<typeof learnerEnglish>[0][] }[] }): { type: string; tokens: string[] }[] {
+  return lesson.sections.flatMap((s) => s.exercises.map((ex) => ({
+    type: ex.type,
+    tokens: ex.type === "grammar_note" ? [] : learnerEnglish(ex).filter((f) => !f.drill && !f.bilingual && !/choices\[/.test(f.field)).flatMap((f) => tokenize(f.text)),
+  })));
+}
+
 export function checkWordExposure(ctx: RuleContext, fromDay = WORD_EXPOSURE_FROM_DAY): Problem[] {
   const problems: Problem[] = [];
   for (const { file, lesson } of ctx.lessons) {
     if (lesson.day < fromDay) continue;
-    const exercises = tokensByExercise(lesson);
+    const exercises = exposureByExercise(lesson);
     for (const id of lesson.vocab) {
       const entry = ctx.bank.get(id);
       if (!entry) continue;

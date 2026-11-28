@@ -186,6 +186,7 @@ export function loadCheckpoint(afterDay: number, root = defaultRoot()): Checkpoi
   if (!fs.existsSync(abs)) throw new ContentError([{ file: display, message: "file not found" }]);
   const r = parseFile(abs, display, checkpointSchema);
   if (!r.data) throw new ContentError(r.problems);
+  if (r.data.afterDay !== afterDay) throw new ContentError([{ file: display, message: `the file says afterDay ${r.data.afterDay} but checkpoint ${afterDay} was requested (rename the file or fix afterDay)` }]);
   return r.data;
 }
 

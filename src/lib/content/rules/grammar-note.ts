@@ -1,7 +1,9 @@
 // Rules for the grammar_note exercise type (a displayed, ungraded grammar explanation card, schema.ts):
-//  "grammar-note"          (ERROR)   structure ids exist in GRAMMAR_STRUCTURES, the card is the FIRST exercise of a section that is
-//                                    not a pronunciation section, at most one card per lesson (list every structure in it), table
-//                                    rows have the same number of cells. Structural, so no false positive is possible.
+//  "grammar-note"          (ERROR)   structure ids exist in GRAMMAR_STRUCTURES and are not taught before their day (a card cannot
+//                                    bring a form in early), the card is the FIRST exercise of a section that is not a pronunciation
+//                                    section (so at most one card per section, each before the practice it explains), a structure is
+//                                    in only one card of a lesson, table rows have the same number of cells. Structural, so no false
+//                                    positive is possible.
 //  "grammar-note-required" (WARNING) the first lesson that USES a gated structure (learner-facing English, the card's own text
 //                                    excluded) must contain a grammar_note naming it. Weeks 1-5 have no cards, so it is a
 //                                    warning; make it an error later by changing GRAMMAR_NOTE_REQUIRED_SEVERITY to "error".
@@ -24,18 +26,21 @@ export function checkGrammarNote(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
   const ids = Object.keys(GRAMMAR_STRUCTURES).join(", ");
   for (const { file, lesson } of ctx.lessons) {
-    let seen = 0;
+    const cardOf = new Map<string, string>(); // structure -> the card of this lesson that lists it
     for (const section of lesson.sections) {
       section.exercises.forEach((ex, i) => {
         if (ex.type !== "grammar_note") return;
         const add = (message: string) => problems.push({ rule: GRAMMAR_NOTE_RULE, file, id: ex.id, message });
-        seen++;
         for (const s of ex.structures) {
-          if (!(s in GRAMMAR_STRUCTURES)) add(`structures: "${s}" is not a grammar structure id. Use one of: ${ids} (the table GRAMMAR_STRUCTURES in src/lib/content/rules/grammar-not-yet.ts; add the structure there first if it is new).`);
+          const known = GRAMMAR_STRUCTURES[s];
+          if (!known) add(`structures: "${s}" is not a grammar structure id. Use one of: ${ids} (the table GRAMMAR_STRUCTURES in src/lib/content/rules/grammar-not-yet.ts; add the structure there first if it is new).`);
+          else if (known.day > lesson.day) add(`structure "${s}" is not taught before day ${known.day} (this is day ${lesson.day}): a grammar_note cannot bring a form in early. Move the card to day ${known.day} or later, or take "${s}" out of this card.`);
+          const first = cardOf.get(s);
+          if (first !== undefined && first !== ex.id) add(`structure "${s}" is already explained by ${first}; list a structure in only one grammar_note per lesson (put each card in the section whose practice it explains).`);
+          else cardOf.set(s, ex.id);
         }
         if (i !== 0) add("a grammar_note must be the first exercise of its section, so the learner reads the explanation before the practice. Move it to the start of the section.");
         if (section.skill === "pronunciation") add("a grammar_note must not be in a pronunciation section (that section is about sounds). Put it first in the listening, speaking, reading or writing section.");
-        if (seen === 2) add("one grammar_note per lesson: list every structure of the lesson in its `structures`, and merge the explanations into one card.");
         const width = ex.table?.[0]?.length ?? 0;
         ex.table?.forEach((row, r) => {
           if (row.length !== width) add(`table row ${r + 1} has ${row.length} cell(s) but row 1 has ${width}. Give every row the same number of cells (a cell cannot be empty: write a dash "-").`);

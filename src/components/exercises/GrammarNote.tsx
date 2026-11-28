@@ -1,5 +1,5 @@
 "use client";
-import { PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
+import { AudioFallback, PlayButtons, useExerciseAudio } from "@/components/audio/AudioControls";
 import { buttonClass } from "@/components/ui/button-styles";
 import type { ExerciseProps } from "./types";
 import { Card, CardList } from "./ui/Card";
@@ -34,9 +34,10 @@ export function GrammarNote({ exercise, onContinue }: ExerciseProps<"grammar_not
           </table>
         </Card>
       ) : null}
+      <AudioFallback audio={audio} />
       <CardList>
-        {exercise.examples.map((e) => (
-          <li key={e.en} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+        {exercise.examples.map((e, i) => (
+          <li key={i} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
             <span><span lang="en" className="block text-[17px] font-medium">{e.en}</span><span className="block text-[13px] text-muted">{e.th}</span></span>
             <PlayButtons audio={audio} text={e.en} />
           </li>

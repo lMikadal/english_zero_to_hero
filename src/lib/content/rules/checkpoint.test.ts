@@ -269,6 +269,6 @@ describe("reviewDays must be unique within a section", () => {
     expect(msg).toContain("day 1 is listed twice");
   });
   it("accepts distinct days", () => {
-    expect(errors(withSections((s) => { s[0].reviewDays = [1, 30]; return s; }))).toEqual([]);
+    expect(errors(withSections((s) => { s[1].reviewDays = [1, 30]; return s; }))).toEqual([]);
   });
 });

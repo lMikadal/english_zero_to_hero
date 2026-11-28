@@ -68,8 +68,8 @@ export function checkPhonemeTagSounds(ctx: RuleContext): Problem[] {
     const known = words.map((w) => bankIpa.get(w));
     return { ipa: known.filter(Boolean).join(" "), complete: known.every(Boolean) };
   };
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, sections } of ctx.units) { // lessons and checkpoints (checkpoint items always carry phonemes)
+    for (const section of sections) {
       for (const ex of section.exercises) {
         if (!ex.phonemes || (ex.type !== "repeat_after_me" && ex.type !== "minimal_pair")) continue;
         const known = ex.phonemes.filter((c) => symbols.has(c));
