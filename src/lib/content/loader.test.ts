@@ -11,7 +11,7 @@ const lesson = (day: number) => ({
   day, phase: 1, week: 1, type: "lesson", cefr: "A1", title: bi, objectives: [bi], estimatedMinutes: 20,
   vocab: ["v-hello"],
   sections: [{ skill: "listening", title: bi, exercises: [
-    { id: `d${String(day).padStart(3, "0")}-listen-01`, type: "dictation", instruction: { th: "ก" }, audioText: "Hi." },
+    { id: `d${String(day).padStart(3, "0")}-listen-01`, type: "dictation", instruction: { th: "ก" }, audioText: "Hello." },
   ] }],
 });
 const word = {

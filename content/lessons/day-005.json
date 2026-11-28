@@ -213,8 +213,8 @@
           "questions": [
             {
               "question": {
-                "en": "How do you spell Ann?",
-                "th": "Ann สะกดอย่างไร"
+                "en": "Which letters spell Ann?",
+                "th": "ตัวอักษรชุดไหนสะกดคำว่า Ann"
               },
               "choices": [
                 "A, N, N",

@@ -62,8 +62,9 @@ check: lint typecheck test validate ## lint + typecheck + test + content validat
 worktree-check: ## lint + typecheck + unit tests in a one-off container (use this in git worktrees, not `check`)
 	$(COMPOSE) -p english_zero_to_hero run --rm --no-deps -T -v /app/.next app sh -c "pnpm lint && pnpm typecheck && pnpm test:unit"
 
-validate: ## Validate everything under content/ (schema + cross-file rules)
-	$(RUN) pnpm content:validate
+validate: ## Validate everything under content/ (schema + cross-file rules); also writes .content-validate-summary.md for the CI job summary
+	@rm -f .content-validate-summary.md
+	$(RUN) sh -c 'CONTENT_VALIDATE_SUMMARY=/app/.content-validate-summary.md pnpm content:validate'
 
 db-generate: ## Generate a SQL migration from src/db/schema.ts
 	$(RUN) pnpm db:generate

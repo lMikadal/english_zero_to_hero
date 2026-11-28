@@ -1,6 +1,7 @@
 // Cross-file content rules (docs/VOCABULARY.md section 6, docs/TESTING.md). Pure: no file IO except validateContentDir.
 import path from "node:path";
 import { readContent, formatProblem, type ContentData, type Problem } from "./loader";
+import { checkContentRules } from "./rules";
 import { CEFR_LEVELS, type CefrLevel, type Exercise, type VocabItem } from "./schema";
 
 export { formatProblem };
@@ -195,5 +196,5 @@ export function formatSummary(s: Summary): string {
 
 export function validateContentDir(root: string): { problems: Problem[]; summary: Summary } {
   const { problems: fileProblems, ...data } = readContent(root);
-  return { problems: [...fileProblems, ...checkContent(data)], summary: summarize(data) };
+  return { problems: [...fileProblems, ...checkContent(data), ...checkContentRules(data)], summary: summarize(data) };
 }
