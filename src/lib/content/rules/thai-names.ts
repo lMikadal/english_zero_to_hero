@@ -106,8 +106,8 @@ export function checkThaiNames(ctx: RuleContext, table: Readonly<Record<string, 
   const problems: Problem[] = [];
   const warned = new Set<string>();
   const isWord = isKnownThaiWord(ctx);
-  for (const { file, lesson } of ctx.lessons) {
-    const all = [...strings(lesson)];
+  for (const { file, doc } of ctx.units) {
+    const all = [...strings(doc)];
     const english = all.filter((s) => !THAI.test(s.text));
     const present = new Set(PEOPLE.filter((n) => english.some((s) => new RegExp(`\\b${n}\\b`).test(s.text))));
     for (const name of present) {

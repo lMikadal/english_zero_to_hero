@@ -288,7 +288,8 @@ PR 1 ──► PR 2 ──► PR 3 ──┐
 - คู่ขนานใน worktree: PR 4 (frontend-dev) กับ PR 1; PR 5 (frontend-dev, ใช้ fake sink) และ PR 3b (backend-dev, unit อย่างเดียว) กับ PR 3; PR 7 (content-writer) ตลอด
 - **PR 7 ห้าม merge ก่อน PR 6:** ถ้ามีไฟล์ข้อสอบแต่ยังไม่มีหน้าจอ server จะล็อกวัน 31 โดยไม่มีทางสอบ PR 3–6 ตรวจกับแอปจริงโดยคัดลอกไฟล์ร่างจาก branch ของ PR 7 มาวางใน `content/checkpoints/` **โดยไม่ commit**
 
-### PR 1 `feat/checkpoint-content-schema` (backend-dev)
+### PR 1 `feat/checkpoint-content-schema` (backend-dev) — [x] ทำแล้ว 2026-11-28 (รอ merge)
+บันทึกการตีความ: schema ของแบบทดสอบอยู่ที่ `src/lib/content/checkpoint-schema.ts` (ไม่ใช่ `schema.ts`; `schema.ts` แก้แค่ `LESSON_TYPES`, regex ของ ID, export `bilingual`) PR 2 ให้ import `isCheckpointDay`/`CHECKPOINT_INTERVAL` จากไฟล์นั้น; `.extend()` ของ Zod 4 คง strict (มีเทสต์); ค่าคงที่ `CHECKPOINT_MIN_SCORED_EXERCISES = 3` อยู่ในไฟล์เดียวกัน (PR 2 ใช้ซ้ำแทนการประกาศ `MIN_SCORED_EXERCISES` ใหม่); fixture ใช้บทจริงวัน 1–30 ตอนตรวจ เพราะ is/this/he/yes สอนในวัน 8–15
 สัญญา: ข้อ 3.1 ทั้งหมด + 4.1; repo ที่ไม่มีแบบทดสอบต้องผ่าน `make validate` เหมือนเดิม
 - เทสต์ก่อน: `schema.test.ts` (รับแบบทดสอบตัวอย่าง; ปฏิเสธ key เกิน, `afterDay` 31, `weight` 101, `reviewDays` ว่าง; `type: "checkpoint"` ของบทเรียนถูกปฏิเสธ; id `c030-read-01` ผ่าน regex); `loader.test.ts` (ไม่มีโฟลเดอร์ = ไม่มี problem; ไฟล์ชื่อผิด = problem; `loadCheckpoint`); `repo.test.ts` (`getCheckpoint` null/throw); `validate.test.ts` + `rules/checkpoint.test.ts` หนึ่งเทสต์ต่อกฎของข้อ 3.1 ข้อ 2–11 (แต่ละกฎต้องมีทั้งเคสผ่านและเคสล้ม); `taught-words.test.ts`/`grammar-not-yet.test.ts` (ข้อสอบ A=30 ใช้คำที่สอนวัน 31 → error; ใช้ `lives` → error; ใช้ `has` → ผ่าน); cast rules ไม่รายงานแบบทดสอบ
 - fixture: `checkpointFixture` ใน `src/lib/answers/test-content.ts` (A = 30 ใช้คำของ `weekOne` เท่านั้น ครบ 5 ส่วน ส่วนละน้อยข้อ) ให้ PR ถัดไปใช้ผ่าน seam `content` เทสต์ห้ามอ่าน `content/checkpoints/` จริง (กติกาใน `docs/TESTING.md`)

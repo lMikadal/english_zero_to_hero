@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ZodType } from "zod";
+import { checkpointSchema, isCheckpointDay, type Checkpoint } from "./checkpoint-schema";
 import { lessonSchema, vocabItemSchema, type Lesson, type VocabItem } from "./schema";
 
 /** `rule` names a content rule family (src/lib/content/rules/); the CLI groups problems by it. */
@@ -10,7 +11,9 @@ export type Problem = { file: string; id?: string; message: string; rule?: strin
   severity?: "warning" };
 export type LoadedLesson = { file: string; lesson: Lesson };
 export type LoadedVocab = { file: string; items: VocabItem[] };
-export type ContentData = { lessons: LoadedLesson[]; vocab: LoadedVocab[]; failedVocabIds?: string[] };
+export type LoadedCheckpoint = { file: string; checkpoint: Checkpoint };
+/** `checkpoints` is optional so content built without any (tests, fixtures) still compiles. */
+export type ContentData = { lessons: LoadedLesson[]; vocab: LoadedVocab[]; checkpoints?: LoadedCheckpoint[]; failedVocabIds?: string[] };
 
 export class ContentError extends Error {
   constructor(readonly problems: Problem[]) {
@@ -99,6 +102,7 @@ export function readContent(root: string): ContentData & { problems: Problem[] }
   const problems: Problem[] = [];
   const lessons: LoadedLesson[] = [];
   const vocab: LoadedVocab[] = [];
+  const checkpoints: LoadedCheckpoint[] = [];
   const failedVocabIds: string[] = [];
   const dirs = { lessons: path.join(root, "lessons"), vocab: path.join(root, "vocab") };
   if (!isDir(root)) {
@@ -144,7 +148,23 @@ export function readContent(root: string): ContentData & { problems: Problem[] }
       problems.push({ file: displayName(root, dirs.vocab), message: "no vocab words found" });
     }
   }
-  return { lessons, vocab, failedVocabIds, problems };
+
+  // checkpoints/ is optional: no folder, or an empty one, is fine (no monthly test yet)
+  const cpDir = path.join(root, "checkpoints");
+  if (isDir(cpDir)) {
+    for (const e of fs.readdirSync(/*turbopackIgnore: true*/ cpDir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const abs = path.join(cpDir, e.name);
+      const display = displayName(root, abs);
+      if (!e.isFile() || !/^checkpoint-\d{3}\.json$/.test(e.name)) {
+        problems.push({ file: display, message: "unexpected entry in checkpoints/ (only regular files named checkpoint-XXX.json are allowed)" });
+        continue;
+      }
+      const r = parseFile(abs, display, checkpointSchema);
+      problems.push(...r.problems);
+      if (r.data) checkpoints.push({ file: display, checkpoint: r.data });
+    }
+  }
+  return { lessons, vocab, checkpoints, failedVocabIds, problems };
 }
 
 const defaultRoot = () => path.resolve(process.cwd(), "content");
@@ -154,6 +174,17 @@ export function loadLesson(day: number, root = defaultRoot()): Lesson {
   const display = displayName(root, abs);
   if (!fs.existsSync(abs)) throw new ContentError([{ file: display, message: "file not found" }]);
   const r = parseFile(abs, display, lessonSchema);
+  if (!r.data) throw new ContentError(r.problems);
+  return r.data;
+}
+
+/** The checkpoint taken after `afterDay`; throws ContentError when the file is missing or invalid. */
+export function loadCheckpoint(afterDay: number, root = defaultRoot()): Checkpoint {
+  if (!isCheckpointDay(afterDay)) throw new ContentError([{ file: "checkpoints", message: `${afterDay} is not a checkpoint day (30, 60, ... 360)` }]);
+  const abs = path.join(root, "checkpoints", `checkpoint-${String(afterDay).padStart(3, "0")}.json`);
+  const display = displayName(root, abs);
+  if (!fs.existsSync(abs)) throw new ContentError([{ file: display, message: "file not found" }]);
+  const r = parseFile(abs, display, checkpointSchema);
   if (!r.data) throw new ContentError(r.problems);
   return r.data;
 }

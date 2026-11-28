@@ -5,6 +5,7 @@ import type { Exercise } from "../schema";
 import { buildContext } from "./context";
 import { learnerEnglish } from "./learner-text";
 import { checkTaughtWords, checkVocabUsedOnItsDay } from "./taught-words";
+import { cpOf } from "./checkpoint-test-support";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const dictation = (day: number, audioText: string, n = 1): Exercise => ({ id: exId(day, "listen", n), type: "dictation", instruction, audioText });
@@ -133,5 +134,31 @@ describe("checkTaughtWords: hint for inflections of taught words", () => {
   });
   it("gives no hint for a word that is not an inflection", () => {
     expect(msg("A zebra")).not.toContain("looks like a form");
+  });
+});
+
+describe("checkTaughtWords: checkpoints are checked as a unit of day afterDay", () => {
+  const items = [vocabItem({ id: "v-hello", word: "hello" }), vocabItem({ id: "v-dog", word: "dog" })];
+  const cp = (text: string, afterDay = 30) => cpOf([{ ...dictation(afterDay, text), id: `c${String(afterDay).padStart(3, "0")}-listen-01` }], afterDay);
+  const go = (lessons: ReturnType<typeof lessonFile>[], checkpoint: ReturnType<typeof cp>) =>
+    checkTaughtWords(buildContext({ ...data(lessons, [vocabFile(items)]), checkpoints: [checkpoint] }));
+
+  it("flags a word taught on day 31 in a checkpoint after day 30, naming the checkpoint exercise, day 30 and the word", () => {
+    const out = go([lessonFile(1, ["v-hello"], [dictation(1, "Hello")]), lessonFile(31, ["v-dog"], [dictation(31, "Dog hello")])], cp("Hello dog"));
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ rule: "taught-words", file: "content/checkpoints/checkpoint-030.json", id: "c030-listen-01" });
+    expect(out[0].message).toContain("by day 30");
+    expect(out[0].message).toContain("dog");
+  });
+  it("accepts a word taught on day 30 itself, or earlier", () => {
+    expect(go([lessonFile(1, ["v-hello"], [dictation(1, "Hello")]), lessonFile(30, ["v-dog"], [dictation(30, "Dog hello")])], cp("Hello dog"))).toEqual([]);
+  });
+  it("the same text is fine in a later checkpoint (A = 60)", () => {
+    const lessons = [lessonFile(1, ["v-hello"], [dictation(1, "Hello")]), lessonFile(31, ["v-dog"], [dictation(31, "Dog hello")])];
+    expect(go(lessons, cp("Hello dog", 60))).toEqual([]);
+  });
+  it("a glossary does not apply: the glossary is only allowed on lessons, so the checkpoint rule forbids it (rules/checkpoint.ts)", () => {
+    const withGloss = cpOf([{ id: "c030-read-01", type: "read_passage", instruction, text: "Hello dog.", glossary: { dog: "หมา" }, questions: [{ question: { en: "Q?", th: "คำถาม" }, choices: ["a", "b"], answer: 0 }] }]);
+    expect(go([lessonFile(1, ["v-hello"], [dictation(1, "Hello")]), lessonFile(31, ["v-dog"], [dictation(31, "Dog hello")])], withGloss)).toEqual([]);
   });
 });

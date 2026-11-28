@@ -45,8 +45,8 @@ export function checkSoundWords(ctx: RuleContext): Problem[] {
   const byWord = new Map<string, { us: string; uk: string }[]>();
   for (const { item } of ctx.bank.values()) byWord.set(item.word.toLowerCase(), [...(byWord.get(item.word.toLowerCase()) ?? []), item.ipa]);
 
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, sections } of ctx.units) {
+    for (const section of sections) {
       for (const ex of section.exercises) {
         for (const text of textsOf(ex)) {
           for (const { symbol, words } of soundClaims(text)) {

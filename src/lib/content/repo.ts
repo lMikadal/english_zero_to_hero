@@ -5,7 +5,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { VocabLookup } from "@/components/exercises/types";
-import { loadLesson } from "./loader";
+import { loadCheckpoint, loadLesson } from "./loader";
+import { isCheckpointDay, type Checkpoint } from "./checkpoint-schema";
 import { vocabItemSchema, type Lesson, type VocabItem } from "./schema";
 
 const defaultRoot = () => path.resolve(process.cwd(), "content");
@@ -23,6 +24,19 @@ export function getLesson(day: number, root = defaultRoot()): Lesson | null {
   const lesson = fs.existsSync(file) ? loadLesson(day, root) : null; // an invalid file throws; a missing one is null
   if (cached()) lessons.set(key, lesson);
   return lesson;
+}
+
+const checkpoints = new Map<string, Checkpoint | null>();
+
+/** The checkpoint taken after `afterDay`, or null when it is not a checkpoint day or has no file. An invalid file throws. */
+export function getCheckpoint(afterDay: number, root = defaultRoot()): Checkpoint | null {
+  if (!isCheckpointDay(afterDay)) return null;
+  const key = `${root}\0${afterDay}`;
+  if (cached() && checkpoints.has(key)) return checkpoints.get(key)!;
+  const file = path.join(root, "checkpoints", `checkpoint-${String(afterDay).padStart(3, "0")}.json`);
+  const checkpoint = fs.existsSync(file) ? loadCheckpoint(afterDay, root) : null; // an invalid file throws; a missing one is null
+  if (cached()) checkpoints.set(key, checkpoint);
+  return checkpoint;
 }
 
 function readVocabIndex(root: string): Map<string, VocabItem> {
