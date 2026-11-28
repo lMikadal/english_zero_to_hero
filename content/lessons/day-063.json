@@ -157,7 +157,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (Rose's house = บ้านของโรส)"
           },
-          "text": "Rose's house is white and the door is green. The kitchen and the sofa are downstairs. Leo's bedroom is upstairs. The family has a small garden. Today it is rainy. The rain is cold and the road is wet. Rose wears a blue dress to school. On rainy days she takes an umbrella. Dan wears a white coat at work. Leo wears a green shirt and black shoes. In the evening the family goes to the cinema.",
+          "text": "Rose's house is white and the door is green. The kitchen and the sofa are downstairs. Leo's bedroom is upstairs. The family has a small garden. Today it is rainy. The rain is cold and the road is wet. Rose wears a blue dress to school. On rainy days she takes an umbrella. Dan wears a white coat at work. Leo wears a green shirt and black shoes. On Saturday evenings the family goes to the cinema.",
           "questions": [
             {
               "question": {
@@ -185,8 +185,8 @@
             },
             {
               "question": {
-                "en": "Where does the family go in the evening?",
-                "th": "ตอนเย็นครอบครัวไปไหน"
+                "en": "Where does the family go on Saturday evenings?",
+                "th": "ครอบครัวไปไหนเย็นวันเสาร์"
               },
               "choices": [
                 "To the cinema",
