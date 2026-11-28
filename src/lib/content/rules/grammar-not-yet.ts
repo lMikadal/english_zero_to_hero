@@ -13,7 +13,9 @@
 // that also has a noun entry in the bank ("play") gets no generated form. ERROR, except entries marked severity "warning".
 import type { Problem } from "../loader";
 import type { RuleContext } from "./context";
-import { glossedWords, learnerEnglish } from "./learner-text";
+import { ALWAYS_ALLOWED } from "./allowlists";
+import { glossedWords, learnerEnglish, type LearnerField } from "./learner-text";
+import type { Exercise } from "../schema";
 import { tokenize } from "./lexicon";
 
 export const GRAMMAR_NOT_YET_RULE = "grammar-not-yet";
@@ -38,11 +40,18 @@ export const GRAMMAR_NOT_BEFORE: Readonly<Record<string, GrammarGate>> = {
   has: { day: 29, what: 'the third-person form of "have" ("has")', fix: `Use "have" with I / you / we / they (for example "I have a sister"), or explain "has" in the \`glossary\` of a read_passage.` },
   does: { day: THIRD_PERSON_S_DAY, what: 'the Present Simple form "does"', fix: `Use "do" with I / you / we / they (for example "How do you spell it?"), or explain "does" in the \`glossary\` of a read_passage.` },
   goes: { day: THIRD_PERSON_S_DAY, what: 'the third-person -s form of "go"', fix: THIRD_PERSON_FIX },
+  "do not": {
+    day: THIRD_PERSON_S_DAY, what: 'negative do-support ("do not" / "don\'t"): Present Simple negatives (questions such as "Do you ...?" are allowed earlier)',
+    fix: `Use "am not" / "is not" / "are not" (for example "I am not a doctor"), or explain the form in the \`glossary\` of a read_passage.`,
+  },
   but: {
     day: THIRD_PERSON_S_DAY, severity: "warning", what: 'the linking word "but" (the curriculum does not give its day: 36 is a placeholder, ask the curriculum owner)',
     fix: `Use two short sentences, or explain "but" in the \`glossary\` of a read_passage.`,
   },
 };
+
+/** Words that look like a third-person -s form but are words in their own right (interjections); never generated. */
+const NOT_A_VERB_FORM: ReadonlySet<string> = new Set(["thanks"]);
 
 /** "live" -> "lives", "watch" -> "watches", "study" -> "studies", "go" -> "goes". */
 export function thirdPersonS(word: string): string {
@@ -55,11 +64,16 @@ export function thirdPersonS(word: string): string {
 function gates(ctx: RuleContext): Map<string, GrammarGate & { base?: string }> {
   const out = new Map<string, GrammarGate & { base?: string }>(Object.entries(GRAMMAR_NOT_BEFORE));
   const nouns = new Set<string>();
-  for (const { item } of ctx.bank.values()) if (item.pos === "noun") nouns.add(item.word.toLowerCase());
+  const bankWords = new Set<string>();
+  for (const { item } of ctx.bank.values()) {
+    bankWords.add(item.word.toLowerCase());
+    if (item.pos === "noun") nouns.add(item.word.toLowerCase());
+  }
   for (const { item } of ctx.bank.values()) {
     const base = item.word.toLowerCase().split(/\s+/)[0];
     if (item.pos !== "verb" || ["be", "have", "do"].includes(base) || nouns.has(base)) continue;
     const form = thirdPersonS(base);
+    if (NOT_A_VERB_FORM.has(form) || ALWAYS_ALLOWED.has(form) || bankWords.has(form)) continue; // a word in its own right
     if (!out.has(form)) out.set(form, { day: THIRD_PERSON_S_DAY, base, what: `the third-person -s form of "${base}"`, fix: THIRD_PERSON_FIX });
   }
   return out;
@@ -68,11 +82,23 @@ function gates(ctx: RuleContext): Map<string, GrammarGate & { base?: string }> {
 const NOUN_CONTEXT = new Set(["a", "an", "the", "my", "your", "his", "her", "its", "our", "their", "this", "that", "these", "those", "some", "any", "no", "many", "all",
   "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]);
 
+/** Every English text a learner reads or hears, field by field: learnerEnglish plus the alternative accepted answers that it leaves out. */
+export function checkedEnglish(ex: Exercise): LearnerField[] {
+  const list = (name: string, xs: readonly string[], from = 0): LearnerField[] => xs.slice(from).map((text, i) => ({ field: `${name}[${i + from}]`, text }));
+  switch (ex.type) {
+    case "translate_th_en": return [...learnerEnglish(ex), ...list("accept", ex.accept, 1)];
+    case "dictation": return [...learnerEnglish(ex), ...list("accept", ex.accept ?? [])];
+    case "arrange_words": return [...learnerEnglish(ex), ...list("accept", ex.accept ?? [])];
+    default: return learnerEnglish(ex);
+  }
+}
+
 /** The forms of `text` used before their day, in reading order, once each. */
 function early(text: string, day: number, gate: Map<string, GrammarGate & { base?: string }>, allowed: ReadonlySet<string>): string[] {
   const tokens = tokenize(text);
   const found: string[] = [];
-  tokens.forEach((t, i) => {
+  tokens.forEach((word, i) => {
+    const t = word === "do" && tokens[i + 1] === "not" ? "do not" : word; // the one two-word gate
     const g = gate.get(t);
     if (!g || g.day <= day || allowed.has(t) || found.includes(t)) return;
     if (g.base !== undefined && i > 0 && NOUN_CONTEXT.has(tokens[i - 1])) return;
@@ -104,7 +130,7 @@ export function checkGrammarNotYet(ctx: RuleContext): Problem[] {
     for (const section of lesson.sections) {
       for (const ex of section.exercises) {
         const glossed = new Set(glossedWords(ex).flatMap(tokenize));
-        for (const f of learnerEnglish(ex)) {
+        for (const f of checkedEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
           const forms = early(f.text, lesson.day, gate, glossed);
           if (forms.length) report(file, ex.id, lesson.day, `${f.field} "${f.text}"`, forms);
