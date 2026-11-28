@@ -101,10 +101,13 @@ export function parseAttemptBatch(body: unknown): ParsedAttemptBatch {
   };
 }
 
-export type RejectedReason = "unknown_exercise" | "kind_mismatch" | "unsupported" | "locked_day" | "not_finished" | "invalid";
+export type RejectedReason = "unknown_exercise" | "kind_mismatch" | "unsupported" | "locked_day" | "not_finished" | "invalid" | "already_answered";
 export type AttemptResult =
   | ({ id: string; status: "created" } & Grade)
   | ({ id: string; status: "duplicate" } & Partial<Grade>)
+  // a checkpoint exercise (`c…`): the answer is stored, nothing about right or wrong goes back during the test (D5), so the
+  // client cannot learn which answer to "fix"
+  | { id: string; status: "created" | "duplicate" }
   | { id: string | null; status: "rejected"; reason: RejectedReason };
 export type PostAttemptsResponse = { results: AttemptResult[] };
 

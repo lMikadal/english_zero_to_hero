@@ -60,6 +60,27 @@ export default defineConfig([
     },
   },
   {
+    // A checkpoint sitting never writes progress, profiles, attempts or the review cards (docs/plans/checkpoint-plan.md 3.5 item 34):
+    // the checkpoint handlers may not even import the writers. Its own table comes through @/db/queries/checkpoints.
+    files: ["src/lib/server/checkpoint-*.ts"],
+    ignores: ["src/lib/server/checkpoint-*.test.ts", "src/lib/server/checkpoint-*.int.test.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            TS_FSRS_ONLY_IN_ADAPTER, // this block replaces the general no-restricted-imports rule for these files, so repeat it
+            { group: ["@/db/schema", "**/db/schema"], allowTypeImports: true, message: "A checkpoint handler reads and writes tables through @/db/queries/checkpoints (and the read-only practice/progress queries) only." },
+            // namespace imports are rejected whenever allowImportNames is used
+            { group: ["@/db/queries/progress", "**/db/queries/progress"], allowImportNames: ["getProfile", "getStreak", "touchStreak"], message: "A checkpoint handler must not write progress or profiles." },
+            { group: ["@/db/queries/attempts", "**/db/queries/attempts"], message: "A checkpoint handler must not write attempts or progress." },
+            { group: ["@/db/queries/srs", "**/db/queries/srs", "@/lib/srs/cards", "**/lib/srs/cards"], message: "A checkpoint handler must not touch the review cards." },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // A review only touches the review tables and the streak (docs/plans/vocab-review-plan.md PR 3): the review handlers
     // may not import the progress writers or the attempts queries, like the practice handlers.
     files: ["src/lib/server/review-*.ts"],

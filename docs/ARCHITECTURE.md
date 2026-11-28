@@ -215,7 +215,7 @@ profiles       user_id PK→user, display_name, start_date date, current_day int
 progress       user_id, day int, status text(not_started|in_progress|done), score double, started_at timestamptz, completed_at timestamptz, updated_at
                PK(user_id, day), CHECK(status='done' ⇒ completed_at NOT NULL)
 attempts       id uuid PK (สร้างฝั่ง client เพื่อกันบันทึกซ้ำตอน sync), user_id, exercise_id text, day int, skill text, exercise_type text,
-               correct bool, score double, duration_ms int, tags text[], source text(lesson|drill|retest|checkpoint|practice, CHECK attempts_source_valid), session_id uuid,
+               correct bool, score double, duration_ms int, tags text[], source text(lesson|drill|retest|checkpoint|practice|checkpoint_retake, CHECK attempts_source_valid), session_id uuid,
                attempt_no smallint NOT NULL DEFAULT 1 CHECK(1..2) (1 = ตอบครั้งแรก, 2 = รอบทวนท้ายบท), answer jsonb, created_at timestamptz
                score เป็นเศษส่วน 0..1 เสมอ (progress.score ก็เช่นกัน); null = ระบบตรวจไม่ได้ (พูดประเมินตัวเอง, free_write)
                skill = pronunciation|listening|speaking|reading|writing|vocabulary
@@ -231,7 +231,9 @@ srs_reviews    id uuid PK (สร้างฝั่ง client), user_id, vocab_i
 recordings     id uuid PK, user_id, exercise_id text, day int, tags text[], object_key text, pron_score jsonb, created_at timestamptz
 streaks        user_id PK, current int, longest int, last_active_date date, freezes_left int, updated_at
                (คำนวณใหม่จาก activity_days ทุกครั้งที่ touchStreak: current = ช่วงวันติดกันที่จบที่วันล่าสุดที่มีกิจกรรม, ไม่ขึ้นกับลำดับที่ข้อมูลมาถึง)
-activity_days  user_id FK cascade, local_date date, source text default 'lesson' CHECK(lesson|practice|review), PK(user_id, local_date)  -- หนึ่งแถวต่อวันปฏิทินท้องถิ่นที่มีกิจกรรม (จบบท, เล่นบทเดิมซ้ำทั้งบทจนจบ = practice; ทวนคำศัพท์ครบ = review) source เป็นของกิจกรรมแรกของวัน
+activity_days  user_id FK cascade, local_date date, source text default 'lesson' CHECK(lesson|practice|review|checkpoint), PK(user_id, local_date)  -- หนึ่งแถวต่อวันปฏิทินท้องถิ่นที่มีกิจกรรม (จบบท, เล่นบทเดิมซ้ำทั้งบทจนจบ = practice; ทวนคำศัพท์ครบ = review; สอบแบบทดสอบประจำเดือนจบหนึ่งรอบ = checkpoint) source เป็นของกิจกรรมแรกของวัน
+checkpoint_results  id uuid PK (= sessionId ของรอบสอบ สร้างที่ client กันบันทึกซ้ำ), user_id FK cascade, after_day int (30,60..360), score double 0..1 (ตรึงตอนจบ), skills jsonb (CheckpointSkillResult[]), started_at, completed_at timestamptz, created_at
+               INDEX(user_id, after_day, completed_at), CHECK(after_day 30..360 และหาร 30 ลงตัว), CHECK(score 0..1), CHECK(completed_at >= started_at)  -- หนึ่งแถวต่อรอบสอบที่จบ (docs/plans/checkpoint-plan.md); `passed` ไม่เก็บ คำนวณจาก score ด้วย `isCheckpointPass()`
 push_subscriptions  id uuid PK, user_id, endpoint text UNIQUE, p256dh text, auth text, created_at timestamptz
 reminder_settings   user_id PK, enabled bool, remind_at time, types text[], updated_at
 ```
@@ -289,9 +291,9 @@ Request: `{ attempts: AttemptInput[] }` 1–50 รายการ (`PostAttempts
 | ฟิลด์ | ชนิด | หมายเหตุ |
 |---|---|---|
 | `id` | uuid | สร้างที่ client (`newId()`) เป็นตัวกันบันทึกซ้ำ |
-| `exerciseId` | string | `dXXX-<skill>-NN` |
+| `exerciseId` | string | `dXXX-<skill>-NN` (บทเรียน) หรือ `cXXX-<skill>-NN` (แบบทดสอบประจำเดือน หลังวัน XXX) |
 | `sessionId` | uuid | สร้างครั้งเดียวต่อการเล่นบท |
-| `source` | `lesson\|drill\|retest\|checkpoint\|practice` | default `lesson` (ต้องตรง `AttemptSource` ใน `src/db/schema.ts`) |
+| `source` | `lesson\|drill\|retest\|checkpoint\|practice\|checkpoint_retake` | default `lesson` (ต้องตรง `AttemptSource` ใน `src/db/schema.ts`) ข้อสอบ `c…` ต้องใช้ `checkpoint` หรือ `checkpoint_retake` เท่านั้น และ `d…` ห้ามใช้สองค่านี้ (ผิด = `rejected` `invalid`) |
 | `attemptNo` | `1 \| 2` | default 1; 2 = รอบทวนท้ายบท |
 | `answer` | union ตาม `kind` | `choice{selected}`, `choices{selected[]}`, `pairs{selected[]: a\|b}`, `text{text}`, `texts{texts[]}`, `match{pairs: {vocabId: vocabId}}`, `self{rating: ok\|unsure, recordingId?}` |
 | `durationMs` | int 0..3 600 000 | ไม่บังคับ client วัดด้วยนาฬิกา monotonic (`performance.now()`) แล้วครอบด้วย `clampDurationMs()` ก่อนส่งเสมอ (ปล่อยเครื่องข้ามคืนหรือปรับนาฬิกาแล้วค่าจึงไม่หลุดช่วง) |
@@ -306,8 +308,9 @@ Response `200` สำหรับ batch ที่ envelope ถูกต้อง
 |---|---|---|
 | `created` | บันทึกแล้ว | `correct`, `score` |
 | `duplicate` | `id` นี้เคยบันทึกแล้ว ไม่ทำอะไรซ้ำ | `correct`, `score` ที่เก็บไว้ (ถ้ามี) **ไม่มี `items` เสมอ** |
-| `rejected` | ไม่บันทึก (`id` เป็น `null` ได้เมื่ออ่าน id ไม่ออก) | `reason`: `unknown_exercise` (ไม่มี exercise นี้ใน content), `kind_mismatch` (ชนิด จำนวน หรือชุด key ของ `answer` ไม่ตรงกับ exercise), `unsupported` (ชนิดที่ไม่มี attempt เช่น `phoneme_intro`, `roleplay`), `locked_day` (วันของ exercise มากกว่า `profiles.current_day`), `not_finished` (`source: practice` ของวันที่ `progress.status` ไม่ใช่ `done` หรือไม่มีแถว; ตรวจหลัง `locked_day`), `invalid` (รายการนี้ไม่ผ่าน schema เช่น มี NUL (U+0000) หรืออักขระ surrogate เดี่ยวใน answer, timestamp นอกช่วง, `attemptNo: 2` กับชนิดที่ทวนไม่ได้ ดู `isAttemptNoAllowed`, หรือฐานข้อมูลปฏิเสธข้อมูลของรายการนั้น) `unknown_exercise` ใช้เมื่อไฟล์บทเรียนของวันนั้นโหลดไม่ได้ด้วย |
+| `rejected` | ไม่บันทึก (`id` เป็น `null` ได้เมื่ออ่าน id ไม่ออก) | `reason`: `unknown_exercise` (ไม่มี exercise นี้ใน content), `kind_mismatch` (ชนิด จำนวน หรือชุด key ของ `answer` ไม่ตรงกับ exercise), `unsupported` (ชนิดที่ไม่มี attempt เช่น `phoneme_intro`, `roleplay`), `locked_day` (วันของ exercise มากกว่าวันที่เล่นได้สูงสุด `playableDay` = `profiles.current_day` หรือ `current_day − 1` ขณะที่แบบทดสอบประจำเดือนกั้นอยู่; ของ `c…` วันคือ A), `not_finished` (`source` ที่ไม่แตะ progress: `practice`, `checkpoint`, `checkpoint_retake` ของวันที่ `progress.status` ไม่ใช่ `done` หรือไม่มีแถว; ตรวจหลัง `locked_day`), `already_answered` (ข้อสอบ `c…` ที่รอบสอบ `sessionId` นี้มีคำตอบของข้อนั้นอยู่แล้วด้วย `id` อื่น: หนึ่งคำตอบต่อข้อต่อรอบ ดัชนี unique `attempts_checkpoint_one_answer_idx`; `id` เดิมส่งซ้ำ = `duplicate`), `invalid` (รายการนี้ไม่ผ่าน schema เช่น มี NUL (U+0000) หรืออักขระ surrogate เดี่ยวใน answer, timestamp นอกช่วง, `attemptNo: 2` กับชนิดที่ทวนไม่ได้ ดู `isAttemptNoAllowed`, หรือฐานข้อมูลปฏิเสธข้อมูลของรายการนั้น) `unknown_exercise` ใช้เมื่อไฟล์บทเรียนของวันนั้นโหลดไม่ได้ด้วย |
 
+- ผลของข้อสอบ `c…` เป็นแค่ `{ id, status }` (ไม่มี `correct`/`score`/`items` ทั้ง `created` และ `duplicate`): ไม่เฉลยระหว่างสอบ (D5) และ client ไม่รู้ว่าข้อไหนผิด; ข้อ `c…` ใน batch ถูกประมวลผลตามลำดับ request (รายการแรกของข้อนั้นชนะ) ส่วนข้อ `d…` ตามลำดับ id
 - รายการเสียหนึ่งรายการ (ข้อมูลที่ Postgres ไม่รับ, ไฟล์บทเรียนเสีย) ถูกตอบ `rejected` เฉพาะรายการนั้น รายการอื่นใน batch ถูกบันทึกตามปกติ ไม่มีรายการเดียวที่ทำให้ทั้ง batch ล้มหรือเป็น 500
 - ทุก response (รวม error) เป็น JSON ที่มี `Cache-Control: no-store` รูป error คือ `{ "error": "<code>" }`
 - `400`: ทั้ง body ใช้ไม่ได้: JSON อ่านไม่ออก (`invalid_json`) หรือ envelope ผิด (`invalid_body`: ไม่มี `attempts`, ว่าง, เกิน 50 รายการ) ไม่มีรายการใดถูกบันทึก ตรวจก่อนแตะฐานข้อมูล
@@ -318,8 +321,8 @@ Response `200` สำหรับ batch ที่ envelope ถูกต้อง
 #### `POST /api/lessons/complete`
 
 Request (`completeLessonRequestSchema`): `{ day: 1..365, sessionId: uuid, completedAt: ISO datetime }` รูปแบบเวลาและการตัดเหมือน `createdAt` (ตัดเข้า `[floor, now]`; และ `completed_at` จะไม่ต่ำกว่า `started_at` ของวันนั้นเสมอ)
-Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", score, completedAt }, streak: { current, longest }, currentDay }` เรียกซ้ำได้โดยผลไม่เปลี่ยน `streak.current` คือช่วงวันติดกันที่จบที่วันล่าสุดที่มีกิจกรรม (ยัง "ไม่ขาด" ของวันนี้หรือไม่ เป็นเรื่องของการแสดงผล)
-- `409` `locked_day`: วันนั้นยังล็อกอยู่ (`day > profiles.current_day`) **หรือไม่มีบทเรียนของวันนั้น** (ไม่มีไฟล์/โหลดไม่ได้) ไม่ควรส่งซ้ำ ไม่ต้องมี attempt ที่เก็บไว้ก็จบบทได้ (content กับ client อาจไม่ตรงกันโดยไม่ทำให้ผู้ใช้ค้าง)
+Response `200` (`CompleteLessonResponse`): `{ progress: { day, status: "done", score, completedAt }, streak: { current, longest }, currentDay, pendingCheckpoint }` (`pendingCheckpoint` = A ของแบบทดสอบประจำเดือนที่กั้นวัน A+1 อยู่ตอนนี้ ไม่งั้น `null`; คำนวณสดจาก `getCheckpointGate`) เรียกซ้ำได้โดยผลไม่เปลี่ยน `streak.current` คือช่วงวันติดกันที่จบที่วันล่าสุดที่มีกิจกรรม (ยัง "ไม่ขาด" ของวันนี้หรือไม่ เป็นเรื่องของการแสดงผล)
+- `409` `locked_day`: วันนั้นยังล็อกอยู่ (`day > playableDay`: เกิน `profiles.current_day` หรือถูกแบบทดสอบประจำเดือนกั้น) **หรือไม่มีบทเรียนของวันนั้น** (ไม่มีไฟล์/โหลดไม่ได้) ไม่ควรส่งซ้ำ ไม่ต้องมี attempt ที่เก็บไว้ก็จบบทได้ (content กับ client อาจไม่ตรงกันโดยไม่ทำให้ผู้ใช้ค้าง)
 - `400`: body ผิดรูปแบบ
 
 #### `POST /api/practice/complete`
@@ -354,13 +357,24 @@ Response `200` (`CompleteReviewResponse`): `{ sessionDate: "YYYY-MM-DD", reviewe
 - `countedForStreak` = มีรีวิวของ session บนการ์ดที่ถึงกำหนดจริงตอนนั้น (`state_before.due` ก่อนสิ้นวัน) ≥ 1 **และ** `remainingDue === 0` จึงเรียก `touchStreak(..., "review")` (วันที่มี `lesson`/`practice` อยู่แล้วคงแถวเดิม); ไม่ผ่านก็ตอบ `200` `false` (ไม่ใช่ 409) พร้อม `streak` ปัจจุบัน วันที่ไม่มีการ์ดถึงกำหนดไม่นับ
 - เรียกซ้ำผลเดิม; ไม่เขียน `progress`/`profiles`/`attempts`; ไม่สร้างการ์ด (ไม่เรียก `reconcileCards`)
 
+#### `POST /api/checkpoints/complete`
+
+จบรอบสอบแบบทดสอบประจำเดือน (`docs/plans/checkpoint-plan.md` 3.5) Request (`completeCheckpointRequestSchema`): `{ afterDay: 30|60|…|360, sessionId: uuid, completedAt: ISO datetime }`
+Response `200` (`CompleteCheckpointResponse`): `{ result: { sessionId, afterDay, score, passed, skills: CheckpointSkillResult[], completedAt, sitting, best }, streak: { current, longest }, nextDay }`
+- คะแนน = `scoreCheckpoint(ไฟล์แบบทดสอบ, attempt ของ sessionId นี้)`: attempt วัน A, source `checkpoint`/`checkpoint_retake`, `attempt_no = 1`, ข้อที่อยู่ในไฟล์ ต่อข้อใช้แถวที่เก่าสุด; ข้อที่ไม่ตอบ = 0; ส่วนน้ำหนัก 0 ไม่นับ (`score: null`, `selfOk`) บันทึกลง `checkpoint_results` ด้วย `INSERT … ON CONFLICT (id) DO NOTHING` (id = `sessionId`) เรียกซ้ำได้ผลที่เก็บไว้ ไม่คำนวณใหม่ สองคำขอพร้อมกันได้แถวเดียว
+- `completed_at` = `completedAt` ตัดเข้า `[floor, now]` แล้วยกให้ไม่ต่ำกว่า attempt ล่าสุดของรอบ; `started_at` = attempt แรกของรอบ; `sitting` = ลำดับของรอบนี้ในรอบที่จบของ A (ตาม `completed_at`) และ `best` = คะแนนสูงสุดถึงรอบนี้; `nextDay` = A+1 เมื่อมีไฟล์บทและเล่นได้ ไม่งั้น `null`
+- ทุกครั้งที่ตอบ `200` เรียก `touchStreak(..., "checkpoint")` ด้วยวันท้องถิ่นของ `completed_at` (วันที่มีกิจกรรมอยู่แล้วไม่เพิ่มแถวและ `source` เดิมคงอยู่)
+- handler นี้ไม่เขียน `progress`, `profiles`, `attempts`, `srs_*` (ไฟล์ `checkpoint-*.ts` ใน `src/lib/server/` import ตัวเขียนเหล่านั้นและ `@/db/schema` เป็นค่าไม่ได้: ESLint `no-restricted-imports`, ทดสอบด้วย `checkpoint-imports.test.ts` และ `checkpoint-guard.int.test.ts`) query อยู่ใน `src/db/queries/checkpoints.ts`
+- `409` `not_completable`: ไม่มีไฟล์แบบทดสอบ A (หรือโหลดไม่ได้), วัน A ยังไม่ `done`, รอบนี้ไม่มี attempt ที่เก็บไว้เลย (กันคำขอเปล่าปลดล็อกวันถัดไป), หรือ `sessionId` เป็นของผลของผู้ใช้อื่น/ของแบบทดสอบอื่น (กรณีหลังนี้ส่งซ้ำก็ 409 เสมอ: ทางออกคือเริ่มรอบใหม่ด้วย `sessionId` ใหม่); `400` body ผิด (`afterDay` ไม่ใช่ 30..360 ที่หาร 30 ลงตัว); `413`/`415` เหมือน endpoint อื่น
+
 #### รายละเอียดฝั่ง server (`src/lib/server/`)
 
 - ผู้ใช้ปัจจุบัน: `getCurrentUserId()` (`current-user.ts`) คืน `"local"` และสร้างแถว `user` กับ `profiles` (`start_date` = วันนี้ตามเวลา Asia/Bangkok, `current_day` 1) ตอนเรียกครั้งแรก ปลอดภัยเมื่อเรียกพร้อมกัน; Better Auth ใน M2 แก้เฉพาะฟังก์ชันนี้
 - โหลดบทเรียนและคำศัพท์ที่สอนแล้วต่อวันครั้งเดียวต่อ request; เขียนแถวตามลำดับ `id` (ผลลัพธ์ยังเรียงตาม request) และ retry transaction เมื่อเกิด deadlock/serialization failure (`40P01`/`40001`); แต่ละรายการอยู่ใน savepoint ของตัวเอง; อ่าน `profiles` แบบ `FOR SHARE` ส่วนจบบทล็อกแบบ `FOR UPDATE` เพื่อไม่ให้รายการวัน N+1 ถูกตอบ `locked_day` ผิดตอนวัน N กำลัง commit
 - logic อยู่ใน `handlePostAttempts(body, {db, userId, now})` และ `handleCompleteLesson(...)` ที่คืน `{ status, body }`; route (`src/app/api/**`) แค่ parse JSON (อ่านไม่ออก = `400 {error:"invalid_json"}`) แล้วเรียก handler
 - ตารางบทบาทของ `source` อยู่ที่ `src/lib/progress/sources.ts` (`SOURCE_ROLES`): handler ตัดสินด้วย `hasRole(source, "touchesProgress")` ไม่ใช่ `if` ตาม source `practice` ไม่เข้า `firstCreated` จึงไม่เรียก `markInProgress`/`refreshDoneScore` ไม่สร้างหรือแก้แถว `progress` เลย และคะแนนบทกรอง `source = 'lesson'`
-- ลำดับตรวจต่อรายการ: schema (`invalid`) → `unknown_exercise` → `locked_day` → `not_finished` (เฉพาะ source ที่ไม่แตะ progress) → `kind_mismatch`/`unsupported` → `attemptNo` ไม่อนุญาต (`invalid`) → insert `ON CONFLICT (id) DO NOTHING` ทั้ง batch อยู่ใน transaction เดียว
+- แบบทดสอบประจำเดือน (`c…`): `handlePostAttempts` หา container ตามตัวอักษรนำ (`d` → บท, `c` → `getCheckpoint(A)`), `attempts.day` = A, `skill`/`tags` ด้วย `attemptSkill`/`deriveTags` เดิม (`findExercise`/`deriveTags` รับ `Pick<Lesson, "sections">`) และ **server เป็นคนตัดสิน source ที่เก็บ**: ถ้าผู้เรียนมี attempt ของ `exercise_id` นี้อยู่แล้ว (id อื่น) เก็บ `checkpoint_retake` ไม่งั้น `checkpoint` ไม่ว่า client ส่งสองค่านี้ค่าไหน (D11) วันที่เล่นได้สูงสุดมาจาก `getCheckpointGate` (`src/db/queries/checkpoints.ts`): แบบทดสอบ A ที่มีไฟล์ ยังไม่มีผล และยังไม่มีแถว `progress` ของวัน A+1 กั้นวัน A+1 ไว้ (ไฟล์หายหรือเสีย = ไม่กั้น)
+- ลำดับตรวจต่อรายการ: schema (`invalid`) → ชนิด id กับ `source`/`attemptNo` (`invalid`) → `unknown_exercise` → `locked_day` → `not_finished` (เฉพาะ source ที่ไม่แตะ progress) → `kind_mismatch`/`unsupported` → `attemptNo` ไม่อนุญาต (`invalid`) → insert `ON CONFLICT (id) DO NOTHING` ทั้ง batch อยู่ใน transaction เดียว
 - `duplicate` คืน `correct`/`score` ที่ **เก็บไว้ในแถวเดิม** (ไม่ตรวจ payload ใหม่ และไม่แก้แถว); ถ้า id นั้นเป็นของผู้ใช้อื่นจะไม่มี grade
 - `created` คืน grade ทั้งก้อนรวม `items`; `items` ไม่ถูกเก็บในฐานข้อมูล
 - `tags` = `deriveTags(lesson, ex, section, getTaughtWords(day))`; `created_at` = `createdAt` ของ client ที่ตัดเข้า `[floor, now]`
@@ -371,7 +385,7 @@ Response `200` (`CompleteReviewResponse`): `{ sessionDate: "YYYY-MM-DD", reviewe
 
 #### การล็อกบทเรียน
 
-เล่นได้เมื่อ `day <= profiles.current_day` (`current_day` = วันสูงสุดที่เรียนจบ + 1) ใช้ `isDayUnlocked(day, currentDay)` จาก `src/lib/attempts/unlock.ts` ทั้งสองฝั่ง
+เล่นได้เมื่อ `day <= playableDay` ใช้ `isDayUnlocked(day, playableDay)` จาก `src/lib/attempts/unlock.ts` ทั้งสองฝั่ง `playableDay` = `profiles.current_day` (= วันสูงสุดที่เรียนจบ + 1) ยกเว้นขณะที่แบบทดสอบประจำเดือน A กั้นวัน A+1 อยู่ (`current_day = A+1`, มีไฟล์ A, ยังไม่มีผลของ A, ยังไม่เริ่มวัน A+1) ซึ่ง `playableDay = current_day − 1 = A` คำนวณสดด้วย `blockingCheckpoint()`/`getCheckpointGate()` ไม่มีข้อมูลค้างในฐานข้อมูล (`docs/plans/checkpoint-plan.md` D1, D15) ใช้ใน `POST /api/attempts` (รายการ `d…`), `POST /api/lessons/complete`
 
 #### กติกาของคิว offline
 

@@ -43,6 +43,9 @@ describe("types stay in sync with the DB schema", () => {
     expectTypeOf<ReplaySkill>().toEqualTypeOf<Section["skill"]>();
     expect([...REPLAY_SKILLS]).toEqual(["pronunciation", "listening", "speaking", "reading", "writing"]);
   });
+  it("RejectedReason has already_answered (a second answer to a checkpoint exercise in one sitting)", () => {
+    expectTypeOf<"already_answered">().toExtend<RejectedReason>();
+  });
   it("RejectedReason has not_finished", () => {
     expectTypeOf<"not_finished">().toExtend<RejectedReason>();
   });
@@ -216,10 +219,11 @@ describe("response types", () => {
       ],
     };
     expect(r.results).toHaveLength(8);
-    // created always carries the grade; duplicate may; rejected carries a reason
-    // @ts-expect-error created without a grade
-    const noGrade: AttemptResult = { id: uuid, status: "created" };
-    void noGrade;
+    // a lesson result carries the grade; a checkpoint result is only `{ id, status }` (nothing about right or wrong goes back during the test, D5)
+    const checkpointCreated: AttemptResult = { id: uuid, status: "created" };
+    void checkpointCreated;
+    const already: AttemptResult = { id: uuid, status: "rejected", reason: "already_answered" };
+    void already;
     const dup: AttemptResult = { id: uuid, status: "duplicate" };
     void dup;
     // @ts-expect-error rejected without a reason

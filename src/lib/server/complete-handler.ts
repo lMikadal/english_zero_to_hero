@@ -1,4 +1,5 @@
 // POST /api/lessons/complete: one transaction that finishes the day (docs/ARCHITECTURE.md 5.1).
+import { getCheckpointGate, type CheckpointContent } from "@/db/queries/checkpoints";
 import {
   advanceCurrentDay,
   computeLessonScore,
@@ -11,6 +12,7 @@ import {
 import { withTransactionRetry } from "@/db/queries/tx";
 import { completeLessonRequestSchema, type CompleteLessonResponse } from "@/lib/attempts/contract";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
+import { getCheckpoint } from "@/lib/content/repo";
 import { reconcileCards, repoContent, type CardContent } from "@/lib/srs/cards";
 import { localDate, resolveTimeZone } from "@/lib/progress/dates";
 import type { HandlerDeps, HandlerResult } from "./attempts-handler";
@@ -27,7 +29,7 @@ function lessonExists(day: number, content: Pick<CardContent, "getLesson">): boo
 }
 
 /** `content` is a test seam: where lessons (do they exist?) and the words of the finished lessons come from (default: the content files). */
-export async function handleCompleteLesson(body: unknown, { db, userId, now, content }: HandlerDeps & { content?: CardContent }): Promise<HandlerResult<CompleteLessonResponse>> {
+export async function handleCompleteLesson(body: unknown, { db, userId, now, content, checkpoints = { getCheckpoint } }: HandlerDeps & { content?: CardContent; checkpoints?: CheckpointContent }): Promise<HandlerResult<CompleteLessonResponse>> {
   const parsed = completeLessonRequestSchema.safeParse(body);
   if (!parsed.success) return { status: 400, body: { error: "invalid_body" } };
   const { day, completedAt: clientCompletedAt } = parsed.data;
@@ -36,7 +38,9 @@ export async function handleCompleteLesson(body: unknown, { db, userId, now, con
   const response = await withTransactionRetry(db, async (tx): Promise<CompleteLessonResponse | null> => {
     // Lock order: profile, then this day's progress row, then streak. Attempts take the profile SHARE lock first too.
     const profile = await getProfile(tx, userId, { lock: "update" });
-    if (!exists || !isDayUnlocked(day, profile.currentDay)) return null;
+    // a checkpoint that has not been taken holds day A+1 back, so day A+1 cannot be completed (docs/plans/checkpoint-plan.md D1)
+    const gate = await getCheckpointGate(tx, userId, profile, checkpoints);
+    if (!exists || !isDayUnlocked(day, gate.playableDay)) return null;
 
     const tz = resolveTimeZone(profile.timezone);
     const clamped = clampTimestamp(clientCompletedAt, now, timestampFloor(now, profile.startDate, tz));
@@ -48,7 +52,7 @@ export async function handleCompleteLesson(body: unknown, { db, userId, now, con
         progress: { day, status: "done", score: row.score, completedAt: row.completedAt!.toISOString() },
         streak: await getStreak(tx, userId),
         currentDay: profile.currentDay,
-        pendingCheckpoint: null, // PR 3 of docs/plans/checkpoint-plan.md fills this in (the gate is not wired into the handlers yet)
+        pendingCheckpoint: gate.blocking,
       };
     }
 
@@ -60,7 +64,9 @@ export async function handleCompleteLesson(body: unknown, { db, userId, now, con
     const currentDay = await advanceCurrentDay(tx, userId, day);
     // the lesson's words become review cards in the same transaction (docs/plans/vocab-review-plan.md 2.1); not reported in the response
     await reconcileCards(tx, userId, now, tz, { completed: { day, completedAt }, content });
-    return { progress: { day, status: "done", score: done.score, completedAt: done.completedAt!.toISOString() }, streak, currentDay, pendingCheckpoint: null };
+    // the day after this one may now be held back by a checkpoint: asked again with the new current day (a lesson file for it makes the answer A)
+    const next = await getCheckpointGate(tx, userId, { currentDay }, checkpoints);
+    return { progress: { day, status: "done", score: done.score, completedAt: done.completedAt!.toISOString() }, streak, currentDay, pendingCheckpoint: next.blocking };
   });
 
   if (!response) return { status: 409, body: { error: "locked_day" } };

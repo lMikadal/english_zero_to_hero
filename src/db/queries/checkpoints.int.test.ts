@@ -153,12 +153,12 @@ describe("sittingRows", () => {
   it("returns the first-try rows of this session, both checkpoint sources, for the given exercises only", async () => {
     const a = await attempt({ exerciseId: ids[0], sessionId: S, score: 1, correct: true, createdAt: at(3000) });
     const b = await attempt({ exerciseId: ids[1], sessionId: S, source: "checkpoint_retake", score: 0.5, correct: false, createdAt: at(2000) });
-    await attempt({ exerciseId: ids[2], sessionId: S, createdAt: at(1000) }); // not asked for
+    await attempt({ exerciseId: "c030-listen-04", sessionId: S, createdAt: at(1000) }); // not asked for
     await attempt({ exerciseId: ids[0], sessionId: randomUUID() }); // another session
     await attempt({ exerciseId: ids[0], sessionId: S, source: "lesson" }); // not a checkpoint source
-    await attempt({ exerciseId: ids[0], sessionId: S, day: 31 }); // another checkpoint day
-    await attempt({ exerciseId: ids[0], sessionId: S, attemptNo: 2 }); // not a first try
-    const rows = await sittingRows(db, userId, 30, S, ids.slice(0, 2));
+    await attempt({ exerciseId: ids[2], sessionId: S, attemptNo: 2 }); // not a first try
+    await attempt({ exerciseId: "c060-pron-01", sessionId: S, day: 60 }); // another checkpoint day
+    const rows = await sittingRows(db, userId, 30, S, ids);
     expect(rows).toEqual([
       { id: a.id, exerciseId: ids[0], score: 1, correct: true, createdAt: a.createdAt },
       { id: b.id, exerciseId: ids[1], score: 0.5, correct: false, createdAt: b.createdAt },
@@ -172,9 +172,9 @@ describe("sittingRows", () => {
     expect(await sittingRows(db, "other", 30, S, ids)).toEqual([]);
   });
 
-  it("orders by createdAt then id, so the oldest row of an exercise comes first", async () => {
+  it("orders by createdAt then id (a sitting has at most one row per exercise: the database allows no second one)", async () => {
     const late = await attempt({ exerciseId: ids[0], sessionId: S, createdAt: at(1000) });
-    const early = await attempt({ exerciseId: ids[0], sessionId: S, createdAt: at(5000) });
+    const early = await attempt({ exerciseId: ids[1], sessionId: S, createdAt: at(5000) });
     expect((await sittingRows(db, userId, 30, S, ids)).map((r) => r.id)).toEqual([early.id, late.id]);
   });
 });
@@ -186,11 +186,11 @@ describe("findOpenSitting (D8: resume within 24 hours of the first answer)", () 
     expect(await findOpenSitting(db, userId, 30, NOW)).toBeNull();
   });
 
-  it("returns the session and the exercises answered so far, in the order they were answered, each once", async () => {
+  it("returns the session and the exercises answered so far, in the order they were answered", async () => {
     await attempt({ exerciseId: "c030-listen-02", sessionId: S, createdAt: at(2 * HOUR) });
     await attempt({ exerciseId: "c030-pron-01", sessionId: S, createdAt: at(HOUR) });
-    await attempt({ exerciseId: "c030-pron-01", sessionId: S, source: "checkpoint_retake", createdAt: at(HOUR / 2) });
-    expect(await findOpenSitting(db, userId, 30, NOW)).toEqual({ sessionId: S, answered: ["c030-listen-02", "c030-pron-01"] });
+    await attempt({ exerciseId: "c030-pron-02", sessionId: S, source: "checkpoint_retake", createdAt: at(HOUR / 2) });
+    expect(await findOpenSitting(db, userId, 30, NOW)).toEqual({ sessionId: S, answered: ["c030-listen-02", "c030-pron-01", "c030-pron-02"] });
   });
 
   it("the first answer exactly 24 hours ago can still resume; one millisecond more cannot", async () => {

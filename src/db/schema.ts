@@ -7,6 +7,7 @@ import {
   doublePrecision,
   foreignKey,
   index,
+  uniqueIndex,
   integer,
   jsonb,
   pgTable,
@@ -119,6 +120,9 @@ export const attempts = pgTable(
     index("attempts_user_id_day_idx").on(t.userId, t.day),
     index("attempts_user_id_session_id_idx").on(t.userId, t.sessionId),
     index("attempts_tags_gin_idx").using("gin", t.tags),
+    // One answer per exercise per checkpoint sitting, by construction: a client cannot "fix" an answer by sending a second
+    // one for the same session (docs/plans/checkpoint-plan.md 3.4). A new session (a second sitting) is a new key.
+    uniqueIndex("attempts_checkpoint_one_answer_idx").on(t.userId, t.sessionId, t.exerciseId).where(sql`${t.source} IN ('checkpoint', 'checkpoint_retake')`),
     check("attempts_day_range", sql`${t.day} BETWEEN 1 AND 365`),
     check("attempts_skill_valid", inList(t.skill, SKILLS)),
     check("attempts_source_valid", inList(t.source, ATTEMPT_SOURCES)),
