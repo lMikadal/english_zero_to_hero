@@ -6694,17 +6694,6 @@
     "collocations": ["in the north"]
   },
   {
-    "id": "v-south",
-    "word": "south",
-    "pos": "noun",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/saʊθ/", "uk": "/saʊθ/" },
-    "th": "ทิศใต้",
-    "topics": ["places_city", "travel_transport"],
-    "examples": [{ "en": "The sea is in the south.", "th": "ทะเลอยู่ทางใต้" }, { "en": "Bangkok is south of Chiang Mai.", "th": "กรุงเทพฯ อยู่ทางใต้ของเชียงใหม่" }],
-    "collocations": ["in the south"]
-  },
-  {
     "id": "v-east",
     "word": "east",
     "pos": "noun",
@@ -6819,5 +6808,16 @@
     "examples": [{ "en": "The hotel is fifty euros.", "th": "โรงแรมคืนละห้าสิบยูโร" }, { "en": "I have twenty euros.", "th": "ฉันมียี่สิบยูโร" }],
     "collocations": ["twenty euros"],
     "forms": { "plural": "euros" }
+  },
+  {
+    "id": "v-south",
+    "word": "south",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/saʊθ/", "uk": "/saʊθ/" },
+    "th": "ทิศใต้",
+    "topics": ["places_city", "travel_transport"],
+    "examples": [{ "en": "Bangkok is south of Chiang Mai.", "th": "กรุงเทพฯ อยู่ทางใต้ของเชียงใหม่" }, { "en": "The bank is south of the hospital.", "th": "ธนาคารอยู่ทางใต้ของโรงพยาบาล" }],
+    "collocations": ["in the south"]
   }
 ]
