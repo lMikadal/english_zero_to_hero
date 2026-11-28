@@ -112,6 +112,50 @@
       },
       "exercises": [
         {
+          "id": "d029-listen-04",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "have / has: มี (ของ he / she / it)",
+          "bodyTh": "ใช้บอกว่าใครหรืออะไรมีอะไร: have ใช้กับ I, you, we, they (I have two hands.) แต่ถ้าประธาน (คนหรือสิ่งที่ทำหรือมี) เป็น he, she, it หรือชื่อคนเดียว กริยา (คำบอกการกระทำ) เปลี่ยนเป็น has (He has two arms.) ผิดบ่อย: She have two hands ✗ → She has two hands ✓ ออกเสียง has เป็น /hæz/ ท้ายเสียงสั่นคอ (z) ไม่ใช่ /hæs/",
+          "table": [
+            [
+              "ประธาน (คนหรือสิ่งที่ทำ/มี)",
+              "กริยา (คำบอกการกระทำ)"
+            ],
+            [
+              "I / you / we / they",
+              "have"
+            ],
+            [
+              "he / she / it / ชื่อคนเดียว",
+              "has"
+            ]
+          ],
+          "examples": [
+            {
+              "en": "I have two hands.",
+              "th": "ฉันมีสองมือ"
+            },
+            {
+              "en": "He has two arms.",
+              "th": "เขามีสองแขน"
+            },
+            {
+              "en": "My cat has four legs.",
+              "th": "แมวของฉันมีสี่ขา"
+            },
+            {
+              "en": "We have two feet.",
+              "th": "พวกเรามีสองเท้า"
+            }
+          ],
+          "structures": [
+            "has"
+          ]
+        },
+        {
           "id": "d029-listen-01",
           "type": "listen_choose",
           "instruction": {

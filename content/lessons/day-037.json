@@ -116,6 +116,57 @@
       },
       "exercises": [
         {
+          "id": "d037-listen-04",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "do / does ในคำถาม Yes/No",
+          "bodyTh": "ใช้ถามว่าชอบหรือทำไหม ขึ้นต้นด้วย Do กับ I, you, we, they (Do you like coffee?) และ Does กับ he, she, it และชื่อเดียว (Does she like cake?) ตอบสั้น ๆ ด้วย do / does: Yes, I do. / Yes, she does. ผิดบ่อย: Does she likes cake? ✗ → Does she like cake? ✓ (หลัง does กริยาเป็นรูปเดิม) ตอบว่าไม่: No, I don't. (ดูการ์ดในส่วนพูด)",
+          "table": [
+            [
+              "ประธาน",
+              "คำถาม",
+              "ตอบรับ"
+            ],
+            [
+              "I / you / we / they",
+              "Do you like coffee?",
+              "Yes, I do."
+            ],
+            [
+              "he / she / it / ชื่อคนเดียว",
+              "Does she like cake?",
+              "Yes, she does."
+            ]
+          ],
+          "examples": [
+            {
+              "en": "Do you like coffee?",
+              "th": "คุณชอบกาแฟไหม"
+            },
+            {
+              "en": "Yes, I do.",
+              "th": "ใช่ ฉันชอบ"
+            },
+            {
+              "en": "Does she like cake?",
+              "th": "เธอชอบเค้กไหม"
+            },
+            {
+              "en": "Yes, she does.",
+              "th": "ใช่ เธอชอบ"
+            },
+            {
+              "en": "Does he like pizza?",
+              "th": "เขาชอบพิซซ่าไหม"
+            }
+          ],
+          "structures": [
+            "do-does-question"
+          ]
+        },
+        {
           "id": "d037-listen-01",
           "type": "listen_choose",
           "instruction": {
@@ -164,7 +215,7 @@
           "id": "d037-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังบทสนทนา Yes/No: Do ใช้กับ I/you/we/they และ Does ใช้กับ he/she/it (หลัง does กริยาไม่เติม -s) ตอบสั้น ๆ ได้ว่า Yes, I do. / No, I don't. (don't = do not) แล้วตอบว่าโรสดื่มอะไร"
+            "th": "ฟังบทสนทนา แล้วตอบว่าโรสดื่มอะไร (ตอบสั้น: Yes, I do. / No, I don't.)"
           },
           "audioText": "Nan: Do you like coffee, Rose? Rose: No, I don't. I drink tea. Nan: Do you like juice? Rose: Yes, I do. Orange juice is sweet. Nan: Do you like cake? Rose: Yes, I do. I like chocolate cake.",
           "question": {
@@ -196,6 +247,50 @@
       },
       "exercises": [
         {
+          "id": "d037-speak-04",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "ตอบว่าไม่: don't / doesn't",
+          "bodyTh": "ใช้ตอบคำถามสั้น ๆ ว่า \"ไม่\": No, I don't. (กับ I, you, we, they) และ No, she doesn't. (กับ he, she, it และชื่อเดียว) don't = do not, doesn't = does not วันที่ 38 จะฝึกประโยคปฏิเสธเต็ม ผิดบ่อย: No, I not ✗ / No, she don't ✗ → No, I don't ✓ / No, she doesn't ✓",
+          "table": [
+            [
+              "ประธาน",
+              "ตอบปฏิเสธ"
+            ],
+            [
+              "I / you / we / they",
+              "No, I don't."
+            ],
+            [
+              "he / she / it / ชื่อคนเดียว",
+              "No, she doesn't."
+            ]
+          ],
+          "examples": [
+            {
+              "en": "Do you like sugar?",
+              "th": "คุณชอบน้ำตาลไหม"
+            },
+            {
+              "en": "No, I don't.",
+              "th": "ไม่ ฉันไม่ชอบ"
+            },
+            {
+              "en": "Does she like cheese?",
+              "th": "เธอชอบชีสไหม"
+            },
+            {
+              "en": "No, she doesn't.",
+              "th": "ไม่ เธอไม่ชอบ"
+            }
+          ],
+          "structures": [
+            "do-not"
+          ]
+        },
+        {
           "id": "d037-speak-01",
           "type": "shadowing",
           "instruction": {
@@ -211,7 +306,8 @@
             "Does she like chocolate cake?",
             "Yes, she does. It is sweet.",
             "Does he like soup?",
-            "Yes, he does. The soup is hot. I like salt in my soup."
+            "Yes, he does. The soup is hot. I like salt in my soup.",
+            "Do you like cheese? No, I don't."
           ]
         },
         {

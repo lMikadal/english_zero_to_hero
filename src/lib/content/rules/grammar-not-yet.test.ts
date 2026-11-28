@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { Exercise } from "../schema";
 import type { LoadedLesson } from "../loader";
 import { buildContext } from "./context";
-import { GRAMMAR_NOT_BEFORE, checkGrammarNotYet, thirdPersonS } from "./grammar-not-yet";
+import { GRAMMAR_NOT_BEFORE, GRAMMAR_STRUCTURES, checkGrammarNotYet, thirdPersonS } from "./grammar-not-yet";
 import { cpOf } from "./checkpoint-test-support";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
@@ -33,6 +33,22 @@ describe("GRAMMAR_NOT_BEFORE (explicit table, first allowed day from docs/CURRIC
     expect(GRAMMAR_NOT_BEFORE.has).toMatchObject({ day: 29 });
     expect(GRAMMAR_NOT_BEFORE.does).toMatchObject({ day: 36 });
     expect(GRAMMAR_NOT_BEFORE.but).toMatchObject({ severity: "warning" });
+  });
+});
+
+describe("frequency adverbs (week 7, day 44)", () => {
+  it("are gated at day 44 with their own structure", () => {
+    for (const w of ["always", "usually", "often", "sometimes", "never"]) {
+      expect(GRAMMAR_NOT_BEFORE[w]).toMatchObject({ structure: "frequency-adverb", day: 44 });
+    }
+    expect(GRAMMAR_STRUCTURES["frequency-adverb"]).toMatchObject({ day: 44 });
+  });
+  it("flags 'often' on day 43 and is quiet on day 44", () => {
+    const out = check(on(43, say(43, "I often eat rice.")));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).toContain('"often"');
+    expect(out[0].message).toContain("day 44");
+    expect(check(on(44, say(44, "I often eat rice. She never cooks.")))).toEqual([]);
   });
 });
 

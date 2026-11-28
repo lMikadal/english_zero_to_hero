@@ -115,10 +115,72 @@
       },
       "exercises": [
         {
+          "id": "d039-listen-04",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "เติม -es: goes, does, washes",
+          "bodyTh": "กริยาของ he, she, it ที่ลงท้าย -o, -s, -sh, -ch, -x เติม -es (go → goes, wash → washes) ลงท้ายสระ + y เติม -s (buy → buys) ผิดบ่อย: she go ✗ / she gos ✗ → she goes ✓ ออกเสียง goes /ɡoʊz/, does /dʌz/ ท้ายสั่นคอ คำถาม What / Where ใช้ do / does แบบเดียวกับการ์ดวันที่ 37: What do you need? Where does she go?",
+          "table": [
+            [
+              "กริยาเดิม",
+              "ของ he / she / it",
+              "ข้อสังเกต"
+            ],
+            [
+              "go",
+              "goes",
+              "ลงท้าย -o"
+            ],
+            [
+              "do",
+              "does",
+              "ลงท้าย -o"
+            ],
+            [
+              "wash",
+              "washes",
+              "ลงท้าย -sh"
+            ],
+            [
+              "buy",
+              "buys",
+              "สระ + y เติม -s"
+            ],
+            [
+              "take",
+              "takes",
+              "เติม -s ปกติ"
+            ]
+          ],
+          "examples": [
+            {
+              "en": "Rose goes to the market.",
+              "th": "โรสไปตลาด"
+            },
+            {
+              "en": "Leo washes his hands.",
+              "th": "ลีโอล้างมือ"
+            },
+            {
+              "en": "Nan buys bread and bananas.",
+              "th": "แนนซื้อขนมปังและกล้วย"
+            },
+            {
+              "en": "Rose takes the bus.",
+              "th": "โรสขึ้นรถบัส"
+            }
+          ],
+          "structures": [
+            "es-ending"
+          ]
+        },
+        {
           "id": "d039-listen-01",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าโรสซื้ออะไร ไวยากรณ์ใหม่: กริยาที่ลงท้าย -o, -s, -sh, -ch, -x เติม -es (go → goes, do → does, wash → washes) ส่วน buy, pay, take เติม -s ธรรมดา (buys, pays, takes)"
+            "th": "ฟังแล้วตอบว่าโรสซื้ออะไร (goes, buys, pays)"
           },
           "audioText": "Rose takes the bus to the market. She asks the price of the fruit. She buys fruit and vegetables. She pays eighty baht and goes home.",
           "question": {
@@ -159,7 +221,7 @@
           "id": "d039-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่านมราคาเท่าไร คำถาม What/Where + do/does + ประธาน + กริยาเดิม (What do you need? What does she want?)"
+            "th": "ฟังแล้วตอบว่านมราคาเท่าไร"
           },
           "audioText": "I need some milk. I ask the man, \"What is the price of the milk?\" He says, \"It is forty baht.\" I buy the milk. I give him fifty baht.",
           "question": {
