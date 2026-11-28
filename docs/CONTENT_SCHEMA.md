@@ -146,6 +146,15 @@ ERROR content/lessons/day-017.json [d017-speak-03]: the text names /v/ in a list
 WARN content/lessons/day-021.json [d021-pron-02]: the text names /ð/ in a list of words, but "them" has no vocab entry, so the sound could not be checked. Check the IPA yourself, or add the word to the vocab bank.
 ```
 
+### `phoneme-tags`: section ที่สอนหลายเสียงต้องติดแท็กเสียงให้ทุกข้อ
+ใน section `pronunciation` ที่มี `phoneme_intro` ถ้า section นั้นสอนเสียงมากกว่าหนึ่งเสียง ทุก `minimal_pair` และ `repeat_after_me` ใน section ต้องมี `phonemes` (array ของรหัสเสียง ชุดเดียวกับ `phoneme_intro.phoneme` เช่น `["th", "dh"]`) ไม่เช่นนั้นข้อนั้นจะได้แท็กตั้งต้นเป็นรหัสของ `phoneme_intro` ตัวแรกเท่านั้น (ดู `src/lib/attempts/derive.ts`) และการพลาดเสียง /ð/ จะถูกนับเป็นพลาดเสียง /θ/ เป็น **error** เพราะวิธีแก้คือเติม array อย่างเดียว
+
+"สอนหลายเสียง" ตัวตรวจรู้ได้จาก 3 อย่างเท่านั้น: `ipa` ของ `phoneme_intro` เอ่ยสัญลักษณ์ 2 ตัวขึ้นไป (`"/θ/ /ð/"`), section มี `phoneme_intro` มากกว่า 1 ข้อ, หรือมีข้อใดใน section ที่ติด `phonemes` ไว้ 2 รหัสขึ้นไปแล้ว (คู่เทียบ เช่น `["v", "w"]`) **ตรวจไม่ได้:** section ที่ intro เอ่ยเสียงเดียว และคู่เสียงเทียบที่ไม่มีข้อไหนติดแท็ก 2 รหัสเลย ผู้เขียนต้องคิดเอง (ถ้า `minimal_pair` เทียบสองเสียง ให้ติด `phonemes` ทั้งสองเสียงเสมอ) ข้อใน section อื่น (เช่น `speaking`) ไม่ถูกตรวจ
+
+```
+ERROR content/lessons/day-018.json [d018-pron-02]: this pronunciation section teaches more than one sound (/θ/ and /ð/), but this minimal_pair has no "phonemes", so it would be tagged only "th" (the first phoneme_intro's code) and a miss on the other sound is counted against the wrong one. Add "phonemes": [...] with the code(s) of the sound(s) it practises, the same codes as phoneme_intro.phoneme.
+```
+
 ### `arrange-words`: ชื่อเฉพาะต้องตรงกับที่ UI แสดง
 UI (`tile-label.ts`) แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กทั้งหมด ยกเว้น `I` และคำที่ขึ้นต้นตัวใหญ่ *กลางประโยค* ใน `answer` หรือ `accept` กฎจึงบังคับว่า
 - คำขึ้นต้นตัวใหญ่กลางประโยค (ไม่ใช่ `I`) ต้องอยู่ใน `PROPER_NAMES` (`allowlists.ts`)
