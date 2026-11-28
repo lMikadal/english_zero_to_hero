@@ -251,7 +251,7 @@ WARN content/lessons/day-027.json [d027-listen-01]: "ลูกบอลของ
 ```
 
 ### `vocab-spelling`: หัวคำที่มีสะกดสองแบบต้องบอกอีกแบบใน `forms`
-หัวคำ (คำเดียว) ที่อยู่ในตารางอังกฤษ/อเมริกัน (`spelling.ts`) ต้องมีสะกดอีกแบบใน `forms`: `usSpelling` สำหรับหัวคำแบบอังกฤษ (`colour` → `"usSpelling": "color"`) หรือ `ukSpelling` สำหรับหัวคำแบบอเมริกัน เป็น **error** เพราะตารางเป็นตัวตัดสิน ไม่มีดุลยพินิจ (ค่าผิดหรือใช้คีย์ผิดฝั่งก็ error) หัวคำหลายคำไม่ถูกตรวจ
+หัวคำ (คำเดียว) ที่อยู่ในตารางอังกฤษ/อเมริกัน (`spelling.ts`) ต้องมีสะกดอีกแบบใน `forms`: `usSpelling` สำหรับหัวคำแบบอังกฤษ (`colour` → `"usSpelling": "color"`) หรือ `ukSpelling` สำหรับหัวคำแบบอเมริกัน เป็น **error** เพราะตารางเป็นตัวตัดสิน ไม่มีดุลยพินิจ (ค่าผิดหรือใช้คีย์ผิดฝั่งก็ error) หัวคำหลายคำไม่ถูกตรวจ และหัวคำฝั่งอเมริกันที่เป็นคำถูกต้องของอังกฤษอีกความหมายหนึ่งด้วย (`practice` นาม, `tire` กริยา, `license` กริยา, `program` ซอฟต์แวร์, `meter` อุปกรณ์; `isSenseDependent` ใน `spelling.ts`) ไม่ถูกบังคับ เพราะ entry อาจหมายถึงอีกความหมาย (ฝั่งอังกฤษ `tyre`/`licence`/`programme`/`metre`/`practise` ยังถูกบังคับ)
 
 ```
 ERROR content/vocab/oxford-3000/a1.json [v-colour]: "colour" is a UK spelling in the UK/US table (src/lib/answers/spelling.ts), but forms has no usSpelling. Add "usSpelling": "color" to its forms (and remove "ukSpelling" if it is there).
