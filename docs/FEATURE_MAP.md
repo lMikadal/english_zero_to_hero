@@ -99,6 +99,10 @@
 | ค่าผิดถูกปฏิเสธก่อนเริ่ม | `ALLOWED_IPS=100.101.102.103, oops` แล้ว `make stage-up` | `ERROR: ALLOWED_IPS: invalid entry "oops"` จาก `check-env.sh`, exit ไม่เป็นศูนย์, ไม่มี container ถูกสร้าง |
 | ตรวจตัวเอง | `make stage-status` | `access ok: the allow-list is enforced` (เครื่องเอง 200, เลขที่ listed 200, `192.0.2.1` ได้ 403 ที่ `/`, `/api/health`, `/_next/static/...`, header `X-Ezh-Peer` ปลอมได้ 403) |
 | container อื่นปลอม XFF | ในผลของ `make stage-status`; หรือมือ: `docker compose -p ezh_stage -f docker-compose.prod.yml --env-file .env.stage exec -T postgres wget -S -O /dev/null --header="X-Forwarded-For: 100.101.102.103" http://app:3000/api/health` | `another container forging X-Forwarded-For ... was refused (403)`; wget `HTTP/1.1 403 Forbidden` (TRUSTED_PROXIES ของ prod = loopback + gateway ของ network เท่านั้น เช่น `127.0.0.0/8, ::1, 172.30.20.1`) |
+| header proxy ที่ไม่มีเลข = ไม่ใช่เครื่องเอง | `curl -H 'X-Forwarded-For;' .../api/health` และ `curl -H 'X-Forwarded-Host: x' .../api/health` (ใน `make stage-status` อยู่แล้ว) | 403 ทั้งคู่; curl ธรรมดาจาก host = 200 |
+| ปลอม header ของ stamp | `-H 'X-Forwarded-For: 192.0.2.1' -H 'X-Ezh-Xff;'` และ `... -H 'X-Ezh-Xff: <เลขที่ listed>'`; จาก postgres: `X-Ezh-Peer: <gateway>` + `X-Ezh-Xff:` ว่าง | 403 ทั้งหมด (probe เหล่านี้มีเทสต์ว่าล้มจริงถ้าการป้องกันพัง) |
+| `APP_BIND` อื่น | `ALLOWED_IPS=...` + `APP_BIND=172.17.0.1` แล้ว `make stage-up` | `check-env.sh` ปฏิเสธ "ALLOWED_IPS works only with APP_BIND=127.0.0.1" |
+| เครือข่ายชนกัน | สร้าง network ที่ทับ `172.30.20.0/24` แล้ว `make stage-up` ตอนที่ stack ยังอยู่ subnet เก่า | ข้อความ Thai+English ระบุชื่อ network, แอปยังทำงานอยู่ (ไม่มี `down`) |
 | ว่าง = เตือน | `ALLOWED_IPS=` ว่าง แล้ว `make stage-up` / `stage-status` | บรรทัดเตือนสองภาษา "every device on your tailnet can use the app" |
 | ย้าย network ครั้งแรก | stack เก่าที่ยังใช้ subnet อื่น แล้ว `make stage-up` | `network ezh_stage_default uses ...; moving it to 172.30.20.0/24`, ข้อมูลอยู่ครบ (ไม่ใช้ `-v`) |
 | CI | job `prod-image` | ขั้น "Device allow-list is enforced" ใช้ `scripts/prod/access-check.sh` ตัวเดียวกัน |
