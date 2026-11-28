@@ -1,7 +1,7 @@
 #!/bin/sh
 # Write a compressed pg_dump of the production database to $BACKUP_DIR (folder 700, file 600: it holds all the learner's data).
 # Environment (set by the Makefile): COMPOSE_CMD (the docker compose command for the prod stack), DB_NAME, DB_USER,
-# BACKUP_DIR (default backups), KEEP (default 14, whole number >= 1), LABEL (optional: pre-restore, pre-update),
+# BACKUP_DIR (default backups), KEEP (default 14, whole number >= 1), LABEL (optional: pre-restore, pre-update, auto),
 # PRUNE=0 to delete nothing (restore uses it: the safety backup must never remove the file being restored).
 # The file is written by THIS shell (the host user), so it is owned by the user, not root.
 set -eu
@@ -52,6 +52,7 @@ if [ -n "$future" ]; then
 fi
 
 # the new file is passed to the pruner so it can never delete it; nothing is reported unless it is really there
-[ "${PRUNE:-1}" = 0 ] || sh "$(dirname "$0")/prune-backups.sh" "$dir" "$DB_NAME" "$keep" "$file"
+scope=manual; [ "${LABEL:-}" != auto ] || scope=auto # KEEP is then the window of the automatic backups
+[ "${PRUNE:-1}" = 0 ] || sh "$(dirname "$0")/prune-backups.sh" "$dir" "$DB_NAME" "$keep" "$file" "$scope"
 [ -s "$file" ] || { echo "ERROR: $file is missing or empty after pruning" >&2; exit 1; }
 echo "$file"

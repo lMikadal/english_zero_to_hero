@@ -1,0 +1,12 @@
+[Unit]
+Description=English Zero to Hero: automatic backup of the @WHAT@ database (make @TARGET@)
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO_PLAIN@
+Environment=MAKE=@MAKE@
+# The wrapper runs the same make target you can run by hand (it takes no backup when Docker or the stack is not running, and never
+# starts them) and records a FAILED state when the run dies before the backup script can (unreadable .env.prod, moved folder...)
+ExecStart=/bin/sh "@REPO_EXEC@/scripts/prod/auto-backup-run.sh" @WHAT@
+TimeoutStartSec=30min
+Nice=10
