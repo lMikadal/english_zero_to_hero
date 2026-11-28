@@ -1,0 +1,68 @@
+# TEMPORARY, DELETE BEFORE MERGE (it is its own commit: `git rebase -i` drop it, or `git revert` it).
+# Runs the real E2E job 12 times in parallel on the branch test/e2e-lesson-flaky only, to show that the lesson spec no longer
+# fails now and then. Same steps as the `e2e` job in ci.yml. Nothing here runs on main or on other branches.
+name: e2e stress (TEMP)
+
+on:
+  push:
+    branches: [test/e2e-lesson-flaky]
+
+permissions:
+  contents: read
+
+env:
+  COMPOSE_PROJECT_NAME: ezh
+
+jobs:
+  e2e:
+    name: e2e run ${{ matrix.run }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Make the workspace writable for uid 1000
+        run: |
+          sudo chown -R 1000:1000 "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - uses: docker/setup-buildx-action@v3
+      - name: Build the dev image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: dev
+          load: true
+          tags: ezh-app:latest
+          cache-from: type=gha,scope=dev-image
+      - name: Build the production image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: prod
+          load: true
+          tags: ezh-e2e-app:latest
+          cache-from: type=gha,scope=prod-image
+      - name: make e2e
+        run: make e2e E2E_BUILD=0
+      - name: Upload Playwright report, traces and the app's server log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.run }}
+          path: |
+            playwright-report/
+            test-results/
+            /tmp/ezh-e2e-server.log
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove the E2E stack
+        if: always()
+        run: make e2e-down || true
+      - name: Restore workspace ownership
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
