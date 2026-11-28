@@ -134,12 +134,12 @@
           "id": "d024-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่านาฬิกาสีแดงราคากี่บาท ระวัง fifty กับ fifteen"
+            "th": "ฟังแล้วตอบว่าปากกาสีแดงราคากี่บาท ระวัง fifty กับ fifteen"
           },
-          "audioText": "The red clock is fifty baht. The blue clock is fifteen baht.",
+          "audioText": "The red pen is fifty baht. The blue pen is fifteen baht.",
           "question": {
-            "en": "How much is the red clock?",
-            "th": "นาฬิกาสีแดงราคากี่บาท"
+            "en": "How much is the red pen?",
+            "th": "ปากกาสีแดงราคากี่บาท"
           },
           "choices": [
             "Fifteen",
@@ -187,7 +187,7 @@
             "th": "บอกว่าคุณมีของเหล่านี้หรือเปล่า ตอบตามจริงหรือแต่งเรื่องก็ได้"
           },
           "prompt": "Do you have a clock? Do you have a camera? Do you have a hat?",
-          "sampleAnswer": "Yes, I have a clock. I have a camera. I do not have a hat.",
+          "sampleAnswer": "Yes, I have a clock. I have a camera, too. My hat is black.",
           "keywords": [
             "have"
           ]

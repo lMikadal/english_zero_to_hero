@@ -135,12 +135,12 @@
           "id": "d023-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่านันอายุเท่าไร ระวัง forty กับ fourteen"
+            "th": "ฟังแล้วตอบว่าแนนอายุเท่าไร ระวัง forty กับ fourteen"
           },
           "audioText": "My friend Nan is a teacher. She is forty. Her bag is brown.",
           "question": {
             "en": "How old is Nan?",
-            "th": "นันอายุเท่าไร"
+            "th": "แนนอายุเท่าไร"
           },
           "choices": [
             "Fourteen",
@@ -197,7 +197,7 @@
           "id": "d023-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม a ใช้หน้าเสียงพยัญชนะ (a key) ส่วน an ใช้หน้าเสียงสระ (an apple) และให้ต่อเสียงกันเป็นคำเดียว 'แอ็นแน็ปเปิล'"
+            "th": "ฟังแล้วพูดตาม a ใช้หน้าเสียงพยัญชนะ (a key) ส่วน an ใช้หน้าเสียงสระ (an apple) และให้ต่อเสียงกันเป็นคำเดียว 'อะแน็ปเปิล'"
           },
           "text": "A key, a phone, a bag, an apple, an egg.",
           "ipa": "/ə kiː ə foʊn ə bæɡ ən ˈæpl ən eɡ/"
@@ -234,7 +234,7 @@
             {
               "question": {
                 "en": "What colour is Nan's bag?",
-                "th": "กระเป๋าของนันสีอะไร"
+                "th": "กระเป๋าของแนนสีอะไร"
               },
               "choices": [
                 "Brown",

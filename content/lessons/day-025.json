@@ -133,7 +133,7 @@
           "id": "d025-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่ามาลีอายุเท่าไร ระวัง sixty กับ sixteen"
+            "th": "ฟังแล้วตอบว่ามาลีอายุเท่าไร ระวัง sixty กับ sixteen (Dan's father = พ่อของแดน)"
           },
           "audioText": "This is Ray. He is Dan's father. He is seventy. This is Mali. She is my mother. She is sixty.",
           "question": {
@@ -234,7 +234,7 @@
             {
               "question": {
                 "en": "Where is Leo's bed?",
-                "th": "เตียงของลีโอวอยู่ที่ไหน"
+                "th": "เตียงของลีโออยู่ที่ไหน"
               },
               "choices": [
                 "Under the window",
@@ -249,7 +249,7 @@
               },
               "choices": [
                 "Under the bed",
-                "On the floor"
+                "On the bed"
               ],
               "answer": 0
             }

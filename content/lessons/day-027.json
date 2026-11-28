@@ -125,7 +125,7 @@
           },
           "choices": [
             "Under the bed",
-            "On the floor",
+            "On the bed",
             "In the bag"
           ],
           "answer": 0
@@ -134,7 +134,7 @@
           "id": "d027-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่ากระเป๋าของโรสราคาเท่าไร ระวัง ninety กับ nineteen"
+            "th": "ฟังแล้วตอบว่ากระเป๋าของโรสราคาเท่าไร ระวัง ninety กับ nineteen (Nan's bag = กระเป๋าของแนน)"
           },
           "audioText": "Nan's bag is pink. It is new. It is eighty baht. Rose's bag is grey. It is ninety baht.",
           "question": {

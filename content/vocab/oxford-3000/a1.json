@@ -3049,7 +3049,7 @@
     "topics": ["shopping", "clothes"],
     "examples": [{ "en": "What colour is your cat?", "th": "แมวของคุณสีอะไร" }, { "en": "Red is a nice colour.", "th": "สีแดงเป็นสีที่สวย" }],
     "collocations": ["what colour"],
-    "forms": { "plural": "colours" }
+    "forms": { "plural": "colours", "usSpelling": "color" }
   },
   {
     "id": "v-red",
@@ -3375,7 +3375,7 @@
     "pos": "noun",
     "oxford": { "list": "3000", "level": "A1" },
     "ipa": { "us": "/laɪt/", "uk": "/laɪt/" },
-    "th": "ไฟ, แสงสว่าง",
+    "th": "ไฟ (หลอดไฟ), แสงสว่าง",
     "topics": ["home"],
     "examples": [{ "en": "The light is yellow.", "th": "ไฟสีเหลือง" }, { "en": "The light is on the wall.", "th": "ไฟติดอยู่บนผนัง" }],
     "collocations": ["a yellow light"],
@@ -3454,7 +3454,7 @@
     "ipa": { "us": "/nuː/", "uk": "/njuː/" },
     "th": "ใหม่",
     "topics": ["shopping"],
-    "examples": [{ "en": "My phone is new.", "th": "โทรศัพท์ของฉันเครื่องใหม่" }, { "en": "It is a new car.", "th": "มันเป็นรถคันใหม่" }],
+    "examples": [{ "en": "My phone is new.", "th": "โทรศัพท์ของฉันเป็นเครื่องใหม่" }, { "en": "It is a new car.", "th": "มันเป็นรถคันใหม่" }],
     "collocations": ["a new bag"],
     "forms": { "comparative": "newer", "superlative": "newest" }
   },
@@ -3480,7 +3480,7 @@
     "topics": ["shopping", "clothes"],
     "examples": [{ "en": "The cat is grey.", "th": "แมวตัวนี้สีเทา" }, { "en": "It is a grey car.", "th": "มันเป็นรถสีเทา" }],
     "collocations": ["a grey hat"],
-    "forms": { "comparative": "greyer", "superlative": "greyest" }
+    "forms": { "comparative": "greyer", "superlative": "greyest", "usSpelling": "gray" }
   },
   {
     "id": "v-money",

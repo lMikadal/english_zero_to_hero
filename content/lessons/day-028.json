@@ -163,7 +163,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Nan. I am forty and I am a teacher in Bangkok. This is my room. It is a big room. The walls are yellow and the floor is brown. I have two white chairs and a small table. The table is under the window. My phone, my keys and a green umbrella are on the table. My pink bag is new. It is under the chair. I love my room!",
+          "text": "Hello! I am Nan. I am forty and I am a teacher in Bangkok. This is my room. It is a nice room. The walls are yellow and the floor is brown. I have two white chairs and a small table. The table is under the window. My phone, my keys and an orange umbrella are on the table. My pink bag is new. It is under the chair. I love my room!",
           "questions": [
             {
               "question": {
@@ -190,7 +190,7 @@
             {
               "question": {
                 "en": "How old is Nan?",
-                "th": "นันอายุเท่าไร"
+                "th": "แนนอายุเท่าไร"
               },
               "choices": [
                 "Fourteen",

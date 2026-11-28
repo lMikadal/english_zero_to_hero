@@ -129,10 +129,10 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าหมวกใบไหนราคาถูก"
           },
-          "audioText": "This hat is new. It is not cheap. It is eighty baht. That hat is old. It is cheap. It is thirty baht.",
+          "audioText": "This hat is new. It is not cheap. It is a hundred baht. That hat is old. It is cheap. It is thirty baht.",
           "question": {
-            "en": "What is cheap?",
-            "th": "อะไรราคาถูก"
+            "en": "Which hat is cheap?",
+            "th": "หมวกใบไหนราคาถูก"
           },
           "choices": [
             "The new hat",
@@ -146,7 +146,10 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "How much is the grey bag? It is ninety baht."
+          "audioText": "How much is the grey bag? It is ninety baht.",
+          "accept": [
+            "How much is the gray bag? It is ninety baht."
+          ]
         }
       ]
     },
@@ -177,10 +180,10 @@
           "id": "d026-speak-02",
           "type": "speak_answer",
           "instruction": {
-            "th": "ถามตัวเองเกี่ยวกับกระเป๋าของคุณ แล้วตอบ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+            "th": "ตอบคำถามเกี่ยวกับกระเป๋าของคุณ ตอบตามจริงหรือแต่งเรื่องก็ได้"
           },
           "prompt": "How much is your bag? Is it new? Is it cheap?",
-          "sampleAnswer": "My bag is new. It is not cheap.",
+          "sampleAnswer": "My bag is ninety baht. It is new. It is not cheap.",
           "keywords": [
             "is"
           ]
@@ -189,7 +192,7 @@
           "id": "d026-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ออก much เป็น 'มัช' (/mʌtʃ/) ปากเหยียดเป็น 'ช' ท้ายคำ ไม่ใช่ 'มัด' และ baht ออกเป็น 'บาท' สั้น ๆ"
+            "th": "ฟังแล้วพูดตาม ออก much เป็น 'มัช' (/mʌtʃ/) ปากยื่นเล็กน้อยและจบด้วยเสียง 'ช' ไม่ใช่ 'มัด' และ baht ออกเป็น 'บาท' แบบภาษาไทย"
           },
           "text": "How much is the pink bag? It is eighty baht.",
           "ipa": "/haʊ mʌtʃ ɪz ðə pɪŋk bæɡ ɪt ɪz ˈeɪti bɑːt/"
@@ -209,7 +212,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Nan and Rose are in a shop in Bangkok.\nNan: How much is the grey bag?\nMan: It is ninety baht. It is new.\nNan: And the pink bag?\nMan: It is eighty baht.\nRose: The pink bag is nice. It is cheap!\nNan: Yes! I love it. I have my money in my bag.",
+          "text": "Nan and Rose are in a shop in Bangkok.\nNan: How much is the grey bag?\nMan: It is ninety baht. It is new.\nNan: And the pink bag?\nMan: It is eighty baht.\nRose: The pink bag is nice. It is cheap!\nNan: Yes! I love it. I have money in my bag.",
           "questions": [
             {
               "question": {
