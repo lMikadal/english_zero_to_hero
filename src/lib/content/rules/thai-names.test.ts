@@ -31,6 +31,9 @@ describe("thaiNameMismatches: a near-miss of a listed Thai spelling, found betwe
     expect(names("แนะนำตัวกับเพื่อน")).toEqual([]);
     expect(names("ไม่ใช่ครับ ไหม")).toEqual([]);
   });
+  it("an everyday word one edit from a name is not a name (เบา 'light' ~ เบน)", () => {
+    expect(names("ท้ายคำสั้นและเบา", ["Ben"], { Ben: "เบน" })).toEqual([]);
+  });
   it("names whose Thai spelling is an everyday word are not checked (ไหม the particle)", () => {
     expect(names("โรงเรียนใหญ่ไหม", ["Mai"])).toEqual([]);
     expect(names("ใหม่หรือไม่", ["Mai"])).toEqual([]);
