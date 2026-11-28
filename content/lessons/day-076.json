@@ -1,0 +1,371 @@
+{
+  "day": 76,
+  "phase": 2,
+  "week": 11,
+  "type": "review",
+  "cefr": "A1",
+  "title": {
+    "en": "Week 11 review: the past",
+    "th": "ทบทวนสัปดาห์ที่ 11: อดีตกาล"
+  },
+  "objectives": [
+    {
+      "en": "Tell about yesterday, last week and a trip with was, were, -ed and did",
+      "th": "เล่าเรื่องเมื่อวาน สัปดาห์ที่แล้ว และทริปด้วย was, were, -ed และ did ได้"
+    },
+    {
+      "en": "Ask and answer with Did, When and Why",
+      "th": "ถามและตอบด้วย Did, When และ Why ได้"
+    },
+    {
+      "en": "Say weak was, -ed endings and didn't",
+      "th": "ออกเสียง was แบบเบา เสียงท้าย -ed และ didn't ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Weak was, -ed and didn't",
+        "th": "was แบบเบา -ed และ didn't"
+      },
+      "exercises": [
+        {
+          "id": "d076-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม didn't ลงท้ายด้วย /nt/ และ was ออกเสียงเบา"
+          },
+          "text": "Why didn't you stay? Because I was sick.",
+          "ipa": "/waɪ ˈdɪdnt ju steɪ bɪˈkɔːz aɪ wəz sɪk/",
+          "phonemes": [
+            "nt",
+            "schwa"
+          ]
+        },
+        {
+          "id": "d076-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม stayed ลงท้าย /d/ jumped ลงท้าย /t/ visited ลงท้าย /ɪd/"
+          },
+          "text": "We stayed, jumped and visited.",
+          "ipa": "/wi steɪd dʒʌmpt ænd ˈvɪzɪtɪd/",
+          "phonemes": [
+            "t",
+            "d",
+            "id"
+          ]
+        },
+        {
+          "id": "d076-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม played ลงท้าย /d/"
+          },
+          "text": "Leo's team played a match.",
+          "ipa": "/ˈliːoʊz tiːm pleɪd ə mætʃ/",
+          "phonemes": [
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d076-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครเล่นเปียโน"
+          },
+          "audioText": "Last Saturday Leo's team played a match at the club. The match was great and the players enjoyed it. Leo's hobby is football. Nan played the piano. Dan and Rose played tennis.",
+          "question": {
+            "en": "Who played the piano?",
+            "th": "ใครเล่นเปียโน"
+          },
+          "choices": [
+            "Nan",
+            "Rose",
+            "Leo"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d076-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าทำไมโรสโกรธ"
+          },
+          "audioText": "Two days ago Rose was angry because her bus was slow. Yesterday Dan was sick. Leo was sad and bored.",
+          "question": {
+            "en": "Why was Rose angry?",
+            "th": "ทำไมโรสโกรธ"
+          },
+          "choices": [
+            "Because her bus was slow",
+            "Because she was sick",
+            "Because Leo was sad"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d076-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าครอบครัวเดินทางไปเกาะอย่างไร"
+          },
+          "audioText": "Last year Leo and Dan camped near a lake. They climbed a mountain and walked near a river. In March the family travelled to an island by boat. The sea was warm and the beach was white.",
+          "question": {
+            "en": "How did the family travel to the island?",
+            "th": "ครอบครัวเดินทางไปเกาะอย่างไร"
+          },
+          "choices": [
+            "By boat",
+            "By train",
+            "By bus"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d076-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-travel"
+            },
+            {
+              "vocabId": "v-climb"
+            },
+            {
+              "vocabId": "v-jump"
+            },
+            {
+              "vocabId": "v-laugh"
+            },
+            {
+              "vocabId": "v-smile"
+            },
+            {
+              "vocabId": "v-close"
+            },
+            {
+              "vocabId": "v-village"
+            },
+            {
+              "vocabId": "v-trip"
+            }
+          ]
+        },
+        {
+          "id": "d076-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "When did you stay at home? Why did you close the door?"
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d076-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Why did you laugh? Because the trip was great.",
+            "When did you visit the village?",
+            "We stayed at home and we closed the door.",
+            "Leo jumped and Rose smiled.",
+            "I didn't stay at a hotel.",
+            "Yesterday Nan wasn't sad.",
+            "Dan was sick and bored two days ago.",
+            "We enjoyed the trip."
+          ]
+        },
+        {
+          "id": "d076-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าสุดสัปดาห์ที่แล้วคุณอยู่ที่ไหนและสนุกกับอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Where were you last weekend? What did you enjoy?",
+          "sampleAnswer": "Last weekend I was at the beach. I enjoyed the sea.",
+          "keywords": [
+            "last",
+            "enjoyed"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d076-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Last December the family travelled to Chiang Mai by train. Leo stayed with Mali. He didn't stay at a hotel. He enjoyed the trip. Mali painted a picture of the mountain. She smiled at Leo and asked: \"Why were you bored yesterday?\" Leo laughed: \"I wasn't bored!\"",
+          "questions": [
+            {
+              "question": {
+                "en": "Where did Leo stay?",
+                "th": "ลีโอพักที่ไหน"
+              },
+              "choices": [
+                "At a hotel",
+                "With Mali",
+                "On a boat"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What did Mali paint?",
+                "th": "มาลีวาดอะไร"
+              },
+              "choices": [
+                "A picture of the sea",
+                "A picture of the club",
+                "A picture of the mountain"
+              ],
+              "answer": 2
+            },
+            {
+              "question": {
+                "en": "Was Leo bored?",
+                "th": "ลีโอเบื่อไหม"
+              },
+              "choices": [
+                "Yes, he was",
+                "No, he was not"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d076-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "didn't",
+            "My",
+            "father",
+            "stay",
+            "at",
+            "a",
+            "hotel"
+          ],
+          "answer": "My father didn't stay at a hotel",
+          "statementOnly": true
+        },
+        {
+          "id": "d076-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (did; because)"
+          },
+          "text": "Why ___ you stay at home? I stayed ___ I was sick.",
+          "answer": [
+            "did",
+            "because"
+          ]
+        },
+        {
+          "id": "d076-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เมื่อวานฉันไม่ได้เบื่อ",
+          "accept": [
+            "I wasn't bored yesterday",
+            "I was not bored yesterday",
+            "Yesterday I wasn't bored",
+            "Yesterday I was not bored"
+          ]
+        },
+        {
+          "id": "d076-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "คุณหัวเราะเมื่อไร",
+          "accept": [
+            "When did you laugh"
+          ]
+        },
+        {
+          "id": "d076-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-yesterday"
+            },
+            {
+              "vocabId": "v-last"
+            },
+            {
+              "vocabId": "v-ago"
+            },
+            {
+              "vocabId": "v-sad"
+            },
+            {
+              "vocabId": "v-angry"
+            },
+            {
+              "vocabId": "v-sick"
+            },
+            {
+              "vocabId": "v-bored"
+            },
+            {
+              "vocabId": "v-great"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

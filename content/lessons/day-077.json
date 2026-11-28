@@ -1,0 +1,221 @@
+{
+  "day": 77,
+  "phase": 2,
+  "week": 11,
+  "type": "challenge",
+  "cefr": "A1",
+  "title": {
+    "en": "Week 11 challenge: a trip in the past",
+    "th": "ภารกิจสัปดาห์ที่ 11: ทริปในอดีต"
+  },
+  "objectives": [
+    {
+      "en": "Understand and tell a short story about a trip in the past",
+      "th": "เข้าใจและเล่าเรื่องสั้นเกี่ยวกับทริปในอดีตได้"
+    },
+    {
+      "en": "Answer Did, When and Why questions about the past",
+      "th": "ตอบคำถาม Did, When และ Why เกี่ยวกับอดีตได้"
+    },
+    {
+      "en": "Write about a trip or a weekend in the past",
+      "th": "เขียนเกี่ยวกับทริปหรือสุดสัปดาห์ในอดีตได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d077-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม"
+          },
+          "text": "Did you enjoy the trip? Yes, I did.",
+          "ipa": "/dɪd ju ɪnˈdʒɔɪ ðə trɪp jes aɪ dɪd/"
+        },
+        {
+          "id": "d077-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม camped ลงท้าย /t/ climbed ลงท้าย /d/"
+          },
+          "text": "We camped near a lake and climbed a mountain.",
+          "ipa": "/wi kæmpt nɪr ə leɪk ænd klaɪmd ə ˈmaʊntn/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a message and a film",
+        "th": "ฟังข้อความและเรื่องหนัง"
+      },
+      "exercises": [
+        {
+          "id": "d077-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนกับลีโออยู่ที่ไหนเมื่อวันเสาร์ที่แล้ว"
+          },
+          "audioText": "Last Saturday Nan and Leo were at the cinema. The film was great. Leo laughed and Nan smiled. After the film they enjoyed ice cream at the cafe.",
+          "question": {
+            "en": "Where were Nan and Leo last Saturday?",
+            "th": "เมื่อวันเสาร์ที่แล้วแนนกับลีโออยู่ที่ไหน"
+          },
+          "choices": [
+            "At the cinema",
+            "At the market",
+            "At the club"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d077-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามาลีสนุกกับอะไร"
+          },
+          "audioText": "I am Mali. Last December Leo and Rose visited my house in Chiang Mai. They travelled by train. We cooked rice and chicken. We climbed a mountain and we walked near a river. It was a great trip.",
+          "question": {
+            "en": "What did Mali enjoy?",
+            "th": "มาลีสนุกกับอะไร"
+          },
+          "choices": [
+            "The trip",
+            "The match",
+            "The film"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d077-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Why did you stay at home? Because I was sick."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d077-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Last December we travelled to Chiang Mai.",
+            "We stayed with Mali.",
+            "Leo climbed a mountain.",
+            "The river was cold.",
+            "We cooked rice and chicken.",
+            "We enjoyed the trip.",
+            "Did you visit a village?",
+            "Yes, I did. It was small."
+          ]
+        },
+        {
+          "id": "d077-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าสุดสัปดาห์ที่แล้วคุณอยู่ที่ไหน และสนุกไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Where were you last weekend? Did you enjoy it?",
+          "sampleAnswer": "I was at home. Yes, I did. I enjoyed it.",
+          "keywords": [
+            "was",
+            "did"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read a message",
+        "th": "อ่านข้อความ"
+      },
+      "exercises": [
+        {
+          "id": "d077-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Mali writes a message to Rose: \"Hello Rose! Leo was great last week. He stayed in my small room. We cooked rice and chicken. He climbed the mountain and laughed. Dan called on Sunday. The weather was cold and dry. We enjoyed the trip.\"",
+          "questions": [
+            {
+              "question": {
+                "en": "Where did Leo stay?",
+                "th": "ลีโอพักที่ไหน"
+              },
+              "choices": [
+                "At a hotel",
+                "In Mali's room",
+                "On a boat"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What was the weather?",
+                "th": "อากาศเป็นอย่างไร"
+              },
+              "choices": [
+                "Rainy",
+                "Hot",
+                "Cold and dry"
+              ],
+              "answer": 2
+            },
+            {
+              "question": {
+                "en": "Who called on Sunday?",
+                "th": "ใครโทรมาวันอาทิตย์"
+              },
+              "choices": [
+                "Dan",
+                "Nan",
+                "Ray"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about the past",
+        "th": "เขียนเกี่ยวกับอดีต"
+      },
+      "exercises": [
+        {
+          "id": "d077-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยคเกี่ยวกับทริปหรือสุดสัปดาห์ที่แล้ว คุณอยู่ที่ไหน ทำอะไร และสนุกไหม ใช้ was, were และกริยาเติม -ed ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Write 5–6 sentences about a trip or last weekend. Where were you? What did you do? Was it great?",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}

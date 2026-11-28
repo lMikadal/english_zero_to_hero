@@ -248,18 +248,6 @@
           "keywords": [
             "did"
           ]
-        },
-        {
-          "id": "d073-speak-03",
-          "type": "speak_answer",
-          "instruction": {
-            "th": "บอกเหตุผลที่คุณหัวเราะหรือยิ้ม ใช้ because"
-          },
-          "prompt": "Why did you laugh? Say: I laughed because ...",
-          "sampleAnswer": "I laughed because the film was great.",
-          "keywords": [
-            "because"
-          ]
         }
       ]
     },

@@ -73,5 +73,6 @@
 
 - **เฟส 2 Survival:** ซื้อของ, ร้านอาหาร, ถามทาง, เดินทาง, สุขภาพ, ที่ทำงาน · Past Simple, Future, Continuous, Comparatives, Modals (can/should/must)
   - สัปดาห์ 10 (วัน 64–70): Present Continuous (วัน 64 ประโยคบอกเล่า, วัน 65 คำถาม/ตอบสั้น/ปฏิเสธ), ร้านค้าและเงิน, ร้านกาแฟและอาหาร, บอกทางและทิศ; เสียง -ing, are เบา, เน้น fifteen/fifty, /ʃ/, /θ/ (ตัดสินใจโดยผู้เขียนเนื้อหา 2026-11-28 เพราะแผนเฟส 2 ยังไม่ละเอียด)
+  - สัปดาห์ 11 (วัน 71–77): Past Simple (วัน 71 was/were, วัน 72 กริยาปกติ -ed, วัน 73 did/didn't), เมื่อวานและสัปดาห์ที่แล้ว, งานอดิเรก, ทริป; เสียง was เบา, -ed, /nt/, /r/ /l/ (สัปดาห์ 12 สอนรูปอดีตไม่ปกติ ตามแผนที่เสนอไว้ใน docs/FINDINGS.md)
 - **เฟส 3 Conversation:** เล่าประสบการณ์, วางแผน, ให้คำแนะนำ, แก้ปัญหา · Present Perfect, Conditionals 0–2, Passive, Relative clauses, Phrasal verbs
 - **เฟส 4 Fluency:** ข่าว, เทคโนโลยี, สิ่งแวดล้อม, วัฒนธรรม, ธุรกิจ · Conditional 3, Reported speech, Linking words, Idioms, เรียงความแสดงความเห็น
