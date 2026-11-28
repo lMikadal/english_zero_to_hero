@@ -203,10 +203,13 @@ describe("day page: a monthly checkpoint blocks the next day (plan PR 6, item 15
     expect(screen.queryByText("ฟังและสังเกตรูปปาก")).toBeNull(); // no lesson player
   });
 
-  it("a later locked day keeps its old message and its link goes to the highest playable day", async () => {
+  it("a later locked day while blocked: the old message, but the one way on is the checkpoint (not the finished day A)", async () => {
     await show("40");
     expect(screen.getByText(/ยังไม่ปลดล็อก/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /ไปบทเรียนวันที่ 30/ })).toHaveAttribute("href", "/day/30");
+    const go = screen.getByRole("link", { name: "ไปทำแบบทดสอบ" });
+    expect(go).toHaveAttribute("href", "/checkpoint/30");
+    expect(go.className).toMatch(/bg-accent/);
+    expect(screen.queryByRole("link", { name: /ไปบทเรียนวันที่ 30/ })).toBeNull();
   });
 
   it("days up to A still open as before (a finished day is a replay)", async () => {
