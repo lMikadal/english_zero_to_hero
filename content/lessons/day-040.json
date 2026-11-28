@@ -1,0 +1,365 @@
+{
+  "day": 40,
+  "phase": 1,
+  "week": 6,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "In a restaurant! What do you want?",
+    "th": "In a restaurant! สั่งอาหารว่า What do you want?"
+  },
+  "objectives": [
+    {
+      "en": "Order food in a restaurant: I want…, a bowl of…, a bottle of…, The bill, please",
+      "th": "สั่งอาหารที่ร้านอาหารได้: I want…, a bowl of…, a bottle of…, The bill, please"
+    },
+    {
+      "en": "Name things on the table: plate, bowl, spoon, fork, knife, bottle",
+      "th": "เรียกชื่อของบนโต๊ะอาหารได้: plate, bowl, spoon, fork, knife, bottle"
+    },
+    {
+      "en": "Mix /ʃ/, /tʃ/ and /dʒ/ in short sentences",
+      "th": "ออกเสียง /ʃ/ /tʃ/ /dʒ/ ในประโยคสั้น ๆ ปะปนกันได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-waiter",
+    "v-menu",
+    "v-order",
+    "v-bill",
+    "v-plate",
+    "v-spoon",
+    "v-fork",
+    "v-knife",
+    "v-bottle",
+    "v-bowl",
+    "v-thirsty"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "/ʃ/, /tʃ/ and /dʒ/ together",
+        "th": "/ʃ/ /tʃ/ /dʒ/ รวมกัน"
+      },
+      "exercises": [
+        {
+          "id": "d040-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "ship",
+              "b": "chip",
+              "answer": "a"
+            },
+            {
+              "a": "jeep",
+              "b": "cheap",
+              "answer": "a"
+            },
+            {
+              "a": "chew",
+              "b": "shoe",
+              "answer": "a"
+            },
+            {
+              "a": "badge",
+              "b": "batch",
+              "answer": "b"
+            },
+            {
+              "a": "wash",
+              "b": "watch",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "sh",
+            "ch",
+            "jh"
+          ]
+        },
+        {
+          "id": "d040-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /dʒ/ ใน juice (สั่นคอ) และ /tʃ/ ใน cheese และ sandwich (ไม่สั่นคอ)"
+          },
+          "text": "The waiter has some juice and a cheese sandwich.",
+          "ipa": "/ðə ˈweɪtər hæz sʌm dʒuːs ænd ə tʃiːz ˈsænwɪtʃ/",
+          "phonemes": [
+            "jh",
+            "ch"
+          ]
+        },
+        {
+          "id": "d040-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /ʃ/ ใน wash ลมไหลต่อเนื่อง ไม่ใช่ 'วอตช์'"
+          },
+          "text": "Wash your hands, please.",
+          "ipa": "/wɑːʃ jɔːr hændz pliːz/",
+          "phonemes": [
+            "sh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: in a restaurant",
+        "th": "ฟัง: ที่ร้านอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d040-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสสั่งอะไร"
+          },
+          "audioText": "Nan and Rose are in a restaurant. The waiter has the menu. Nan orders a salad and a bottle of water. Rose orders soup and a cup of tea.",
+          "question": {
+            "en": "What does Rose order?",
+            "th": "โรสสั่งอะไร"
+          },
+          "choices": [
+            "Soup and tea",
+            "A salad and water"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d040-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-waiter"
+            },
+            {
+              "vocabId": "v-menu"
+            },
+            {
+              "vocabId": "v-order"
+            },
+            {
+              "vocabId": "v-bill"
+            },
+            {
+              "vocabId": "v-plate"
+            },
+            {
+              "vocabId": "v-spoon"
+            }
+          ]
+        },
+        {
+          "id": "d040-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอะไรราคาหกสิบบาท"
+          },
+          "audioText": "I am thirsty. I want a glass of juice and a big bottle of water. The bill is sixty baht.",
+          "question": {
+            "en": "What is sixty baht?",
+            "th": "อะไรราคาหกสิบบาท"
+          },
+          "choices": [
+            "The bill",
+            "The bottle",
+            "The juice"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d040-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "I want a bowl of soup and a plate of rice."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Order food",
+        "th": "สั่งอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d040-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค (I want… ใช้ได้แต่ค่อนข้างตรง ประโยคสุภาพกว่าจะเรียนภายหลัง: I'd like…, Can I have…?)"
+          },
+          "lines": [
+            "Hello! This is the menu.",
+            "What do you want?",
+            "A plate of rice and chicken, please.",
+            "And a bowl of soup, please. I'm thirsty.",
+            "A bottle of water?",
+            "Yes, a bottle of water, please.",
+            "A knife and a fork, please. And a spoon.",
+            "Rice, chicken and soup. Thank you!",
+            "The bill, please.",
+            "The bill is ninety baht. Thank you!"
+          ]
+        },
+        {
+          "id": "d040-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "คุณอยู่ในร้านอาหาร บอกว่าคุณสั่งอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "You are in a restaurant. What do you order?",
+          "sampleAnswer": "A bowl of soup and a bottle of water, please.",
+          "keywords": [
+            "order"
+          ]
+        },
+        {
+          "id": "d040-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ออก a เป็นเสียงเบา 'อะ' และเน้นคำนามทั้งสามคำ (knife, fork, spoon) ตอนท้ายขึ้นเสียงเล็กน้อยก่อนจบที่ please"
+          },
+          "text": "A knife, a fork and a spoon, please.",
+          "ipa": "/ə naɪf ə fɔːrk ænd ə spuːn pliːz/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "A family in a restaurant",
+        "th": "ครอบครัวในร้านอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d040-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Rose, Dan and Leo order food in a restaurant. The waiter has the menu.\nWaiter: What do you want?\nDan: I want chicken and rice, please.\nRose: I want a bowl of soup and a bottle of water. I am thirsty.\nLeo: I want pizza and juice, please.\nThe waiter gives Dan a plate, a knife and a fork. He gives Rose a spoon. Dan says, \"The bill, please.\"",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Dan want?",
+                "th": "แดนอยากได้อะไร"
+              },
+              "choices": [
+                "Chicken and rice",
+                "Pizza"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo want?",
+                "th": "ลีโออยากได้อะไร"
+              },
+              "choices": [
+                "Pizza and juice",
+                "Chicken and rice"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who is thirsty?",
+                "th": "ใครกระหายน้ำ"
+              },
+              "choices": [
+                "Rose",
+                "Dan"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: I want",
+        "th": "เขียน: I want"
+      },
+      "exercises": [
+        {
+          "id": "d040-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "want",
+            "I",
+            "a",
+            "bowl",
+            "of",
+            "soup"
+          ],
+          "answer": "I want a bowl of soup"
+        },
+        {
+          "id": "d040-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (อยากได้)"
+          },
+          "text": "Do you ___ some water? Yes, please.",
+          "answer": [
+            "want"
+          ]
+        },
+        {
+          "id": "d040-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันอยากได้ช้อน ส้อม และมีด",
+          "accept": [
+            "I want a spoon, a fork and a knife"
+          ]
+        },
+        {
+          "id": "d040-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-fork"
+            },
+            {
+              "vocabId": "v-knife"
+            },
+            {
+              "vocabId": "v-bottle"
+            },
+            {
+              "vocabId": "v-bowl"
+            },
+            {
+              "vocabId": "v-thirsty"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
