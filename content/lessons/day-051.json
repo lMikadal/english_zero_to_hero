@@ -97,7 +97,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "at / on / in กับเวลา",
-          "bodyTh": "ใช้บอกว่าเหตุการณ์เกิดเมื่อไร: at กับเวลาบนนาฬิกา (at seven o'clock) on กับวัน (on Monday) in กับช่วงของวัน เดือน ปี ฤดู (in the morning, in May) แต่ at night ผิดบ่อย: in Monday ✗ → on Monday ✓ ชื่อวันและเดือนขึ้นต้นด้วยตัวพิมพ์ใหญ่เสมอ (Monday, May)",
+          "bodyTh": "ใช้บอกว่าเหตุการณ์เกิดเมื่อไร: at กับเวลาบนนาฬิกา (at seven o'clock) on กับวัน (on Monday) in กับช่วงของวัน เดือน ปี ฤดู (in the morning, in May) แต่ at night ผิดบ่อย: in Monday ✗ → on Monday ✓ และ on tomorrow ✗ → tomorrow ✓ (ไม่ใช้ at/on/in กับ today, tomorrow, next week, every day) ชื่อวันและเดือนขึ้นต้นด้วยตัวพิมพ์ใหญ่เสมอ (Monday, May)",
           "examples": [
             {
               "en": "I wake up at six o'clock.",
@@ -338,7 +338,9 @@
             "I call my grandmother on Sunday",
             "On Sunday I call my grandmother",
             "I call my grandmother on Sundays",
-            "On Sundays I call my grandmother"
+            "On Sundays I call my grandmother",
+            "I call my grandmother every Sunday",
+            "Every Sunday I call my grandmother"
           ]
         },
         {
@@ -352,7 +354,9 @@
             "Nan has a dance class on Wednesday",
             "On Wednesday Nan has a dance class",
             "Nan has a dance class on Wednesdays",
-            "On Wednesdays Nan has a dance class"
+            "On Wednesdays Nan has a dance class",
+            "Nan has a dance class every Wednesday",
+            "Every Wednesday Nan has a dance class"
           ]
         },
         {
