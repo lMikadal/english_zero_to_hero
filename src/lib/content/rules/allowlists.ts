@@ -94,3 +94,6 @@ export const LETTERS: readonly string[] = "abcdefghijklmnopqrstuvwxyz".split("")
 export const ALWAYS_ALLOWED: ReadonlySet<string> = new Set([
   ...FUNCTION_WORDS, ...A1_WORDS_WITHOUT_ENTRY_YET, ...NUMBER_WORDS_WITHOUT_ENTRY, ...PROPER_NAMES.map((n) => n.toLowerCase()), ...LETTERS,
 ]);
+
+/** Placeholder (tests first). */
+export const BLOCKED_WORDS: readonly string[] = [];
