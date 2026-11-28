@@ -8,38 +8,55 @@ import { Instruction } from "./ui/Instruction";
 import { MixedText } from "./ui/MixedText";
 
 /**
- * PLACEHOLDER card (content schema PR): shows the title, body, table and examples as plain text so the player never hits
- * "not supported" on a grammar_note. Teaching card like PhonemeIntro: it never calls `onAnswer`, only `onContinue`.
- * The real design is a separate frontend task.
+ * Grammar explanation card: read, listen, then ถัดไป. Like PhonemeIntro it never calls `onAnswer` (no attempt, nothing queued).
+ * Top to bottom: instruction (h3), a card with the "ไวยากรณ์" label, the title (h4), the body paragraphs and the optional table,
+ * then the examples with their play buttons. The table scrolls inside its own wrapper only as a last resort; cells wrap first.
  */
 export function GrammarNote({ exercise, onContinue }: ExerciseProps<"grammar_note">) {
   const audio = useExerciseAudio(exercise.examples[0].en);
+  const paragraphs = exercise.bodyTh.split("\n").map((p) => p.trim()).filter(Boolean);
+  const [head, ...rows] = exercise.table ?? [];
   return (
     <ExerciseShell>
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
-      <Card>
-        <h2 className="text-lg font-bold">{exercise.titleTh}</h2>
-        <p className="mt-2 text-[15px] leading-relaxed"><MixedText text={exercise.bodyTh} /></p>
+      <Card pad="p-4" className="flex flex-col gap-3">
+        <p className="self-start rounded-full border border-accent/40 px-2.5 py-0.5 text-xs font-medium text-accent">ไวยากรณ์</p>
+        <h4 className="break-words text-lg font-bold leading-snug text-fg">{exercise.titleTh}</h4>
+        <div className="flex flex-col gap-2 text-[15px] leading-relaxed text-fg">
+          {paragraphs.map((p, i) => <p key={i} className="break-words"><MixedText text={p} /></p>)}
+        </div>
       </Card>
-      {exercise.table ? (
-        <Card pad="p-0" className="overflow-x-auto">
-          <table className="w-full text-left text-[15px]">
+      {head ? (
+        <div
+          role="region" tabIndex={0} aria-label={`ตาราง ${exercise.titleTh}`}
+          className="overflow-x-auto rounded-[14px] border border-line bg-card"
+        >
+          <table className="w-full border-collapse text-left text-[15px]">
+            <caption className="sr-only">{exercise.titleTh}</caption>
+            <thead>
+              <tr className="bg-surface">
+                {head.map((cell, c) => <th key={c} scope="col" className="break-words px-3 py-2.5 align-top text-[13px] font-semibold text-muted"><MixedText text={cell} /></th>)}
+              </tr>
+            </thead>
             <tbody className="divide-y divide-line">
-              {exercise.table.map((row, r) => (
-                <tr key={r} className={r === 0 ? "bg-hint-soft font-semibold" : ""}>
-                  {row.map((cell, c) => <td key={c} className="px-3 py-2 align-top"><MixedText text={cell} /></td>)}
+              {rows.map((row, r) => (
+                <tr key={r} className="border-t border-line">
+                  {row.map((cell, c) => <td key={c} className="break-words px-3 py-2.5 align-top leading-snug"><MixedText text={cell} /></td>)}
                 </tr>
               ))}
             </tbody>
           </table>
-        </Card>
+        </div>
       ) : null}
       <AudioFallback audio={audio} />
       <CardList>
         {exercise.examples.map((e, i) => (
-          <li key={i} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
-            <span><span lang="en" className="block text-[17px] font-medium">{e.en}</span><span className="block text-[13px] text-muted">{e.th}</span></span>
-            <PlayButtons audio={audio} text={e.en} />
+          <li key={i} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3">
+            <span className="min-w-0 flex-1 basis-40">
+              <span lang="en" className="block break-words text-[17px] font-medium leading-snug text-fg">{e.en}</span>
+              <span className="mt-0.5 block break-words text-[13px] text-muted">{e.th}</span>
+            </span>
+            <PlayButtons audio={audio} text={e.en} named />
           </li>
         ))}
       </CardList>

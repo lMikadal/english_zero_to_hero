@@ -4,9 +4,10 @@ import { describe, expect, it, vi } from "vitest";
 import { fakeAudio, renderWithAudio } from "@/components/exercises/test-helpers";
 import { LessonPlayer } from "@/components/player/LessonPlayer";
 import { readLesson } from "@/lib/answers/test-content";
-import type { ExerciseOf } from "@/lib/content/schema";
+import { exerciseSchema, type ExerciseOf } from "@/lib/content/schema";
 import type { SyncSink } from "@/lib/offline/sink";
 import { GrammarNote } from "./GrammarNote";
+import sample from "./fixtures/grammar-note.sample.json";
 import { renderExercise } from "./registry";
 import { smallTargets } from "./touch-target-check";
 
@@ -109,6 +110,16 @@ describe("GrammarNote", () => {
   });
   it("the registry renders it", () => {
     expect(renderExercise(exercise, { vocab: {}, onAnswer: () => {}, onContinue: () => {} })).not.toBeNull();
+  });
+});
+
+describe("the preview fixture (docs/FEATURE_MAP.md: how to look at the card)", () => {
+  it("is a valid grammar_note at the schema's limits (6 examples, a 3-column table with long cells) and renders", () => {
+    const ex = exerciseSchema.parse(sample) as ExerciseOf<"grammar_note">;
+    expect(ex.examples).toHaveLength(6);
+    renderWithAudio(<GrammarNote exercise={ex} vocab={{}} onAnswer={vi.fn()} onContinue={vi.fn()} />, fakeAudio(true));
+    expect(screen.getAllByRole("button", { name: /^ฟัง / })).toHaveLength(6);
+    expect(screen.getAllByRole("row")).toHaveLength(7);
   });
 });
 

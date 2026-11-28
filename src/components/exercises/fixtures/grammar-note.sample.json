@@ -1,0 +1,25 @@
+{
+  "id": "d999-read-01",
+  "type": "grammar_note",
+  "instruction": { "th": "อ่านคำอธิบายก่อนฝึก", "en": "Read this before the practice" },
+  "titleTh": "กริยาเติม s เมื่อประธานคือ he / she / it",
+  "bodyTh": "ในประโยคบอกเล่าปัจจุบัน ถ้าประธานเป็นคนหรือสิ่งของเพียงหนึ่งเดียว (he, she, it) ให้เติม s ท้ายกริยา\nถ้าประธานเป็น I, you, we, they หรือหลายคน ให้ใช้กริยาเดิมโดยไม่เติมอะไร\nลองดูตารางและตัวอย่างด้านล่าง แล้วฟังประโยคให้คุ้นหู",
+  "table": [
+    ["ประธาน", "กริยา", "ข้อสังเกตเพิ่มเติมที่ค่อนข้างยาว"],
+    ["I / you / we / they", "like", "ใช้กริยาเดิม ไม่เติมอะไรทั้งสิ้น"],
+    ["he / she / it", "likes", "เติม s ท้ายกริยาเสมอ"],
+    ["my sister", "wants", "ประธานเดียว = he / she / it"],
+    ["my friends", "want", "ประธานหลายคน = they"],
+    ["the extraordinarily-long-example", "works", "เซลล์ยาวมากเพื่อทดสอบการตัดบรรทัดที่ 360px"],
+    ["Tom and Ann", "have", "สองคน = they"]
+  ],
+  "examples": [
+    { "en": "She likes tea.", "th": "เธอชอบชา" },
+    { "en": "I like tea.", "th": "ฉันชอบชา" },
+    { "en": "My brother wants a big apple from the market.", "th": "พี่ชายของฉันอยากได้แอปเปิลลูกใหญ่จากตลาด" },
+    { "en": "They want some water.", "th": "พวกเขาอยากได้น้ำ" },
+    { "en": "He works in a small shop.", "th": "เขาทำงานในร้านเล็กๆ" },
+    { "en": "We like this place.", "th": "พวกเราชอบที่นี่" }
+  ],
+  "structures": ["third-person-s"]
+}
