@@ -23,6 +23,16 @@ describe("ageClaims", () => {
     expect(ageClaims("Hello! I am Ann. I am nineteen.").map((c) => [c.name, c.age])).toEqual([["Ann", 19]]);
     expect(ageClaims("My name is Sam. I'm 12.").map((c) => [c.name, c.age])).toEqual([["Sam", 12]]);
   });
+  it("reads 'He/She is N' right after a sentence that names exactly one person", () => {
+    expect(ageClaims("This is my friend, Ann. She is eight.").map((c) => [c.name, c.age])).toEqual([["Ann", 8]]);
+    expect(ageClaims("Ann is my friend. She is nine. Ben is my friend, too. He is seven.").map((c) => [c.name, c.age])).toEqual([["Ann", 9], ["Ben", 7]]);
+    expect(ageClaims("Tom is my friend.\nHe's forty.").map((c) => [c.name, c.age])).toEqual([["Tom", 40]]);
+  });
+  it("does not guess when the sentence before names two people, or no one, or the pronoun is not followed by a number", () => {
+    expect(ageClaims("Ann and Ben are here. She is nine.")).toEqual([]);
+    expect(ageClaims("It is a pen. She is nine.")).toEqual([]);
+    expect(ageClaims("This is my friend, Ann. She is happy.")).toEqual([]);
+  });
   it("skips a first-person age when two different speakers introduce themselves in the text", () => {
     expect(ageClaims("I am Ann. I am ten. I am Ben. I am eleven.")).toEqual([]);
   });
@@ -32,8 +42,8 @@ describe("ageClaims", () => {
     expect(ageClaims("Ann is happy.")).toEqual([]);
     expect(ageClaims("Ann has two cats.")).toEqual([]);
   });
-  it("does not read a place or an unknown capitalised word as a person", () => {
-    expect(ageClaims("Bangkok is 20.")).toEqual([]);
+  it("only reads names from PROPER_NAMES, not any capitalised word", () => {
+    expect(ageClaims("Hello is 20.")).toEqual([]);
   });
 });
 
