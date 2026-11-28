@@ -2,7 +2,7 @@
 //  "grammar-note"          (ERROR)   structure ids exist in GRAMMAR_STRUCTURES and are not taught before their day (a card cannot
 //                                    bring a form in early), the card is the FIRST exercise of a section that is not a pronunciation
 //                                    section (so at most one card per section, each before the practice it explains), a structure is
-//                                    in only one card of a lesson, table rows have the same number of cells. Structural, so no false
+//                                    in only one card of a lesson, table rows have the same number of cells, and row 1 (always the header) is written in Thai. Structural, so no false
 //                                    positive is possible.
 //  "grammar-note-required" (WARNING) the first lesson that USES a gated structure (learner-facing English, the card's own text
 //                                    excluded) must contain a grammar_note naming it. Weeks 1-5 have no cards, so it is a
@@ -41,6 +41,10 @@ export function checkGrammarNote(ctx: RuleContext): Problem[] {
         }
         if (i !== 0) add("a grammar_note must be the first exercise of its section, so the learner reads the explanation before the practice. Move it to the start of the section.");
         if (section.skill === "pronunciation") add("a grammar_note must not be in a pronunciation section (that section is about sounds). Put it first in the listening, speaking, reading or writing section.");
+        const header = ex.table?.[0] ?? [];
+        if (header.some((cell) => !/[\u0E00-\u0E7F]/.test(cell))) {
+          add(`table row 1 is the header (the card always shows the first row as the header) and must be written in Thai, but ${header.filter((c) => !/[\u0E00-\u0E7F]/.test(c)).map((c) => `"${c}"`).join(", ")} has no Thai letter. Write each header cell in Thai (for example "ประธาน", "กริยา") and keep the English forms in the rows below.`);
+        }
         const width = ex.table?.[0]?.length ?? 0;
         ex.table?.forEach((row, r) => {
           if (row.length !== width) add(`table row ${r + 1} has ${row.length} cell(s) but row 1 has ${width}. Give every row the same number of cells (a cell cannot be empty: write a dash "-").`);

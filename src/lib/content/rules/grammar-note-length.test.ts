@@ -54,6 +54,6 @@ describe("grammar-note-length (warning)", () => {
   });
   it("accepts every wrong form followed by its right form", () => {
     expect(run(note({ bodyTh: "ผิดบ่อย: I have tea always ✗ → I always have tea ✓ และ I don't never drink coffee ✗ → I never drink coffee ✓ ส่วน sometimes วางต้นประโยคได้" }))).toEqual([]);
-    expect(run(note({ bodyTh: "ใช้เมื่อพูดถึงสิ่งที่ทำเป็นประจำ ไม่มี ✗ ในข้อความนี้" }))).toHaveLength(1); // a ✗ with no ผิดบ่อย segment is also a wrong form without a right one
+    expect(run(note({ bodyTh: "ใช้เมื่อพูดถึงสิ่งที่ทำเป็นประจำ ✗ ไม่ใช่ส่วนผิดบ่อย" }))).toEqual([]); // only the ผิดบ่อย segment is read
   });
 });

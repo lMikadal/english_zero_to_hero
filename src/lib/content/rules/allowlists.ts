@@ -95,5 +95,12 @@ export const ALWAYS_ALLOWED: ReadonlySet<string> = new Set([
   ...FUNCTION_WORDS, ...A1_WORDS_WITHOUT_ENTRY_YET, ...NUMBER_WORDS_WITHOUT_ENTRY, ...PROPER_NAMES.map((n) => n.toLowerCase()), ...LETTERS,
 ]);
 
-/** Placeholder (tests first). */
-export const BLOCKED_WORDS: readonly string[] = [];
+/**
+ * Words that must not appear anywhere a learner reads or hears English (rule "word-blocklist", an error): not suitable for a
+ * beginner course, including sound-drill words and minimal pairs, where such a word is easy to pick because it is a short
+ * word that differs by one sound ("help-hell"). Keep it short: the obvious mild swear words, profanities and slurs. Whole words,
+ * lower case. Add a word here when a review finds one; there is no per-item exception, choose another word instead.
+ */
+export const BLOCKED_WORDS: readonly string[] = [
+  "hell", "damn", "shit", "fuck", "bitch", "bastard", "whore", "slut", "cunt", "nigger", "faggot",
+];
