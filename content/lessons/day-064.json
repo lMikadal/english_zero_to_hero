@@ -1,0 +1,411 @@
+{
+  "day": 64,
+  "phase": 2,
+  "week": 10,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "What are you doing? am / is / are + -ing",
+    "th": "กำลังทำอะไรอยู่: am / is / are + -ing"
+  },
+  "objectives": [
+    {
+      "en": "Say what is happening now with am / is / are + -ing",
+      "th": "บอกสิ่งที่กำลังเกิดขึ้นตอนนี้ด้วย am / is / are + -ing ได้"
+    },
+    {
+      "en": "Talk about reading, waiting, helping and playing at home",
+      "th": "พูดเรื่องการอ่าน การรอ การช่วย และการเล่นที่บ้านได้"
+    },
+    {
+      "en": "Say the ending -ing /ɪŋ/ clearly",
+      "th": "ออกเสียงท้ายคำ -ing /ɪŋ/ ให้ชัด"
+    }
+  ],
+  "estimatedMinutes": 35,
+  "vocab": [
+    "v-read",
+    "v-wait",
+    "v-help",
+    "v-newspaper",
+    "v-magazine",
+    "v-email",
+    "v-message",
+    "v-radio",
+    "v-guitar"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The ending -ing",
+        "th": "เสียงท้ายคำ -ing"
+      },
+      "exercises": [
+        {
+          "id": "d064-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "ng",
+          "ipa": "/ɪŋ/",
+          "tipTh": "-ing ท้ายคำออกเสียง /ɪŋ/ (อิง) สั้น ๆ ปิดท้ายด้วยเสียง ง เหมือน ง ในคำว่า 'งู' ไม่ต้องออกเสียง g แยก (reading = REE-ding ไม่ใช่ 'รี-ดิ-งะ' และไม่ใช่ 'รี-ดีน') พยางค์ -ing ไม่เน้น จึงเบาและสั้น",
+          "examples": [
+            "reading",
+            "waiting",
+            "helping",
+            "playing"
+          ]
+        },
+        {
+          "id": "d064-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ reading ออกเสียง /ɪŋ/ สั้น ๆ"
+          },
+          "text": "Leo is reading a book.",
+          "ipa": "/ˈliːoʊ ɪz ˈriːdɪŋ ə bʊk/",
+          "phonemes": [
+            "ng"
+          ]
+        },
+        {
+          "id": "d064-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม waiting ลงท้ายด้วย /ɪŋ/ ไม่มีเสียง g ชัด"
+          },
+          "text": "Dan is waiting at the station.",
+          "ipa": "/dæn ɪz ˈweɪtɪŋ æt ðə ˈsteɪʃn/",
+          "phonemes": [
+            "ng"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: what is happening now?",
+        "th": "ฟัง: ตอนนี้ใครกำลังทำอะไร"
+      },
+      "exercises": [
+        {
+          "id": "d064-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "กำลังทำอะไรอยู่: am / is / are + กริยา-ing",
+          "bodyTh": "ใช้บอกสิ่งที่กำลังเกิดขึ้นตอนนี้: am / is / are + กริยา-ing (I am reading. Leo is reading.)\nลงท้ายด้วย e ตัด e (write → writing) สระสั้นตัวเดียว + พยัญชนะตัวเดียว ซ้ำตัวท้าย (run → running, sit → sitting) แต่ read → reading, wait → waiting\nผิดบ่อย: Leo reading ✗ → Leo is reading ✓ และ I am liking rice ✗ → I like rice ✓ (like, want, have ที่แปลว่ามี ไม่ใช้ -ing)",
+          "examples": [
+            {
+              "en": "I am reading a book.",
+              "th": "ฉันกำลังอ่านหนังสือ"
+            },
+            {
+              "en": "Leo is playing the guitar.",
+              "th": "ลีโอกำลังเล่นกีตาร์"
+            },
+            {
+              "en": "Rose and Dan are waiting at the station.",
+              "th": "โรสกับแดนกำลังรอที่สถานี"
+            },
+            {
+              "en": "Nan is writing an email.",
+              "th": "แนนกำลังเขียนอีเมล"
+            }
+          ],
+          "structures": [
+            "present-continuous"
+          ],
+          "table": [
+            [
+              "ประธาน",
+              "ใช้ be",
+              "ตัวอย่าง"
+            ],
+            [
+              "I",
+              "am",
+              "I am reading"
+            ],
+            [
+              "he / she / it / ชื่อคน",
+              "is",
+              "Leo is reading"
+            ],
+            [
+              "you / we / they",
+              "are",
+              "We are reading"
+            ]
+          ]
+        },
+        {
+          "id": "d064-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครกำลังเล่นกีตาร์"
+          },
+          "audioText": "It is Sunday evening. Dan is on the sofa. He is reading a newspaper. Rose is in the kitchen. She is cooking dinner. Leo is in his bedroom. He is playing the guitar.",
+          "question": {
+            "en": "Who plays the guitar?",
+            "th": "ใครเล่นกีตาร์"
+          },
+          "choices": [
+            "Dan",
+            "Rose",
+            "Leo"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "d064-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-read"
+            },
+            {
+              "vocabId": "v-wait"
+            },
+            {
+              "vocabId": "v-help"
+            },
+            {
+              "vocabId": "v-newspaper"
+            },
+            {
+              "vocabId": "v-magazine"
+            }
+          ]
+        },
+        {
+          "id": "d064-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนอยู่ที่ไหน"
+          },
+          "audioText": "Hi, I am Nan. I am at the station. My train is late. I am waiting. I am reading a magazine and writing an email.",
+          "question": {
+            "en": "Where is Nan?",
+            "th": "แนนอยู่ที่ไหน"
+          },
+          "choices": [
+            "At the station",
+            "At the market",
+            "At the bank"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d064-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Leo is helping Rose. Dan is reading a newspaper.",
+          "strict": true
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: what are they doing?",
+        "th": "พูด: พวกเขากำลังทำอะไร"
+      },
+      "exercises": [
+        {
+          "id": "d064-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Rose is cooking dinner.",
+            "Dan is reading a newspaper.",
+            "Leo is playing the guitar.",
+            "Nan is writing an email.",
+            "Rose is writing a message.",
+            "I am waiting at the station.",
+            "Mali is listening to the radio.",
+            "We are helping Rose.",
+            "It is a new magazine."
+          ]
+        },
+        {
+          "id": "d064-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณอ่านหนังสือพิมพ์หรือนิตยสาร"
+          },
+          "prompt": "Do you read a newspaper or a magazine?",
+          "sampleAnswer": "I read a magazine. I listen to the radio.",
+          "keywords": [
+            "read",
+            "magazine"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: Sunday evening",
+        "th": "อ่าน: เย็นวันอาทิตย์"
+      },
+      "exercises": [
+        {
+          "id": "d064-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "It is Sunday evening. Rose is in the kitchen. She is cooking dinner. Leo is helping Rose. Dan is on the sofa. He is reading a newspaper. Rose is writing a message to Mali. Mali is in Chiang Mai. She is listening to the radio. The family is at home. It is a good evening.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who reads a newspaper?",
+                "th": "ใครอ่านหนังสือพิมพ์"
+              },
+              "choices": [
+                "Rose",
+                "Leo",
+                "Dan"
+              ],
+              "answer": 2
+            },
+            {
+              "question": {
+                "en": "Who helps Rose?",
+                "th": "ใครช่วยโรส"
+              },
+              "choices": [
+                "Leo",
+                "Dan",
+                "Mali"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who listens to the radio?",
+                "th": "ใครฟังวิทยุ"
+              },
+              "choices": [
+                "Mali",
+                "Rose",
+                "Leo"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: now",
+        "th": "เขียน: ตอนนี้"
+      },
+      "exercises": [
+        {
+          "id": "d064-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "My",
+            "father",
+            "reading",
+            "a",
+            "newspaper"
+          ],
+          "answer": "My father is reading a newspaper",
+          "statementOnly": true
+        },
+        {
+          "id": "d064-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (เล่น; เขียน) ใส่ -ing ท้ายกริยา"
+          },
+          "text": "Leo is ___ the guitar. Nan is ___ an email.",
+          "answer": [
+            "playing",
+            "writing"
+          ]
+        },
+        {
+          "id": "d064-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลีโอกำลังเล่นกีตาร์",
+          "accept": [
+            "Leo is playing the guitar",
+            "Leo is playing a guitar",
+            "Leo's playing the guitar",
+            "Leo's playing a guitar"
+          ]
+        },
+        {
+          "id": "d064-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันกำลังรอที่สถานี",
+          "accept": [
+            "I am waiting at the station"
+          ]
+        },
+        {
+          "id": "d064-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "โรสกำลังเขียนข้อความ",
+          "accept": [
+            "Rose is writing a message",
+            "Rose is writing a message to Mali",
+            "Rose's writing a message",
+            "Rose's writing a message to Mali"
+          ]
+        },
+        {
+          "id": "d064-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-email"
+            },
+            {
+              "vocabId": "v-message"
+            },
+            {
+              "vocabId": "v-radio"
+            },
+            {
+              "vocabId": "v-guitar"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

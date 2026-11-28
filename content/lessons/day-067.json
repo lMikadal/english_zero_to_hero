@@ -1,0 +1,348 @@
+{
+  "day": 67,
+  "phase": 2,
+  "week": 10,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "At the cafe: food and ice cream",
+    "th": "ที่ร้านกาแฟ: อาหารและไอศกรีม"
+  },
+  "objectives": [
+    {
+      "en": "Talk about food in a cafe: carrot, tomato, pepper, ice cream",
+      "th": "พูดเรื่องอาหารในร้านกาแฟได้: carrot, tomato, pepper, ice cream"
+    },
+    {
+      "en": "Say that food is delicious and that you are full",
+      "th": "บอกว่าอาหารอร่อยมาก และบอกว่าอิ่มแล้วได้"
+    },
+    {
+      "en": "Say the sound /ʃ/ in dish and delicious",
+      "th": "ออกเสียง /ʃ/ ในคำว่า dish และ delicious ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-cafe",
+    "v-ice-cream",
+    "v-carrot",
+    "v-tomato",
+    "v-pepper",
+    "v-delicious",
+    "v-dish",
+    "v-full"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sound /ʃ/",
+        "th": "เสียง /ʃ/"
+      },
+      "exercises": [
+        {
+          "id": "d067-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "sh",
+          "ipa": "/ʃ/",
+          "tipTh": "เสียง /ʃ/ ใน dish และ delicious เป็นเสียงลมผ่านระหว่างลิ้นกับเพดาน ริมฝีปากห่อเล็กน้อย คล้าย 'ช' เบา ๆ ที่ไม่มีเสียงสระตามหลัง ท้ายคำ dish ต้องไม่เปลี่ยนเป็น /t/ หรือ 'ดิด' ให้ลมออกยาวค้างไว้",
+          "examples": [
+            "dish",
+            "delicious",
+            "fish",
+            "shop"
+          ]
+        },
+        {
+          "id": "d067-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ทั้ง dish และ delicious มีเสียง /ʃ/ ค้างลมให้ชัด"
+          },
+          "text": "This dish is delicious.",
+          "ipa": "/ðɪs dɪʃ ɪz dɪˈlɪʃəs/",
+          "phonemes": [
+            "sh"
+          ]
+        },
+        {
+          "id": "d067-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม fish และ dish ลงท้ายด้วยลม /ʃ/"
+          },
+          "text": "The fish soup is a good dish.",
+          "ipa": "/ðə fɪʃ suːp ɪz ə ɡʊd dɪʃ/",
+          "phonemes": [
+            "sh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: in the cafe",
+        "th": "ฟัง: ในร้านกาแฟ"
+      },
+      "exercises": [
+        {
+          "id": "d067-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครกินไอศกรีม"
+          },
+          "audioText": "Rose and Leo are in a cafe. The cafe is near the bank. Rose has a bowl of soup. Leo has an ice cream. It is cold and sweet.",
+          "question": {
+            "en": "Who has an ice cream?",
+            "th": "ใครกินไอศกรีม"
+          },
+          "choices": [
+            "Leo",
+            "Rose",
+            "Dan"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d067-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-cafe"
+            },
+            {
+              "vocabId": "v-ice-cream"
+            },
+            {
+              "vocabId": "v-carrot"
+            },
+            {
+              "vocabId": "v-tomato"
+            }
+          ]
+        },
+        {
+          "id": "d067-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าผู้พูดหิวหรืออิ่ม"
+          },
+          "audioText": "This is my favourite dish. It has rice, chicken, a tomato and pepper. It is delicious. I am full!",
+          "question": {
+            "en": "Is the speaker hungry or full?",
+            "th": "ผู้พูดหิวหรืออิ่ม"
+          },
+          "choices": [
+            "Hungry",
+            "Full"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d067-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Salt and pepper, please. The soup is delicious.",
+          "strict": true
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: in the cafe",
+        "th": "พูด: ในร้านกาแฟ"
+      },
+      "exercises": [
+        {
+          "id": "d067-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Where is the cafe?",
+            "The cafe is near the bank.",
+            "Leo likes ice cream.",
+            "The soup has carrots and tomatoes.",
+            "Salt and pepper, please.",
+            "This dish is delicious!",
+            "I am full.",
+            "Rose and Nan are in the cafe."
+          ]
+        },
+        {
+          "id": "d067-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าอาหารจานโปรดของคุณคืออะไรและอร่อยไหม"
+          },
+          "prompt": "What is your favourite dish? Is it delicious?",
+          "sampleAnswer": "My favourite dish is chicken and rice. It is delicious.",
+          "keywords": [
+            "favourite",
+            "delicious"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: Rose and Leo in the cafe",
+        "th": "อ่าน: โรสกับลีโอในร้านกาแฟ"
+      },
+      "exercises": [
+        {
+          "id": "d067-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Rose and Leo are in a cafe near the bank. Rose has a bowl of soup. The soup has carrots, tomatoes and pepper. It is a delicious dish. Leo has an ice cream. It is cold and sweet. Rose is full. Leo is happy.",
+          "questions": [
+            {
+              "question": {
+                "en": "Where are Rose and Leo?",
+                "th": "โรสกับลีโออยู่ที่ไหน"
+              },
+              "choices": [
+                "At the market",
+                "In a cafe",
+                "In the hospital"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What does the soup have?",
+                "th": "ซุปมีอะไรบ้าง"
+              },
+              "choices": [
+                "Carrots, tomatoes and pepper",
+                "Rice and chicken",
+                "Cheese and bread"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who is full?",
+                "th": "ใครอิ่ม"
+              },
+              "choices": [
+                "Leo",
+                "Dan",
+                "Rose"
+              ],
+              "answer": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: food",
+        "th": "เขียน: อาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d067-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "The",
+            "soup",
+            "is",
+            "delicious"
+          ],
+          "answer": "The soup is delicious",
+          "statementOnly": true
+        },
+        {
+          "id": "d067-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (มะเขือเทศพหูพจน์; พริกไทย)"
+          },
+          "text": "Carrots are orange and ___ are red. Salt and ___, please.",
+          "answer": [
+            "tomatoes",
+            "pepper"
+          ]
+        },
+        {
+          "id": "d067-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ร้านกาแฟอยู่ใกล้ธนาคาร",
+          "accept": [
+            "The cafe is near the bank"
+          ]
+        },
+        {
+          "id": "d067-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ซุปนี้มีแครอทและมะเขือเทศ",
+          "accept": [
+            "The soup has a carrot and a tomato",
+            "This soup has a carrot and a tomato",
+            "The soup has carrots and tomatoes",
+            "This soup has carrots and tomatoes"
+          ]
+        },
+        {
+          "id": "d067-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันอิ่มแล้ว",
+          "accept": [
+            "I am full"
+          ]
+        },
+        {
+          "id": "d067-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-pepper"
+            },
+            {
+              "vocabId": "v-delicious"
+            },
+            {
+              "vocabId": "v-dish"
+            },
+            {
+              "vocabId": "v-full"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

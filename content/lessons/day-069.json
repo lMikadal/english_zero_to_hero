@@ -1,0 +1,423 @@
+{
+  "day": 69,
+  "phase": 2,
+  "week": 10,
+  "type": "review",
+  "cefr": "A1",
+  "title": {
+    "en": "Week 10 review: now, shops, food and directions",
+    "th": "ทบทวนสัปดาห์ที่ 10: ตอนนี้ ร้านค้า อาหาร และบอกทาง"
+  },
+  "objectives": [
+    {
+      "en": "Say what people are doing now and ask about it",
+      "th": "พูดว่าใครกำลังทำอะไรและถามได้"
+    },
+    {
+      "en": "Talk about prices, food in a cafe and directions",
+      "th": "พูดเรื่องราคา อาหารในร้านกาแฟ และการบอกทางได้"
+    },
+    {
+      "en": "Use the weak /ər/ in are and the -ing ending",
+      "th": "ใช้เสียงเบา /ər/ ใน are และเสียงท้าย -ing ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "-ing, are and numbers",
+        "th": "-ing, are และตัวเลข"
+      },
+      "exercises": [
+        {
+          "id": "d069-pron-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าได้ยินตัวเลขไหน ระวัง sixteen กับ sixty"
+          },
+          "audioText": "The pen costs sixty cents.",
+          "question": {
+            "en": "How much is the pen?",
+            "th": "ปากการาคาเท่าไร"
+          },
+          "choices": [
+            "Sixteen cents",
+            "Sixty cents"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d069-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม are เบา (/ər/) และ -ing ลงท้ายด้วย /ɪŋ/ สั้น ๆ"
+          },
+          "text": "What are you reading? I am reading a magazine.",
+          "ipa": "/wʌt ər ju ˈriːdɪŋ aɪ æm ˈriːdɪŋ ə ˈmæɡəziːn/",
+          "phonemes": [
+            "ng",
+            "schwa"
+          ]
+        },
+        {
+          "id": "d069-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ waiting ออกเสียง /ɪŋ/ ไม่มี g ชัด"
+          },
+          "text": "Nan is waiting at the cafe.",
+          "ipa": "/næn ɪz ˈweɪtɪŋ æt ðə kæˈfeɪ/",
+          "phonemes": [
+            "ng"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d069-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครกำลังเขียนอีเมล"
+          },
+          "audioText": "It is Saturday. Rose and Nan are in the town. They are in a cafe opposite the bank. Rose is reading a magazine. Nan is writing an email. They are waiting. The ice cream is delicious.",
+          "question": {
+            "en": "Who is writing an email?",
+            "th": "ใครกำลังเขียนอีเมล"
+          },
+          "choices": [
+            "Nan",
+            "Rose",
+            "Leo"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d069-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอลองอะไร"
+          },
+          "audioText": "Leo is a customer in a shop in the town. The shop sells shoes. Leo tries on a pair of black shoes. They cost five hundred baht. That is expensive. Dan pays by card.",
+          "question": {
+            "en": "What does Leo try on?",
+            "th": "ลีโอลองอะไร"
+          },
+          "choices": [
+            "A pair of black shoes",
+            "A green shirt",
+            "A red skirt"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d069-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าพิพิธภัณฑ์อยู่ที่ไหน"
+          },
+          "audioText": "Rose is in the centre of the town. She has a map. The library is west of the market. The museum is behind the library. The hospital is north of the bank.",
+          "question": {
+            "en": "Where is the museum?",
+            "th": "พิพิธภัณฑ์อยู่ที่ไหน"
+          },
+          "choices": [
+            "Behind the library",
+            "Opposite the station",
+            "South of the station"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d069-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-read"
+            },
+            {
+              "vocabId": "v-wait"
+            },
+            {
+              "vocabId": "v-help"
+            },
+            {
+              "vocabId": "v-newspaper"
+            },
+            {
+              "vocabId": "v-magazine"
+            },
+            {
+              "vocabId": "v-email"
+            },
+            {
+              "vocabId": "v-message"
+            },
+            {
+              "vocabId": "v-radio"
+            }
+          ]
+        },
+        {
+          "id": "d069-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Turn right at the station. The hotel is opposite the station."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d069-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Rose is making a cake.",
+            "Leo is using the computer.",
+            "Leo is playing the guitar.",
+            "Mali is listening to the radio.",
+            "I am learning English.",
+            "The shirt costs fifty euros.",
+            "The soup has carrots, tomatoes and pepper.",
+            "I am full.",
+            "The bank is between the hospital and the shop."
+          ]
+        },
+        {
+          "id": "d069-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าร้านกาแฟอยู่ที่ไหน และคุณกินอะไรในร้านกาแฟ"
+          },
+          "prompt": "Where is the cafe? What do you eat in the cafe?",
+          "sampleAnswer": "The cafe is opposite the bank. I eat ice cream in the cafe.",
+          "keywords": [
+            "cafe",
+            "opposite"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d069-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "It is Saturday. Leo is in the town with Nan. Leo has a map. Leo shows Nan the map. The station is east of the market and the library is west of the market. Leo reads a message from Rose: \"Turn left at the bank. The cafe is opposite the bank. I am waiting in the cafe.\" Leo and Nan find the bank and the cafe.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who has a map?",
+                "th": "ใครมีแผนที่"
+              },
+              "choices": [
+                "Leo",
+                "Nan",
+                "Rose"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is Rose waiting?",
+                "th": "โรสรออยู่ที่ไหน"
+              },
+              "choices": [
+                "At the station",
+                "In the cafe",
+                "In the library"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Where is the library?",
+                "th": "ห้องสมุดอยู่ที่ไหน"
+              },
+              "choices": [
+                "East of the market",
+                "In the centre",
+                "West of the market"
+              ],
+              "answer": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d069-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-make"
+            },
+            {
+              "vocabId": "v-use"
+            },
+            {
+              "vocabId": "v-try"
+            },
+            {
+              "vocabId": "v-find"
+            },
+            {
+              "vocabId": "v-learn"
+            },
+            {
+              "vocabId": "v-teach"
+            },
+            {
+              "vocabId": "v-speak"
+            },
+            {
+              "vocabId": "v-show"
+            }
+          ]
+        },
+        {
+          "id": "d069-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "My",
+            "mother",
+            "making",
+            "a",
+            "cake"
+          ],
+          "answer": "My mother is making a cake",
+          "statementOnly": true
+        },
+        {
+          "id": "d069-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (ลอง ใส่ -ing; มีราคา ใส่ -s)"
+          },
+          "text": "Nan is ___ on a red skirt. The skirt ___ ninety baht.",
+          "answer": [
+            "trying",
+            "costs"
+          ]
+        },
+        {
+          "id": "d069-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันกำลังเรียนภาษาอังกฤษ",
+          "accept": [
+            "I am learning English"
+          ]
+        },
+        {
+          "id": "d069-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "รองเท้าคู่นี้ราคายี่สิบปอนด์",
+          "accept": [
+            "This pair of shoes costs twenty pounds",
+            "The pair of shoes costs twenty pounds",
+            "These shoes cost twenty pounds",
+            "These shoes are twenty pounds",
+            "This pair of shoes is twenty pounds"
+          ]
+        },
+        {
+          "id": "d069-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ร้านกาแฟอยู่ใจกลางเมือง",
+          "accept": [
+            "The cafe is in the centre of the town",
+            "The cafe is in the center of the town",
+            "The cafe is in the town centre",
+            "The cafe is in the town center"
+          ]
+        },
+        {
+          "id": "d069-vocab-03",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-expensive"
+            },
+            {
+              "vocabId": "v-sell"
+            },
+            {
+              "vocabId": "v-cost"
+            },
+            {
+              "vocabId": "v-customer"
+            },
+            {
+              "vocabId": "v-dollar"
+            },
+            {
+              "vocabId": "v-pound"
+            },
+            {
+              "vocabId": "v-euro"
+            },
+            {
+              "vocabId": "v-cent"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

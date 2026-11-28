@@ -1,0 +1,431 @@
+{
+  "day": 65,
+  "phase": 2,
+  "week": 10,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "What is she doing? questions and answers",
+    "th": "เขากำลังทำอะไร: ถามและตอบด้วย am / is / are"
+  },
+  "objectives": [
+    {
+      "en": "Ask and answer: What are you doing? Is Leo reading? Yes, he is",
+      "th": "ถามและตอบได้: What are you doing? Is Leo reading? Yes, he is"
+    },
+    {
+      "en": "Talk about making, using, trying, learning and teaching",
+      "th": "พูดเรื่องการทำ การใช้ การลอง การเรียนรู้ และการสอนได้"
+    },
+    {
+      "en": "Say the small word are as /ər/ in questions",
+      "th": "ออกเสียงคำเล็ก are เป็น /ər/ เบา ๆ ในประโยคคำถามได้"
+    }
+  ],
+  "estimatedMinutes": 35,
+  "vocab": [
+    "v-make",
+    "v-use",
+    "v-try",
+    "v-find",
+    "v-learn",
+    "v-teach",
+    "v-speak",
+    "v-show",
+    "v-english"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The weak word are",
+        "th": "คำเล็ก are ที่ออกเสียงเบา"
+      },
+      "exercises": [
+        {
+          "id": "d065-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "schwa",
+          "ipa": "/ər/",
+          "tipTh": "ในคำถาม are ไม่เน้น ออกเสียงเบาและสั้นเป็น /ər/ (เออะ) ติดกับคำข้างหน้า ไม่ใช่ 'อาร์' เต็มเสียง What are you doing? = วอท-เออะ-ยู-ดู-อิง (เน้นที่ What และ doing) เสียง /ər/ ที่ท้ายพยางค์ในคำเหล่านี้ก็เบาเหมือนกัน",
+          "examples": [
+            "teacher",
+            "computer",
+            "doctor",
+            "newspaper"
+          ]
+        },
+        {
+          "id": "d065-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม are ออกเสียงเบามาก (/ər/) เน้นที่ What และ doing"
+          },
+          "text": "What are you doing?",
+          "ipa": "/wʌt ər ju ˈduːɪŋ/",
+          "phonemes": [
+            "schwa"
+          ]
+        },
+        {
+          "id": "d065-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม are ต้นประโยคก็เบา ไม่ใช่ 'อาร์'"
+          },
+          "text": "Are you reading a magazine?",
+          "ipa": "/ər ju ˈriːdɪŋ ə ˈmæɡəziːn/",
+          "phonemes": [
+            "schwa"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: questions and answers",
+        "th": "ฟัง: คำถามและคำตอบ"
+      },
+      "exercises": [
+        {
+          "id": "d065-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "ถามว่ากำลังทำอะไร: Are you ...? What are you doing?",
+          "bodyTh": "ถามโดยย้าย am / is / are ไปไว้หน้าประธาน: Are you reading? Is Leo reading? What are you doing?\nตอบสั้น: Yes, I am. / No, I am not. / Yes, he is. / No, he is not.\nปฏิเสธ: am / is / are + not + กริยา-ing (Leo is not reading)\nผิดบ่อย: Yes, I reading ✗ → Yes, I am ✓ / Yes, he's ✗ → Yes, he is ✓ และ What you are doing? ✗ → What are you doing? ✓\nคำตอบสั้นไม่ต้องมีกริยา-ing: Is Leo reading? Yes, he is ✓",
+          "examples": [
+            {
+              "en": "What are you doing?",
+              "th": "ตอนนี้คุณกำลังทำอะไรอยู่"
+            },
+            {
+              "en": "I am making a cake.",
+              "th": "ฉันกำลังทำเค้ก"
+            },
+            {
+              "en": "Is Leo learning English? Yes, he is.",
+              "th": "ลีโอกำลังเรียนภาษาอังกฤษอยู่ไหม ใช่ เขากำลังเรียน"
+            },
+            {
+              "en": "Leo is not using the computer.",
+              "th": "ลีโอไม่ได้กำลังใช้คอมพิวเตอร์"
+            }
+          ],
+          "structures": [
+            "continuous-question"
+          ],
+          "table": [
+            [
+              "แบบ",
+              "โครงสร้าง",
+              "ตัวอย่าง"
+            ],
+            [
+              "ถาม ใช่/ไม่ใช่",
+              "Are / Is + ประธาน + กริยา-ing",
+              "Is Leo reading?"
+            ],
+            [
+              "ถาม What",
+              "What + are / is + ประธาน + doing",
+              "What are you doing?"
+            ],
+            [
+              "ตอบสั้น",
+              "Yes / No, ประธาน + am / is / are",
+              "Yes, he is."
+            ],
+            [
+              "ปฏิเสธ",
+              "am / is / are + not + กริยา-ing",
+              "Leo is not reading."
+            ]
+          ]
+        },
+        {
+          "id": "d065-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังบทสนทนาแล้วตอบว่าใครสอนลีโอ"
+          },
+          "audioText": "Nan: Hello, Leo! What are you doing? Leo: I am learning English. Nan: Is Rose teaching you? Leo: Yes, she is.",
+          "question": {
+            "en": "Who is teaching Leo?",
+            "th": "ใครกำลังสอนลีโอ"
+          },
+          "choices": [
+            "Rose",
+            "Dan",
+            "Nan"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d065-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-make"
+            },
+            {
+              "vocabId": "v-use"
+            },
+            {
+              "vocabId": "v-try"
+            },
+            {
+              "vocabId": "v-find"
+            },
+            {
+              "vocabId": "v-learn"
+            }
+          ]
+        },
+        {
+          "id": "d065-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแดนกำลังทำอะไร"
+          },
+          "audioText": "Rose is in the kitchen. She is making a cake. Dan is trying the soup. Leo is using the computer. He is looking at a picture. He finds pictures on the computer every day. He is showing the picture to Rose.",
+          "question": {
+            "en": "What is Dan doing?",
+            "th": "แดนกำลังทำอะไร"
+          },
+          "choices": [
+            "Making a cake",
+            "Trying the soup",
+            "Using the computer"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d065-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "What is Rose doing? She is making a cake.",
+          "strict": true
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: ask and answer",
+        "th": "พูด: ถามและตอบ"
+      },
+      "exercises": [
+        {
+          "id": "d065-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "What are you doing?",
+            "I am making a cake.",
+            "Is Leo using the computer?",
+            "Yes, he is.",
+            "No, he is not. He is learning English.",
+            "Rose is teaching a class.",
+            "Nan is showing a picture.",
+            "Leo always finds his key."
+          ]
+        },
+        {
+          "id": "d065-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบว่าใช่หรือไม่ใช่ แล้วพูดต่ออีกหนึ่งประโยค"
+          },
+          "prompt": "Are you learning English?",
+          "sampleAnswer": "Yes, I am. I am learning English.",
+          "keywords": [
+            "am",
+            "learning"
+          ]
+        },
+        {
+          "id": "d065-speak-03",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "พูดประโยคเกี่ยวกับภาษาอังกฤษของคุณ"
+          },
+          "prompt": "Do you speak English? Say yes or no.",
+          "sampleAnswer": "Yes, I do. I speak English. I learn English in class.",
+          "keywords": [
+            "speak",
+            "English"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: in the kitchen",
+        "th": "อ่าน: ในครัว"
+      },
+      "exercises": [
+        {
+          "id": "d065-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Nan is at Rose's house. Rose is a teacher. She teaches English. Leo speaks English at school.\nNan: Hello, Rose! What are you doing?\nRose: I am making a cake.\nNan: Is Leo helping you?\nRose: No, he is not. He is learning English. He is using the computer. He often finds pictures on it.\nNan: Is Dan in the kitchen?\nRose: Yes, he is. He is trying the cake!",
+          "questions": [
+            {
+              "question": {
+                "en": "What is Rose making?",
+                "th": "โรสกำลังทำอะไร"
+              },
+              "choices": [
+                "Soup",
+                "A cake",
+                "A message"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Is Leo helping Rose?",
+                "th": "ลีโอกำลังช่วยโรสหรือเปล่า"
+              },
+              "choices": [
+                "Yes, he is",
+                "No, he is not"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What is Leo using?",
+                "th": "ลีโอกำลังใช้อะไร"
+              },
+              "choices": [
+                "The computer",
+                "The radio",
+                "The phone"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: questions and answers",
+        "th": "เขียน: คำถามและคำตอบ"
+      },
+      "exercises": [
+        {
+          "id": "d065-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "What",
+            "is",
+            "Rose",
+            "doing"
+          ],
+          "answer": "What is Rose doing"
+        },
+        {
+          "id": "d065-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (เรียนรู้ ใส่ -ing; คำตอบสั้น)"
+          },
+          "text": "Is Leo ___ English? Yes, he ___.",
+          "answer": [
+            "learning",
+            "is"
+          ]
+        },
+        {
+          "id": "d065-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แนนกำลังลองใส่กระโปรงสีแดง",
+          "accept": [
+            "Nan is trying on a red skirt",
+            "Nan is trying on the red skirt",
+            "Nan is trying a red skirt on",
+            "Nan's trying on a red skirt",
+            "Nan's trying a red skirt on",
+            "Nan's trying on the red skirt"
+          ]
+        },
+        {
+          "id": "d065-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลีโอกำลังให้โรสดูรูปภาพ",
+          "accept": [
+            "Leo is showing Rose a picture",
+            "Leo is showing a picture to Rose",
+            "Leo's showing Rose a picture",
+            "Leo's showing a picture to Rose"
+          ]
+        },
+        {
+          "id": "d065-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลีโอไม่ได้กำลังใช้คอมพิวเตอร์",
+          "accept": [
+            "Leo is not using the computer",
+            "Leo is not using a computer",
+            "Leo isn't using the computer",
+            "Leo isn't using a computer",
+            "Leo's not using the computer",
+            "Leo's not using a computer"
+          ]
+        },
+        {
+          "id": "d065-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-teach"
+            },
+            {
+              "vocabId": "v-speak"
+            },
+            {
+              "vocabId": "v-show"
+            },
+            {
+              "vocabId": "v-english"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-// Rule "grammar-note-length" (WARNING): the authoring template of docs/CONTENT_SCHEMA.md keeps a card short enough for a phone.
+// Rule "grammar-note-length" (a body over 400 characters is an ERROR since week 10; the table and mistake checks are warnings): the authoring template of docs/CONTENT_SCHEMA.md keeps a card short enough for a phone.
 //  - bodyTh longer than 400 characters (the template aims at ~350, 5-6 lines). Counted as the learner sees it: every code point
 //    except the Thai vowel signs and tone marks that sit on a consonant (ั ิ-ฺ ็-๎), so "กิน" is 2 and "ก่" is 1 and Thai text is not
 //    inflated. Spaces, Latin letters and symbols (✗ → ✓) count as 1 each.
@@ -44,7 +44,7 @@ export function checkGrammarNoteLength(ctx: RuleContext): Problem[] {
         if (ex.type !== "grammar_note") continue;
         const warn = (message: string) => problems.push({ rule: GRAMMAR_NOTE_LENGTH_RULE, file, id: ex.id, severity: "warning", message });
         const n = bodyLength(ex.bodyTh);
-        if (n > GRAMMAR_NOTE_MAX_BODY) warn(`bodyTh is ${n} characters long (limit ${GRAMMAR_NOTE_MAX_BODY}, the template aims at about ${GRAMMAR_NOTE_TARGET_BODY}, 5-6 lines on a phone). Cut the explanation to the rule, one or two examples and the common mistakes.`);
+        if (n > GRAMMAR_NOTE_MAX_BODY) problems.push({ rule: GRAMMAR_NOTE_LENGTH_RULE, file, id: ex.id, message: `bodyTh is ${n} characters long (limit ${GRAMMAR_NOTE_MAX_BODY}, the template aims at about ${GRAMMAR_NOTE_TARGET_BODY}, 5-6 lines on a phone). Cut the explanation to the rule, one or two examples and the common mistakes.` });
         if (ex.table && ex.table.length > GRAMMAR_NOTE_MAX_ROWS) warn(`the table has ${ex.table.length} rows including the header, at most ${GRAMMAR_NOTE_MAX_ROWS} fit the card. Remove rows or move them to the examples.`);
         const unpaired = unpairedWrongForms(ex.bodyTh);
         if (unpaired.length) {
