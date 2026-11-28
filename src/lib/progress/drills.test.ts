@@ -446,3 +446,33 @@ describe("practice attempts change nothing (U4)", () => {
     expect(sessionResults(practice, W, TZ)).toEqual([]);
   });
 });
+
+describe("checkpoint attempts and drills (D11)", () => {
+  const base = [
+    ...lesson(4, 10, daysAgo(2)),
+    ...session("r1", "retest", 8, 8, daysAgo(1)),
+    ...session("d1", "drill", 3, 5, daysAgo(1)),
+  ];
+  const retake = [
+    ...lesson(20, 20, daysAgo(0), { source: "checkpoint_retake", skill: "listening" }),
+    ...session("p1", "retest", 0, 8, daysAgo(0)).map((a) => ({ ...a, source: "checkpoint_retake" as const })),
+  ];
+  const all = [...base, ...retake];
+
+  it("checkpoint_retake attempts, all wrong, change no result", () => {
+    expect(weaknessStatus(all, W, NOW, TZ)).toEqual(weaknessStatus(base, W, NOW, TZ));
+    expect(weakPoints(all, NOW, TZ)).toEqual(weakPoints(base, NOW, TZ));
+    expect(recommendDrills(weakPoints(all, NOW, TZ), "2026-06-15")).toEqual(recommendDrills(weakPoints(base, NOW, TZ), "2026-06-15"));
+  });
+
+  it("checkpoint_retake alone opens no drill cycle and counts for no retest session", () => {
+    expect(weaknessStatus(retake, W, NOW, TZ).status).toBe("not_started");
+    expect(weakPoints(retake, NOW, TZ)).toEqual([]);
+    expect(sessionResults(retake, W, TZ)).toEqual([]);
+  });
+
+  it("checkpoint attempts are not drill activity", () => {
+    const cp = session("c1", "retest", 8, 8, daysAgo(0)).map((a) => ({ ...a, source: "checkpoint" as const }));
+    expect(sessionResults(cp, W, TZ)).toEqual([]);
+  });
+});

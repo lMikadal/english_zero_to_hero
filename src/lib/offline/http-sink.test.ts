@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { API, type AttemptInput, type CompleteLessonRequest, type CompleteLessonResponse, type CompletePracticeRequest, type CompletePracticeResponse } from "@/lib/attempts/contract";
+import { API, type AttemptInput, type CompleteCheckpointRequest, type CompleteCheckpointResponse, type CompleteLessonRequest, type CompleteLessonResponse, type CompletePracticeRequest, type CompletePracticeResponse } from "@/lib/attempts/contract";
 import { API_SRS, type CompleteReviewRequest, type CompleteReviewResponse, type ReviewInput } from "@/lib/srs/contract";
 import { createHttpSink, getSyncSink } from "./http-sink";
 
@@ -18,12 +18,20 @@ function attempt(n: number): AttemptInput {
 const completion: CompleteLessonRequest = { day: 1, sessionId: uuid(9999), completedAt: "2026-11-25T10:05:00.000Z" };
 const completeResponse: CompleteLessonResponse = {
   progress: { day: 1, status: "done", score: 1, completedAt: completion.completedAt },
-  streak: { current: 1, longest: 1 }, currentDay: 2,
+  streak: { current: 1, longest: 1 }, currentDay: 2, pendingCheckpoint: null,
 };
 const practiceReq: CompletePracticeRequest = { kind: "replay", day: 1, skill: null, sessionId: uuid(7777), completedAt: "2026-11-26T10:05:00.000Z" };
 const practiceResponse: CompletePracticeResponse = {
   session: { sessionId: practiceReq.sessionId, day: 1, skill: null, score: 0.5, graded: 4 },
   lessonScore: 1, streak: { current: 1, longest: 1 }, countedForStreak: true,
+};
+const checkpointReq: CompleteCheckpointRequest = { afterDay: 30, sessionId: uuid(5555), completedAt: "2026-11-28T10:30:00.000Z" };
+const checkpointResponse: CompleteCheckpointResponse = {
+  result: {
+    sessionId: checkpointReq.sessionId, afterDay: 30, score: 0.75, passed: true, completedAt: checkpointReq.completedAt, sitting: 1, best: 0.75,
+    skills: [{ skill: "listening", weight: 100, score: 0.75, answered: 4, total: 4, selfOk: null }],
+  },
+  streak: { current: 1, longest: 1 }, nextDay: 31,
 };
 const created = (n: number) => ({ id: uuid(n), status: "created", correct: true, score: 1 });
 
@@ -833,5 +841,97 @@ describe("createHttpSink: onReviewResult", () => {
     expect(a.got).toHaveLength(1);
     expect(b.got).toHaveLength(2);
     expect(t.sink.pendingCount()).toBe(0);
+  });
+});
+
+describe("createHttpSink: completeCheckpoint", () => {
+  const cpAttempt = (n: number): AttemptInput => ({ ...attempt(n), exerciseId: "c030-listen-01", source: "checkpoint", sessionId: checkpointReq.sessionId });
+
+  it("flushes earlier attempts first (FIFO), then posts to API.completeCheckpoint and resolves done", async () => {
+    const t = setup([okFor(1, 2), { status: 200, body: checkpointResponse }]);
+    t.sink.sendAttempt(cpAttempt(1));
+    t.sink.sendAttempt(cpAttempt(2));
+    expect(await t.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "done", response: checkpointResponse });
+    expect(t.calls.map((c) => c.url)).toEqual([API.attempts, API.completeCheckpoint]);
+    expect(t.calls[1].body).toEqual(checkpointReq);
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("does not send attempts queued after it before it", async () => {
+    const t = setup([new TypeError("offline"), okFor(1), { status: 200, body: checkpointResponse }, okFor(3)]);
+    t.sink.sendAttempt(cpAttempt(1));
+    expect(await t.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "queued" });
+    t.sink.sendAttempt(cpAttempt(3));
+    await t.runTimer();
+    expect(t.calls.map((c) => c.url)).toEqual([API.attempts, API.attempts, API.completeCheckpoint, API.attempts]);
+  });
+
+  it("409 (not_completable) settles rejected 409, 400 settles rejected 400; both leave the queue", async () => {
+    const a = setup([{ status: 409, body: { error: "not_completable" } }]);
+    expect(await a.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 409 });
+    expect(a.sink.pendingCount()).toBe(0);
+    const b = setup([{ status: 400 }]);
+    expect(await b.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "rejected", code: 400 });
+  });
+
+  it("5xx resolves queued and keeps it pending until a retry succeeds", async () => {
+    const t = setup([{ status: 500 }, { status: 200, body: checkpointResponse }]);
+    expect(await t.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "queued" });
+    expect(t.sink.pendingCount()).toBe(1);
+    await t.runTimer();
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("a 200 whose body is another completion (lesson or practice) is retried, not accepted", async () => {
+    const t = setup([{ status: 200, body: completeResponse }, { status: 200, body: practiceResponse }, { status: 200, body: checkpointResponse }]);
+    expect(await t.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "queued" });
+    await t.runTimer();
+    expect(t.sink.pendingCount()).toBe(1);
+    await t.runTimer();
+    expect(t.sink.pendingCount()).toBe(0);
+  });
+
+  it("a checkpoint body is not accepted as a lesson or practice completion, nor one whose skills is not an array", async () => {
+    const a = setup([{ status: 200, body: checkpointResponse }]);
+    expect(await a.sink.completeLesson(completion)).toEqual({ status: "queued" });
+    const b = setup([{ status: 200, body: checkpointResponse }]);
+    expect(await b.sink.completePractice(practiceReq)).toEqual({ status: "queued" });
+    const c = setup([{ status: 200, body: { ...checkpointResponse, result: { ...checkpointResponse.result, skills: "x" } } }]);
+    expect(await c.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "queued" });
+    const d = setup([{ status: 200, body: { result: checkpointResponse.result } }]);
+    expect(await d.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "queued" });
+  });
+
+  it("a second completeCheckpoint for the same afterDay and session returns the same promise and sends once (idempotent by sessionId)", async () => {
+    const t = setup([{ status: 200, body: checkpointResponse }]);
+    const p1 = t.sink.completeCheckpoint(checkpointReq);
+    const p2 = t.sink.completeCheckpoint({ ...checkpointReq });
+    expect(p2).toBe(p1);
+    await p1;
+    expect(t.calls.filter((c) => c.url === API.completeCheckpoint)).toHaveLength(1);
+  });
+
+  it("the same sessionId as a lesson or practice completion is a different entry", async () => {
+    const t = setup([{ status: 200, body: completeResponse }, { status: 200, body: checkpointResponse }]);
+    const p1 = t.sink.completeLesson({ ...completion, sessionId: checkpointReq.sessionId });
+    const p2 = t.sink.completeCheckpoint(checkpointReq);
+    expect(p2).not.toBe(p1);
+    await Promise.all([p1, p2]);
+    expect(t.calls.map((c) => c.url)).toEqual([API.completeLesson, API.completeCheckpoint]);
+  });
+
+  it("the same session for another checkpoint day is a different entry", async () => {
+    const t = setup([{ status: 200, body: checkpointResponse }, { status: 200, body: checkpointResponse }]);
+    const p1 = t.sink.completeCheckpoint(checkpointReq);
+    const p2 = t.sink.completeCheckpoint({ ...checkpointReq, afterDay: 60 });
+    expect(p2).not.toBe(p1);
+    await Promise.all([p1, p2]);
+  });
+
+  it("401 pauses without dropping it", async () => {
+    const t = setup([{ status: 401 }]);
+    expect(await t.sink.completeCheckpoint(checkpointReq)).toEqual({ status: "queued" });
+    expect(t.sink.getState().status).toBe("paused");
+    expect(t.sink.pendingCount()).toBe(1);
   });
 });

@@ -23,6 +23,7 @@ function makeSink() {
     sendAttempt: vi.fn<(a: AttemptInput) => void>(),
     completeLesson: vi.fn(async () => ({ status: "done" as const, response })),
     completePractice: vi.fn(async () => ({ status: "queued" as const })),
+    completeCheckpoint: async () => ({ status: "queued" as const }),
     sendReview: () => {},
     completeReview: async () => ({ status: "queued" as const }),
     pendingCount: () => 0,

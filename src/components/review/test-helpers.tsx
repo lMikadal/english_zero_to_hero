@@ -55,6 +55,7 @@ export function fakeSink(result: CompleteResult<CompleteReviewResponse> = { stat
     sendAttempt: vi.fn(),
     completeLesson: vi.fn(async () => ({ status: "queued" as const })),
     completePractice: vi.fn(async () => ({ status: "queued" as const })),
+    completeCheckpoint: async () => ({ status: "queued" as const }),
     sendReview: vi.fn<SyncSink["sendReview"]>(),
     completeReview: vi.fn<SyncSink["completeReview"]>(async () => result),
     pendingCount: () => pending,

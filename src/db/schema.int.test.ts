@@ -5,6 +5,7 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import {
   activityDays,
   attempts,
+  checkpointResults,
   profiles,
   progress,
   pushSubscriptions,
@@ -183,7 +184,7 @@ describe("attempts", () => {
     for (const skill of ["pronunciation", "listening", "speaking", "reading", "writing", "vocabulary"] as const) {
       await db.insert(attempts).values(attemptRow(id, { skill }));
     }
-    for (const source of ["lesson", "drill", "retest", "checkpoint", "practice"] as const) {
+    for (const source of ["lesson", "drill", "retest", "checkpoint", "practice", "checkpoint_retake"] as const) {
       await db.insert(attempts).values(attemptRow(id, { source }));
     }
   });
@@ -205,6 +206,78 @@ describe("attempts", () => {
     const [row] = await db.insert(attempts).values(attemptRow(id, { source: "practice" })).returning();
     expect(row.source).toBe("practice");
     expect(await pgErrorCode(db.execute(dsql`INSERT INTO attempts (user_id, exercise_id, day, skill, exercise_type, correct, source) VALUES (${id}, 'e', 1, 'reading', 't', true, 'foo')`))).toBe(CHECK);
+  });
+});
+
+describe("attempts: checkpoint_retake", () => {
+  it("accepts source 'checkpoint_retake' (migration 0005) and still rejects unknown sources", async () => {
+    const id = await newUser();
+    const [row] = await db.insert(attempts).values(attemptRow(id, { exerciseId: "c030-pron-01", day: 30, source: "checkpoint_retake" })).returning();
+    expect(row.source).toBe("checkpoint_retake");
+    expect(await pgErrorCode(db.execute(dsql`INSERT INTO attempts (user_id, exercise_id, day, skill, exercise_type, correct, source) VALUES (${id}, 'e', 1, 'reading', 't', true, 'checkpoint_retakes')`))).toBe(CHECK);
+  });
+});
+
+describe("checkpoint_results", () => {
+  const skills = [{ skill: "listening", weight: 100, score: 0.5, answered: 2, total: 4, selfOk: null }] as const;
+  const resultRow = (userId: string, over: Partial<typeof checkpointResults.$inferInsert> = {}): typeof checkpointResults.$inferInsert => ({
+    id: randomUUID(), userId, afterDay: 30, score: 0.5, skills: [...skills], startedAt: new Date("2026-11-28T10:00:00Z"), completedAt: new Date("2026-11-28T10:30:00Z"), ...over,
+  });
+
+  it("stores a result with its skills as jsonb and a created_at default", async () => {
+    const id = await newUser();
+    const row = resultRow(id);
+    await db.insert(checkpointResults).values(row);
+    const [stored] = await db.select().from(checkpointResults).where(eq(checkpointResults.id, row.id!));
+    expect(stored).toMatchObject({ userId: id, afterDay: 30, score: 0.5, skills: [...skills] });
+    expect(stored.completedAt).toEqual(new Date("2026-11-28T10:30:00Z"));
+    expect(stored.createdAt).toBeInstanceOf(Date);
+  });
+
+  it("the id is the sitting's session id: a second insert of it is a conflict (idempotent)", async () => {
+    const id = await newUser();
+    const row = resultRow(id);
+    await db.insert(checkpointResults).values(row);
+    expect(await pgErrorCode(db.insert(checkpointResults).values(row))).toBe(UNIQUE);
+    expect(await db.insert(checkpointResults).values(row).onConflictDoNothing({ target: checkpointResults.id }).returning()).toHaveLength(0);
+  });
+
+  it("allows several sittings of one checkpoint for one user", async () => {
+    const id = await newUser();
+    await db.insert(checkpointResults).values([resultRow(id), resultRow(id), resultRow(id, { afterDay: 60 })]);
+    expect(await db.select().from(checkpointResults)).toHaveLength(3);
+  });
+
+  it("rejects an after_day that is not 30, 60 ... 360 (23514)", async () => {
+    const id = await newUser();
+    for (const afterDay of [31, 0, 29, 45, 390, 361]) expect(await pgErrorCode(db.insert(checkpointResults).values(resultRow(id, { afterDay }))), String(afterDay)).toBe(CHECK);
+    for (const afterDay of [30, 60, 360]) await db.insert(checkpointResults).values(resultRow(id, { afterDay }));
+  });
+
+  it("rejects a score outside 0..1 (23514) but accepts the bounds", async () => {
+    const id = await newUser();
+    for (const score of [1.2, -0.1]) expect(await pgErrorCode(db.insert(checkpointResults).values(resultRow(id, { score })))).toBe(CHECK);
+    for (const score of [0, 1]) await db.insert(checkpointResults).values(resultRow(id, { score }));
+  });
+
+  it("rejects completed_at before started_at (23514) but accepts equal times", async () => {
+    const id = await newUser();
+    expect(await pgErrorCode(db.insert(checkpointResults).values(resultRow(id, { completedAt: new Date("2026-11-28T09:59:59Z") })))).toBe(CHECK);
+    await db.insert(checkpointResults).values(resultRow(id, { completedAt: new Date("2026-11-28T10:00:00Z") }));
+  });
+
+  it("requires every column and a real user, and goes away with the user", async () => {
+    const id = await newUser();
+    expect(await pgErrorCode(db.insert(checkpointResults).values(resultRow("ghost")))).toBe(FK);
+    expect(await pgErrorCode(db.execute(dsql`INSERT INTO checkpoint_results (id, user_id, after_day, score, started_at, completed_at) VALUES (${randomUUID()}, ${id}, 30, 0.5, now(), now())`))).toBe(NOT_NULL);
+    await db.insert(checkpointResults).values(resultRow(id));
+    await db.delete(user).where(eq(user.id, id));
+    expect(await db.select().from(checkpointResults)).toHaveLength(0);
+  });
+
+  it("has the (user_id, after_day, completed_at) index", async () => {
+    const defs = await indexDefs("checkpoint_results");
+    expect(defs.some((d) => /\(user_id, after_day, completed_at\)/.test(d))).toBe(true);
   });
 });
 
@@ -432,6 +505,8 @@ describe("activity_days", () => {
     expect(rows.map((r) => [r.localDate, r.source])).toEqual([["2026-11-25", "lesson"], ["2026-11-26", "practice"]]);
     await db.insert(activityDays).values({ userId: id, localDate: "2026-11-28", source: "review" });
     expect((await db.select().from(activityDays).where(eq(activityDays.localDate, "2026-11-28")))[0].source).toBe("review");
+    await db.insert(activityDays).values({ userId: id, localDate: "2026-11-29", source: "checkpoint" });
+    expect((await db.select().from(activityDays).where(eq(activityDays.localDate, "2026-11-29")))[0].source).toBe("checkpoint");
     expect(await pgErrorCode(db.execute(dsql`INSERT INTO activity_days (user_id, local_date, source) VALUES (${id}, '2026-11-27', 'foo')`))).toBe(CHECK);
     expect(await pgErrorCode(db.execute(dsql`INSERT INTO activity_days (user_id, local_date, source) VALUES (${id}, '2026-11-27', 'srs')`))).toBe(CHECK);
     expect(await pgErrorCode(db.insert(activityDays).values({ userId: "nobody", localDate: "2026-11-25" }))).toBe(FK);

@@ -8,12 +8,15 @@ import {
   attemptInputSchema,
   attemptBatchEnvelopeSchema,
   clampDurationMs,
+  completeCheckpointRequestSchema,
   completeLessonRequestSchema,
   completePracticeRequestSchema,
   newId,
   parseAttemptBatch,
   type AttemptInput,
   type AttemptResult,
+  type CheckpointSkillResult,
+  type CompleteCheckpointResponse,
   type CompleteLessonResponse,
   type CompletePracticeResponse,
   type PostAttemptsResponse,
@@ -34,7 +37,7 @@ const valid = {
 describe("types stay in sync with the DB schema", () => {
   it("ATTEMPT_SOURCES equals AttemptSource", () => {
     expectTypeOf<(typeof ATTEMPT_SOURCES)[number]>().toEqualTypeOf<AttemptSource>();
-    expect([...ATTEMPT_SOURCES]).toEqual(["lesson", "drill", "retest", "checkpoint", "practice"]);
+    expect([...ATTEMPT_SOURCES]).toEqual(["lesson", "drill", "retest", "checkpoint", "practice", "checkpoint_retake"]);
   });
   it("ReplaySkill equals the skill of a lesson section", () => {
     expectTypeOf<ReplaySkill>().toEqualTypeOf<Section["skill"]>();
@@ -47,7 +50,12 @@ describe("types stay in sync with the DB schema", () => {
 
 describe("API", () => {
   it("names the three endpoints", () => {
-    expect(API).toEqual({ attempts: "/api/attempts", completeLesson: "/api/lessons/complete", completePractice: "/api/practice/complete" });
+    expect(API).toEqual({
+      attempts: "/api/attempts",
+      completeLesson: "/api/lessons/complete",
+      completePractice: "/api/practice/complete",
+      completeCheckpoint: "/api/checkpoints/complete",
+    });
   });
 });
 
@@ -223,8 +231,14 @@ describe("response types", () => {
       progress: { day: 1, status: "done", score: null, completedAt: "2026-11-25T10:00:00.000Z" },
       streak: { current: 1, longest: 1 },
       currentDay: 2,
+      pendingCheckpoint: null,
     };
     expect(c.currentDay).toBe(2);
+    const pending: CompleteLessonResponse = { ...c, pendingCheckpoint: 30 };
+    expect(pending.pendingCheckpoint).toBe(30);
+    // @ts-expect-error the field is required: a response always says whether a checkpoint blocks the next day
+    const missing: CompleteLessonResponse = { progress: c.progress, streak: c.streak, currentDay: 2 };
+    void missing;
   });
 });
 
@@ -315,6 +329,38 @@ describe("completePracticeRequestSchema", () => {
       lessonScore: number | null;
       streak: { current: number; longest: number };
       countedForStreak: boolean;
+    }>();
+  });
+});
+
+describe("completeCheckpointRequestSchema", () => {
+  const ok = { afterDay: 30, sessionId: uuid, completedAt: "2026-11-28T10:00:00.000Z" };
+  it("accepts every checkpoint day, 30 to 360", () => {
+    for (let afterDay = 30; afterDay <= 360; afterDay += 30) expect(completeCheckpointRequestSchema.safeParse({ ...ok, afterDay }).success).toBe(true);
+  });
+  it("rejects a day that is not a checkpoint day", () => {
+    for (const afterDay of [0, 29, 31, 45, 390, 365, 30.5, "30", null]) expect(completeCheckpointRequestSchema.safeParse({ ...ok, afterDay }).success).toBe(false);
+  });
+  it("rejects extra fields, a bad sessionId and a bad or out of range completedAt", () => {
+    expect(completeCheckpointRequestSchema.safeParse({ ...ok, extra: 1 }).success).toBe(false);
+    expect(completeCheckpointRequestSchema.safeParse({ ...ok, sessionId: "nope" }).success).toBe(false);
+    expect(completeCheckpointRequestSchema.safeParse({ ...ok, completedAt: "yesterday" }).success).toBe(false);
+    expect(completeCheckpointRequestSchema.safeParse({ ...ok, completedAt: "1800-01-01T00:00:00Z" }).success).toBe(false);
+    expect(completeCheckpointRequestSchema.safeParse({ afterDay: 30, sessionId: uuid }).success).toBe(false);
+  });
+  it("the response types carry the frozen result, the streak and the next day", () => {
+    expectTypeOf<CheckpointSkillResult>().toEqualTypeOf<{
+      skill: ReplaySkill;
+      weight: number;
+      score: number | null;
+      answered: number;
+      total: number;
+      selfOk: number | null;
+    }>();
+    expectTypeOf<CompleteCheckpointResponse>().toEqualTypeOf<{
+      result: { sessionId: string; afterDay: number; score: number; passed: boolean; skills: CheckpointSkillResult[]; completedAt: string; sitting: number; best: number };
+      streak: { current: number; longest: number };
+      nextDay: number | null;
     }>();
   });
 });

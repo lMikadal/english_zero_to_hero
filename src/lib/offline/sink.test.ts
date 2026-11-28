@@ -1,5 +1,5 @@
 import { expect, expectTypeOf, it } from "vitest";
-import type { AttemptInput, CompleteLessonRequest, CompleteLessonResponse, CompletePracticeRequest, CompletePracticeResponse } from "@/lib/attempts/contract";
+import type { AttemptInput, CompleteCheckpointRequest, CompleteCheckpointResponse, CompleteLessonRequest, CompleteLessonResponse, CompletePracticeRequest, CompletePracticeResponse } from "@/lib/attempts/contract";
 import type { CompleteReviewRequest, CompleteReviewResponse, ReviewInput } from "@/lib/srs/contract";
 import type { CompleteResult, SyncSink } from "./sink";
 
@@ -10,6 +10,9 @@ it("SyncSink has the documented shape and can be faked", async () => {
   >();
   expectTypeOf<SyncSink["completePractice"]>().toEqualTypeOf<
     (c: CompletePracticeRequest) => Promise<CompleteResult<CompletePracticeResponse>>
+  >();
+  expectTypeOf<SyncSink["completeCheckpoint"]>().toEqualTypeOf<
+    (c: CompleteCheckpointRequest) => Promise<CompleteResult<CompleteCheckpointResponse>>
   >();
   expectTypeOf<SyncSink["sendReview"]>().toEqualTypeOf<(r: ReviewInput) => void>();
   expectTypeOf<SyncSink["completeReview"]>().toEqualTypeOf<
@@ -23,6 +26,7 @@ it("SyncSink has the documented shape and can be faked", async () => {
     sendAttempt: (a) => void sent.push(a),
     completeLesson: async () => ({ status: "queued" }),
     completePractice: async () => ({ status: "queued" }),
+    completeCheckpoint: async () => ({ status: "queued" }),
     sendReview: () => {},
     completeReview: async () => ({ status: "queued" }),
     pendingCount: () => sent.length,
