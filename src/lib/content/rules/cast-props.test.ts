@@ -34,6 +34,12 @@ describe("propClaims", () => {
   it("uses the label of a dialogue line as the speaker of that line", () => {
     expect(claims("Nan: My bag is pink.\nRose: My bag is grey.")).toEqual([["Nan", "bag", "pink"], ["Rose", "bag", "grey"]]);
   });
+  it("a HAS list stops at the next owner: 'Nan has a red bag and Rose has a blue bag'", () => {
+    expect(claims("Nan has a red bag and Rose has a blue bag.")).toEqual([["Nan", "bag", "red"], ["Rose", "bag", "blue"]]);
+    expect(claims("Nan has a red bag, and Rose has a blue pen.")).toEqual([["Nan", "bag", "red"], ["Rose", "pen", "blue"]]);
+    expect(claims("Nan has a red bag and Rose a blue bag.")).toEqual([["Nan", "bag", "red"]]);
+    expect(claims("Hi! I am Nan. I have a red bag and Rose has a blue bag.")).toEqual([["Nan", "bag", "red"], ["Rose", "bag", "blue"]]);
+  });
   it("reads gray as grey and ignores things that are not a colour claim", () => {
     expect(claims("Rose's bag is gray.")).toEqual([["Rose", "bag", "grey"]]);
     expect(claims("Nan's bag is new.")).toEqual([]);
@@ -54,6 +60,15 @@ describe("cast-props: one owner, one noun, one colour within a week", () => {
     expect(check(lessons([23, "Nan's umbrella is orange."], [24, "Rose's umbrella is green."]))).toEqual([]);
     expect(check(lessons([23, "Nan's umbrella is orange."], [24, "Nan's bag is green."]))).toEqual([]);
     expect(check(lessons([28, "Nan's umbrella is orange."], [29, "Nan's umbrella is green."]))).toEqual([]);
+  });
+  it("two of the same noun with different colours in ONE sentence are two things, not a clash", () => {
+    expect(check(lessons([23, "Nan has a brown dog and a white dog."]))).toEqual([]);
+    expect(check(lessons([23, "I am Nan. I have a red bag and a blue bag."], [24, "Nan has a red bag."]))).toEqual([]);
+    expect(check(lessons([23, "Nan has two bags: a red bag and a blue bag."]))).toEqual([]);
+  });
+  it("but the same pair of things in two different places still clashes", () => {
+    expect(check(lessons([23, "Nan has a red bag."], [24, "Nan has a blue bag."]))).toHaveLength(1);
+    expect(check(lessons([23, "Nan has a red bag and Rose has a blue bag."], [24, "Nan has a blue bag."]))).toHaveLength(1);
   });
   it("one warning per owner and noun", () => {
     expect(check(lessons([23, "Nan's bag is red."], [24, "Nan's bag is blue."], [25, "Nan's bag is green."]))).toHaveLength(1);
