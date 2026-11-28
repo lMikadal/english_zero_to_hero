@@ -65,8 +65,6 @@ export type GrammarGate = {
   severity?: "warning";
   /** Only a form right after am / is / are (also after "not"): "is raining", not "I like swimming" or "the morning". */
   afterBe?: true;
-  /** An extra accepted typed answer may use it before its day (a learner who knows it is not marked wrong). */
-  lenientInAccept?: true;
 };
 
 const BE_FORMS: ReadonlySet<string> = new Set(["am", "is", "are"]);
@@ -91,7 +89,7 @@ export const GRAMMAR_NOT_BEFORE: Readonly<Record<string, GrammarGate>> = {
     fix: `Rewrite the sentence without clock times, or explain "o'clock" in the \`glossary\` of a read_passage.`,
   },
   ...Object.fromEntries(["raining", "snowing"].map((w) => [w, {
-    structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, lenientInAccept: true, what: `the present continuous "be ${w}"`, fix: CONTINUOUS_FIX,
+    structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, what: `the present continuous "be ${w}"`, fix: CONTINUOUS_FIX,
   } satisfies GrammarGate])),
   ...Object.fromEntries(["always", "usually", "often", "sometimes", "never"].map((w) => [w, {
     structure: "frequency-adverb", day: FREQUENCY_ADVERB_DAY, what: `the frequency adverb "${w}" and its word order (before the main verb, after "be")`,
@@ -131,7 +129,7 @@ function gates(ctx: RuleContext): Map<string, GrammarGate & { base?: string }> {
     if (item.pos !== "verb" || base === "be") continue;
     for (const form of surfaceForms(item)) {
       if (!form.endsWith("ing") || form === base || bankWords.has(form) || ALWAYS_ALLOWED.has(form) || out.has(form)) continue;
-      out.set(form, { structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, lenientInAccept: true, base, what: `the present continuous "be ${form}"`, fix: CONTINUOUS_FIX });
+      out.set(form, { structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, base, what: `the present continuous "be ${form}"`, fix: CONTINUOUS_FIX });
     }
   }
   return out;
@@ -149,6 +147,16 @@ export function checkedEnglish(ex: Exercise): LearnerField[] {
     case "arrange_words": return [...learnerEnglish(ex), ...list("accept", ex.accept ?? [])];
     default: return learnerEnglish(ex);
   }
+}
+
+/**
+ * An extra accepted answer: never shown to the learner as a model, it only stops a learner who knows more from being marked
+ * wrong, so it is exempt from every grammar gate (and from "grammar-note-required"). The model answer is the exercise's
+ * `answer` (arrange_words), `audioText` (dictation) and `accept[0]` (translate_th_en); everything else in an `accept` list is extra.
+ */
+export function isExtraAccept(ex: Exercise, field: string): boolean {
+  if (!field.startsWith("accept[")) return false;
+  return !(ex.type === "translate_th_en" && field === "accept[0]");
 }
 
 type Gates = Map<string, GrammarGate & { base?: string }>;
@@ -201,8 +209,8 @@ export function checkGrammarNotYet(ctx: RuleContext): Problem[] {
         const noteStructures = new Set(ex.type === "grammar_note" ? ex.structures : []); // a note may show the form it explains
         for (const f of checkedEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
-          const lenient = f.field.startsWith("accept[");
-          const forms = early(f.text, day, gate, glossed, noteStructures).filter((x) => !(lenient && gate.get(x)!.lenientInAccept));
+          if (isExtraAccept(ex, f.field)) continue;
+          const forms = early(f.text, day, gate, glossed, noteStructures);
           if (forms.length) report(file, ex.id, day, `${f.field} "${f.text}"`, forms);
         }
       }
