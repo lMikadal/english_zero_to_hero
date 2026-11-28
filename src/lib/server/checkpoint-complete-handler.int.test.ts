@@ -22,6 +22,7 @@ const ok = (r: Awaited<ReturnType<typeof complete>>) => {
   return r.body as CompleteCheckpointResponse;
 };
 const content = checkpointContent();
+const TOMORROW = new Date(NOW.getTime() + 86_400_000); // D4: a second sitting of a checkpoint is completed from the next local day
 
 /** Sends the answers of one sitting: `answers` maps an exercise id to its answer; item i is created `startSecondsAgo - i` seconds ago. */
 async function sit(session: string, answers: Record<string, AttemptAnswer>, startSecondsAgo = 600) {
@@ -216,7 +217,7 @@ describe("item 35 and the sitting count", () => {
     expect(ok(await complete(req())).nextDay).toBe(31);
     await sit(S2, only(["c030-listen-01"]));
     const noLesson = { ...content, getLesson: () => null };
-    expect(ok(await complete(req({ sessionId: S2 }), noLesson)).nextDay).toBeNull();
+    expect(ok(await complete(req({ sessionId: S2 }), noLesson, TOMORROW)).nextDay).toBeNull();
   });
 
   it("a second sitting is sitting 2 and best is the best of the two; a worse second sitting keeps best", async () => {
@@ -224,7 +225,7 @@ describe("item 35 and the sitting count", () => {
     const first = ok(await complete(req({ completedAt: sec(3600) })));
     expect(first.result).toMatchObject({ sitting: 1 });
     await sit(S2, only(["c030-pron-01"], CP_WRONG), 1200);
-    const second = ok(await complete(req({ sessionId: S2 })));
+    const second = ok(await complete(req({ sessionId: S2 }), content, TOMORROW));
     expect(second.result.sitting).toBe(2);
     expect(second.result.score).toBe(0);
     expect(second.result.passed).toBe(false);

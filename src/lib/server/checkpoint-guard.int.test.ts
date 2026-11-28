@@ -39,16 +39,16 @@ describe("checkpoint requests leave progress, profiles and the review cards byte
     expect(before.progress.length).toBe(1);
     expect(before.srsCards.length).toBeGreaterThan(0);
 
-    const sit = async (session: string, minutesAgo: number, answers: Record<string, unknown>) => {
+    const sit = async (session: string, minutesAgo: number, answers: Record<string, unknown>, at = NOW) => {
       const items = ids.map((id, i) => cpItem(id, (answers[id] ?? CP_RIGHT[id]) as never, { sessionId: session, createdAt: new Date(NOW.getTime() - (minutesAgo * 60 - i) * 1000).toISOString() }));
       const r = await handlePostAttempts({ attempts: items }, { db, userId, now: NOW, content });
       expect(r.status).toBe(200);
-      const done = await handleCompleteCheckpoint({ afterDay: 30, sessionId: session, completedAt: NOW.toISOString() }, { db, userId, now: NOW, content });
+      const done = await handleCompleteCheckpoint({ afterDay: 30, sessionId: session, completedAt: at.toISOString() }, { db, userId, now: at, content });
       expect(done.status).toBe(200);
     };
     await sit(randomUUID(), 50, CP_WRONG);
     expect(await snapshot()).toEqual(before);
-    await sit(randomUUID(), 20, {}); // the second sitting: every answer is a retake
+    await sit(randomUUID(), 20, {}, new Date(NOW.getTime() + 86_400_000)); // the second sitting (next day, D4): every answer is a retake
     expect(await snapshot()).toEqual(before);
 
     // repeated and rejected requests
