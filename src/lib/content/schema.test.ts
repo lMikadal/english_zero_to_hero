@@ -30,6 +30,10 @@ const valid: Record<string, unknown> = {
   translate_th_en: { id: "d001-write-03", type: "translate_th_en", instruction, th: "ยินดีที่ได้รู้จัก", accept: ["Nice to meet you"] },
   free_write: { id: "d001-write-04", type: "free_write", instruction, prompt: "Introduce yourself.", minWords: 10, rubric: ["uses 'My name is'"] },
   vocab_match: { id: "d001-vocab-01", type: "vocab_match", instruction, pairs: [{ vocabId: "v-hello" }, { vocabId: "v-name" }] },
+  grammar_note: {
+    id: "d036-read-01", type: "grammar_note", instruction, titleTh: "กริยาเติม s", bodyTh: "ประธานเอกพจน์บุรุษที่สามใช้กริยาเติม s",
+    table: [["I / you / we / they", "like"], ["he / she / it", "likes"]], examples: [{ en: "She likes tea.", th: "เธอชอบชา" }], structures: ["third-person-s"],
+  },
   spell_word: { id: "d001-vocab-02", type: "spell_word", instruction, vocabId: "v-hello" },
   use_in_sentence: { id: "d001-vocab-03", type: "use_in_sentence", instruction, vocabId: "v-name", prompt: "Use the word in a sentence." },
 };
@@ -50,6 +54,23 @@ describe("exerciseSchema", () => {
 
   it.each(Object.entries(valid))("accepts an optional phonemes list on %s", (_type, ex) => {
     expect(exerciseSchema.safeParse({ ...(ex as object), phonemes: ["ae", "eh"] }).success).toBe(true);
+  });
+
+  it("grammar_note: needs 1-6 examples, at least one structure, a Thai title and body, and a table of non-empty rows", () => {
+    const ex = valid.grammar_note as Record<string, unknown>;
+    const bad = (patch: Record<string, unknown>) => exerciseSchema.safeParse({ ...ex, ...patch }).success;
+    expect(bad({})).toBe(true);
+    expect(bad({ table: undefined })).toBe(true);
+    expect(bad({ examples: [] })).toBe(false);
+    expect(bad({ examples: Array.from({ length: 7 }, () => ({ en: "I like tea.", th: "ฉันชอบชา" })) })).toBe(false);
+    expect(bad({ examples: Array.from({ length: 6 }, () => ({ en: "I like tea.", th: "ฉันชอบชา" })) })).toBe(true);
+    expect(bad({ examples: [{ en: "I like tea.", th: "like tea" }] })).toBe(false);
+    expect(bad({ structures: [] })).toBe(false);
+    expect(bad({ titleTh: "title" })).toBe(false);
+    expect(bad({ bodyTh: "body" })).toBe(false);
+    expect(bad({ table: [[]] })).toBe(false);
+    expect(bad({ table: [] })).toBe(false);
+    expect(bad({ table: [[" like"]] })).toBe(false);
   });
 
   it("rejects an empty or blank phonemes list", () => {
