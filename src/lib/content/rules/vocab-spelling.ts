@@ -1,8 +1,9 @@
 // Rule "vocab-spelling": a single-word headword that is in the UK/US spelling table (src/lib/answers/spelling.ts) must
 // carry the OTHER spelling in `forms`: `usSpelling` on a UK headword (colour), `ukSpelling` on a US headword (mom). Grading
 // folds the two spellings, and taught-words / the lessons treat the listed form as the same word, so the entry must say it.
-// ERROR: the table decides, there is no judgement. Multi-word headwords are not checked.
-import { isUkSpelling, otherSpelling } from "@/lib/answers/spelling";
+// Skipped: a US-side headword that is also a correct UK word (practice, tire, license, program, meter: isSenseDependent), because
+// the entry may mean the other sense. ERROR otherwise: the table decides, there is no judgement. Multi-word headwords are not checked.
+import { isSenseDependent, isUkSpelling, otherSpelling } from "@/lib/answers/spelling";
 import type { Problem } from "../loader";
 import type { RuleContext } from "./context";
 
@@ -13,7 +14,7 @@ export function checkVocabSpelling(ctx: RuleContext): Problem[] {
   for (const [id, { item, file }] of ctx.bank) {
     const word = item.word.toLowerCase();
     const other = /\s/.test(word) ? undefined : otherSpelling(word);
-    if (other === undefined) continue;
+    if (other === undefined || isSenseDependent(word)) continue; // the US spelling is also a UK word of another sense: no demand either way
     const key = isUkSpelling(word) ? "usSpelling" : "ukSpelling";
     const wrongKey = key === "usSpelling" ? "ukSpelling" : "usSpelling";
     const have = item.forms?.[key];

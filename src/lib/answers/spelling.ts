@@ -16,6 +16,8 @@ const ise = (uk: string, us: string): Pair[] => {
   const k = uk.slice(0, -1), u = us.slice(0, -1);
   return [[uk, us], [`${uk}s`, `${us}s`], [`${uk}d`, `${us}d`], [`${k}ing`, `${u}ing`]];
 };
+/** verb with regular -s, -ed, -ing (flavour/flavor, mould/mold): the stem keeps its silent e only where both spellings do. */
+const vd = (uk: string, us: string): Pair[] => [[uk, us], [`${uk}s`, `${us}s`], [`${uk}ed`, `${us}ed`], [`${uk}ing`, `${us}ing`]];
 /** -ll- / -l- verb: past, -ing, doer (travelled/traveled, travelling/traveling, traveller/traveler). */
 const ll = (uk: string, us: string): Pair[] => [[`${uk}ed`, `${us}ed`], [`${uk}ing`, `${us}ing`], [`${uk}er`, `${us}er`], [`${uk}ers`, `${us}ers`]];
 
@@ -27,14 +29,19 @@ export const SPELLING_PAIRS: readonly Pair[] = [
   ...n("theatre", "theater"), ...n("fibre", "fiber"), ...n("programme", "program"), ...n("mum", "mom"), ...n("aeroplane", "airplane"),
   ...n("defence", "defense"), ...n("catalogue", "catalog"), ...n("dialogue", "dialog"), ...n("tyre", "tire"), ...n("licence", "license"),
   ...n("doughnut", "donut"), ...n("yoghurt", "yogurt"), ["maths", "math"], ["jewellery", "jewelry"], ["pyjamas", "pajamas"],
-  ["grey", "gray"], ["greyer", "grayer"], ["greyest", "grayest"], ["greyish", "grayish"], ["mould", "mold"], ["plough", "plow"],
+  ["grey", "gray"], ["greys", "grays"], ["greyer", "grayer"], ["greyest", "grayest"], ["greyish", "grayish"], ["greying", "graying"],
+  ...vd("mould", "mold"), ...vd("plough", "plow"), ...vd("flavour", "flavor").slice(2), ...vd("honour", "honor").slice(2), ...vd("labour", "labor").slice(2),
+  ...vd("harbour", "harbor").slice(2), ["neighbouring", "neighboring"], ["neighboured", "neighbored"],
+  ...n("omelette", "omelet"), ["chilli", "chili"], ["chillies", "chilies"], ...n("moustache", "mustache"), ["cosy", "cozy"], ["cosier", "cozier"], ["cosiest", "coziest"],
+  ["judgement", "judgment"], ["judgements", "judgments"], ...vd("enrol", "enroll").slice(0, 2), ["enrolment", "enrollment"], ["axe", "ax"],
+  ["centred", "centered"], ["centring", "centering"], ["catalogued", "cataloged"], ["cataloguing", "cataloging"], ["modelled", "modeled"],
   ...ise("organise", "organize"), ...ise("realise", "realize"), ...ise("recognise", "recognize"), ...ise("apologise", "apologize"),
   ...ise("memorise", "memorize"), ...ise("criticise", "criticize"), ...ise("summarise", "summarize"), ...ise("analyse", "analyze"),
   ["organisation", "organization"], ["organisations", "organizations"],
   ...ll("travell", "travel"), ...ll("cancell", "cancel").slice(0, 2), ...ll("labell", "label").slice(0, 2), ["modelling", "modeling"],
   ["practise", "practice"], ["practised", "practiced"], ["practising", "practicing"],
   ["learnt", "learned"], ["burnt", "burned"], ["dreamt", "dreamed"], ["ageing", "aging"],
-].filter((p, i, all) => all.findIndex((q) => q[0] === p[0]) === i) as Pair[];
+].filter((p, i, all) => all.findIndex((q) => q[0] === p[0]) === i && all.findIndex((q) => q[1] === p[1]) === i) as Pair[];
 
 const TO_UK = new Map<string, string>(SPELLING_PAIRS.map(([uk, us]) => [us, uk]));
 const TO_US = new Map<string, string>(SPELLING_PAIRS.map(([uk, us]) => [uk, us]));
@@ -48,5 +55,10 @@ export const otherSpelling = (word: string): string | undefined => TO_US.get(wor
 /** True for the UK side of a pair (colour), false for the US side (color) and for words not in the table. */
 export const isUkSpelling = (word: string): boolean => TO_US.has(word);
 
-/** Placeholder (tests first). */
-export const isSenseDependent = (_word: string): boolean => false;
+/**
+ * US spellings that are ALSO a correct UK word of another sense (UK noun "practice", verb "tire", verb "license", software
+ * "program", the device "meter"). Grading still folds them (accepted risk, docs/FINDINGS.md), but the vocab-spelling rule
+ * must not demand the other spelling for an entry with such a headword: the entry may mean the other sense.
+ */
+const SENSE_DEPENDENT: ReadonlySet<string> = new Set(["practice", "practices", "tire", "tires", "license", "licenses", "program", "programs", "meter", "meters"]);
+export const isSenseDependent = (word: string): boolean => SENSE_DEPENDENT.has(word);
