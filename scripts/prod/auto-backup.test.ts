@@ -32,7 +32,7 @@ const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\..*/, 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3600_000);
 const fname = (d: Date, label = "") => `ezh-${DB}-${stamp(d)}${label ? `-${label}` : ""}.dump`;
 
-/** fake `docker compose`: logs calls; FAKE_FAIL=<text> fails matching calls; FAKE_STACK_DOWN=1 = postgres not running; FAKE_NO_DATA=1 = empty database */
+/** fake `docker compose`: logs calls; FAKE_FAIL=<text> fails matching calls; FAKE_STACK_DOWN=1 = postgres not running; FAKE_NO_DATA=1 = empty database; FAKE_SCRATCH = lines of leftover scratch database names */
 function fakeCompose() {
   const log = path.join(tmp, "calls.log");
   const bin = path.join(tmp, "fake-compose");
@@ -46,6 +46,7 @@ fi
 case "$*" in
   *"ps --status running"*) [ "\${FAKE_STACK_DOWN:-}" = 1 ] || echo "abc123" ;;
   *pg_dump*) printf 'PGDMP-fake-dump-bytes' ;;
+  *pg_database*) [ -z "\${FAKE_SCRATCH:-}" ] || printf '%s\\n' $FAKE_SCRATCH ;;
   *to_regclass*) [ "\${FAKE_NO_DATA:-}" = 1 ] || echo "drizzle.__drizzle_migrations" ;;
   *"count(*)"*) echo "7" ;;
 esac
@@ -60,6 +61,7 @@ function fakeDocker(up: boolean) {
   fs.writeFileSync(bin, `#!/bin/sh\necho "docker $*" >> "${path.join(tmp, "docker.log")}"\n${up ? "exit 0" : 'echo "Cannot connect to the Docker daemon" >&2; exit 1'}\n`, { mode: 0o755 });
   return bin;
 }
+const BIG = "x".repeat(2048); // real dumps are far above 1 KB; smaller files do not count as a backup
 const callsOf = (f: string) => (fs.existsSync(f) ? fs.readFileSync(f, "utf8").trim().split("\n") : []);
 
 describe("auto-backup.sh", () => {
@@ -77,15 +79,18 @@ describe("auto-backup.sh", () => {
       KEEP_AUTO: "14",
       STATE_FILE: state(),
       LOG_FILE: logf(),
+      DOCKER_SOCKET: path.join(tmp, "docker.sock"), // a file stands in for the socket (only its existence is checked)
+      DOCKER_ACTIVE_CMD: "true",
       ...extra,
     };
   };
   const seed = (...files: string[]) => {
     fs.mkdirSync(backups(), { recursive: true });
-    files.forEach((f) => fs.writeFileSync(path.join(backups(), f), "x"));
+    files.forEach((f) => fs.writeFileSync(path.join(backups(), f), BIG));
   };
   const list = () => (fs.existsSync(backups()) ? fs.readdirSync(backups()).sort() : []);
   const compose = () => callsOf(path.join(tmp, "calls.log"));
+  beforeEach(() => fs.writeFileSync(path.join(tmp, "docker.sock"), ""));
 
   it("takes a backup labelled -auto, verifies it by restoring into a scratch database, and records success", () => {
     const r = run("auto-backup.sh", [], env());
@@ -101,14 +106,32 @@ describe("auto-backup.sh", () => {
     expect(fs.readFileSync(logf(), "utf8")).toMatch(/backup ok/i);
   });
 
-  it("when Docker is not running: skips quietly (exit 0, one clear line) and never starts anything", () => {
-    const r = run("auto-backup.sh", [], env({}, false));
+  it("when Docker is not running (no socket): skips quietly (exit 0, one clear line) and never starts anything", () => {
+    const r = run("auto-backup.sh", [], env({ DOCKER_SOCKET: path.join(tmp, "no-such.sock") }));
     expect(r.code).toBe(0);
     expect(r.out).toMatch(/SKIP.*Docker is not running/);
     expect(list()).toEqual([]);
     expect(compose()).toEqual([]); // compose was not even asked
-    expect(fs.existsSync(state())).toBe(false); // a skip is not a result
+    expect(callsOf(path.join(tmp, "docker.log"))).toEqual([]); // not even `docker info` (it could socket-activate the daemon)
+    const st = fs.readFileSync(state(), "utf8");
+    expect(st).not.toMatch(/^result=/m); // a skip is not a result...
+    expect(st).toMatch(/^attempt=SKIP: .*Docker is not running/m); // ...but it is recorded as an attempt
+    expect(st).toMatch(/^attempt_at=\d{4}-/m);
     expect(fs.readFileSync(logf(), "utf8")).toMatch(/SKIP/);
+  });
+
+  it("S3c: the Docker service is not active -> skip without touching docker (docker info could socket-activate it)", () => {
+    const r = run("auto-backup.sh", [], env({ DOCKER_ACTIVE_CMD: "false" }));
+    expect(r.code).toBe(0);
+    expect(r.out).toMatch(/SKIP.*Docker/);
+    expect(callsOf(path.join(tmp, "docker.log"))).toEqual([]);
+  });
+
+  it("S3c: Docker looks up (socket there, service active) but `docker info` fails -> FAILED, not a quiet skip", () => {
+    const r = run("auto-backup.sh", [], env({}, false));
+    expect(r.code).toBe(1);
+    expect(r.err).toMatch(/FAILED.*docker/i);
+    expect(fs.readFileSync(state(), "utf8")).toMatch(/^result=FAILED$/m);
   });
 
   it("when the production stack is not running: skips quietly and never starts it", () => {
@@ -227,19 +250,96 @@ describe("auto-backup.sh", () => {
     expect(lines.at(-1)).toMatch(/SKIP/);
   });
 
+  it("S3b: every attempt is recorded in the state file (time + outcome), success also as ok_at", () => {
+    run("auto-backup.sh", [], env());
+    const st = fs.readFileSync(state(), "utf8");
+    expect(st).toMatch(/^attempt=ok$/m);
+    expect(st).toMatch(/^attempt_at=\d{4}-\d{2}-\d{2} /m);
+    expect(st).toMatch(/^ok_at=\d{4}-\d{2}-\d{2} /m);
+    run("auto-backup.sh", [], env()); // skipped: fresh backup
+    const st2 = fs.readFileSync(state(), "utf8");
+    expect(st2).toMatch(/^attempt=SKIP: .*hours old/m);
+    expect(st2).toMatch(/^result=ok$/m); // the last real result is kept
+    expect(st2).toMatch(/^ok_at=/m);
+  });
+
+  it("S2: an empty file named just now is NOT a backup: a new one is taken", () => {
+    fs.mkdirSync(backups(), { recursive: true });
+    fs.writeFileSync(path.join(backups(), fname(hoursAgo(0.1))), "");
+    expect(run("auto-backup.sh", [], env()).code).toBe(0);
+    expect(list().filter((f) => f.endsWith("-auto.dump"))).toHaveLength(1);
+  });
+
+  it("S2: a file under 1 KB is not a backup either", () => {
+    fs.mkdirSync(backups(), { recursive: true });
+    fs.writeFileSync(path.join(backups(), fname(hoursAgo(0.1), "pre-update")), "x".repeat(500));
+    expect(run("auto-backup.sh", [], env()).code).toBe(0);
+    expect(list().filter((f) => f.endsWith("-auto.dump"))).toHaveLength(1);
+  });
+
+  it("S2: a big but unreadable -pre-restore file (pg_restore -l fails) does not count as a fresh backup", () => {
+    seed(fname(hoursAgo(0.1), "pre-restore"));
+    expect(run("auto-backup.sh", [], env({ FAKE_FAIL: "pg_restore -l" })).code).toBe(0);
+    expect(list().filter((f) => f.endsWith("-auto.dump"))).toHaveLength(1);
+  });
+
+  it("S2: a fresh -auto file is trusted without listing it (it was verified when it was made)", () => {
+    seed(fname(hoursAgo(0.1), "auto"));
+    const r = run("auto-backup.sh", [], env({ FAKE_FAIL: "pg_restore -l" }));
+    expect(r.out).toMatch(/SKIP/);
+    expect(list()).toHaveLength(1);
+  });
+
+  it("a backup file dated in the future is ignored for the 22-hour rule (wrong clock)", () => {
+    seed(fname(new Date(Date.now() + 24 * 3600_000)));
+    expect(run("auto-backup.sh", [], env()).code).toBe(0);
+    expect(list().filter((f) => f.endsWith("-auto.dump"))).toHaveLength(1);
+  });
+
+  it("S7: leftover scratch databases older than an hour are dropped at the start of a run, fresh ones are left alone", () => {
+    const old = Math.floor(Date.now() / 1000) - 7200;
+    const fresh = Math.floor(Date.now() / 1000) - 60;
+    run("auto-backup.sh", [], env({ FAKE_SCRATCH: `ezh_verify_${old}_11 ezh_verify_${fresh}_22 other_db` }));
+    const log = compose().join("\n");
+    expect(log).toContain(`DROP DATABASE IF EXISTS ezh_verify_${old}_11`);
+    expect(log).not.toContain(`DROP DATABASE IF EXISTS ezh_verify_${fresh}_22`);
+    expect(log).not.toContain("DROP DATABASE IF EXISTS other_db");
+  });
+
+  it("S7: when verification fails, the old automatic backups are untouched (even with KEEP_AUTO=1)", () => {
+    const autos = [5, 4, 3].map((d) => fname(hoursAgo(d * 24 + 30), "auto"));
+    seed(...autos);
+    const r = run("auto-backup.sh", [], env({ KEEP_AUTO: "1", FAKE_FAIL: "pg_restore --no-owner" }));
+    expect(r.code).toBe(1);
+    for (const f of autos) expect(list()).toContain(f);
+  });
+
+  it("S7: messages name the right log file (stage has its own)", () => {
+    const r = run("auto-backup.sh", [], env({ FAKE_FAIL: "pg_dump", LOG_FILE: path.join(tmp, "data", "backup-auto-stage.log") }));
+    expect(r.code).toBe(1);
+    expect(r.err + r.out).toContain("backup-auto-stage.log");
+  });
+
   it("never starts Docker or the stack by itself (static check of the script)", () => {
     const src = fs.readFileSync(script("auto-backup.sh"), "utf8").replace(/^\s*#.*$/gm, "");
-    expect(src).not.toMatch(/docker-on|systemctl|\bup -d\b|\bstart\b|sudo/);
+    expect(src).not.toMatch(/docker-on|systemctl (start|restart)|\bup -d\b|\bstart\b|sudo/);
   });
 });
 
 describe("auto-backup-status.sh", () => {
   const backups = () => path.join(tmp, "backups");
   const stateF = () => path.join(tmp, "backup-auto.state");
+  const unitDir = () => path.join(tmp, "units");
   const seed = (...files: string[]) => {
     fs.mkdirSync(backups(), { recursive: true });
-    files.forEach((f) => fs.writeFileSync(path.join(backups(), f), "x"));
+    files.forEach((f) => fs.writeFileSync(path.join(backups(), f), BIG));
   };
+  const installTimer = () => {
+    fs.mkdirSync(unitDir(), { recursive: true });
+    fs.writeFileSync(path.join(unitDir(), "ezh-prod-backup.timer"), "[Timer]\n");
+  };
+  const fmt = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 19).replace("T", " "); // local time, like `date '+%F %T'`
+  const writeState = (kv: Record<string, string>) => fs.writeFileSync(stateF(), Object.entries(kv).map(([k, v]) => `${k}=${v}`).join("\n") + "\n");
   function fakeSystemctl(installed: boolean) {
     const bin = path.join(tmp, "fake-systemctl");
     fs.writeFileSync(
@@ -247,9 +347,10 @@ describe("auto-backup-status.sh", () => {
       `#!/bin/sh
 echo "$*" >> "${path.join(tmp, "systemctl.log")}"
 case "$*" in
-  *is-enabled*) ${installed ? 'echo enabled' : 'echo disabled; exit 1'} ;;
+  *is-enabled*) ${installed ? "echo enabled" : "echo disabled; exit 1"} ;;
   *"show"*"NextElapseUSecRealtime"*) echo "NextElapseUSecRealtime=Sun 2026-12-06 00:12:00 +07" ;;
-  *"show"*"Result"*) echo "Result=success"; echo "ExecMainStatus=0"; echo "ExecMainExitTimestamp=Sat 2026-12-05 00:10:00 +07" ;;
+  *"show"*"WorkingDirectory"*) echo "WorkingDirectory=\${FAKE_WD:-${repoDir()}}" ;;
+  *"show"*"Result"*) echo "Result=\${FAKE_RESULT:-success}"; echo "ExecMainStatus=0" ;;
 esac
 exit 0
 `,
@@ -257,12 +358,22 @@ exit 0
     );
     return bin;
   }
-  const env = (extra: Record<string, string> = {}, installed = true) => ({
+  const repoDir = () => path.join(tmp, "repo");
+  function fakeCompose(up: boolean) {
+    const bin = path.join(tmp, "fake-compose-status");
+    fs.writeFileSync(bin, `#!/bin/sh\n${up ? 'echo abc123' : "true"}\n`, { mode: 0o755 });
+    return bin;
+  }
+  const env = (extra: Record<string, string> = {}, installed = true, stackUp = true) => ({
     BACKUP_DIR: backups(),
     DB_NAME: DB,
     STATE_FILE: stateF(),
     UNIT: "ezh-prod-backup",
+    UNIT_DIR: unitDir(),
     SYSTEMCTL: fakeSystemctl(installed),
+    COMPOSE_CMD: fakeCompose(stackUp),
+    REPO: repoDir(),
+    LOG_FILE: "data/backup-auto.log",
     ...extra,
   });
 
@@ -310,78 +421,252 @@ exit 0
     expect(off.out).not.toMatch(/systemd: /); // nothing to report for a unit that is not installed
   });
 
-  it("brief mode does not talk to systemd (prod-status stays fast and works without a user session)", () => {
+  it("brief mode does not talk to systemd when no timer is installed (prod-status stays fast)", () => {
     seed(fname(hoursAgo(2)));
     run("auto-backup-status.sh", ["--brief"], env());
     expect(fs.existsSync(path.join(tmp, "systemctl.log"))).toBe(false);
+  });
+
+  it("S1: a backup dated in the future is ignored, so the 3-day warning cannot be hidden by it", () => {
+    seed(fname(new Date(Date.now() + 2 * 24 * 3600_000)), fname(hoursAgo(24 * 4)));
+    const r = run("auto-backup-status.sh", ["--brief"], env());
+    expect(r.out).toMatch(/WARNING.*older than 3 days/);
+    expect(r.out).toMatch(/4 days old/);
+  });
+
+  it("S2: empty or tiny files are not backups for the age shown", () => {
+    seed(fname(hoursAgo(24 * 5)));
+    fs.writeFileSync(path.join(backups(), fname(hoursAgo(1))), "");
+    fs.writeFileSync(path.join(backups(), fname(hoursAgo(2), "auto")), "tiny");
+    const r = run("auto-backup-status.sh", ["--brief"], env());
+    expect(r.out).toMatch(/5 days old/);
+    expect(r.out).toMatch(/WARNING.*older than 3 days/);
+  });
+
+  describe("S3: a broken timer must not look fine", () => {
+    const hoursText = (h: number) => fmt(hoursAgo(h));
+    it("installed timer, stack up, but no attempt for 40 hours -> warns that the timer is not running", () => {
+      installTimer();
+      seed(fname(hoursAgo(5)));
+      writeState({ result: "ok", at: hoursText(40), ok_at: hoursText(40), attempt_at: hoursText(40), attempt: "ok" });
+      const r = run("auto-backup-status.sh", ["--brief"], env());
+      expect(r.out).toMatch(/WARNING.*timer has not run/i);
+      expect(r.out).toMatch(/[ก-๙]/);
+    });
+    it("recent attempts (even skips) mean the timer works: no warning", () => {
+      installTimer();
+      seed(fname(hoursAgo(5)));
+      writeState({ result: "ok", at: hoursText(30), ok_at: hoursText(30), attempt_at: hoursText(1), attempt: "SKIP: the newest backup is 5 hours old" });
+      expect(run("auto-backup-status.sh", ["--brief"], env()).out).not.toMatch(/WARNING/);
+    });
+    it("no warning when the stack is not up now (nothing could have been backed up)", () => {
+      installTimer();
+      seed(fname(hoursAgo(5)));
+      writeState({ result: "ok", at: hoursText(40), ok_at: hoursText(40), attempt_at: hoursText(40), attempt: "ok" });
+      expect(run("auto-backup-status.sh", ["--brief"], env({}, true, false)).out).not.toMatch(/timer has not run/i);
+    });
+    it("no warning when no timer is installed (the owner may use only the prod-up hook)", () => {
+      seed(fname(hoursAgo(5)));
+      writeState({ result: "ok", at: hoursText(40), ok_at: hoursText(40), attempt_at: hoursText(40), attempt: "ok" });
+      expect(run("auto-backup-status.sh", ["--brief"], env()).out).not.toMatch(/timer has not run/i);
+    });
+    it("attempts happen but the last SUCCESS is older than 36 hours while the app is up -> warns", () => {
+      installTimer();
+      seed(fname(hoursAgo(50)));
+      writeState({ result: "ok", at: hoursText(50), ok_at: hoursText(50), attempt_at: hoursText(1), attempt: "SKIP: cannot read" });
+      expect(run("auto-backup-status.sh", ["--brief"], env()).out).toMatch(/WARNING.*no successful automatic backup/i);
+    });
+    it("systemd reporting Result != success for the service warns, also in brief mode", () => {
+      installTimer();
+      seed(fname(hoursAgo(5)));
+      writeState({ result: "ok", at: hoursText(5), ok_at: hoursText(5), attempt_at: hoursText(1), attempt: "ok" });
+      const r = run("auto-backup-status.sh", ["--brief"], env({ FAKE_RESULT: "exit-code" }));
+      expect(r.out).toMatch(/WARNING.*systemd.*exit-code/i);
+    });
+    it("a timer installed long ago that never recorded any attempt is reported", () => {
+      installTimer();
+      const t = path.join(unitDir(), "ezh-prod-backup.timer");
+      const old = new Date(Date.now() - 3 * 24 * 3600_000);
+      fs.utimesSync(t, old, old);
+      seed(fname(hoursAgo(5)));
+      expect(run("auto-backup-status.sh", ["--brief"], env()).out).toMatch(/WARNING.*timer has not run/i);
+    });
+  });
+
+  it("S4: full status shows the folder the timer runs from and warns when it is not this checkout", () => {
+    installTimer();
+    seed(fname(hoursAgo(2), "auto"));
+    const same = run("auto-backup-status.sh", [], env());
+    expect(same.out).toContain(`runs from: ${repoDir()}`);
+    expect(same.out).not.toMatch(/WARNING.*differs/);
+    const other = run("auto-backup-status.sh", [], env({ FAKE_WD: "/old/place/english_zero_to_hero" }));
+    expect(other.out).toContain("runs from: /old/place/english_zero_to_hero");
+    expect(other.out).toMatch(/WARNING.*differs/);
+    expect(other.out).toContain("make prod-backup-auto-install");
+  });
+
+  it("S7: the FAILED warning names this stack's log file", () => {
+    seed(fname(hoursAgo(1)));
+    writeState({ result: "FAILED", at: "2026-12-05 00:10:03", message: "x" });
+    expect(run("auto-backup-status.sh", ["--brief"], env({ LOG_FILE: "data/backup-auto-stage.log" })).out).toContain("data/backup-auto-stage.log");
   });
 });
 
 describe("auto-backup-install.sh and the unit templates", () => {
   const unitDir = () => path.join(tmp, "units");
+  const stampDir = () => path.join(tmp, "timers");
   function fakeSystemctl() {
     const bin = path.join(tmp, "fake-systemctl");
     fs.writeFileSync(bin, `#!/bin/sh\necho "$*" >> "${path.join(tmp, "systemctl.log")}"\nexit 0\n`, { mode: 0o755 });
     return bin;
   }
-  const env = (extra: Record<string, string> = {}) => ({ UNIT_DIR: unitDir(), SYSTEMCTL: fakeSystemctl(), REPO: "/home/me/my repo/english zero", MAKE: "/usr/bin/make", ...extra });
+  /** a checkout folder that has a .env.prod (the installer refuses anything else) */
+  const mkrepo = (rel = "my repo/english zero", envProd = true) => {
+    const d = path.join(tmp, rel);
+    fs.mkdirSync(d, { recursive: true });
+    if (envProd) fs.writeFileSync(path.join(d, ".env.prod"), "");
+    return d;
+  };
+  const env = (repo: string, extra: Record<string, string> = {}) => ({ UNIT_DIR: unitDir(), STAMP_DIR: stampDir(), SYSTEMCTL: fakeSystemctl(), REPO: repo, MAKE: "/usr/bin/make", ...extra });
   const sctl = () => callsOf(path.join(tmp, "systemctl.log"));
+  const hasGit = spawnSync("git", ["--version"]).status === 0;
 
   it("writes a service and a timer with the absolute repo path, enables the timer, never needs sudo", () => {
-    const r = run("auto-backup-install.sh", ["install", "ezh_prod"], env());
+    const repo = mkrepo();
+    const r = run("auto-backup-install.sh", ["install", "ezh_prod"], env(repo));
     expect(r.code).toBe(0);
     const svc = fs.readFileSync(path.join(unitDir(), "ezh-prod-backup.service"), "utf8");
     const tim = fs.readFileSync(path.join(unitDir(), "ezh-prod-backup.timer"), "utf8");
-    expect(svc).toContain('ExecStart=/usr/bin/make -C "/home/me/my repo/english zero" --no-print-directory prod-backup-auto-run');
+    expect(svc).toContain(`ExecStart=/bin/sh "${repo}/scripts/prod/auto-backup-run.sh" prod`);
+    expect(svc).toContain("(make prod-backup-auto-run)");
     expect(svc).toMatch(/^Type=oneshot$/m);
     expect(svc).not.toMatch(/^Documentation=/m); // a URL list cannot hold a path with spaces (systemd-analyze verify found this)
-    expect(tim).toMatch(/^OnCalendar=daily$/m);
     expect(tim).toMatch(/^Persistent=true$/m);
-    expect(tim).toMatch(/^RandomizedDelaySec=\d+/m);
     expect(tim).toMatch(/WantedBy=timers\.target/);
     expect(sctl().join("\n")).toMatch(/--user daemon-reload/);
     expect(sctl().join("\n")).toMatch(/--user enable --now ezh-prod-backup\.timer/);
     expect(fs.readFileSync(script("auto-backup-install.sh"), "utf8").replace(/^\s*#.*$/gm, "")).not.toMatch(/sudo|linger/);
   });
 
+  it("M1: the timer fires every hour (not once a day): a missed midnight run happens at login, when Docker is still off, and would be 'done'", () => {
+    run("auto-backup-install.sh", ["install", "ezh_prod"], env(mkrepo()));
+    const tim = fs.readFileSync(path.join(unitDir(), "ezh-prod-backup.timer"), "utf8");
+    expect(tim).toMatch(/^OnCalendar=hourly$/m);
+    expect(tim).not.toMatch(/^OnCalendar=daily$/m);
+    expect(tim).toMatch(/^RandomizedDelaySec=5min$/m);
+    expect(tim).toMatch(/^Persistent=true$/m);
+  });
+
   it("escapes characters that systemd treats specially in a path (% and $ and quotes)", () => {
-    run("auto-backup-install.sh", ["install", "ezh_prod"], env({ REPO: '/home/me/100% "odd" $HOME dir' }));
+    const repo = mkrepo('100% "odd" $HOME dir');
+    run("auto-backup-install.sh", ["install", "ezh_prod"], env(repo));
     const svc = fs.readFileSync(path.join(unitDir(), "ezh-prod-backup.service"), "utf8");
-    expect(svc).toContain('-C "/home/me/100%% \\"odd\\" $$HOME dir"');
+    expect(svc).toContain('ExecStart=/bin/sh "' + repo.replace(/%/g, "%%").replace(/\$/g, "$$$$").replace(/"/g, '\\"') + '/scripts/prod/auto-backup-run.sh" prod');
   });
 
   it("is idempotent: a second install changes nothing and reports it", () => {
-    run("auto-backup-install.sh", ["install", "ezh_prod"], env());
+    const repo = mkrepo();
+    run("auto-backup-install.sh", ["install", "ezh_prod"], env(repo));
     const before = fs.readFileSync(path.join(unitDir(), "ezh-prod-backup.timer"), "utf8");
-    const r = run("auto-backup-install.sh", ["install", "ezh_prod"], env());
+    const r = run("auto-backup-install.sh", ["install", "ezh_prod"], env(repo));
     expect(r.code).toBe(0);
     expect(fs.readFileSync(path.join(unitDir(), "ezh-prod-backup.timer"), "utf8")).toBe(before);
     expect(r.out).toMatch(/already|unchanged/i);
   });
 
-  it("uninstall disables the timer and removes both files (and is fine when nothing is installed)", () => {
-    run("auto-backup-install.sh", ["install", "ezh_prod"], env());
-    const r = run("auto-backup-install.sh", ["uninstall", "ezh_prod"], env());
+  it("uninstall disables the timer, removes both files and the timer stamp (and is fine when nothing is installed)", () => {
+    const repo = mkrepo();
+    run("auto-backup-install.sh", ["install", "ezh_prod"], env(repo));
+    fs.mkdirSync(stampDir(), { recursive: true });
+    fs.writeFileSync(path.join(stampDir(), "stamp-ezh-prod-backup.timer"), "");
+    fs.writeFileSync(path.join(stampDir(), "stamp-other.timer"), "");
+    const r = run("auto-backup-install.sh", ["uninstall", "ezh_prod"], env(repo));
     expect(r.code).toBe(0);
     expect(fs.readdirSync(unitDir())).toEqual([]);
+    expect(fs.readdirSync(stampDir())).toEqual(["stamp-other.timer"]); // only ours is removed
     expect(sctl().join("\n")).toMatch(/--user disable --now ezh-prod-backup\.timer/);
-    expect(run("auto-backup-install.sh", ["uninstall", "ezh_prod"], env()).code).toBe(0);
+    expect(run("auto-backup-install.sh", ["uninstall", "ezh_prod"], env(repo)).code).toBe(0);
   });
 
   it.each(["ezh_stage", "ezh_ci", "ezh_other", ""])("refuses project '%s' (only the real production project gets a timer)", (project) => {
-    const r = run("auto-backup-install.sh", ["install", project], env());
+    const r = run("auto-backup-install.sh", ["install", project], env(mkrepo()));
     expect(r.code).not.toBe(0);
     expect(r.err).toMatch(/ezh_prod/);
     expect(fs.existsSync(unitDir())).toBe(false);
     expect(sctl()).toEqual([]);
   });
 
+  it("S4: refuses a checkout that has no .env.prod (it is not the folder the real app runs from)", () => {
+    const r = run("auto-backup-install.sh", ["install", "ezh_prod"], env(mkrepo("other checkout", false)));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toContain(".env.prod");
+    expect(r.err).toMatch(/[ก-๙]/);
+    expect(fs.existsSync(unitDir())).toBe(false);
+    expect(sctl()).toEqual([]);
+  });
+
+  it.skipIf(!hasGit)("S4: refuses a linked git worktree (it may be deleted; the timer would then fail every hour)", () => {
+    const main = mkrepo("main repo", true);
+    const g = (args: string[], cwd: string) => spawnSync("git", ["-c", "user.email=a@b", "-c", "user.name=t", ...args], { cwd, encoding: "utf8" });
+    g(["init", "-q", "-b", "main"], main);
+    g(["commit", "-q", "--allow-empty", "-m", "x"], main);
+    const wt = path.join(tmp, "linked wt");
+    expect(g(["worktree", "add", "-q", wt, "-b", "wt"], main).status).toBe(0);
+    fs.writeFileSync(path.join(wt, ".env.prod"), "");
+    const r = run("auto-backup-install.sh", ["install", "ezh_prod"], env(wt));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/worktree/i);
+    expect(fs.existsSync(unitDir())).toBe(false);
+    // the main checkout is fine
+    expect(run("auto-backup-install.sh", ["install", "ezh_prod"], env(main)).code).toBe(0);
+  });
+
   it("the templates are the only source of the unit text (a rendered stage copy is possible for tests: render mode)", () => {
     const out = path.join(tmp, "render");
-    const r = run("auto-backup-install.sh", ["render", "ezh_stage", out, "ezh-stage-test-backup"], env());
+    const r = run("auto-backup-install.sh", ["render", "ezh_stage", out, "ezh-stage-test-backup"], env(mkrepo("any dir", false)));
     expect(r.code).toBe(0);
     expect(fs.readFileSync(path.join(out, "ezh-stage-test-backup.service"), "utf8")).toContain("stage-backup-auto-run");
     expect(fs.existsSync(path.join(unitDir()))).toBe(false);
+  });
+});
+
+describe("S3d: auto-backup-run.sh (what the unit runs) records failures that happen before the backup script runs", () => {
+  const state = () => path.join(tmp, "data", "backup-auto.state");
+  function fakeMake(body: string) {
+    const bin = path.join(tmp, "fake-make");
+    fs.writeFileSync(bin, `#!/bin/sh\necho "$*" >> "${path.join(tmp, "make.log")}"\n${body}\n`, { mode: 0o755 });
+    return bin;
+  }
+  const go = (body: string) => run("auto-backup-run.sh", ["prod"], { MAKE: fakeMake(body), STATE_FILE: state() });
+
+  it("calls the make target for the project", () => {
+    go("exit 0");
+    expect(callsOf(path.join(tmp, "make.log")).join("\n")).toMatch(/--no-print-directory prod-backup-auto-run/);
+    expect(run("auto-backup-run.sh", ["stage"], { MAKE: fakeMake("exit 0"), STATE_FILE: state() }).code).toBe(0);
+    expect(callsOf(path.join(tmp, "make.log")).join("\n")).toMatch(/stage-backup-auto-run/);
+  });
+  it("success: exit 0 and the state file is not touched", () => {
+    expect(go("exit 0").code).toBe(0);
+    expect(fs.existsSync(state())).toBe(false);
+  });
+  it("make fails without the backup script having recorded anything (unreadable .env.prod, moved repo...): FAILED state, same exit code", () => {
+    const r = go('echo "env file unreadable" >&2; exit 2');
+    expect(r.code).toBe(2);
+    const st = fs.readFileSync(state(), "utf8");
+    expect(st).toMatch(/^result=FAILED$/m);
+    expect(st).toMatch(/^message=.*exit 2.*(journalctl|systemctl)/m);
+    expect(st).toMatch(/^attempt=FAILED/m);
+  });
+  it("make fails AFTER the backup script recorded its own, more precise failure: that state is kept", () => {
+    const r = go(`printf 'result=FAILED\\nat=2026-01-01 00:00:00\\nmessage=pg_dump said no\\nattempt=FAILED\\nattempt_at=2026-01-01 00:00:00\\n' > "${state()}"; exit 1`);
+    expect(r.code).toBe(1);
+    expect(fs.readFileSync(state(), "utf8")).toContain("message=pg_dump said no");
+  });
+  it("an earlier success time is kept when it records a failure", () => {
+    fs.mkdirSync(path.dirname(state()), { recursive: true });
+    fs.writeFileSync(state(), "result=ok\nat=2026-01-01 00:00:00\nok_at=2026-01-01 00:00:00\n");
+    go("exit 2");
+    expect(fs.readFileSync(state(), "utf8")).toMatch(/^ok_at=2026-01-01 00:00:00$/m);
   });
 });
 
@@ -405,6 +690,15 @@ describe("wiring in the Makefile, env example and check-env", () => {
     expect(down).toContain("auto-backup.sh");
     expect(down.indexOf("auto-backup.sh")).toBeLessThan(down.indexOf("$(PROD) down"));
     expect(mk).toMatch(/AUTO_ON_UP \?= \$\(if \$\(filter ezh_prod,\$\(PROD_PROJECT\)\),1,0\)/);
+  });
+  it("S5: both hooks run under `timeout 300`, so a hung pg_dump cannot block starting or stopping the app", () => {
+    for (const body of [slice("prod-up:", "prod-update:"), slice("prod-down:", "prod-logs:")]) {
+      const line = body.split("\n").find((l) => l.includes("auto-backup.sh")) ?? "";
+      expect(line).toMatch(/timeout 300 sh scripts\/prod\/auto-backup\.sh/);
+    }
+  });
+  it("S4: the full status knows which checkout it is run from", () => {
+    expect(slice("prod-backup-auto-status:", "# ---- Stage and ci")).toMatch(/REPO='?\$\(CURDIR\)/);
   });
   it("a failing automatic backup in prod-up / prod-down never blocks starting or stopping", () => {
     for (const body of [slice("prod-up:", "prod-update:"), slice("prod-down:", "prod-logs:")]) {
