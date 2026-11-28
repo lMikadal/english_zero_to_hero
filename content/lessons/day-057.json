@@ -1,0 +1,344 @@
+{
+  "day": 57,
+  "phase": 1,
+  "week": 9,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "What do you wear? Clothes and word stress",
+    "th": "What do you wear? เสื้อผ้าและการเน้นพยางค์"
+  },
+  "objectives": [
+    {
+      "en": "Name clothes and say what people wear: She wears a blue dress",
+      "th": "เรียกชื่อเสื้อผ้าและบอกว่าใครใส่อะไรได้: She wears a blue dress"
+    },
+    {
+      "en": "Hear which part of a two-syllable word is stronger: DOCtor, WINdow, JACket",
+      "th": "ฟังว่าพยางค์ไหนของคำสองพยางค์เน้นแรงกว่า: DOCtor, WINdow, JACket"
+    },
+    {
+      "en": "Ask and say a size in a clothes shop: What size is it? Size forty",
+      "th": "ถามและบอกไซส์ในร้านเสื้อผ้าได้: What size is it? Size forty"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-clothes",
+    "v-shirt",
+    "v-shoe",
+    "v-dress",
+    "v-skirt",
+    "v-jacket",
+    "v-coat",
+    "v-wear",
+    "v-size"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Word stress: two-syllable nouns",
+        "th": "การเน้นพยางค์: คำนามสองพยางค์"
+      },
+      "exercises": [
+        {
+          "id": "d057-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "stress",
+          "ipa": "/ˈ/",
+          "tipTh": "คำอังกฤษที่มีหลายพยางค์จะมีหนึ่งพยางค์ที่ 'แรง' กว่า คือดังกว่า ยาวกว่า และเสียงสูงกว่า พยางค์อื่นเบาและสั้น คนไทยมักออกเสียงทุกพยางค์เท่ากัน (เช่น 'ด็อก-เตอร์') คำนามและคำคุณศัพท์สองพยางค์ส่วนใหญ่เน้นพยางค์แรก: DOCtor, TEAcher, WINdow, TAble, JACket ส่วนพยางค์หลังเบาและมักออกเสียงเป็น /ə/ (doctor = DOC-tuh)",
+          "examples": [
+            "window",
+            "table",
+            "doctor",
+            "teacher"
+          ]
+        },
+        {
+          "id": "d057-pron-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังคำนี้แล้วตอบว่าพยางค์ไหนแรงกว่า"
+          },
+          "audioText": "window.",
+          "question": {
+            "en": "Which part of the word is stronger?",
+            "th": "ส่วนไหนของคำออกเสียงแรงกว่า"
+          },
+          "choices": [
+            "พยางค์แรก",
+            "พยางค์ที่สอง"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d057-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ให้ doctor มีพยางค์แรกแรงและพยางค์หลังเบา และออก a เบา ๆ ไม่ใช่ 'เอ'"
+          },
+          "text": "The doctor wears a white coat.",
+          "ipa": "/ðə ˈdɑːktər werz ə waɪt koʊt/",
+          "phonemes": [
+            "stress"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: clothes",
+        "th": "ฟัง: เสื้อผ้า"
+      },
+      "exercises": [
+        {
+          "id": "d057-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแดนใส่อะไรตอนทำงาน"
+          },
+          "audioText": "Hi! I am Leo. I wear a green shirt and black shoes to school. My mother, Rose, wears a blue dress. My father, Dan, wears a white coat at work. He is a doctor.",
+          "question": {
+            "en": "What does Dan wear at work?",
+            "th": "แดนใส่อะไรตอนทำงาน"
+          },
+          "choices": [
+            "A white coat",
+            "A blue dress",
+            "A green shirt"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d057-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-clothes"
+            },
+            {
+              "vocabId": "v-shirt"
+            },
+            {
+              "vocabId": "v-shoe"
+            },
+            {
+              "vocabId": "v-dress"
+            },
+            {
+              "vocabId": "v-skirt"
+            }
+          ]
+        },
+        {
+          "id": "d057-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ากระโปรงสีแดงไซส์อะไร"
+          },
+          "audioText": "Man: Hello! This is a clothes shop. Nan: I want a red skirt, please. What size is it? Man: It is size forty. The red skirt is ninety baht. Nan: Thank you!",
+          "question": {
+            "en": "What size is the red skirt?",
+            "th": "กระโปรงสีแดงไซส์อะไร"
+          },
+          "choices": [
+            "Forty",
+            "Fourteen",
+            "Fifty"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d057-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "These are nice clothes. Mali often wears a yellow jacket."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "What do you wear?",
+        "th": "คุณใส่อะไร"
+      },
+      "exercises": [
+        {
+          "id": "d057-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I get up at six o'clock.",
+            "I wear a blue dress to school.",
+            "Dan wears a white coat at work.",
+            "Leo wears a green shirt and black shoes.",
+            "Mali often wears a yellow jacket in Chiang Mai.",
+            "The jacket is warm.",
+            "These are nice clothes."
+          ]
+        },
+        {
+          "id": "d057-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณใส่อะไรไปโรงเรียนหรือที่ทำงาน ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you wear to school or work?",
+          "sampleAnswer": "I wear a white shirt and black shoes.",
+          "keywords": [
+            "wear",
+            "shirt"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Our clothes",
+        "th": "เสื้อผ้าของเรา"
+      },
+      "exercises": [
+        {
+          "id": "d057-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's shoes = รองเท้าของลีโอ)"
+          },
+          "text": "Rose is a teacher. She wears a blue dress to school. Leo is nine. He wears a green shirt and black shoes. Dan is a doctor. He always wears a white coat at work. Mali lives in Chiang Mai. She often wears a yellow jacket. Nan wears a red skirt.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Rose wear to school?",
+                "th": "โรสใส่อะไรไปโรงเรียน"
+              },
+              "choices": [
+                "A blue dress",
+                "A white coat",
+                "A red skirt"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who wears a yellow jacket?",
+                "th": "ใครใส่เสื้อแจ็กเก็ตสีเหลือง"
+              },
+              "choices": [
+                "Mali",
+                "Nan",
+                "Dan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What colour are Leo's shoes?",
+                "th": "รองเท้าของลีโอสีอะไร"
+              },
+              "choices": [
+                "Black",
+                "Green",
+                "White"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: what people wear",
+        "th": "เขียน: ใครใส่อะไร"
+      },
+      "exercises": [
+        {
+          "id": "d057-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "wears",
+            "My",
+            "father",
+            "a",
+            "white",
+            "coat"
+          ],
+          "answer": "My father wears a white coat"
+        },
+        {
+          "id": "d057-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (กระโปรง; ไซส์)"
+          },
+          "text": "The red ___ is ninety baht. It is ___ forty.",
+          "answer": [
+            "skirt",
+            "size"
+          ]
+        },
+        {
+          "id": "d057-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลีโอใส่เสื้อเชิ้ตสีเขียวและรองเท้าสีดำ",
+          "accept": [
+            "Leo wears a green shirt and black shoes"
+          ]
+        },
+        {
+          "id": "d057-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันใส่เดรสสีฟ้าไปโรงเรียน",
+          "accept": [
+            "I wear a blue dress to school",
+            "I wear a blue dress at school"
+          ]
+        },
+        {
+          "id": "d057-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-jacket"
+            },
+            {
+              "vocabId": "v-coat"
+            },
+            {
+              "vocabId": "v-wear"
+            },
+            {
+              "vocabId": "v-size"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

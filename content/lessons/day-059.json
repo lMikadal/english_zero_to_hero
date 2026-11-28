@@ -1,0 +1,339 @@
+{
+  "day": 59,
+  "phase": 1,
+  "week": 9,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Where is it? Places in town and question intonation",
+    "th": "Where is it? สถานที่ในเมืองและเสียงสูงต่ำของคำถาม"
+  },
+  "objectives": [
+    {
+      "en": "Say where places are in a town: The station is near the hotel",
+      "th": "บอกว่าสถานที่ในเมืองอยู่ที่ไหน: The station is near the hotel"
+    },
+    {
+      "en": "Use rising intonation for Yes/No questions and falling for Wh- questions",
+      "th": "ใช้เสียงขึ้นกับคำถาม Yes/No และเสียงลงกับคำถาม Wh- ได้"
+    },
+    {
+      "en": "Say where a family goes on Saturday evening: the cinema",
+      "th": "บอกว่าครอบครัวไปไหนเย็นวันเสาร์: the cinema"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-hospital",
+    "v-hotel",
+    "v-station",
+    "v-airport",
+    "v-library",
+    "v-cinema",
+    "v-supermarket",
+    "v-museum",
+    "v-town"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Question intonation",
+        "th": "เสียงสูงต่ำของคำถาม"
+      },
+      "exercises": [
+        {
+          "id": "d059-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "intonation",
+          "ipa": "↗ ↘",
+          "tipTh": "ประโยคคำถามที่ตอบ Yes/No (Is it near?) เสียงปลายประโยคขึ้นสูง ↗ ส่วนคำถาม Wh- (Where is the station?) และประโยคบอกเล่า เสียงปลายประโยคลงต่ำ ↘ คนไทยมักใช้วรรณยุกต์ของคำสุดท้ายแทน ทำให้ได้ยินเป็นเสียงอื่น ให้ปล่อยเสียงขึ้นหรือลงตามชนิดประโยคตั้งแต่คำสำคัญคำสุดท้าย",
+          "examples": [
+            "Is it near?",
+            "Where is the station?",
+            "Is it a hotel?"
+          ]
+        },
+        {
+          "id": "d059-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม คำถาม Yes/No เสียงขึ้นท้ายประโยค ↗ ที่คำว่า near"
+          },
+          "text": "Is the station near?",
+          "ipa": "/ɪz ðə ˈsteɪʃn nɪr/"
+        },
+        {
+          "id": "d059-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม คำถาม Wh- เสียงลงท้ายประโยค ↘ ที่คำว่า hospital"
+          },
+          "text": "Where is the hospital?",
+          "ipa": "/wer ɪz ðə ˈhɑːspɪtl/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: in the town",
+        "th": "ฟัง: ในเมือง"
+      },
+      "exercises": [
+        {
+          "id": "d059-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าสถานีอยู่ที่ไหน"
+          },
+          "audioText": "I am Dan. I work in the hospital. The hospital is near the bank. The station is near the hospital. The airport is far from the town.",
+          "question": {
+            "en": "Where is the station?",
+            "th": "สถานีอยู่ที่ไหน"
+          },
+          "choices": [
+            "Near the hospital",
+            "Near the airport",
+            "Near the library"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d059-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-hospital"
+            },
+            {
+              "vocabId": "v-hotel"
+            },
+            {
+              "vocabId": "v-station"
+            },
+            {
+              "vocabId": "v-airport"
+            },
+            {
+              "vocabId": "v-library"
+            }
+          ]
+        },
+        {
+          "id": "d059-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าห้องสมุดไกลไหม"
+          },
+          "audioText": "Man: Hello! Where is the library? Rose: It is near the museum. Man: Is it far? Rose: No, it is near the cinema too. Man: Thank you.",
+          "question": {
+            "en": "Is the library far?",
+            "th": "ห้องสมุดไกลไหม"
+          },
+          "choices": [
+            "No, it is near",
+            "Yes, it is far"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d059-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The library is near the museum. The hotel is near the supermarket in the town."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Our town",
+        "th": "เมืองของเรา"
+      },
+      "exercises": [
+        {
+          "id": "d059-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Our town is big.",
+            "The hospital is near the bank.",
+            "My father works in the hospital.",
+            "The station is near the hotel.",
+            "The supermarket is near the library.",
+            "The museum is near the cinema.",
+            "On Saturday evening we go to the cinema.",
+            "The airport is far."
+          ]
+        },
+        {
+          "id": "d059-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าในเมืองของคุณมีอะไร และใกล้บ้านไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What is in your town? Is it near your house?",
+          "sampleAnswer": "My town has a station and a supermarket. The station is near my house.",
+          "keywords": [
+            "town",
+            "near"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Leo's town",
+        "th": "เมืองของลีโอ"
+      },
+      "exercises": [
+        {
+          "id": "d059-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's town = เมืองของลีโอ)"
+          },
+          "text": "Leo's town is big. It has a hospital, a station, a library and a museum. The hospital is near the bank and Dan works in the hospital. The library is near the museum. The hotel is near the station and the airport is far from the town. On Saturday evening the family goes to the cinema.",
+          "questions": [
+            {
+              "question": {
+                "en": "Where does Dan work?",
+                "th": "แดนทำงานที่ไหน"
+              },
+              "choices": [
+                "In the hospital",
+                "In the library",
+                "In the hotel"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is near the museum?",
+                "th": "อะไรอยู่ใกล้พิพิธภัณฑ์"
+              },
+              "choices": [
+                "The library",
+                "The airport",
+                "The hotel"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "When does the family go to the cinema?",
+                "th": "ครอบครัวไปโรงภาพยนตร์เมื่อไร"
+              },
+              "choices": [
+                "On Saturday evening",
+                "On Sunday",
+                "On Friday"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: where is it?",
+        "th": "เขียน: อยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d059-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "The",
+            "station",
+            "near",
+            "the",
+            "hotel"
+          ],
+          "answer": "The station is near the hotel",
+          "accept": [
+            "Is the station near the hotel"
+          ]
+        },
+        {
+          "id": "d059-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (สนามบิน; ซูเปอร์มาร์เก็ต)"
+          },
+          "text": "The ___ is far from the town. We buy food in the ___.",
+          "answer": [
+            "airport",
+            "supermarket"
+          ]
+        },
+        {
+          "id": "d059-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "โรงพยาบาลอยู่ใกล้ธนาคาร",
+          "accept": [
+            "The hospital is near the bank"
+          ]
+        },
+        {
+          "id": "d059-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เราไปโรงภาพยนตร์วันเสาร์ตอนเย็น",
+          "accept": [
+            "We go to the cinema on Saturday evening",
+            "On Saturday evening we go to the cinema",
+            "We go to the cinema on Saturday evenings",
+            "On Saturday evenings we go to the cinema",
+            "We go to the cinema every Saturday evening",
+            "Every Saturday evening we go to the cinema"
+          ]
+        },
+        {
+          "id": "d059-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-cinema"
+            },
+            {
+              "vocabId": "v-supermarket"
+            },
+            {
+              "vocabId": "v-museum"
+            },
+            {
+              "vocabId": "v-town"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

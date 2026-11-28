@@ -1,0 +1,221 @@
+{
+  "day": 63,
+  "phase": 2,
+  "week": 9,
+  "type": "challenge",
+  "cefr": "A1",
+  "title": {
+    "en": "Week 9 challenge: my house, my clothes and the weather",
+    "th": "ภารกิจสัปดาห์ที่ 9: บ้าน เสื้อผ้า และอากาศของฉัน"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read short texts about a house, clothes, the weather and a day out",
+      "th": "ฟังและอ่านเรื่องสั้นเกี่ยวกับบ้าน เสื้อผ้า อากาศ และวันไปเที่ยวได้"
+    },
+    {
+      "en": "Tell about your house and your clothes aloud in about 30 seconds",
+      "th": "เล่าเรื่องบ้านและเสื้อผ้าของตัวเองด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write 5–6 sentences about your house, your clothes and the weather",
+      "th": "เขียน 5–6 ประโยคเกี่ยวกับบ้าน เสื้อผ้า และอากาศของตัวเองได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d063-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม คำถาม Yes/No เสียงขึ้นท้ายประโยค ↗ และ from ออกเสียงเบา /frəm/"
+          },
+          "text": "Is the airport far from the town?",
+          "ipa": "/ɪz ðə ˈerpɔːrt fɑːr frəm ðə taʊn/"
+        },
+        {
+          "id": "d063-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม เน้น wear, coat, snow ส่วน a, in, the เบาและเร็ว"
+          },
+          "text": "I wear a coat in the snow.",
+          "ipa": "/aɪ wer ə koʊt ɪn ðə snoʊ/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a house and a day",
+        "th": "ฟังเรื่องบ้านและวันหนึ่ง"
+      },
+      "exercises": [
+        {
+          "id": "d063-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามาลีทำอะไรในสวน"
+          },
+          "audioText": "I am Mali. I live in Chiang Mai. In December the weather is cold. I wear a coat and my yellow jacket. My garden is small. I paint pictures in the garden. It is fun. The family visits me in December.",
+          "question": {
+            "en": "What does Mali do in the garden?",
+            "th": "มาลีทำอะไรในสวน"
+          },
+          "choices": [
+            "Paints pictures",
+            "Rides a bike",
+            "Runs"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d063-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอะไรอยู่ใกล้สถานี"
+          },
+          "audioText": "I am Dan. I work in the hospital in the town. The station is near the hospital. The hotel is near the station. The airport is far. I drive to work. The train is fast and the bus is slow.",
+          "question": {
+            "en": "What is near the station?",
+            "th": "อะไรอยู่ใกล้สถานี"
+          },
+          "choices": [
+            "The hotel",
+            "The airport",
+            "The museum"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d063-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "My computer is on the sofa. The toilet is downstairs."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d063-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "On Saturday we go to the museum.",
+            "The museum is near the library.",
+            "Leo runs and rides his bike.",
+            "His bike is fast.",
+            "Ray's bike is slow.",
+            "I take a photo.",
+            "Leo draws a picture.",
+            "It is fun!"
+          ]
+        },
+        {
+          "id": "d063-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องบ้านและเสื้อผ้าของคุณด้วยเสียงประมาณ 30 วินาที: บ้านมีอะไร ห้องนอนอยู่ที่ไหน คุณใส่อะไร และอากาศวันนี้เป็นอย่างไร"
+          },
+          "prompt": "What is in your house? Where is your bedroom? What do you wear? What is the weather today?",
+          "sampleAnswer": "I have a sofa and a computer. My bedroom is upstairs. I wear a shirt and shoes. It is rainy today.",
+          "keywords": [
+            "house",
+            "wear"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read about a house and a day",
+        "th": "อ่านเรื่องบ้านและวันหนึ่ง"
+      },
+      "exercises": [
+        {
+          "id": "d063-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Rose's house = บ้านของโรส)"
+          },
+          "text": "Rose's house is white and the door is green. The kitchen and the sofa are downstairs. Leo's bedroom is upstairs. The family has a small garden. Today is rainy and the road is wet. Rose wears a blue dress and takes an umbrella. Dan wears a white coat at work. Leo wears a green shirt and black shoes. In the evening the family goes to the cinema.",
+          "questions": [
+            {
+              "question": {
+                "en": "What colour is the door?",
+                "th": "ประตูสีอะไร"
+              },
+              "choices": [
+                "Green",
+                "White",
+                "Blue"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is the weather today?",
+                "th": "วันนี้อากาศเป็นอย่างไร"
+              },
+              "choices": [
+                "Rainy",
+                "Sunny",
+                "Cloudy"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where does the family go in the evening?",
+                "th": "ตอนเย็นครอบครัวไปไหน"
+              },
+              "choices": [
+                "To the cinema",
+                "To the museum",
+                "To the hotel"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about your house and clothes",
+        "th": "เขียนเกี่ยวกับบ้านและเสื้อผ้า"
+      },
+      "exercises": [
+        {
+          "id": "d063-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยคเกี่ยวกับบ้านของคุณ เสื้อผ้าที่คุณใส่ และอากาศวันนี้ ใช้ upstairs หรือ downstairs อย่างน้อยหนึ่งคำ"
+          },
+          "prompt": "Write 5–6 sentences about your house, your clothes and the weather. What is in your house? What do you wear? What is the weather today?",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}

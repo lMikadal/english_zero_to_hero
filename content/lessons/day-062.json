@@ -1,0 +1,316 @@
+{
+  "day": 62,
+  "phase": 2,
+  "week": 9,
+  "type": "review",
+  "cefr": "A1",
+  "title": {
+    "en": "Week 9 review: clothes, weather, town and house",
+    "th": "ทบทวนสัปดาห์ที่ 9: เสื้อผ้า อากาศ เมือง และบ้าน"
+  },
+  "objectives": [
+    {
+      "en": "Talk about clothes, the weather, places in a town and rooms in a house",
+      "th": "พูดเรื่องเสื้อผ้า อากาศ สถานที่ในเมือง และห้องในบ้านได้"
+    },
+    {
+      "en": "Hear which syllable is stronger and use question intonation",
+      "th": "ฟังพยางค์ที่เน้นและใช้เสียงสูงต่ำของคำถามได้"
+    },
+    {
+      "en": "Use the weak sound /ə/ in small words",
+      "th": "ออกเสียงเบา /ə/ ในคำเล็ก ๆ ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Stress, intonation and /ə/",
+        "th": "การเน้น เสียงสูงต่ำ และ /ə/"
+      },
+      "exercises": [
+        {
+          "id": "d062-pron-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังคำนี้แล้วตอบว่าพยางค์ไหนแรงกว่า"
+          },
+          "audioText": "hotel.",
+          "question": {
+            "en": "Which part of the word is stronger?",
+            "th": "ส่วนไหนของคำออกเสียงแรงกว่า"
+          },
+          "choices": [
+            "พยางค์แรก",
+            "พยางค์ที่สอง"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d062-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม คำถาม Wh- เสียงลงท้ายประโยค ↘ และ hotel เน้นพยางค์หลัง"
+          },
+          "text": "Where is the hotel? It is near the station.",
+          "ipa": "/wer ɪz ðə hoʊˈtel ɪt ɪz nɪr ðə ˈsteɪʃn/"
+        },
+        {
+          "id": "d062-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม a และ of ออกเสียงเบามาก (/ə/ /əv/)"
+          },
+          "text": "A photo of a party and a picture of a garden.",
+          "ipa": "/ə ˈfoʊtoʊ əv ə ˈpɑːrti ænd ə ˈpɪktʃər əv ə ˈɡɑːrdn/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d062-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสไปที่ไหนในเมือง"
+          },
+          "audioText": "It is Saturday. The weather is rainy and the road is wet. I take an umbrella. I go to the supermarket in the town. In the evening we go to the cinema.",
+          "question": {
+            "en": "Where does Rose go in the town?",
+            "th": "โรสไปที่ไหนในเมือง"
+          },
+          "choices": [
+            "The supermarket",
+            "The library",
+            "The hospital"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d062-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าจักรยานของใครช้า (Ray's = ของเรย์)"
+          },
+          "audioText": "It is Leo's birthday party. The garden is sunny and dry. Leo's friends run in the garden. Ray rides his bike. It is slow. Leo's bike is fast. Rose takes a photo. Leo draws a picture. Nan paints a picture. It is fun!",
+          "question": {
+            "en": "Whose bike is slow?",
+            "th": "จักรยานของใครช้า"
+          },
+          "choices": [
+            "Ray's",
+            "Leo's",
+            "Nan's"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d062-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The sofa is downstairs. The bedroom is upstairs."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d062-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Today is cloudy.",
+            "I wear a green shirt and black shoes.",
+            "My father wears a white coat at work.",
+            "The hospital is in the town.",
+            "My bedroom is upstairs.",
+            "The bathroom and the toilet are upstairs too.",
+            "We have a garden.",
+            "We have a computer and a sofa."
+          ]
+        },
+        {
+          "id": "d062-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณใส่อะไร และวันนี้อากาศเป็นอย่างไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you wear? What is the weather today?",
+          "sampleAnswer": "I wear a shirt and shoes. It is sunny and dry.",
+          "keywords": [
+            "wear",
+            "weather"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d062-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Nan is in the town. The weather is cloudy and dry. She wears a red skirt and a brown jacket. She goes to the museum. The library is near the museum. Then she goes to the station. The hotel is near the station. The airport is far from the town.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Nan wear?",
+                "th": "แนนใส่อะไร"
+              },
+              "choices": [
+                "A red skirt and a jacket",
+                "A blue dress",
+                "A white coat"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is near the museum?",
+                "th": "อะไรอยู่ใกล้พิพิธภัณฑ์"
+              },
+              "choices": [
+                "The library",
+                "The hotel",
+                "The airport"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is far from the town?",
+                "th": "อะไรอยู่ไกลจากเมือง"
+              },
+              "choices": [
+                "The airport",
+                "The station",
+                "The hotel"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d062-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-clothes"
+            },
+            {
+              "vocabId": "v-coat"
+            },
+            {
+              "vocabId": "v-weather"
+            },
+            {
+              "vocabId": "v-snow"
+            },
+            {
+              "vocabId": "v-hospital"
+            },
+            {
+              "vocabId": "v-airport"
+            },
+            {
+              "vocabId": "v-bedroom"
+            },
+            {
+              "vocabId": "v-party"
+            }
+          ]
+        },
+        {
+          "id": "d062-write-01",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (กระโปรง; รองเท้า)"
+          },
+          "text": "I wear a red ___ and black ___.",
+          "answer": [
+            "skirt",
+            "shoes"
+          ]
+        },
+        {
+          "id": "d062-write-02",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "The",
+            "weather",
+            "sunny",
+            "today"
+          ],
+          "answer": "The weather is sunny today",
+          "accept": [
+            "Today the weather is sunny",
+            "Is the weather sunny today"
+          ]
+        },
+        {
+          "id": "d062-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ห้องน้ำและห้องส้วมอยู่ชั้นบน",
+          "accept": [
+            "The bathroom and the toilet are upstairs"
+          ]
+        },
+        {
+          "id": "d062-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันถ่ายรูปที่งานเลี้ยง",
+          "accept": [
+            "I take a photo at the party",
+            "At the party I take a photo"
+          ]
+        }
+      ]
+    }
+  ]
+}
