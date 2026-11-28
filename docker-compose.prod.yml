@@ -18,6 +18,9 @@ services:
     # Docker stopped. It does NOT start anything at boot: Docker itself is not enabled at boot. `make prod-down` removes
     # the containers, so they stay off until the next `make prod-up`.
     restart: unless-stopped
+    # no raw packets: another container on the project network could otherwise ARP-spoof the gateway the app trusts
+    cap_drop:
+      - NET_RAW
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-ezh}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run make prod-init}
@@ -46,12 +49,27 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: *db-url
+      # Who may use the app (docs/DEPLOYMENT.md): IPv4/IPv6 addresses and CIDR ranges, empty = every device on the tailnet.
+      # Validated by scripts/prod/check-env.sh before anything starts (an invalid value would make every page answer 500).
+      ALLOWED_IPS: ${ALLOWED_IPS:-}
+      # Proxies whose X-Forwarded-For is believed: this machine (loopback) and the gateway of THIS project's own network, which
+      # is where the published port arrives from (tailscale serve -> 127.0.0.1:3100 -> docker -> app). Deliberately NOT all of
+      # the 172.16 range: any other container (postgres, ...) presenting a forged X-Forwarded-For is judged by its own address.
+      TRUSTED_PROXIES: "${TRUSTED_PROXIES:-127.0.0.0/8, ::1, ${PROD_NET_PREFIX:-172.30.10}.1}"
     ports:
       # 127.0.0.1 by default: reached from the phone through `tailscale serve` (HTTPS), see docs/DEPLOYMENT.md
       - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3100}:3000"
     depends_on:
       migrate:
         condition: service_completed_successfully
+
+# A fixed, dedicated subnet per project (the Makefile derives PROD_NET_PREFIX from the project name: prod 172.30.10,
+# stage 172.30.20, ci 172.30.30), so the gateway address above is known in advance and the stacks never collide.
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${PROD_NET_PREFIX:-172.30.10}.0/24
 
 volumes:
   pgdata:
