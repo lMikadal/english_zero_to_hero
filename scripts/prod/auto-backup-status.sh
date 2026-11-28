@@ -32,8 +32,10 @@ if [ "$brief" = 0 ]; then
   else
     echo "last automatic backup: none yet (or only skipped runs: see data/backup-auto.log)"
   fi
-  svc=$("$sc" --user show "$unit.service" -p Result,ExecMainStatus 2> /dev/null | tr '\n' ' ' || true)
-  [ -z "$svc" ] || echo "systemd: $svc"
+  if "$sc" --user is-enabled "$unit.timer" > /dev/null 2>&1; then
+    svc=$("$sc" --user show "$unit.service" -p Result,ExecMainStatus 2> /dev/null | tr '\n' ' ' || true)
+    [ -z "$svc" ] || echo "systemd: $svc"
+  fi
 fi
 
 # newest backup of any kind, by the UTC time stamp in its name

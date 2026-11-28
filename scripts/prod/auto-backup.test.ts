@@ -307,6 +307,7 @@ exit 0
     const off = run("auto-backup-status.sh", [], env({}, false));
     expect(off.out).toMatch(/automatic daily backup: NOT installed/);
     expect(off.out).toContain("make prod-backup-auto-install");
+    expect(off.out).not.toMatch(/systemd: /); // nothing to report for a unit that is not installed
   });
 
   it("brief mode does not talk to systemd (prod-status stays fast and works without a user session)", () => {
@@ -333,6 +334,7 @@ describe("auto-backup-install.sh and the unit templates", () => {
     const tim = fs.readFileSync(path.join(unitDir(), "ezh-prod-backup.timer"), "utf8");
     expect(svc).toContain('ExecStart=/usr/bin/make -C "/home/me/my repo/english zero" --no-print-directory prod-backup-auto-run');
     expect(svc).toMatch(/^Type=oneshot$/m);
+    expect(svc).not.toMatch(/^Documentation=/m); // a URL list cannot hold a path with spaces (systemd-analyze verify found this)
     expect(tim).toMatch(/^OnCalendar=daily$/m);
     expect(tim).toMatch(/^Persistent=true$/m);
     expect(tim).toMatch(/^RandomizedDelaySec=\d+/m);

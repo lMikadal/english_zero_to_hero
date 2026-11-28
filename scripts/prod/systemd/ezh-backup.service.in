@@ -1,6 +1,5 @@
 [Unit]
 Description=English Zero to Hero: automatic backup of the @WHAT@ database (make @TARGET@)
-Documentation=file://@REPO_PLAIN@/docs/DEPLOYMENT.md
 
 [Service]
 Type=oneshot

@@ -138,6 +138,24 @@ make stage-down     # เมื่อเสร็จ: ลบชุดทดล�
 
 เทสต์: `scripts/prod/prod-scripts.test.ts` (ตรวจรหัสผ่าน, backup/restore/prune/verify/pre-update, ต้องมี `CONFIRM`, ห้าม `-v` กับ prod), `src/db/migration-safety.test.ts` (migration ที่ลบข้อมูลต้องมี `-- destructive: reviewed`), job `prod-image` ใน CI
 
+## Backup อัตโนมัติรายวัน (`make prod-backup-auto-*`)
+
+ตรวจกับ stack ทดลอง: `make stage-up`, แล้ว `make stage-backup-auto-run` (สคริปต์เดียวกับที่ systemd timer รัน), ล้างด้วย `make stage-down`
+
+| ตรวจอะไร | ทำอย่างไร | พิสูจน์ว่าทำงาน |
+|---|---|---|
+| backup + ตรวจกู้คืน | `make stage-backup-auto-run` | ไฟล์ `backups-stage/ezh-<db>-<เวลา UTC>-auto.dump` (สิทธิ์ 600), `data/backup-auto-stage.state` = `result=ok`, log "backup ok ... verified by restoring it into a scratch database", ไม่เหลือฐานข้อมูล `ezh_verify_*` |
+| ไม่เกินวันละครั้ง | สั่งซ้ำทันที | `SKIP: the newest backup (...) is 0 hours old; a new automatic one is taken after 22 hours` ไม่มีไฟล์ใหม่ (backup ชนิดใดก็นับ) |
+| stack ไม่ทำงาน | `docker compose ... stop app postgres` แล้วสั่ง | `SKIP: the production stack is not running`, exit 0, ไม่มี container ถูกเปิด |
+| ล้มเหลวต้องเห็น | ทำให้โฟลเดอร์ backup ใช้ไม่ได้ (มีไฟล์ชื่อเดียวกันขวางอยู่) แล้วสั่ง | exit 1, `data/backup-auto-stage.state` = `result=FAILED`, log, และ `make stage-status` ขึ้น `WARNING: last automatic backup FAILED at ...`; ครั้งถัดไปที่สำเร็จคำเตือนหาย |
+| หน้าต่างแยก | `BACKUP_KEEP_AUTO=2` + `make stage-backup` + สั่งอัตโนมัติ 3 ครั้ง | เหลือ `-auto` 2 ไฟล์ ไฟล์ manual อยู่ครบ |
+| hook ใน prod-up | `make stage-up AUTO_ON_UP=1` (ค่าเริ่มต้น: เฉพาะแอปจริง) | backup ใหม่เมื่อล่าสุดเก่ากว่า 22 ชม. เท่านั้น; prod-up ซ้ำไม่ backup ซ้ำ |
+| คำเตือน 3 วัน | `make prod-status` / `stage-status` เมื่อ backup ล่าสุดเก่ากว่า 3 วัน หรือไม่มีเลย | `WARNING: the newest backup is older than 3 days` / `no backup at all` พร้อมข้อความไทย |
+| systemd จริง | render unit ชื่อ `ezh-stage-test-backup` (`sh scripts/prod/auto-backup-install.sh render ezh_stage ~/.config/systemd/user ezh-stage-test-backup`) แล้ว `systemctl --user start ...` / `enable --now ...timer` แล้วลบออกให้หมด | `status` = inactive (dead) เมื่อ skip, log "backup ok" เมื่อสำเร็จ, `failed (Result: exit-code)` เมื่อล้มเหลว, `list-timers` เห็นรอบถัดไป; ทำงานกับ path ที่มีช่องว่าง |
+| ติดตั้งจริงเฉพาะ prod | `make stage-backup-auto-install` | ปฏิเสธ: "only for the real production project ezh_prod" |
+
+เทสต์: `scripts/prod/auto-backup.test.ts` (ข้าม/ล้มเหลว/หน้าต่าง/ล็อก/สถานะ/ตัวติดตั้ง/Makefile), `scripts/prod/prod-scripts.test.ts` (prune เดิมไม่เปลี่ยน)
+
 ## ตรวจโดยเครื่อง (ไม่ต้องจำ)
 
 - `src/lib/theme/color-scan.test.ts`: ห้ามมีสี Tailwind ตรงๆ (`bg-white`, `text-slate-700`), `[#hex]`, hex หรือ `rgb()/hsl()/oklch()` ใน `src/` นอก `src/app/globals.css` (มี self-test ว่าจับตัวอย่างผิดได้) ชุดสีเริ่มต้นของ Tailwind ถูกลบใน `@theme` (utility สีดิบอย่าง `bg-white` จึงไม่สร้าง CSS) แต่ค่า arbitrary (`bg-[#fff]`, `bg-[red]`) ยังแสดงผลได้ ตัวตรวจจึงเป็นสิ่งที่กันไว้ และตรวจอีกทิศด้วย: class สีทุกตัวต้องเป็น token จริงหรือ utility ที่ไม่ใช่สีที่ระบุไว้ชัด (กัน token ที่พิมพ์ผิด เช่น `text-primary`) รวม `style={{ color }}` และ `fill=`/`stroke=` ที่เป็นค่าตรงๆ ข้อจำกัด: class ที่ประกอบจากสตริง (`"bg-" + x`) และค่าที่เป็นตัวแปรตรวจไม่ได้
