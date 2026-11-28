@@ -11,6 +11,7 @@ import { DayPlayer } from "./DayPlayer";
 const response: CompleteLessonResponse = {
   progress: { day: 1, status: "done", score: 1, completedAt: "2026-11-25T10:00:00.000Z" },
   streak: { current: 1, longest: 1 },
+  pendingCheckpoint: null,
   currentDay: 2,
 };
 const shared = vi.hoisted(() => ({ sink: null as unknown as HttpSink }));
@@ -23,6 +24,7 @@ function makeSink() {
     sendAttempt: vi.fn<(a: AttemptInput) => void>(),
     completeLesson: vi.fn(async () => ({ status: "done" as const, response })),
     completePractice: vi.fn(async () => ({ status: "queued" as const })),
+    completeCheckpoint: async () => ({ status: "queued" as const }),
     sendReview: () => {},
     completeReview: async () => ({ status: "queued" as const }),
     pendingCount: () => 0,

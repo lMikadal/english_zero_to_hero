@@ -2,6 +2,8 @@
 // The HTTP implementation (IndexedDB queue, retries) is built in a later PR; tests use fakes.
 import type {
   AttemptInput,
+  CompleteCheckpointRequest,
+  CompleteCheckpointResponse,
   CompleteLessonRequest,
   CompleteLessonResponse,
   CompletePracticeRequest,
@@ -30,6 +32,11 @@ export interface SyncSink {
   completeLesson(c: CompleteLessonRequest): Promise<CompleteResult>;
   /** Same FIFO rules as `completeLesson`, to POST /api/practice/complete (never touches progress). */
   completePractice(c: CompletePracticeRequest): Promise<CompleteResult<CompletePracticeResponse>>;
+  /**
+   * Same FIFO rules as `completeLesson`, to POST /api/checkpoints/complete (never touches progress). Deduplicated in
+   * the queue by afterDay and sessionId, so completing the same sitting twice sends once.
+   */
+  completeCheckpoint(c: CompleteCheckpointRequest): Promise<CompleteResult<CompleteCheckpointResponse>>;
   /** A vocabulary review (docs/plans/vocab-review-plan.md 5.3). Never throws; deduplicated in the queue by id. */
   sendReview(r: ReviewInput): void;
   /** Same FIFO rules as `completeLesson`, to POST /api/reviews/complete (only touches the streak). */

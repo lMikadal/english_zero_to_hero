@@ -13,10 +13,13 @@ export type SourceRole = {
 
 export const SOURCE_ROLES = {
   lesson: { detection: true, drillActivity: false, touchesProgress: true },
-  checkpoint: { detection: true, drillActivity: false, touchesProgress: true },
+  // a checkpoint is its own thing: the first answer to an exercise is evidence, but it never writes `progress`
+  checkpoint: { detection: true, drillActivity: false, touchesProgress: false },
   drill: { detection: false, drillActivity: true, touchesProgress: true },
   retest: { detection: false, drillActivity: true, touchesProgress: true },
   practice: { detection: false, drillActivity: false, touchesProgress: false },
+  // every later answer to a checkpoint exercise (a second sitting): the exercises are asked again, so it is not new evidence (D11)
+  checkpoint_retake: { detection: false, drillActivity: false, touchesProgress: false },
 } as const satisfies Record<AttemptSourceLike, SourceRole>;
 
 /** The sources with `role` set, in the order of SOURCE_ROLES. */

@@ -3,12 +3,18 @@
 // docs/ARCHITECTURE.md section 5.1.
 import { z } from "zod";
 import type { Grade } from "@/lib/answers/grade";
+import { isCheckpointDay } from "@/lib/content/checkpoint-schema";
 import { EXERCISE_ID_PATTERN } from "@/lib/content/schema";
 
 /** Kept equal to `AttemptSource` in src/db/schema.ts by a type test (contract.test.ts). */
-export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint", "practice"] as const;
+export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint", "practice", "checkpoint_retake"] as const;
 
-export const API = { attempts: "/api/attempts", completeLesson: "/api/lessons/complete", completePractice: "/api/practice/complete" } as const;
+export const API = {
+  attempts: "/api/attempts",
+  completeLesson: "/api/lessons/complete",
+  completePractice: "/api/practice/complete",
+  completeCheckpoint: "/api/checkpoints/complete",
+} as const;
 
 const exerciseId = z.string().regex(EXERCISE_ID_PATTERN);
 const index = z.number().int().min(0).max(1000);
@@ -112,6 +118,8 @@ export type CompleteLessonResponse = {
   progress: { day: number; status: "done"; score: number | null; completedAt: string };
   streak: { current: number; longest: number };
   currentDay: number;
+  /** A: the checkpoint that now blocks day A+1 (the learner must sit it before the next lesson), else null. */
+  pendingCheckpoint: number | null;
 };
 
 /** crypto.randomUUID does not exist over plain http (tailnet IP), so fall back to getRandomValues. */
@@ -142,4 +150,42 @@ export type CompletePracticeResponse = {
   lessonScore: number | null;
   streak: { current: number; longest: number };
   countedForStreak: boolean;
+};
+
+export const completeCheckpointRequestSchema = z.strictObject({
+  afterDay: z.number().int().refine(isCheckpointDay, "afterDay must be 30, 60, ... 360"),
+  sessionId: z.uuid(),
+  completedAt: isoTimestamp,
+});
+export type CompleteCheckpointRequest = z.infer<typeof completeCheckpointRequestSchema>;
+
+/** One skill of a finished sitting; frozen in `checkpoint_results.skills`. */
+export type CheckpointSkillResult = {
+  skill: ReplaySkill;
+  /** Share of the total, 0..100; 0 = shown but not scored. */
+  weight: number;
+  /** 0..1; null when weight is 0. */
+  score: number | null;
+  /** Exercises of the section with a stored answer. */
+  answered: number;
+  total: number;
+  /** For a weight 0 section: how many exercises the learner rated "ok"; null otherwise. */
+  selfOk: number | null;
+};
+export type CompleteCheckpointResponse = {
+  result: {
+    sessionId: string;
+    afterDay: number;
+    score: number;
+    passed: boolean;
+    skills: CheckpointSkillResult[];
+    completedAt: string;
+    /** 1 for the first finished sitting of this checkpoint, 2 for the second ... (this sitting included). */
+    sitting: number;
+    /** The best score over all finished sittings of this checkpoint. */
+    best: number;
+  };
+  streak: { current: number; longest: number };
+  /** Day A+1 when it has a lesson file and can be played now, else null. */
+  nextDay: number | null;
 };

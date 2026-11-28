@@ -248,3 +248,17 @@ describe("practice attempts are not evidence (U4)", () => {
     expect(detectWeaknesses([...base, ...practice], NOW)).toEqual(detectWeaknesses(base, NOW));
   });
 });
+
+describe("checkpoint retakes are not evidence (D11)", () => {
+  it("adding all-wrong checkpoint_retake attempts leaves groupStats and detectWeaknesses unchanged", () => {
+    const base = [...batch("dictation", 10, 2, { tags: ["phoneme:ae"] }), ...batch("cloze", 6, 0), ...batch("dictation", 6, 1, { source: "checkpoint", tags: ["phoneme:ae"] })];
+    const retake = batch("dictation", 30, 30, { source: "checkpoint_retake", tags: ["phoneme:ae"], skill: "listening" });
+    expect(groupStats([...base, ...retake], NOW)).toEqual(groupStats(base, NOW));
+    expect(detectWeaknesses([...base, ...retake], NOW)).toEqual(detectWeaknesses(base, NOW));
+  });
+
+  it("the first answer of a checkpoint (source checkpoint) still counts", () => {
+    const wrong = batch("dictation", 10, 10, { source: "checkpoint", tags: ["phoneme:ae"], skill: "listening" });
+    expect(groupStats(wrong, NOW).length).toBeGreaterThan(0);
+  });
+});

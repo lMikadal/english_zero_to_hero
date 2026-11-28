@@ -126,7 +126,7 @@ describe("the preview fixture (docs/FEATURE_MAP.md: how to look at the card)", (
 describe("GrammarNote inside the lesson player", () => {
   const sink = () => ({
     sendAttempt: vi.fn(), completeLesson: async () => ({ status: "queued" as const }), completePractice: async () => ({ status: "queued" as const }),
-    sendReview: vi.fn(), completeReview: async () => ({ status: "queued" as const }), pendingCount: () => 0, subscribe: () => () => {},
+    sendReview: vi.fn(), completeReview: async () => ({ status: "queued" as const }), completeCheckpoint: async () => ({ status: "queued" as const }), pendingCount: () => 0, subscribe: () => () => {},
   }) satisfies SyncSink;
   it("has exactly one primary action, enabled at once, and moving on sends nothing", async () => {
     vi.spyOn(window, "scrollTo").mockImplementation(() => {});

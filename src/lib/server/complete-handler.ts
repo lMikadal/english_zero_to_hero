@@ -48,6 +48,7 @@ export async function handleCompleteLesson(body: unknown, { db, userId, now, con
         progress: { day, status: "done", score: row.score, completedAt: row.completedAt!.toISOString() },
         streak: await getStreak(tx, userId),
         currentDay: profile.currentDay,
+        pendingCheckpoint: null, // PR 3 of docs/plans/checkpoint-plan.md fills this in (the gate is not wired into the handlers yet)
       };
     }
 
@@ -59,7 +60,7 @@ export async function handleCompleteLesson(body: unknown, { db, userId, now, con
     const currentDay = await advanceCurrentDay(tx, userId, day);
     // the lesson's words become review cards in the same transaction (docs/plans/vocab-review-plan.md 2.1); not reported in the response
     await reconcileCards(tx, userId, now, tz, { completed: { day, completedAt }, content });
-    return { progress: { day, status: "done", score: done.score, completedAt: done.completedAt!.toISOString() }, streak, currentDay };
+    return { progress: { day, status: "done", score: done.score, completedAt: done.completedAt!.toISOString() }, streak, currentDay, pendingCheckpoint: null };
   });
 
   if (!response) return { status: 409, body: { error: "locked_day" } };
