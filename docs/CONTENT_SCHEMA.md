@@ -61,6 +61,8 @@
 | 21–99: `21`=`twenty-one`=`twenty one` | `a 100` (ไม่เท่ากับ `100`), `110` (ไม่เท่ากับ `ten`) |
 | `its` ≠ `it's`, `his` ≠ `he's` (ไม่แตะ) | |
 
+8. (เฉพาะตอนเทียบ) **สะกดแบบอังกฤษ/อเมริกันพับเป็นคำเดียวกัน** (`src/lib/answers/spelling.ts`): `colour`=`color`, `grey`=`gray`, `favourite`=`favorite`, `centre`=`center`, `mum`=`mom`, `neighbour`, `travelling`/`traveling`, `practise`/`practice`, `organise`/`organize`, `pyjamas`/`pajamas`, `jewellery`/`jewelry`, `aeroplane`/`airplane` ... รวมรูปผันที่มีจริง (`colours`, `coloured`) ใช้ **ตารางปิดของคู่คำ** ไม่ใช้กฎต่อท้าย (`-our`→`-or` จะทำให้ `four`/`hour`/`your` กลายเป็นคำอื่น) และไม่ใส่คู่ที่อีกฝั่งเป็นคนละคำ (`check`/`cheque`, `story`/`storey`, `whisky`/`whiskey`) ผู้เขียนเขียนรูปเดียวพอ ไม่ต้องใส่อีกสะกดใน `accept` ปิดได้ด้วย `strict: true` ข้อควรรู้: `practise` (กริยา) กับ `practice` (นาม) ถูกพับเป็นคำเดียวกัน
+
 **`strict: true`** (ไม่บังคับ) ใช้ได้กับ `dictation`, `translate_th_en`, `fill_blank` ปิดการพับ เหลือเพียงตัวพิมพ์เล็กใหญ่/เครื่องหมาย/ช่องว่าง ตัวอย่างข้อที่ต้องใช้: คำตอบของ `fill_blank` ที่เป็นคำย่อหรือตัวเลข (`answer: ["ten"]`) **ต้องตั้ง `strict` ให้ชัด** (`true` = รับ `ten` เท่านั้น, `false` = รับ `10` ด้วย) กฎ `answer-forms` บังคับ
 
 ตัวอย่าง: `"B, U, S"` กับ `"b u s"` ตรงกัน, `"Nice to meet you…"` ตรงกับ `"Nice to meet you."`, `"He's 10"` ตรงกับ `"He is ten"` แต่ `"B-U-S"` ไม่ตรงกับ `"B U S"` (ขีดกลางไม่ถูกลบ) และ `"Its a door"` ไม่ตรงกับ `"It's a door"`
@@ -224,6 +226,13 @@ ERROR content/lessons/day-021.json [d021-write-02]: answer "ten" is a contractio
 - เขียนความเป็นเจ้าของด้วย `has` / `has got` ห้ามเขียนเป็น `'s` (`He's two cars` ผิด): ตัวตรวจเตือน (warning) เมื่อ `he's`/`she's` ตามด้วย no/many/a lot of/เลข 2-10 + คำนามในคลังคำ ที่ไม่ใช่หน่วยเวลา
 - ท้ายประโยคย่อย (`Yes, he is.`) และสรรพนามเดี่ยวหลัง `is` (`Where is he?`) ไม่ต้องมีรูปย่อ
 
+### `vocab-spelling`: หัวคำที่มีสะกดสองแบบต้องบอกอีกแบบใน `forms`
+หัวคำ (คำเดียว) ที่อยู่ในตารางอังกฤษ/อเมริกัน (`spelling.ts`) ต้องมีสะกดอีกแบบใน `forms`: `usSpelling` สำหรับหัวคำแบบอังกฤษ (`colour` → `"usSpelling": "color"`) หรือ `ukSpelling` สำหรับหัวคำแบบอเมริกัน เป็น **error** เพราะตารางเป็นตัวตัดสิน ไม่มีดุลยพินิจ (ค่าผิดหรือใช้คีย์ผิดฝั่งก็ error) หัวคำหลายคำไม่ถูกตรวจ
+
+```
+ERROR content/vocab/oxford-3000/a1.json [v-colour]: "colour" is a UK spelling in the UK/US table (src/lib/answers/spelling.ts), but forms has no usSpelling. Add "usSpelling": "color" to its forms (and remove "ukSpelling" if it is there).
+```
+
 ### `vocab-forms`: adjective ต้องลงรูปเปรียบเทียบ
 adjective ทุกคำใน `forms` ต้องมี `comparative` และ `superlative` (ให้ `taught-words` รู้ว่า `bigger` คือ `big`) หรือ `"gradable": "no"` ถ้าเทียบไม่ได้ (`dead`)
 
@@ -251,7 +260,7 @@ ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.
 | `topics` | `string[]` | อย่างน้อย 1 หมวด ตามรายการใน VOCABULARY.md |
 | `examples` | `{ en, th }[]` | ประโยคตัวอย่าง (เขียนเอง) อย่างน้อย 1 ประโยค |
 | `collocations` | `string[]?` | กลุ่มคำที่มักใช้ด้วยกัน |
-| `forms` | `object?` | รูปผัน เช่น `plural`, `past`, `pastParticiple`, `comparative`, `superlative` |
+| `forms` | `object?` | รูปผัน เช่น `plural`, `past`, `pastParticiple`, `comparative`, `superlative`; สะกดอีกแบบ `usSpelling` (หัวคำเป็นอังกฤษ: `colour` → `"color"`) หรือ `ukSpelling` (หัวคำเป็นอเมริกัน: `mom` → `"mum"`) ซึ่งนับเป็นรูปของคำนี้ใน `taught-words` เหมือน `plural`; `gradable: "no"` เป็นเครื่องหมาย ไม่ใช่รูปคำ UI ของแฟลชการ์ดไม่แสดง `forms` |
 
 ```json
 { "id": "v-meet", "word": "meet", "pos": "verb",

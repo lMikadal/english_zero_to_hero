@@ -146,10 +146,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "How much is the grey bag? It is ninety baht.",
-          "accept": [
-            "How much is the gray bag? It is ninety baht."
-          ]
+          "audioText": "How much is the grey bag? It is ninety baht."
         }
       ]
     },
