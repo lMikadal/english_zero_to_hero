@@ -115,7 +115,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าเสื้อโค้ตราคาเท่าไร"
           },
-          "audioText": "Nan is a customer in a shop in England. She wants a coat. The coat costs eighty pounds. It is expensive. Nan pays by card.",
+          "audioText": "A customer is in a shop in England. She wants a coat. The coat costs eighty pounds. It is expensive. She pays by card.",
           "question": {
             "en": "What does the coat cost?",
             "th": "เสื้อโค้ตราคาเท่าไร"

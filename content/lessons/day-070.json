@@ -1,0 +1,221 @@
+{
+  "day": 70,
+  "phase": 2,
+  "week": 10,
+  "type": "challenge",
+  "cefr": "A1",
+  "title": {
+    "en": "Week 10 challenge: a Sunday at home and a day in town",
+    "th": "ภารกิจสัปดาห์ที่ 10: วันอาทิตย์ที่บ้านและวันหนึ่งในเมือง"
+  },
+  "objectives": [
+    {
+      "en": "Say what the family is doing now",
+      "th": "พูดว่าครอบครัวกำลังทำอะไรอยู่ตอนนี้ได้"
+    },
+    {
+      "en": "Understand prices, food and directions in a short story",
+      "th": "เข้าใจราคา อาหาร และการบอกทางในเรื่องสั้นได้"
+    },
+    {
+      "en": "Write about where you are and what you are doing",
+      "th": "เขียนว่าคุณอยู่ที่ไหนและกำลังทำอะไรได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d070-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม -ing ท้ายคำออกเสียง /ɪŋ/ สั้น ๆ"
+          },
+          "text": "Is Leo helping Rose in the kitchen?",
+          "ipa": "/ɪz ˈliːoʊ ˈhelpɪŋ roʊz ɪn ðə ˈkɪtʃɪn/"
+        },
+        {
+          "id": "d070-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม"
+          },
+          "text": "The sun is in the east and the west.",
+          "ipa": "/ðə sʌn ɪz ɪn ði iːst ænd ðə west/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a Sunday and a shop",
+        "th": "ฟังเรื่องวันอาทิตย์และร้านค้า"
+      },
+      "exercises": [
+        {
+          "id": "d070-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสกำลังทำอะไร"
+          },
+          "audioText": "I am Dan. It is Sunday. We are at home. Rose is making soup with a carrot, a tomato and pepper. It is a delicious dish. Leo is helping Rose. I am reading a newspaper. Then we are full and happy.",
+          "question": {
+            "en": "What is Rose making?",
+            "th": "โรสกำลังทำอะไร"
+          },
+          "choices": [
+            "A cake",
+            "Soup",
+            "Ice cream"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d070-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าปากการาคาเท่าไร"
+          },
+          "audioText": "Nan is a customer in a shop. A pen costs fifty cents. A book costs ten euros. Nan buys a pen and a book. She pays by card.",
+          "question": {
+            "en": "How much does the pen cost?",
+            "th": "ปากการาคาเท่าไร"
+          },
+          "choices": [
+            "Fifty cents",
+            "Ten euros",
+            "Fifty pounds"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d070-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Rose teaches English. Leo speaks English at school.",
+          "strict": true
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d070-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Dan is reading a newspaper.",
+            "Rose is making soup.",
+            "Leo is helping Rose.",
+            "Nan is waiting in the cafe.",
+            "The cafe is opposite the bank.",
+            "The market is in the centre of the town.",
+            "The station is east of the market.",
+            "I am learning English."
+          ]
+        },
+        {
+          "id": "d070-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณกำลังทำอะไรและบ้านของคุณอยู่ทิศไหนของตลาด"
+          },
+          "prompt": "What are you doing? Is your house north, south, east or west of the market?",
+          "sampleAnswer": "I am reading a magazine. My house is south of the market.",
+          "keywords": [
+            "reading",
+            "south"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read a message",
+        "th": "อ่านข้อความ"
+      },
+      "exercises": [
+        {
+          "id": "d070-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Nan writes a message to Rose: \"I am in the town. I am using the map. The station is east of the market and the library is west of the market. I find the cafe. It is opposite the bank. I am waiting. The ice cream is delicious. Leo is trying a guitar in a shop. It is not expensive. Leo is a customer. He is speaking English!\"",
+          "questions": [
+            {
+              "question": {
+                "en": "What is Nan using?",
+                "th": "แนนกำลังใช้อะไร"
+              },
+              "choices": [
+                "The radio",
+                "The map",
+                "The computer"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What is opposite the bank?",
+                "th": "อะไรอยู่ตรงข้ามธนาคาร"
+              },
+              "choices": [
+                "The cafe",
+                "The station",
+                "The library"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is the guitar expensive?",
+                "th": "กีตาร์แพงหรือเปล่า"
+              },
+              "choices": [
+                "Yes, it is",
+                "No, it is not"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about now",
+        "th": "เขียนเกี่ยวกับตอนนี้"
+      },
+      "exercises": [
+        {
+          "id": "d070-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยค: คุณอยู่ที่ไหนตอนนี้ กำลังทำอะไร และบ้านหรือเมืองของคุณมีอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Write 5–6 sentences. Where are you now? What are you doing? What is in your house or your town?",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}
