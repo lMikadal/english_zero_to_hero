@@ -1,0 +1,224 @@
+{
+  "day": 28,
+  "phase": 1,
+  "week": 4,
+  "type": "challenge",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 4 challenge: my bag and my room",
+    "th": "ภารกิจสัปดาห์ที่ 4: กระเป๋าและห้องของฉัน"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read short descriptions of a bag and a room",
+      "th": "ฟังและอ่านคำบรรยายสั้น ๆ เกี่ยวกับกระเป๋าและห้องได้"
+    },
+    {
+      "en": "Tell about your bag or your room aloud in about 30 seconds",
+      "th": "เล่าเรื่องกระเป๋าหรือห้องของตัวเองด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write 5–6 sentences about your bag or your room",
+      "th": "เขียนเกี่ยวกับกระเป๋าหรือห้องของตัวเอง 5–6 ประโยคได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d028-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /r/ ใน red และ /l/ ใน blue และต่อเสียง an orange ให้เป็นเสียงเดียว"
+          },
+          "text": "I have a red bag, a blue pen and an orange umbrella.",
+          "ipa": "/aɪ hæv ə red bæɡ ə bluː pen ænd ən ˈɔːrɪndʒ ʌmˈbrelə/",
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        },
+        {
+          "id": "d028-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ keys, these, chairs ต้องสั่นคอ (/z/) จนจบเสียง"
+          },
+          "text": "The keys are on the floor. These chairs are grey.",
+          "ipa": "/ðə kiːz ɑːr ɑːn ðə flɔːr ðiːz tʃerz ɑːr ɡreɪ/",
+          "phonemes": [
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a bag and a room",
+        "th": "ฟังเรื่องกระเป๋าและห้อง"
+      },
+      "exercises": [
+        {
+          "id": "d028-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าร่มสีอะไร"
+          },
+          "audioText": "Hello! I am Rose. This is my bag. It is grey. I have a phone, a key and an umbrella in my bag. The umbrella is yellow. I have money in my bag too.",
+          "question": {
+            "en": "What colour is the umbrella?",
+            "th": "ร่มสีอะไร"
+          },
+          "choices": [
+            "Yellow",
+            "Grey",
+            "Orange"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d028-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าหมวกของลีโออยู่ที่ไหน"
+          },
+          "audioText": "Hi! I am Leo. I am nine. This is my room. The walls are green. The floor is brown. My bed is under the window. My ball is under the bed. My hat is on the bed.",
+          "question": {
+            "en": "Where is Leo's hat?",
+            "th": "หมวกของลีโออยู่ที่ไหน"
+          },
+          "choices": [
+            "On the bed",
+            "Under the bed",
+            "Under the window"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d028-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "This is my new bag. It is pink. It is eighty baht."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d028-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "Hi, Nan! Is this your bag?",
+            "Yes, it is. It is new.",
+            "It is very nice! What colour is it?",
+            "It is pink.",
+            "How much is it?",
+            "It is eighty baht. It is cheap!",
+            "I love it! Goodbye!"
+          ]
+        },
+        {
+          "id": "d028-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องกระเป๋าของคุณด้วยเสียงประมาณ 30 วินาที: สีอะไร มีอะไรอยู่ข้างใน ราคาเท่าไร"
+          },
+          "prompt": "What colour is it? What do you have in it? How much is it?",
+          "sampleAnswer": "I have a black bag. It is new. I have a phone, a key and a pen in my bag. I have an apple too. The bag is ninety baht.",
+          "keywords": [
+            "have",
+            "bag"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read about a room",
+        "th": "อ่านเรื่องห้อง"
+      },
+      "exercises": [
+        {
+          "id": "d028-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Nan. I am forty and I am a teacher in Bangkok. This is my room. It is a nice room. The walls are yellow and the floor is brown. I have two white chairs and a small table. The table is under the window. My phone, my keys and an orange umbrella are on the table. My pink bag is new. It is under the chair. I love my room!",
+          "questions": [
+            {
+              "question": {
+                "en": "What colour are the walls?",
+                "th": "ผนังสีอะไร"
+              },
+              "choices": [
+                "Yellow",
+                "White"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is the pink bag?",
+                "th": "กระเป๋าสีชมพูอยู่ที่ไหน"
+              },
+              "choices": [
+                "Under the chair",
+                "On the table"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Nan?",
+                "th": "แนนอายุเท่าไร"
+              },
+              "choices": [
+                "Fourteen",
+                "Forty"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about your bag or room",
+        "th": "เขียนเกี่ยวกับกระเป๋าหรือห้อง"
+      },
+      "exercises": [
+        {
+          "id": "d028-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยคเกี่ยวกับกระเป๋าหรือห้องของคุณ: สีอะไร มีอะไรอยู่ข้างใน หรือของอยู่ที่ไหน"
+          },
+          "prompt": "Write 5–6 sentences about your bag or your room. What colour is it? What do you have? Where is it?",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,343 @@
+{
+  "day": 23,
+  "phase": 1,
+  "week": 4,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "A bag, an apple! a and an",
+    "th": "A bag, an apple! a และ an"
+  },
+  "objectives": [
+    {
+      "en": "Use a and an correctly: a bag, an apple, an umbrella",
+      "th": "ใช้ a และ an ให้ถูก: a bag, an apple, an umbrella"
+    },
+    {
+      "en": "Say /l/ and /r/ in clusters: glass–grass, play–pray, fly–fry, clown–crown",
+      "th": "แยกเสียง /l/ กับ /r/ ในคำควบกล้ำ: glass–grass, play–pray, fly–fry, clown–crown"
+    },
+    {
+      "en": "Name things in a bag and say how old someone is (forty)",
+      "th": "บอกชื่อของในกระเป๋าและบอกอายุ (forty) ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-brown",
+    "v-orange",
+    "v-bag",
+    "v-phone",
+    "v-key",
+    "v-apple",
+    "v-egg",
+    "v-umbrella",
+    "v-forty"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "/l/ and /r/ in clusters",
+        "th": "/l/ และ /r/ ในคำควบกล้ำ"
+      },
+      "exercises": [
+        {
+          "id": "d023-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "l",
+          "ipa": "/l/",
+          "tipTh": "วันนี้ฝึก /l/ และ /r/ ในคำควบกล้ำ (bl, br, gl, gr) คนไทยมักทำผิดสองแบบ: ตัดเสียงที่สองทิ้ง (blue เป็น 'บู', brown เป็น 'บาว') หรือเติมสระแทรก (blue เป็น 'บะลู') วิธีแก้คือเตรียมลิ้นไว้ล่วงหน้า: ปิดริมฝีปากออกเสียง b แล้วยกลิ้นไปตำแหน่ง /l/ (ปลายลิ้นแตะเหงือก) หรือ /r/ (ม้วนลิ้น ไม่แตะ) ทันที โดยไม่มีสระคั่น อีกจุดหนึ่งคือ /l/ ท้ายคำใน apple ให้ปลายลิ้นแตะเหงือกแล้วจบเสียง ไม่ใช่ 'แอ็ปเปิ้น'",
+          "examples": [
+            "blue",
+            "black",
+            "brown",
+            "umbrella"
+          ]
+        },
+        {
+          "id": "d023-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "glass",
+              "b": "grass",
+              "answer": "b"
+            },
+            {
+              "a": "play",
+              "b": "pray",
+              "answer": "a"
+            },
+            {
+              "a": "fry",
+              "b": "fly",
+              "answer": "b"
+            },
+            {
+              "a": "crown",
+              "b": "clown",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "l",
+            "r"
+          ]
+        },
+        {
+          "id": "d023-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /l/ ใน blue และ /r/ ใน brown อย่าเติมสระ 'บะลู' หรือ 'บะราว'"
+          },
+          "text": "A blue bag and a brown bag.",
+          "ipa": "/ə bluː bæɡ ænd ə braʊn bæɡ/",
+          "phonemes": [
+            "l",
+            "r"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: things in a bag",
+        "th": "ฟัง: ของในกระเป๋า"
+      },
+      "exercises": [
+        {
+          "id": "d023-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามีอะไรอยู่ในกระเป๋า"
+          },
+          "audioText": "Hi! I am Leo. This is my bag. It is brown. I have a phone, a key and an apple in my bag.",
+          "question": {
+            "en": "What is in the bag?",
+            "th": "ในกระเป๋ามีอะไร"
+          },
+          "choices": [
+            "A phone, a key and an apple",
+            "A cup, a key and an umbrella",
+            "A book, a pen and an egg"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d023-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนอายุเท่าไร ระวัง forty กับ fourteen"
+          },
+          "audioText": "My friend Nan is a teacher. She is forty. Her bag is brown.",
+          "question": {
+            "en": "How old is Nan?",
+            "th": "แนนอายุเท่าไร"
+          },
+          "choices": [
+            "Fourteen",
+            "Forty",
+            "Four"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d023-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "I have an apple, an egg and a phone."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "What is it?",
+        "th": "มันคืออะไร"
+      },
+      "exercises": [
+        {
+          "id": "d023-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "What is it? It is a bag.",
+            "It is a brown bag.",
+            "Is it an apple? Yes, it is.",
+            "It is an egg.",
+            "Is it an umbrella? No, it is not. It is a bag.",
+            "It is a phone. It is a key."
+          ]
+        },
+        {
+          "id": "d023-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าในกระเป๋าของคุณมีอะไรบ้าง ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What is in your bag?",
+          "sampleAnswer": "I have a phone, a key and a pen. I have an umbrella too.",
+          "keywords": [
+            "have"
+          ]
+        },
+        {
+          "id": "d023-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม a ใช้หน้าเสียงพยัญชนะ (a key) ส่วน an ใช้หน้าเสียงสระ (an apple) และให้ต่อเสียงกันเป็นคำเดียว 'อะแน็ปเปิล'"
+          },
+          "text": "A key, a phone, a bag, an apple, an egg.",
+          "ipa": "/ə kiː ə foʊn ə bæɡ ən ˈæpl ən eɡ/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My bag",
+        "th": "กระเป๋าของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d023-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Nan. This is my bag. It is brown. I have a phone, a key and a book in my bag. I have an umbrella, too. It is orange. My friend is Rose. She is thirty. Her umbrella is yellow.",
+          "questions": [
+            {
+              "question": {
+                "en": "What is orange?",
+                "th": "อะไรเป็นสีส้ม"
+              },
+              "choices": [
+                "The phone",
+                "The umbrella",
+                "The key"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What colour is Nan's bag?",
+                "th": "กระเป๋าของแนนสีอะไร"
+              },
+              "choices": [
+                "Brown",
+                "Orange"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Rose?",
+                "th": "โรสอายุเท่าไร"
+              },
+              "choices": [
+                "Thirteen",
+                "Thirty"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: a and an",
+        "th": "เขียน: a และ an"
+      },
+      "exercises": [
+        {
+          "id": "d023-write-01",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติม a หรือ an (an ใช้หน้าเสียงสระ)"
+          },
+          "text": "I have ___ apple and ___ pen.",
+          "answer": [
+            "an",
+            "a"
+          ]
+        },
+        {
+          "id": "d023-write-02",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "It",
+            "an",
+            "egg"
+          ],
+          "answer": "It is an egg",
+          "accept": [
+            "Is it an egg"
+          ]
+        },
+        {
+          "id": "d023-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันมีร่มสีส้ม",
+          "accept": [
+            "I have an orange umbrella"
+          ]
+        },
+        {
+          "id": "d023-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-brown"
+            },
+            {
+              "vocabId": "v-orange"
+            },
+            {
+              "vocabId": "v-bag"
+            },
+            {
+              "vocabId": "v-phone"
+            },
+            {
+              "vocabId": "v-key"
+            },
+            {
+              "vocabId": "v-apple"
+            },
+            {
+              "vocabId": "v-egg"
+            },
+            {
+              "vocabId": "v-umbrella"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
