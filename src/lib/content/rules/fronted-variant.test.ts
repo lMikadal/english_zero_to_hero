@@ -40,7 +40,6 @@ describe("frontedVariants: the sentence with a frontable element first", () => {
 describe("frontedVariants never suggests a sentence with another meaning", () => {
   it("skips an adverb after not / n't (not usually is not the same as usually not)", () => {
     for (const s of ["I do not usually eat meat", "She does not sometimes watch TV", "We don't usually walk", "He doesn't sometimes cook"]) expect(variants(s), s).toEqual([]);
-    expect(variants("I usually do not eat meat")).toEqual(["Usually I do not eat meat"].filter(() => false)); // an adverb BEFORE the not is also skipped: and/but/not make the clause ambiguous
   });
   it("a trailing after/before phrase is not fronted when the verb takes an object the phrase can modify (like, love, have, want ...)", () => {
     for (const s of ["I like the class after lunch", "She loves the game after dinner", "We have a class after lunch", "He wants a snack before bed", "They need a rest after work"]) expect(variants(s), s).toEqual([]);

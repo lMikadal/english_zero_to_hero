@@ -42,8 +42,10 @@ export function checkGrammarNote(ctx: RuleContext): Problem[] {
         if (i !== 0) add("a grammar_note must be the first exercise of its section, so the learner reads the explanation before the practice. Move it to the start of the section.");
         if (section.skill === "pronunciation") add("a grammar_note must not be in a pronunciation section (that section is about sounds). Put it first in the listening, speaking, reading or writing section.");
         const header = ex.table?.[0] ?? [];
-        if (header.some((cell) => !/[\u0E00-\u0E7F]/.test(cell))) {
-          add(`table row 1 is the header (the card always shows the first row as the header) and must be written in Thai, but ${header.filter((c) => !/[\u0E00-\u0E7F]/.test(c)).map((c) => `"${c}"`).join(", ")} has no Thai letter. Write each header cell in Thai (for example "ประธาน", "กริยา") and keep the English forms in the rows below.`);
+        // a cell cannot be empty, so an empty corner cell is written as a bare dash: that is allowed in the header
+        const notThai = header.filter((c) => !/[\u0E00-\u0E7F]/.test(c) && !/^[\s\-\u2010-\u2015]+$/.test(c));
+        if (notThai.length > 0) {
+          add(`table row 1 is the header (the card always shows the first row as the header) and must be written in Thai, but ${notThai.map((c) => `"${c}"`).join(", ")} has no Thai letter (a bare "-" is fine for an empty corner cell). Write each header cell in Thai (for example "ประธาน", "กริยา") and keep the English forms in the rows below.`);
         }
         const width = ex.table?.[0]?.length ?? 0;
         ex.table?.forEach((row, r) => {

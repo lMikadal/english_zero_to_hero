@@ -5,8 +5,11 @@
 // "Sometimes we watch a film" and "Every day I walk to school", which the grammar card itself teaches.
 // Never demanded: always, never, often (fronting them is unnatural); questions and imperatives; an adverb in a sentence with a comma or
 // and/but/or (the adverb may belong to one clause); "look/take/ask after"; an after/before phrase that contains is/are/am (a noun phrase
-// before the verb: "The class before lunch is big"). KNOWN false positive: a trailing "after X" may modify the object noun ("I like the
-// class after lunch"); the warning then asks for a sentence that means something else (reword the item or ignore the warning).
+// before the verb: "The class before lunch is big"). Meaning guards: no suggestion for an adverb after not/n't;
+// no after/before suggestion when the sentence has a verb whose object the phrase may modify (like, love, have, want, need, see, know, is ...,
+// STATIVE_OBJECT_VERBS: "I like the class after lunch"). After an activity verb with an object ("plays football after school") the phrase is
+// adverbial and is still demanded: that is the week-7 incident. A capitalised first word that is not a function word or a bank word is a
+// name (London) and keeps its capital.
 // Dictation is not checked (it has one text), nor fill_blank.
 import { canonicalAnswer } from "@/lib/answers/equivalents";
 import { normalizeAnswer } from "@/lib/answers/normalize";
@@ -27,15 +30,22 @@ const BE = new Set(["is", "are", "am", "was", "were"]);
 const NAMES = new Set(PROPER_NAMES);
 const TITLES = new Set(["Mr", "Mrs", "Ms", "Miss", "Dr"]);
 
+/** Verbs whose object can be modified by a following after/before phrase ("I like the class after lunch"): fronting would change the meaning. */
+const STATIVE_OBJECT_VERBS = new Set(["like", "likes", "love", "loves", "hate", "hates", "want", "wants", "need", "needs", "have", "has", "see", "sees", "know", "knows", "prefer", "prefers", "enjoy", "enjoys",
+  "is", "are", "am"]);
+/** Words that are never a name, so a capital at the start of the sentence is only a sentence capital. */
+const FUNCTION_WORDS = new Set(["i", "he", "she", "it", "we", "they", "you", "my", "your", "his", "her", "our", "their", "its", "the", "a", "an", "this", "that", "these", "those", "there", "some", "all", "many", "no"]);
 const norm = (s: string) => canonicalAnswer(normalizeAnswer(s));
 const keepCase = (t: string) => t === "I" || NAMES.has(t.replace(/['’]s$/, "")) || TITLES.has(t);
-const front = (phrase: string[], rest: string[]): string => {
-  const words = [...phrase.map((w, i) => (i === 0 ? w[0].toUpperCase() + w.slice(1) : w)), ...rest.map((w, i) => (i === 0 && !keepCase(w) ? w[0].toLowerCase() + w.slice(1) : w))];
+/** The sentence with `phrase` first. The old first word loses its capital only when it is a function word or a known (bank) word: an unknown capitalised word is a name ("London") and keeps it. */
+const front = (phrase: string[], rest: string[], known: ReadonlySet<string>): string => {
+  const lowerIt = (w: string) => !keepCase(w) && (FUNCTION_WORDS.has(w.toLowerCase()) || known.has(w.toLowerCase()));
+  const words = [...phrase.map((w, i) => (i === 0 ? w[0].toUpperCase() + w.slice(1) : w)), ...rest.map((w, i) => (i === 0 && lowerIt(w) ? w[0].toLowerCase() + w.slice(1) : w))];
   return words.join(" ");
 };
 
 /** The variants of `sentence` with a frontable element first (none when it is a question, an imperative or needs nothing). */
-export function frontedVariants(sentence: string, bankVerbs: ReadonlySet<string> = new Set()): { element: string; variant: string }[] {
+export function frontedVariants(sentence: string, bankVerbs: ReadonlySet<string> = new Set(), known: ReadonlySet<string> = new Set()): { element: string; variant: string }[] {
   if (/\?\s*$/.test(sentence)) return [];
   const s = sentence.replace(/[.!?]+$/, "").trim();
   const tokens = s.split(/\s+/);
@@ -44,8 +54,9 @@ export function frontedVariants(sentence: string, bankVerbs: ReadonlySet<string>
   const out: { element: string; variant: string }[] = [];
 
   const adv = lower.findIndex((t, i) => i > 0 && FRONT_ADVERBS.has(t));
-  if (adv > 0 && !/,/.test(s) && !lower.some((t) => t === "and" || t === "but" || t === "or")) {
-    out.push({ element: lower[adv], variant: front([tokens[adv]], [...tokens.slice(0, adv), ...tokens.slice(adv + 1)]) });
+  const negated = lower.slice(0, adv).some((t) => t === "not" || t.endsWith("n't")); // "do not usually eat" is not "usually do not eat"
+  if (adv > 0 && !negated && !/,/.test(s) && !lower.some((t) => t === "and" || t === "but" || t === "or")) {
+    out.push({ element: lower[adv], variant: front([tokens[adv]], [...tokens.slice(0, adv), ...tokens.slice(adv + 1)], known) });
   }
 
   const n = tokens.length;
@@ -60,7 +71,9 @@ export function frontedVariants(sentence: string, bankVerbs: ReadonlySet<string>
       if ((lower[k] === "after" || lower[k] === "before") && !/^(look|looks|looked|looking|take|takes|ask|asks)$/.test(lower[k - 1]) && !lower.slice(k + 1).some((t) => BE.has(t))) { start = k; break; }
     }
   }
-  if (start >= 2) out.push({ element: lower.slice(start).join(" "), variant: front(tokens.slice(start), tokens.slice(0, start)) });
+  // after/before: with a verb like "like" or "have" the phrase may belong to the object ("I like the class after lunch"): no suggestion
+  const modifiesObject = start >= 2 && /^(after|before)$/.test(lower[start]) && lower.slice(0, start).some((t) => STATIVE_OBJECT_VERBS.has(t));
+  if (start >= 2 && !modifiesObject) out.push({ element: lower.slice(start).join(" "), variant: front(tokens.slice(start), tokens.slice(0, start), known) });
   return out;
 }
 
@@ -70,6 +83,8 @@ export function checkFrontedVariant(ctx: RuleContext): Problem[] {
   const nouns = new Set<string>();
   for (const { item } of ctx.bank.values()) (item.pos === "verb" ? verbs : nouns).add(item.word.toLowerCase());
   const bankVerbs = new Set([...verbs].filter((v) => !nouns.has(v) && !v.includes(" ")));
+  const known = new Set<string>();
+  for (const { item } of ctx.bank.values()) for (const w of item.word.toLowerCase().split(/\s+/)) known.add(w).add(`${w}s`);
   for (const { file, sections } of ctx.units) {
     for (const section of sections) {
       for (const ex of section.exercises) {
@@ -78,7 +93,7 @@ export function checkFrontedVariant(ctx: RuleContext): Problem[] {
         const have = new Set(sentences.map(norm));
         const missing: { from: string; element: string; variant: string }[] = [];
         for (const sentence of sentences) {
-          for (const v of frontedVariants(sentence, bankVerbs)) {
+          for (const v of frontedVariants(sentence, bankVerbs, known)) {
             if (!have.has(norm(v.variant)) && !missing.some((m) => norm(m.variant) === norm(v.variant))) missing.push({ from: sentence, ...v });
           }
         }

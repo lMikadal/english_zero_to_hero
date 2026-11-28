@@ -4,7 +4,7 @@
 //   "Leo sometimes watches TV"  /  "Sometimes Leo watches TV"  /  "Rose is never late" (verb "be", the adjective is the object)
 // where who is a PROPER_NAMES name, he/she right after a sentence that names exactly one person, or I with a single "I am NAME"
 // speaker or a "Name:" dialogue label. Verbs are made base forms (watches -> watch), the object head loses determiners, "to/at/in..."
-// and a plural s. The same who + verb + object with two different adverbs in one week is one warning naming both places.
+// and a plural s; a following prepositional phrase ("by bus", "for dinner") is part of the claim, so different habits are not merged. A clause is cut at "but"/"and" ("Dan never cooks but Rose always cooks" is two claims). The same who + verb + object with two different adverbs in one week is one warning naming both places.
 // Questions, negations ("does not often"), general statements ("People often ...") and everything else are not read.
 // NOT detected (docs/FINDINGS.md): a frequency written after the verb ("Leo watches TV sometimes"), frequency phrases ("twice a week",
 // "every day"), the same habit worded with a different verb or object (watch TV / watch a film), "they/we", a pronoun more than one
@@ -15,7 +15,7 @@ import type { RuleContext } from "./context";
 import { learnerEnglish } from "./learner-text";
 
 export const CAST_FACTS_RULE = "cast-facts";
-export type FrequencyClaim = { who: string; adverb: string; verb: string; head: string; sentence: string };
+export type FrequencyClaim = { who: string; adverb: string; verb: string; head: string; /** the prepositional phrase after the object ("by bus", "for dinner"), part of the claim */ tail: string; sentence: string };
 
 const ADVERBS = "always|usually|often|sometimes|never";
 const NAME = `(${PROPER_NAMES.join("|")})`;
@@ -26,7 +26,7 @@ const BE_SENTENCE = new RegExp(String.raw`^${SUBJECT}\s+(?:is|are|am)\s+(${ADVER
 const SPEAKER = new RegExp(String.raw`\b(?:I am|I'm|My name is|My name's)\s+${NAME}\b`, "g");
 const LABEL = new RegExp(String.raw`^${NAME}:\s*`);
 const NAME_G = new RegExp(String.raw`\b${NAME}\b`, "g");
-const SKIP = new Set(["a", "an", "the", "my", "your", "his", "her", "our", "their", "some", "any", "to", "at", "in", "on", "for", "with", "by", "up", "of", "from", "about"]);
+const SKIP = new Set(["but", "and", "or", "a", "an", "the", "my", "your", "his", "her", "our", "their", "some", "any", "to", "at", "in", "on", "for", "with", "by", "up", "of", "from", "about"]);
 
 function baseVerb(verb: string, thirdPerson: boolean): string {
   const v = verb.toLowerCase();
@@ -39,10 +39,15 @@ function baseVerb(verb: string, thirdPerson: boolean): string {
   return v;
 }
 
-function objectHead(rest: string): string {
-  const w = (rest.match(/[A-Za-z]+/g) ?? []).map((x) => x.toLowerCase()).find((x) => !SKIP.has(x));
-  if (!w) return "";
-  return w.length > 3 && w.endsWith("s") && !w.endsWith("ss") ? w.slice(0, -1) : w;
+const singular = (w: string) => (w.length > 3 && w.endsWith("s") && !w.endsWith("ss") ? w.slice(0, -1) : w);
+const DETERMINERS = new Set(["a", "an", "the", "my", "your", "his", "her", "our", "their", "some", "any"]);
+
+/** The first noun after the verb (head) and the rest of the clause without determiners (tail: "by bus", "for dinner"). */
+function objectParts(rest: string): { head: string; tail: string } {
+  const words = (rest.match(/[A-Za-z]+/g) ?? []).map((x) => x.toLowerCase());
+  const at = words.findIndex((x) => !SKIP.has(x));
+  if (at < 0) return { head: "", tail: "" };
+  return { head: singular(words[at]), tail: words.slice(at + 1).filter((x) => !DETERMINERS.has(x)).map(singular).join(" ") };
 }
 
 export function frequencyClaims(text: string): FrequencyClaim[] {
@@ -56,17 +61,18 @@ export function frequencyClaims(text: string): FrequencyClaim[] {
     const label = LABEL.exec(line);
     const speaker = label ? label[1] : single;
     let previousNames = new Set<string>();
-    for (const sentence of (label ? line.slice(label[0].length) : line).split(/(?<=[.!?])\s+/)) {
-      const s = sentence.trim().replace(/[.!?]+$/, "");
-      const names = new Set([...s.matchAll(NAME_G)].map((m) => m[1]));
-      const prior = previousNames;
+    for (const whole of (label ? line.slice(label[0].length) : line).split(/(?<=[.!?])\s+/)) {
+      const names = new Set([...whole.matchAll(NAME_G)].map((m) => m[1]));
+      const prior = previousNames; // the pronoun of a clause refers to the previous SENTENCE, not to a clause of its own sentence
       previousNames = names;
-      if (/\?\s*$/.test(sentence) || /\bnot\b|n't\b/i.test(s)) continue;
+      for (const sentence of whole.split(/,?\s+(?:but|and)\s+/)) {
+      const s = sentence.trim().replace(/[.!?]+$/, "");
+      if (/\?\s*$/.test(whole) || /\bnot\b|n't\b/i.test(s)) continue;
       let who: string | undefined, adverb: string | undefined, verb: string | undefined, rest = "", subject: string | undefined;
       let m = WITH_ADVERB_AFTER.exec(s);
       if (m) [, subject, adverb, verb, rest] = m;
       else if ((m = WITH_ADVERB_FIRST.exec(s))) [, adverb, subject, verb, rest] = [m[0], m[1], m[2], m[3], m[4]];
-      let head = "";
+      let head = "", tail = "";
       if (!m) {
         const b = BE_SENTENCE.exec(s);
         if (!b) continue;
@@ -80,7 +86,9 @@ export function frequencyClaims(text: string): FrequencyClaim[] {
       else who = subject;
       if (!who) continue;
       const thirdPerson = subject !== "I";
-      out.push({ who, adverb: adverb.toLowerCase(), verb: verb === "be" ? "be" : baseVerb(verb, thirdPerson), head: head || objectHead(rest), sentence: s });
+      const parts = head ? { head, tail: "" } : objectParts(rest);
+      out.push({ who, adverb: adverb.toLowerCase(), verb: verb === "be" ? "be" : baseVerb(verb, thirdPerson), head: parts.head, tail: parts.tail, sentence: s });
+      }
     }
   }
   return out;
@@ -92,7 +100,7 @@ export function checkCastFacts(ctx: RuleContext): Problem[] {
   const seen = new Map<string, Seen[]>(); // `${week}|${who}|${verb}|${head}`
   const note = (day: number, file: string, id: string, where: string, text: string) => {
     for (const c of frequencyClaims(text)) {
-      const key = `${Math.floor((day - 1) / 7)}|${c.who}|${c.verb}|${c.head}`;
+      const key = `${Math.floor((day - 1) / 7)}|${c.who}|${c.verb}|${c.head}|${c.tail}`;
       seen.set(key, [...(seen.get(key) ?? []), { ...c, file, id, where, day }]);
     }
   };
@@ -114,7 +122,7 @@ export function checkCastFacts(ctx: RuleContext): Problem[] {
     const differing = claims.filter((c) => c.adverb !== first.adverb);
     if (differing.length === 0) continue;
     const week = Math.floor((first.day - 1) / 7) * 7 + 1;
-    const what = `${first.verb}${first.head ? ` ${first.head}` : ""}`;
+    const what = `${first.verb}${first.head ? ` ${first.head}` : ""}${first.tail ? ` ${first.tail}` : ""}`;
     problems.push({
       rule: CAST_FACTS_RULE, file: differing[0].file, id: differing[0].id, severity: "warning",
       message: `"${first.who}" ${what} has two frequencies in days ${week}-${week + 6}: "${first.adverb}" in ${first.where} ("${first.sentence}") but ${differing.map((c) => `"${c.adverb}" in ${c.where} ("${c.sentence}")`).join("; ")}. Within one week a character's habit keeps one frequency adverb: change one of them.`,
