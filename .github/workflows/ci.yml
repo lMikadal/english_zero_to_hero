@@ -61,6 +61,11 @@ jobs:
       - name: make check
         run: make check
 
+      # Warnings do not fail the check; show them to reviewers of content PRs.
+      - name: Content validator report in the job summary
+        if: always()
+        run: if [ -f .content-validate-summary.md ]; then cat .content-validate-summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+
       - name: Migrations apply to a fresh database
         run: make db-migrate
 

@@ -51,11 +51,14 @@ describe("normalizeAnswer: unicode hardening", () => {
 });
 
 describe("matchesAny", () => {
+  it("treats a contraction and its full form as the same answer (equivalents.ts)", () => {
+    expect(matchesAny("I am from Bangkok", ["I'm from Bangkok"])).toBe(true);
+  });
   it("matches after normalising both sides", () => {
     expect(matchesAny("i’m from bangkok.", ["I'm from Bangkok"])).toBe(true);
   });
   it("is false when nothing matches", () => {
-    expect(matchesAny("I am from Bangkok", ["I'm from Bangkok"])).toBe(false);
+    expect(matchesAny("I am from Chiang Mai", ["I'm from Bangkok"])).toBe(false);
   });
   it("is false for an empty accepted list and for input that normalises to nothing", () => {
     expect(matchesAny("x", [])).toBe(false);

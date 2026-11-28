@@ -65,7 +65,7 @@
     "ipa": {"us": "/haʊ/", "uk": "/haʊ/"},
     "th": "อย่างไร, (ใช้ถามสภาพ) เป็นอย่างไรบ้าง",
     "topics": ["greetings", "communication"],
-    "examples": [{"en": "How are you today?", "th": "วันนี้เป็นยังไงบ้าง"}, {"en": "How do you spell it?", "th": "สะกดยังไง"}],
+    "examples": [{"en": "How are you, Ann?", "th": "แอนเป็นยังไงบ้าง"}, {"en": "How is Sam?", "th": "แซมเป็นยังไงบ้าง"}],
     "collocations": ["how are you", "how old"]
   },
   {
@@ -76,7 +76,7 @@
     "ipa": {"us": "/faɪn/", "uk": "/faɪn/"},
     "th": "สบายดี, ไม่เป็นไร",
     "topics": ["greetings", "feelings"],
-    "examples": [{"en": "I'm fine, thank you.", "th": "ฉันสบายดี ขอบคุณ"}, {"en": "My dog is fine.", "th": "หมาของฉันสบายดี"}],
+    "examples": [{"en": "I'm fine, thank you.", "th": "ฉันสบายดี ขอบคุณ"}, {"en": "My cat is fine.", "th": "แมวของฉันสบายดี"}],
     "collocations": ["I'm fine", "feel fine"],
     "forms": {"comparative": "finer", "superlative": "finest"}
   },
@@ -112,7 +112,7 @@
     "ipa": {"us": "/bed/", "uk": "/bed/"},
     "th": "เตียง",
     "topics": ["home"],
-    "examples": [{"en": "My bed is big.", "th": "เตียงของฉันใหญ่"}],
+    "examples": [{"en": "My bed is good.", "th": "เตียงของฉันดี"}],
     "collocations": ["go to bed", "a big bed"],
     "forms": {"plural": "beds"}
   },
@@ -194,7 +194,7 @@
     "ipa": {"us": "/sɪt/", "uk": "/sɪt/"},
     "th": "นั่ง",
     "topics": ["daily_routine", "home"],
-    "examples": [{"en": "Please sit down.", "th": "เชิญนั่งก่อน"}],
+    "examples": [{"en": "Sit, Sam.", "th": "นั่งสิ แซม"}],
     "collocations": ["sit down"],
     "forms": {"past": "sat", "pastParticiple": "sat"}
   },
@@ -206,7 +206,7 @@
     "ipa": {"us": "/bɪɡ/", "uk": "/bɪɡ/"},
     "th": "ใหญ่",
     "topics": ["places_city", "home"],
-    "examples": [{"en": "My dog is big.", "th": "หมาของฉันตัวใหญ่"}],
+    "examples": [{"en": "My cat is big.", "th": "แมวของฉันตัวใหญ่"}],
     "collocations": ["a big city", "a big bed"],
     "forms": {"comparative": "bigger", "superlative": "biggest"}
   },
@@ -348,7 +348,7 @@
     "ipa": {"us": "/ˈletər/", "uk": "/ˈletə/"},
     "th": "ตัวอักษร, จดหมาย",
     "topics": ["communication", "work_study"],
-    "examples": [{"en": "A is the first letter.", "th": "A เป็นตัวอักษรตัวแรก"}],
+    "examples": [{"en": "A is a letter.", "th": "A เป็นตัวอักษร"}],
     "collocations": ["capital letter", "the letter A"],
     "forms": {"plural": "letters"}
   },
@@ -1156,7 +1156,7 @@
       "us": "/noʊ/",
       "uk": "/nəʊ/"
     },
-    "th": "ไม่ (คำตอบ ตรงข้ามกับ ใช่)",
+    "th": "เปล่า, ไม่ใช่ (ใช้ตอบ ตรงข้ามกับ ใช่)",
     "topics": [
       "communication"
     ],
@@ -1715,5 +1715,17 @@
     "collocations": [
       "in the park"
     ]
+  },
+  {
+    "id": "v-box",
+    "word": "box",
+    "pos": "noun",
+    "oxford": {"list": "3000", "level": "A1"},
+    "ipa": {"us": "/bɑːks/", "uk": "/bɒks/"},
+    "th": "กล่อง",
+    "topics": ["home"],
+    "examples": [{"en": "The box is hot.", "th": "กล่องร้อน"}],
+    "collocations": ["a big box"],
+    "forms": {"plural": "boxes"}
   }
 ]

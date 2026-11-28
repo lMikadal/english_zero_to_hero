@@ -32,6 +32,83 @@ describe("runValidate", () => {
   });
 });
 
+describe("runValidate: content rules", () => {
+  const write = (name: string, value: unknown) => {
+    fs.mkdirSync(path.dirname(path.join(root, name)), { recursive: true });
+    fs.writeFileSync(path.join(root, name), JSON.stringify(value));
+  };
+  const word = {
+    id: "v-hello", word: "hello", pos: "exclamation", oxford: { list: "3000", level: "A1" }, ipa: { us: "/x/", uk: "/x/" },
+    th: "สวัสดี", topics: ["greetings"], examples: [{ en: "Hello, zebra.", th: "สวัสดี" }],
+  };
+  const lesson = {
+    day: 1, phase: 1, week: 1, type: "lesson", cefr: "preA1", title: { en: "Hello", th: "สวัสดี" }, objectives: [{ en: "Hello", th: "สวัสดี" }],
+    estimatedMinutes: 20, vocab: ["v-hello"],
+    sections: [{ skill: "listening", title: { en: "Hello", th: "สวัสดี" }, exercises: [{ id: "d001-listen-01", type: "dictation", instruction: { th: "ก" }, audioText: "Hello." }] }],
+  };
+
+  it("prints the summary line, then the problems grouped under a header naming the rule", () => {
+    write("lessons/day-001.json", lesson);
+    write("vocab/oxford-3000/a1.json", [word]);
+    const out: string[] = [];
+    expect(runValidate(root, (l) => out.push(l))).toBe(1);
+    expect(out[0]).toBe("lessons: 1 | vocab bank: 1 words | introduced: 1 (100%) | not yet in any lesson: 0");
+    const header = out.findIndex((l) => l.includes("== rule taught-words (1)"));
+    expect(header).toBeGreaterThan(0);
+    expect(out[header + 1]).toMatch(/^ERROR content\/vocab\/oxford-3000\/a1\.json \[v-hello\]: examples\[0\] "Hello, zebra\."/);
+    expect(out[out.length - 1]).toBe("content: 1 problem(s) found");
+  });
+});
+
+describe("runValidate: warnings", () => {
+  it("prints a warning (near-clash gloss) without failing and says so in the last line", () => {
+    const entry = (id: string, th: string, examples: string[]) => ({
+      id, word: id.slice(2), pos: "noun", oxford: { list: "3000", level: "A1" }, ipa: { us: "/x/", uk: "/x/" }, th, topics: ["greetings"],
+      examples: examples.map((en) => ({ en, th: "ก" })),
+    });
+    const ex = (n: number, text: string) => ({ id: `d001-listen-0${n}`, type: "dictation", instruction: { th: "ก" }, audioText: text });
+    fs.mkdirSync(path.join(root, "vocab/oxford-3000"), { recursive: true });
+    fs.writeFileSync(path.join(root, "vocab/oxford-3000/a1.json"), JSON.stringify([entry("v-cat", "ไม่ (ก)", ["A."]), entry("v-dog", "ไม่ (ข)", ["A."])]));
+    fs.writeFileSync(path.join(root, "lessons/day-001.json"), JSON.stringify({
+      day: 1, phase: 1, week: 1, type: "lesson", cefr: "preA1", title: { en: "x", th: "ก" }, objectives: [{ en: "x", th: "ก" }],
+      estimatedMinutes: 20, vocab: ["v-cat", "v-dog"], sections: [{ skill: "listening", title: { en: "x", th: "ก" }, exercises: [ex(1, "A cat"), ex(2, "A dog")] }],
+    }));
+    const out: string[] = [];
+    expect(runValidate(root, (l) => out.push(l))).toBe(0);
+    expect(out.some((l) => l.startsWith("WARN ") && l.includes("near-clash"))).toBe(true);
+    expect(out[out.length - 1]).toBe("content: OK (1 warning(s))");
+  });
+});
+
+describe("runValidate: job summary", () => {
+  it("writes the counts and the warnings to the summary file when one is given (GITHUB_STEP_SUMMARY)", () => {
+    const entry = (id: string, th: string) => ({
+      id, word: id.slice(2), pos: "noun", oxford: { list: "3000", level: "A1" }, ipa: { us: "/x/", uk: "/x/" }, th, topics: ["greetings"],
+      examples: [{ en: "A.", th: "ก" }],
+    });
+    const ex = (n: number, text: string) => ({ id: `d001-listen-0${n}`, type: "dictation", instruction: { th: "ก" }, audioText: text });
+    fs.mkdirSync(path.join(root, "vocab/oxford-3000"), { recursive: true });
+    fs.writeFileSync(path.join(root, "vocab/oxford-3000/a1.json"), JSON.stringify([entry("v-cat", "ไม่ (ก)"), entry("v-dog", "ไม่ (ข)")]));
+    fs.writeFileSync(path.join(root, "lessons/day-001.json"), JSON.stringify({
+      day: 1, phase: 1, week: 1, type: "lesson", cefr: "preA1", title: { en: "x", th: "ก" }, objectives: [{ en: "x", th: "ก" }],
+      estimatedMinutes: 20, vocab: ["v-cat", "v-dog"], sections: [{ skill: "listening", title: { en: "x", th: "ก" }, exercises: [ex(1, "A cat"), ex(2, "A dog")] }],
+    }));
+    const summary = path.join(path.dirname(root), "summary.md");
+    fs.writeFileSync(summary, "existing\n");
+    expect(runValidate(root, () => {}, summary)).toBe(0);
+    const text = fs.readFileSync(summary, "utf8");
+    expect(text.startsWith("existing\n")).toBe(true); // appended, not overwritten
+    expect(text).toContain("content: OK (1 warning(s))");
+    expect(text).toContain("near-clash");
+    expect(text).toContain("lessons: 1");
+  });
+  it("lists the errors too when the check fails", () => {
+    const summary = path.join(path.dirname(root), "summary.md");
+    expect(runValidate(root, () => {}, summary)).toBe(1);
+    expect(fs.readFileSync(summary, "utf8")).toMatch(/problem\(s\) found/);
+  });
+});
+
 describe("contentRootFromArgs (S12)", () => {
   it("defaults to ./content and accepts a directory argument", () => {
     expect(contentRootFromArgs([], "/repo")).toBe("/repo/content");

@@ -31,7 +31,8 @@
     "v-evening",
     "v-night",
     "v-hot",
-    "v-dog"
+    "v-dog",
+    "v-box"
   ],
   "sections": [
     {
