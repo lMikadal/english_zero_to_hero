@@ -16,7 +16,7 @@ APP_UP = $(shell docker ps -q --filter status=running --filter label=com.docker.
 	--filter "label=com.docker.compose.project.working_dir=$(CURDIR)" 2>/dev/null)
 RUN = $(if $(APP_UP),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
 
-.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod prod-init prod-check prod-build prod-up prod-down prod-logs prod-status prod-migrate prod-backup prod-backup-verify prod-backup-auto-install prod-backup-auto-uninstall prod-backup-auto-status prod-backup-auto-run prod-restore prod-update stage-init stage-down
+.PHONY: help postgres-up up down logs sh test test-unit e2e e2e-init e2e-down lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod prod-init prod-check prod-build prod-up prod-down prod-logs prod-status prod-migrate prod-backup prod-backup-verify prod-backup-auto-install prod-backup-auto-uninstall prod-backup-auto-status prod-backup-auto-run prod-restore prod-update stage-init stage-down
 
 help: ## List targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -43,11 +43,37 @@ test: postgres-up ## Unit + component + integration tests (Vitest, real Postgres
 test-unit: ## Unit + component tests only (no database needed)
 	$(RUN) pnpm test:unit
 
-# The dev database must exist and be migrated before the app is used, so `e2e` migrates it first (db-migrate
-# creates it when missing). The lesson test expects a CLEAN learner (day 1, streak 0): CI is always fresh; locally run
-# `make db-reset CONFIRM=english_zero_to_hero_dev` first.
-e2e: db-migrate ## Playwright E2E at 360px (migrates the dev DB; needs a clean learner, see db-reset)
-	$(COMPOSE) --profile e2e run --rm --build e2e
+# E2E runs against a PRODUCTION build of the app (the real image, as the throwaway project ezh_e2e with its own
+# database english_zero_to_hero_e2e, started and removed by this target), never against the dev server: Fast Refresh and
+# on-demand compilation are dev-only behaviour that has no place in a test of what the learner gets. The database is new
+# every run, so the lesson test always starts from a clean learner (day 1, streak 0) and the dev database is never touched.
+# E2E_BUILD=0: do not build the image (CI loads ezh-e2e-app:latest from its layer cache first).
+E2E_BUILD ?= 1
+E2E_LOG ?= e2e-server.log
+E2E_PROD = $(MAKE) --no-print-directory PROD_ENV=.env.e2e PROD_PROJECT=ezh_e2e
+
+e2e-init: ## Create .env.e2e (own password, database english_zero_to_hero_e2e, port 3196)
+	@$(MAKE) --no-print-directory prod-init PROD_ENV=.env.e2e PROD_PROJECT=ezh_e2e
+	@sed -i -e 's/^POSTGRES_DB=.*/POSTGRES_DB=english_zero_to_hero_e2e/' -e 's/^APP_PORT=.*/APP_PORT=3196/' .env.e2e
+
+e2e-down: ## Remove the E2E stack AND its volume (only ever the project ezh_e2e)
+	$(COMPOSE) -p ezh_e2e -f docker-compose.prod.yml -f docker-compose.e2e-prod.yml --env-file .env.e2e down -v --remove-orphans
+	@rm -f backups-e2e/*.dump backups-e2e/*.partial; rmdir backups-e2e 2>/dev/null || true
+
+e2e: e2e-init ## Playwright E2E at 360px against a production build, in a throwaway stack (see above)
+	mkdir -p e2e-artifacts
+	$(COMPOSE) run --rm --no-deps app true
+	-@$(MAKE) --no-print-directory e2e-down
+	@if [ '$(E2E_BUILD)' = 1 ]; then $(E2E_PROD) prod-build; fi
+	$(E2E_PROD) prod-up
+	sh scripts/prod/smoke.sh http://127.0.0.1:3196
+	@status=0; \
+	E2E_BASE_URL=http://127.0.0.1:3196 \
+	E2E_DATABASE_URL="postgres://$$(sh scripts/prod/env-get.sh .env.e2e POSTGRES_USER ezh):$$(sh scripts/prod/env-get.sh .env.e2e POSTGRES_PASSWORD)@127.0.0.1:5439/english_zero_to_hero_e2e" \
+	  $(COMPOSE) --profile e2e run --rm e2e || status=$$?; \
+	if [ $$status -ne 0 ]; then $(COMPOSE) -p ezh_e2e -f docker-compose.prod.yml -f docker-compose.e2e-prod.yml --env-file .env.e2e logs --no-color > '$(E2E_LOG)' 2>&1 || true; echo "server log of the failed run: $(E2E_LOG)"; fi; \
+	$(MAKE) --no-print-directory e2e-down; \
+	exit $$status
 
 lint: ## ESLint
 	$(RUN) pnpm lint
@@ -104,7 +130,9 @@ PROD_BACKUPS = backups$(if $(filter ezh_prod,$(PROD_PROJECT)),,-$(patsubst ezh_%
 # Each project gets its own /24 (so the gateway the published port arrives from is known, see docker-compose.prod.yml):
 # prod 172.30.10, stage 172.30.20, ci 172.30.30, any other project name a prefix derived from the name.
 PROD_NET_PREFIX = $(if $(filter ezh_prod,$(PROD_PROJECT)),172.30.10,$(if $(filter ezh_stage,$(PROD_PROJECT)),172.30.20,$(if $(filter ezh_ci,$(PROD_PROJECT)),172.30.30,172.30.$(shell echo $$((40 + $$(printf %s '$(PROD_PROJECT)' | cksum | cut -d' ' -f1) % 200))))))
-PROD := env PROD_IMAGE=$(PROD_IMAGE) PROD_NET_PREFIX=$(PROD_NET_PREFIX) $(COMPOSE) -p $(PROD_PROJECT) -f docker-compose.prod.yml --env-file $(PROD_ENV)
+# the E2E project (make e2e) also publishes its postgres on loopback (docker-compose.e2e-prod.yml); no other project gets that
+PROD_FILES = -f docker-compose.prod.yml$(if $(filter ezh_e2e,$(PROD_PROJECT)), -f docker-compose.e2e-prod.yml)
+PROD := env PROD_IMAGE=$(PROD_IMAGE) PROD_NET_PREFIX=$(PROD_NET_PREFIX) $(COMPOSE) -p $(PROD_PROJECT) $(PROD_FILES) --env-file $(PROD_ENV)
 # every value is read by the same parser the scripts use: scripts/prod/env-get.sh
 prod_var = $(shell sh scripts/prod/env-get.sh '$(PROD_ENV)' $(1) '$(2)')
 PROD_DB = $(call prod_var,POSTGRES_DB,english_zero_to_hero)

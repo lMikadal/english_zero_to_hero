@@ -12,9 +12,12 @@ backups/
 data/
 playwright-report/
 test-results/
+e2e-artifacts/
 *.tsbuildinfo
 next-env.d.ts
 .claude/worktrees/
 backups-stage/
 backups-ci/
+backups-e2e/
+e2e-server.log
 .content-validate-summary.md

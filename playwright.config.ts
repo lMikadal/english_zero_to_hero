@@ -1,18 +1,20 @@
 import { defineConfig } from "@playwright/test";
 
-// The app is started by docker compose (service `app`); the e2e service
-// reaches it at BASE_URL=http://e2e-target:3000.
+// `make e2e` starts a production build of the app (project ezh_e2e) and runs this in the `e2e` compose service,
+// which reaches it at BASE_URL=http://127.0.0.1:3196 (set by the Makefile).
 export default defineConfig({
   testDir: "./e2e",
   // Only *.spec.ts are Playwright tests; e2e/helpers/*.test.ts are Vitest unit tests (run by `make check`).
   testMatch: "**/*.spec.ts",
-  outputDir: "./test-results",
-  // html report (never auto-opened) is uploaded as a CI artifact on failure
-  reporter: [["list"], ["html", { open: "never" }]],
-  // the dev server compiles pages on first request
+  // Everything Playwright writes (traces, .last-run.json, attachments, the html report) lives under ONE folder, e2e-artifacts/.
+  // Playwright removes and recreates its output folders when a run starts, which needs write permission on the PARENT. The
+  // container user (uid 1000) must not need that on the checkout root, which on CI belongs to the runner user, so the parent
+  // is a folder made for it: the CI job creates e2e-artifacts/ for uid 1000, `make e2e` creates it when missing.
+  // e2e/helpers/config.test.ts keeps it that way. The html report (never auto-opened) is uploaded as a CI artifact on failure.
+  outputDir: "./e2e-artifacts/test-results",
+  reporter: [["list"], ["html", { open: "never", outputFolder: "e2e-artifacts/playwright-report" }]],
   timeout: 60_000,
-  // One worker: the tests share one learner and one dev server. A second worker opening routes the dev server has not
-  // compiled yet is suspected of making the lesson page reload mid-test (docs/PLAN.md, "E2E ไม่นิ่ง").
+  // One worker: the specs share one learner (and one database), and lesson.spec.ts must run before replay.spec.ts.
   workers: 1,
   use: {
     baseURL: process.env.BASE_URL ?? "http://localhost:3000",

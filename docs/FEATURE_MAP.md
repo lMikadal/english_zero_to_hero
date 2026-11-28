@@ -167,4 +167,5 @@ make stage-down     # เมื่อเสร็จ: ลบชุดทดล�
 - `src/components/exercises/touch-targets.test.tsx`: ทุก `button`/`a`/`input`/`textarea`/`[role=radio]` ของ exercise วันที่ 1–7 (ก่อนและหลังผลตรวจ) ต้องมี class สูง >= 44px (`min-h-11` ขึ้นไป); อ่านจาก class เพราะ jsdom ไม่มี layout จึงไม่ได้วัดขนาดจริง (ขนาดจริงตรวจด้วย `e2e/nav.spec.ts` สำหรับเมนู และด้วยตาในเบราว์เซอร์สำหรับแบบฝึกหัด)
 - `src/components/exercises/a11y-guard.test.tsx`: ทุก exercise ของวันที่ 1–7 ที่ render ก่อน/หลังผลตรวจ ต้องไม่มีสถานะถูก/ผิดที่สื่อด้วยสีอย่างเดียว และข้อความที่มีตัวอักษรละตินทุกชิ้นต้องอยู่ใต้ `lang="en*"`
 - `src/lib/client-safe.test.ts`: โค้ดฝั่ง client (รวม `DayPlayer`, `CompletionScreen`, `registry`, `ReviewApp`, `ReviewSession`) ห้าม import โมดูล server
-- `make check` รันทั้งหมด; E2E (`make e2e`) รันบน CI เท่านั้น
+- `make check` รันทั้งหมด; E2E (`make e2e`) รันบน CI เท่านั้น และรันกับ production build ใน stack ชั่วคราว `ezh_e2e` (พอร์ต 127.0.0.1:3196, ฐานข้อมูล `english_zero_to_hero_e2e`, ลบเมื่อจบ) ไม่ใช่ dev server
+- `e2e/helpers/diagnostics.test.ts`: การตัดสินสถานะเสียงจากค่าธรรมดา (รวมกรณีปุ่ม "ฟัง" หายไประหว่างรอ) และรูปแบบรายงานเมื่อรอไม่สำเร็จ

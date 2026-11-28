@@ -1,7 +1,7 @@
 // Plays day 1 end to end at 360px against the real app and database, using the real lesson file as the answer key.
 //
-// It needs a CLEAN learner state: it expects the home page to start at day 1 with streak 0. CI always starts from a
-// fresh database. Locally, reset first:   make db-reset CONFIRM=english_zero_to_hero_dev   (then `make e2e`).
+// It needs a CLEAN learner state: it expects the home page to start at day 1 with streak 0. `make e2e` always starts from a
+// fresh throwaway database (a production build in the stack ezh_e2e), on CI and locally.
 // It must run BEFORE e2e/replay.spec.ts (alphabetical order with `workers: 1` gives that): the replay spec finishes
 // day 1 through the API when it is not done yet, after which this spec's "วันที่ 1 / 365" start state is gone.
 //

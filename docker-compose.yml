@@ -20,10 +20,6 @@ services:
     build:
       context: .
       target: dev
-    networks:
-      default:
-        aliases:
-          - e2e-target
     # uid/gid 1000 = host user, so files written into the bind mount are not root-owned
     user: "1000:1000"
     environment:
@@ -51,27 +47,30 @@ services:
       # the first start runs a full pnpm install, which can be slow on a bad network
       start_period: 300s
 
+  # Playwright. Started only by `make e2e`, which first starts a PRODUCTION build of the app as the throwaway project
+  # ezh_e2e (docker-compose.prod.yml + docker-compose.e2e-prod.yml, its own database english_zero_to_hero_e2e), so the
+  # dev server (Fast Refresh, on-demand compilation) is never in the E2E path. The browser container shares the host's
+  # network: it reaches the app at 127.0.0.1 through the published port, exactly like a request from this machine,
+  # and the stack's postgres on 127.0.0.1 (published on loopback only, for this project only).
   e2e:
     profiles: ["e2e"]
     image: mcr.microsoft.com/playwright:v1.65.1-noble
     user: "1000:1000"
+    network_mode: host
     # Chromium needs more shared memory than Docker's 64 MB default
     shm_size: "1gb"
     working_dir: /app
     environment:
       HOME: /tmp
-      # Not http://app: ".app" is on Chromium's HSTS preload list, so a bare host named "app"
-      # is silently upgraded to https and fails with ERR_SSL_PROTOCOL_ERROR.
-      BASE_URL: http://e2e-target:3000
-      # Only e2e/helpers/due.ts reads this (to make review cards due, see docs/TESTING.md). Same database the app uses in
-      # this stack; the helper refuses any name that does not end in _dev, so the real english_zero_to_hero cannot be hit.
-      E2E_DATABASE_URL: postgres://${POSTGRES_USER:-ezh}:${POSTGRES_PASSWORD:-ezh}@postgres:5432/${POSTGRES_DB:-english_zero_to_hero}_dev
+      # both set by `make e2e`. No `:?` (compose would then refuse every command, for every service); the database URL has
+      # no default on purpose, so a bare `docker compose run e2e` cannot guess a target (due.ts then refuses to run)
+      BASE_URL: ${E2E_BASE_URL:-http://127.0.0.1:3196}
+      # Only e2e/helpers/due.ts reads this (to make review cards due, see docs/TESTING.md). The helper refuses any
+      # database whose name does not end in _dev or _e2e, so the real english_zero_to_hero cannot be hit.
+      E2E_DATABASE_URL: ${E2E_DATABASE_URL:-}
     volumes:
       - .:/app
       - node_modules:/app/node_modules
-    depends_on:
-      app:
-        condition: service_healthy
     command: ["node_modules/.bin/playwright", "test"]
 
 volumes:

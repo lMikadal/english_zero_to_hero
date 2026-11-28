@@ -80,7 +80,7 @@ export default defineConfig([
       ],
     },
   },
-  globalIgnores([".next/**", "out/**", "coverage/**", "playwright-report/**", "test-results/**", "next-env.d.ts", ".claude/**"]),
+  globalIgnores([".next/**", "out/**", "coverage/**", "playwright-report/**", "test-results/**", "e2e-artifacts/**", "next-env.d.ts", ".claude/**"]),
   {
     // The vocabulary review UI (docs/plans/vocab-review-plan.md 4.4 item 13): the learner's zone comes ONLY from
     // ReviewQueue.timeZone (never the device), and the clock is read in one place (ReviewApp / the page) and passed in as `now`.
