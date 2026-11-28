@@ -202,3 +202,62 @@ describe("Home page: vocabulary review entry points (plan 2.6 rule 27, item 7.6)
     error.mockRestore();
   });
 });
+
+describe("Home page: monthly checkpoint (plan PR 6, D10, D15)", () => {
+  beforeEach(() => {
+    lessonFor.missing = false;
+    getReviewSummary.mockReset();
+    getReviewSummary.mockResolvedValue({ due: 0, withCard: 0 });
+  });
+
+  it("while a checkpoint blocks day A+1 the main card is the checkpoint: ONE primary link, เริ่มแบบทดสอบ, to /checkpoint/A, and no lesson start", async () => {
+    query.result = { ...fresh, currentDay: 31, blockingCheckpoint: 30, checkpointNote: { afterDay: 30, status: "not_taken" } };
+    await show();
+    expect(screen.getByRole("heading", { level: 2, name: "แบบทดสอบประจำเดือน ครั้งที่ 1" })).toBeInTheDocument();
+    expect(screen.getByText(/วันที่ 1–30/)).toBeInTheDocument();
+    const start = screen.getByRole("link", { name: "เริ่มแบบทดสอบ" });
+    expect(start).toHaveAttribute("href", "/checkpoint/30");
+    expect(start.className).toMatch(/bg-accent/);
+    expect(screen.queryByRole("link", { name: /เริ่มบทเรียนวันที่/ })).toBeNull();
+    expect(screen.queryByRole("heading", { level: 2, name: /วันที่ 31/ })).toBeNull();
+    expect(screen.getAllByRole("link")).toEqual([start]); // not also the quiet row: the blocking one is not repeated
+  });
+
+  it("the vocabulary review row still shows while blocked, as a secondary link", async () => {
+    query.result = { ...fresh, currentDay: 31, blockingCheckpoint: 30, checkpointNote: { afterDay: 30, status: "not_taken" } };
+    getReviewSummary.mockResolvedValue({ due: 3, withCard: 9 });
+    await show();
+    expect(screen.getByRole("link", { name: /ทวนคำศัพท์/ })).toHaveAttribute("href", "/review");
+    expect(screen.getAllByRole("link").filter((a) => /bg-accent/.test(a.className))).toHaveLength(1);
+  });
+
+  it("D15: a learner already past day A+1 is never blocked: the lesson card stays and a quiet row offers the checkpoint", async () => {
+    query.result = { ...fresh, currentDay: 35, blockingCheckpoint: null, checkpointNote: { afterDay: 30, status: "not_taken" } };
+    await show();
+    expect(screen.getByRole("link", { name: "เริ่มบทเรียนวันที่ 35" })).toHaveAttribute("href", "/day/35");
+    const row = screen.getByRole("link", { name: "แบบทดสอบครั้งที่ 1 · ยังไม่ได้สอบ" });
+    expect(row).toHaveAttribute("href", "/checkpoint/30");
+    expect(row.className).not.toMatch(/bg-accent/);
+    expect(screen.queryByRole("link", { name: "เริ่มแบบทดสอบ" })).toBeNull();
+  });
+
+  it("a checkpoint that was sat but not passed: the quiet row says so, the lesson card stays", async () => {
+    query.result = { ...fresh, currentDay: 31, blockingCheckpoint: null, checkpointNote: { afterDay: 30, status: "not_passed" } };
+    await show();
+    expect(screen.getByRole("link", { name: "แบบทดสอบครั้งที่ 1 · ยังไม่ผ่าน ดูผลและฝึกซ่อม" })).toHaveAttribute("href", "/checkpoint/30");
+    expect(screen.getByRole("link", { name: "เริ่มบทเรียนวันที่ 31" })).toBeInTheDocument();
+  });
+
+  it("no checkpoint (no file, a broken file, or passed): the page is exactly the old one, with no checkpoint text or link at all", async () => {
+    query.result = { ...fresh, currentDay: 31, blockingCheckpoint: null, checkpointNote: null };
+    const { container } = await show();
+    expect(screen.getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/day/31"]);
+    expect(container).not.toHaveTextContent("แบบทดสอบ");
+  });
+
+  it("when the course is complete there is no checkpoint card even if the data says blocking (nothing to unlock)", async () => {
+    query.result = { currentDay: 365, streak: { current: 1, longest: 1 }, activeToday: true, courseComplete: true, blockingCheckpoint: null, checkpointNote: null };
+    const { container } = await show();
+    expect(container).not.toHaveTextContent("แบบทดสอบ");
+  });
+});

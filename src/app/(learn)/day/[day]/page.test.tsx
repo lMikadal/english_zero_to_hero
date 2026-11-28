@@ -6,7 +6,15 @@ import DayPage from "./page";
 vi.mock("next/navigation", async (importOriginal) => ({ ...(await importOriginal<typeof import("next/navigation")>()), useRouter: () => ({ refresh: () => {} }) }));
 const getCurrentDay = vi.hoisted(() => vi.fn<() => Promise<number>>());
 const getDayStatus = vi.hoisted(() => vi.fn<(day: number) => Promise<string>>());
-vi.mock("../../access", () => ({ getCurrentDay, getDayStatus }));
+const gate = vi.hoisted(() => ({ blocking: null as number | null }));
+vi.mock("../../access", () => ({
+  getCurrentDay,
+  getDayStatus,
+  getGate: async () => {
+    const currentDay = await getCurrentDay();
+    return { currentDay, blocking: gate.blocking, playableDay: gate.blocking === null ? currentDay : currentDay - 1 };
+  },
+}));
 const getLessonMock = vi.hoisted(() => ({ fail: false, without: null as string | null }));
 vi.mock("@/lib/content/repo", async (importOriginal) => {
   const real = await importOriginal<typeof import("@/lib/content/repo")>();
@@ -22,6 +30,7 @@ describe("day page", () => {
     getCurrentDay.mockResolvedValue(365);
     getDayStatus.mockResolvedValue("not_started");
     getLessonMock.fail = false;
+    gate.blocking = null;
   });
 
   it.each(["0", "366", "abc", "1.5", "-1", "", "007", "01", "1000", "+1", " 1"])("calls notFound for day %j", async (day) => {
@@ -172,5 +181,51 @@ describe("day page robustness", () => {
   it("is always rendered dynamically (the lock must never be cached)", async () => {
     const mod = await import("./page");
     expect(mod.dynamic).toBe("force-dynamic");
+  });
+});
+
+describe("day page: a monthly checkpoint blocks the next day (plan PR 6, item 15 page side)", () => {
+  beforeEach(() => {
+    getCurrentDay.mockResolvedValue(31);
+    getDayStatus.mockResolvedValue("not_started");
+    getLessonMock.fail = false;
+    getLessonMock.without = null;
+    gate.blocking = 30;
+  });
+
+  it("the current day while blocked: ทำแบบทดสอบประจำเดือนก่อน with ONE primary way in, ไปทำแบบทดสอบ -> /checkpoint/A", async () => {
+    await show("31");
+    expect(screen.getByRole("heading", { level: 1, name: "ทำแบบทดสอบประจำเดือนก่อน" })).toBeInTheDocument();
+    const go = screen.getByRole("link", { name: "ไปทำแบบทดสอบ" });
+    expect(go).toHaveAttribute("href", "/checkpoint/30");
+    expect(go.className).toMatch(/bg-accent/);
+    expect(screen.getAllByRole("link")).toEqual([go]);
+    expect(screen.queryByText("ฟังและสังเกตรูปปาก")).toBeNull(); // no lesson player
+  });
+
+  it("a later locked day keeps its old message and its link goes to the highest playable day", async () => {
+    await show("40");
+    expect(screen.getByText(/ยังไม่ปลดล็อก/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /ไปบทเรียนวันที่ 30/ })).toHaveAttribute("href", "/day/30");
+  });
+
+  it("days up to A still open as before (a finished day is a replay)", async () => {
+    getDayStatus.mockResolvedValue("done");
+    await show("30");
+    expect(screen.getByText("เล่นซ้ำ")).toBeInTheDocument();
+  });
+
+  it("not blocked (no file, a broken file, D15, or already sat): day A+1 opens exactly as before", async () => {
+    gate.blocking = null;
+    await show("31");
+    expect(screen.queryByText("ทำแบบทดสอบประจำเดือนก่อน")).toBeNull();
+    expect(screen.getByText("ฟังและสังเกตรูปปาก")).toBeInTheDocument();
+  });
+
+  it("not blocked: a locked day still links to the current day (unchanged)", async () => {
+    gate.blocking = null;
+    getCurrentDay.mockResolvedValue(2);
+    await show("3");
+    expect(screen.getByRole("link", { name: /ไปบทเรียนวันที่ 2/ })).toHaveAttribute("href", "/day/2");
   });
 });
