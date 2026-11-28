@@ -199,3 +199,32 @@ describe("checkGrammarNotYet: checkpoints are checked as a unit of day afterDay"
   it("accepts has (day 29 <= 30)", () => expect(go(cp("Ann has a cat."))).toEqual([]));
   it("accepts -s in a checkpoint after day 60", () => expect(go(cp("Ann lives here.", 60))).toEqual([]));
 });
+
+describe("present continuous (week 10, day 64): am / is / are + -ing", () => {
+  const dict = (day: number, text: string, accept: string[]): Exercise => ({ id: exId(day, "listen", 2), type: "dictation", instruction, audioText: "Hello", accept: [text, ...accept] });
+  it("registers both structures: the statement on day 64, questions and negatives on day 65", () => {
+    expect(GRAMMAR_STRUCTURES["present-continuous"]).toMatchObject({ day: 64 });
+    expect(GRAMMAR_STRUCTURES["continuous-question"]).toMatchObject({ day: 65 });
+    expect(GRAMMAR_NOT_BEFORE.raining).toMatchObject({ structure: "present-continuous", day: 64 });
+  });
+  it("flags be + -ing before day 64 and is quiet from day 64", () => {
+    for (const t of ["She is working here.", "I am studying.", "We are watching a film.", "He is not working.", "It's raining.", "It is raining today."]) {
+      const out = check(on(63, say(63, t)));
+      expect(out, t).toHaveLength(1);
+      expect(out[0].message).toContain("day 64");
+      expect(out[0].message).toContain("day 63");
+    }
+    expect(check(on(64, say(64, "She is working. I am studying. It is raining.")))).toEqual([]);
+  });
+  it("is quiet without a form of be before the -ing word (gerunds, nouns, 'I like swimming')", () => {
+    expect(check(on(20, say(20, "I like working. Working is good. The study is good.")))).toEqual([]);
+  });
+  it("an -ing form that is a bank word of its own (morning, shopping) is never gated, even after be", () => {
+    const withEntry = [...BANK, vocabItem({ id: "v-morning", word: "morning", pos: "noun" }), verb("shop"), vocabItem({ id: "v-shopping", word: "shopping", pos: "noun" })];
+    expect(check(on(20, say(20, "It is morning. It is shopping time.")), withEntry)).toEqual([]);
+  });
+  it("accepts the continuous in an extra accepted answer (a learner who knows it is not marked wrong) but not in the shown text", () => {
+    expect(check(on(58, dict(58, "It is rainy today", ["It is raining today"])))).toEqual([]);
+    expect(check(on(58, dict(58, "It is raining today", [])))).toHaveLength(1);
+  });
+});
