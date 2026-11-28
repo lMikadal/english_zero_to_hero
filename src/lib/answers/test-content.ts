@@ -46,7 +46,7 @@ const fixtureTitle = (en: string, th: string) => ({ en, th });
 
 /**
  * A minimal valid monthly checkpoint after day 30 (not read from content/checkpoints/: tests never depend on the real
- * folder, docs/TESTING.md). It uses only words and sounds taught in days 1-7 (`weekOne`), all five skills, and the
+ * folder, docs/TESTING.md). It uses only words and sounds taught in days 1-30 (mostly week one; is/this/he/yes come from days 8-15), all five skills, and the
  * weights of the plan (pron 20, listen 25, speak 0, read 20, write 35), a few exercises per section.
  */
 export const checkpointFixture: Checkpoint = {
@@ -84,7 +84,7 @@ export const checkpointFixture: Checkpoint = {
     ] },
     { skill: "writing", title: fixtureTitle("Writing", "เขียน"), weight: 35, reviewDays: [1, 2, 5], exercises: [
       { id: "c030-write-01", type: "arrange_words", instruction: fixtureInstruction, words: ["big", "My", "dog", "is"], answer: "My dog is big", accept: ["Is my dog big"] },
-      { id: "c030-write-02", type: "fill_blank", instruction: fixtureInstruction, text: "How ___ you?", answer: ["are"] },
+      { id: "c030-write-02", type: "fill_blank", instruction: fixtureInstruction, text: "I ___ fine, thank you.", answer: ["am"] },
       { id: "c030-write-03", type: "translate_th_en", instruction: fixtureInstruction, th: "นี่คือเพื่อนของฉัน", accept: ["This is my friend", "This is my friend."] },
       { id: "c030-vocab-01", type: "vocab_match", instruction: fixtureInstruction, pairs: [{ vocabId: "v-dog" }, { vocabId: "v-cat" }, { vocabId: "v-cup" }, { vocabId: "v-bus" }, { vocabId: "v-box" }] },
     ] },

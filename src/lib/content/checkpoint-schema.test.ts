@@ -51,8 +51,10 @@ describe("checkpointSchema", () => {
     expect(ok(checkpoint({ sections: [section({ weight: 100 })] }))).toBe(true);
   });
   it("requires weight and reviewDays", () => {
-    const { weight: _w, ...noWeight } = section();
-    const { reviewDays: _r, ...noDays } = section();
+    const noWeight: Record<string, unknown> = section();
+    delete noWeight.weight;
+    const noDays: Record<string, unknown> = section();
+    delete noDays.reviewDays;
     expect(ok(checkpoint({ sections: [noWeight] }))).toBe(false);
     expect(ok(checkpoint({ sections: [noDays] }))).toBe(false);
   });

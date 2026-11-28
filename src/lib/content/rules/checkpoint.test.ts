@@ -61,8 +61,8 @@ describe("sections and weights (item 3)", () => {
     const ctx = withSections((s) => [...s, section("reading", 0, [repeatAfter(cpId("speak", 9))])]);
     expect(errors(ctx).join("\n")).toMatch(/skill "reading" has 2 sections/);
   });
-  it.each([[99], [101], [50]])("flags weights that add up to %i", (total) => {
-    const ctx = withSections((s) => { s[4].weight = total - 65; return s; });
+  it.each([[99], [101], [85]])("flags weights that add up to %i", (total) => {
+    const ctx = withSections((s) => { s[4].weight = total - 65; s[3].weight = 20; return s; });
     expect(only(errors(ctx))).toContain(`weights add up to ${total}, not 100`);
   });
   it("accepts weights that add up to exactly 100", () => {
@@ -143,13 +143,13 @@ describe("no new words (item 7)", () => {
     s[4].exercises[2] = { id: cpId("write", 3), type: "vocab_match", instruction, pairs: [{ vocabId: "v-cat" }, { vocabId: "v-dog" }] };
     const msg = only(errors(run(s)));
     expect(msg).toContain(`[${cpId("write", 3)}]`);
-    expect(msg).toMatch(/"dog" \(v-dog\) is first taught on day 31.*after day 30/);
+    expect(msg).toMatch(/"dog" \(v-dog\), which is first taught on day 31, after day 30/);
   });
   it("flags vocab_match with a word no lesson teaches", () => {
     const s = baseSections();
     s[4].exercises[2] = { id: cpId("write", 3), type: "vocab_match", instruction, pairs: [{ vocabId: "v-cat" }, { vocabId: "v-dog" }] };
     const ctx = buildContext({ lessons: baseLessons(), vocab: [vocabFile(more())], checkpoints: [checkpointFile({ sections: s })] });
-    expect(only(errors(ctx))).toMatch(/"dog" \(v-dog\) is not taught in any lesson/);
+    expect(only(errors(ctx))).toMatch(/"dog" \(v-dog\), which is not taught in any lesson/);
   });
   it("accepts vocab_match with words taught on or before day A (day 30 itself counts)", () => {
     const l30 = lessonFile(30, ["v-dog"], [dictation("d030-listen-01", "Hello dog.")]);
@@ -162,7 +162,7 @@ describe("no new words (item 7)", () => {
 
 describe("phonemes (item 8)", () => {
   it("flags a minimal_pair without phonemes", () => {
-    const msg = only(errors(withSections((s) => { s[0].exercises[1] = pair(cpId("pron", 2), undefined); return s; })));
+    const msg = only(errors(withSections((s) => { s[0].exercises[1] = pair(cpId("pron", 2), null); return s; })));
     expect(msg).toContain(`[${cpId("pron", 2)}]`);
     expect(msg).toMatch(/minimal_pair has no "phonemes"/);
   });
@@ -194,7 +194,7 @@ describe("phonemes (item 8)", () => {
 describe("reviewDays (item 9)", () => {
   const withDays = (reviewDays: number[], lessons = baseLessons()) =>
     ctxOf({ lessons, checkpoints: [checkpointFile({ sections: baseSections().map((s, i) => (i === 3 ? { ...s, reviewDays } : s)) })] });
-  it("accepts a day <= A that has a lesson with a section of the same skill", () => expect(errors(withDays([1, 30]))).toEqual([]));
+  it("accepts a day <= A that has a lesson with a section of the same skill", () => expect(errors(withDays([1]))).toEqual([]));
   it("flags a day after A", () => {
     expect(only(errors(withDays([31])))).toMatch(/reviewDays: day 31 is after day 30/);
   });

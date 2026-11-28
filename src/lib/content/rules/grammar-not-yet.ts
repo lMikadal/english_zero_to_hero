@@ -126,14 +126,14 @@ export function checkGrammarNotYet(ctx: RuleContext): Problem[] {
       if (forms.length) report(entry.file, id, day, `examples[${i}] "${ex.en}"`, forms);
     });
   }
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, day, sections } of ctx.units) {
+    for (const section of sections) {
       for (const ex of section.exercises) {
         const glossed = new Set(glossedWords(ex).flatMap(tokenize));
         for (const f of checkedEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
-          const forms = early(f.text, lesson.day, gate, glossed);
-          if (forms.length) report(file, ex.id, lesson.day, `${f.field} "${f.text}"`, forms);
+          const forms = early(f.text, day, gate, glossed);
+          if (forms.length) report(file, ex.id, day, `${f.field} "${f.text}"`, forms);
         }
       }
     }

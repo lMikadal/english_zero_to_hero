@@ -9,7 +9,7 @@ import { data, instruction, lessonFile, vocabFile, vocabItem } from "./test-supp
 const bi = { en: "Hello", th: "สวัสดี" };
 export const cpId = (skill: string, n = 1, day = 30) => `c${String(day).padStart(3, "0")}-${skill}-${String(n).padStart(2, "0")}`;
 
-export const pair = (id: string, phonemes: string[] | undefined = ["ae"]): Exercise => ({
+export const pair = (id: string, phonemes: string[] | null = ["ae"]): Exercise => ({
   id, type: "minimal_pair", instruction, ...(phonemes ? { phonemes } : {}), pairs: [{ a: "cat", b: "big", answer: "a" }],
 });
 export const dictation = (id: string, audioText = "Hello cat."): Exercise => ({ id, type: "dictation", instruction, audioText });

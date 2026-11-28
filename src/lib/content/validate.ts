@@ -136,7 +136,6 @@ export function checkContent(data: ContentData): Problem[] {
     }
     if (lesson.week !== Math.ceil(lesson.day / 7)) add(file, `week ${lesson.week} is wrong for day ${lesson.day} (expected ${Math.ceil(lesson.day / 7)})`);
     if (lesson.phase !== expectedPhase(lesson.day)) add(file, `phase ${lesson.phase} is wrong for day ${lesson.day} (expected ${expectedPhase(lesson.day)})`);
-    if (lesson.type === "checkpoint" && lesson.day % 30 !== 0) add(file, `type "checkpoint" is only allowed on days divisible by 30 (day ${lesson.day})`);
     if (lesson.vocab.length > 0 && lesson.type !== "lesson") add(file, `new vocab is allowed only on "lesson" days, but type is "${lesson.type}"`);
     if (lesson.vocab.length > MAX_NEW_WORDS) add(file, `${lesson.vocab.length} new words; at most ${MAX_NEW_WORDS} per lesson`);
 
@@ -171,11 +170,25 @@ export function checkContent(data: ContentData): Problem[] {
         const prev = exerciseIds.get(ex.id);
         if (prev) add(file, `duplicate exercise id ${ex.id} (also in ${prev})`, ex.id);
         else exerciseIds.set(ex.id, file);
+        if (ex.id.startsWith("c")) add(file, `lesson exercise ids must start with d${String(lesson.day).padStart(3, "0")}- (cXXX ids are for checkpoint files)`, ex.id);
         const day = /^d(\d{3})-/.exec(ex.id);
         if (dayOk && day && Number(day[1]) !== lesson.day) {
           add(file, `exercise id day ${Number(day[1])} does not match lesson day ${lesson.day}`, ex.id);
         }
         for (const v of vocabRefs(ex)) requireVocab(v, ex.id);
+        for (const msg of answerProblems(ex)) add(file, msg, ex.id);
+      }
+    }
+  }
+
+  // checkpoints (content/checkpoints/): ids share one repo-wide map with the lessons; the checkpoint-specific rules are rules/checkpoint.ts
+  for (const { file, checkpoint } of data.checkpoints ?? []) {
+    for (const section of checkpoint.sections) {
+      for (const ex of section.exercises) {
+        const prev = exerciseIds.get(ex.id);
+        if (prev) add(file, `duplicate exercise id ${ex.id} (also in ${prev})`, ex.id);
+        else exerciseIds.set(ex.id, file);
+        for (const v of vocabRefs(ex)) if (!bank.has(v) && !failed.has(v)) add(file, `${v} is not in the vocab bank`, ex.id);
         for (const msg of answerProblems(ex)) add(file, msg, ex.id);
       }
     }

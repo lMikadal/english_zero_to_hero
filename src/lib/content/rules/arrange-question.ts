@@ -111,8 +111,8 @@ export function questionForm(answer: string, vocab: SubjectVocab): string | unde
 export function checkArrangeQuestion(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
   const vocab = subjectVocab(ctx);
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, sections } of ctx.units) {
+    for (const section of sections) {
       for (const ex of section.exercises) {
         if (ex.type !== "arrange_words" || ex.statementOnly === true) continue;
         const question = questionForm(ex.answer, vocab);
