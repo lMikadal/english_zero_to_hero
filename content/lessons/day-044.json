@@ -120,7 +120,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "คำบอกความถี่: always … never",
-          "bodyTh": "คำบอกความถี่บอกว่าทำบ่อยแค่ไหน เรียงจากมากไปน้อย: always (เสมอ) → usually (ปกติ, มักจะ) → often (บ่อย ๆ) → sometimes (บางครั้ง) → never (ไม่…เลย) วางไว้หน้ากริยาหลัก (I always have tea.) แต่วางหลัง am / is / are (She is never late.) ผิดบ่อย: I have tea always ✗ และ I don't never drink coffee ✗ sometimes วางต้นประโยคได้ (Sometimes I watch TV.)",
+          "bodyTh": "คำบอกความถี่บอกว่าทำบ่อยแค่ไหน เรียงจากมากไปน้อย: always (เสมอ) → usually (ปกติ, มักจะ) → often (บ่อย ๆ) → sometimes (บางครั้ง) → never (ไม่…เลย) วางไว้หน้ากริยาหลัก (I always have tea.) แต่วางหลัง am / is / are (She is never late.) ผิดบ่อย: I have tea always ✗ → I always have tea ✓ และ I don't never drink coffee ✗ → I never drink coffee ✓ ส่วน sometimes วางต้นประโยคได้ (Sometimes I watch TV.)",
           "examples": [
             {
               "en": "I always have tea.",

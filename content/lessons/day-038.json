@@ -121,7 +121,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "ประโยคปฏิเสธ: do not / does not",
-          "bodyTh": "ใช้บอกว่า \"ไม่ทำ ไม่ชอบ\": do not (don't) กับ I, you, we, they และ does not (doesn't) กับ he, she, it และชื่อเดียว วางไว้หน้าคำที่บอกการกระทำ (กริยาหลัก) ซึ่งใช้รูปเดิม (Dan doesn't cook.) ผิดบ่อย: He not cook ✗ / Dan doesn't cooks ✗ → Dan doesn't cook ✓",
+          "bodyTh": "ใช้บอกว่า \"ไม่ทำ ไม่ชอบ\": do not (don't) กับ I, you, we, they และ does not (doesn't) กับ he, she, it และชื่อเดียว วางไว้หน้าคำที่บอกการกระทำ (กริยาหลัก) ซึ่งใช้รูปเดิม (Dan doesn't cook.) ผิดบ่อย: He not cook ✗ → He doesn't cook ✓ / Dan doesn't cooks ✗ → Dan doesn't cook ✓",
           "table": [
             [
               "ประธาน",
