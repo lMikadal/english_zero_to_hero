@@ -9,7 +9,6 @@ const note = (over: Record<string, unknown>): Exercise => ({
   id: exId(36, "read"), type: "grammar_note", instruction, titleTh: "ก", bodyTh: "อธิบายสั้น ๆ", examples: [{ en: "She likes tea.", th: "ก" }], structures: ["third-person-s"], ...over,
 }) as Exercise;
 const run = (ex: Exercise) => checkGrammarNoteLength(buildContext(data([lessonFile(36, [], [ex])], [vocabFile([vocabItem({ id: "v-cat" })])])));
-const TH = "กา".repeat(1); // two characters
 
 describe("bodyLength counts what the learner sees: Thai vowel signs and tone marks do not add to the count", () => {
   it("counts base letters, spaces, Latin and symbols, not combining marks", () => {
