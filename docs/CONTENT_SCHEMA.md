@@ -140,15 +140,15 @@ ERROR content/lessons/day-019.json [d019-read-01]: text "My mother lives in Bang
 ### `grammar_note`: การ์ดอธิบายไวยากรณ์ (ไม่ตรวจคะแนน)
 การ์ดสอนไวยากรณ์ของวันที่เริ่มใช้รูปไวยากรณ์ใหม่ (ตัดสินใจโดยเจ้าของ 2026-11-28: อธิบายเป็นการ์ดของตัวเอง ไม่ฝังไว้ในคำสั่งของข้อฟัง) โครงสร้างเหมือน `phoneme_intro`: แสดง ไม่มีคำตอบ ไม่บันทึก attempt ไม่ติดรอบแก้ตัว (`UNGRADED_TYPES`)
 - `titleTh` (ภาษาไทย, จำเป็น), `bodyTh` (คำอธิบายภาษาไทยล้วน, จำเป็น), `instruction` เหมือนข้ออื่น
-- `table?`: แถวของเซลล์ (`string[][]`) แถวแรกเป็นหัวตารางได้ ทุกแถวมีจำนวนเซลล์เท่ากัน เซลล์ว่างไม่ได้ (ใส่ `-`) เช่น `[["I / you / we / they", "like"], ["he / she / it", "likes"]]` เซลล์ที่ไม่มีตัวอักษรไทยถือเป็นภาษาอังกฤษ
+- `table?`: แถวของเซลล์ (`string[][]`) แถวแรกเป็นหัวตารางได้ ทุกแถวมีจำนวนเซลล์เท่ากัน เซลล์ว่างไม่ได้ (ใส่ `-`) เช่น `[["I / you / we / they", "like"], ["he / she / it", "likes"]]` **เซลล์หัวตารางเขียนเป็นภาษาไทย** (เช่น `ประธาน`, `กริยา`) เซลล์ที่ไม่มีตัวอักษรไทยถือเป็นภาษาอังกฤษและถูกตรวจโดย `taught-words`/`grammar-not-yet`
 - `examples`: 1–6 รายการ `{ en, th }` เสียงอ่านของ `en` สร้างแบบเดียวกับประโยคตัวอย่างอื่น (ผู้เล่นเรียก TTS ด้วยข้อความ `en` ทีละประโยค)
 - `structures`: id ของโครงสร้างไวยากรณ์ที่การ์ดอธิบาย (อย่างน้อย 1) ต้องเป็น key ของ `GRAMMAR_STRUCTURES` ใน `src/lib/content/rules/grammar-not-yet.ts`: `has` (วัน 29), `third-person-s`, `es-ending`, `do-does-question`, `do-not`, `but` (วัน 36)
-- **ตำแหน่ง:** เป็นข้อ **แรก** ของ section ที่ไม่ใช่ `pronunciation` (listening / speaking / reading / writing) และมีได้ **1 การ์ดต่อบท** (ใส่ทุก structure ของวันนั้นในการ์ดเดียว) เหตุผล: ผู้เรียนอ่านคำอธิบายก่อนฝึก (เหมือน `phoneme_intro` ที่เปิด section) และ section เสียงนับแท็กเสียง
+- **ตำแหน่ง:** เป็นข้อ **แรก** ของ section ที่ไม่ใช่ `pronunciation` (listening / speaking / reading / writing) และมีได้ **1 การ์ดต่อ section** (หลาย section ในบทเดียวมีการ์ดของตัวเองได้ เช่น วัน 37 มีการ์ดคำถามด้วย does ก่อนข้อฟัง และการ์ด `don't` ก่อนข้อเขียน) แต่ structure หนึ่งอยู่ได้ในการ์ดเดียวของบท และไม่เร็วกว่าวันที่หลักสูตรสอน (`GRAMMAR_STRUCTURES[id].day`) เหตุผล: ผู้เรียนอ่านคำอธิบายก่อนฝึก (เหมือน `phoneme_intro` ที่เปิด section) และ section เสียงนับแท็กเสียง
 - **กฎที่ใช้กับการ์ด:** (1) `taught-words`: ประโยค `examples[].en` และเซลล์ตารางภาษาอังกฤษต้องใช้เฉพาะคำที่สอนถึงวันนั้น (2) `grammar-not-yet`: รูปไวยากรณ์ที่การ์ดระบุใน `structures` ใช้ได้ในการ์ดนั้นเองแม้ยังไม่ถึงวันเปิด (และที่อื่นในบทยังต้องรอวันเปิด) (3) `grammar-note` และ `grammar-note-required` ด้านล่าง
 - Player: ตอนนี้มีการ์ดชั่วคราว `GrammarNote.tsx` (ชื่อเรื่อง เนื้อหา ตาราง ตัวอย่างพร้อมปุ่มเสียง และปุ่ม "ถัดไป") ออกแบบจริงเป็นงาน frontend แยก
 
 ### `grammar-note`: โครงสร้างของการ์ด
-**error** (ตรวจโครงสร้างล้วน ไม่มีทางผิดพลาด): id ใน `structures` ต้องมีใน `GRAMMAR_STRUCTURES` (ข้อความบอก id ที่ใช้ได้ทั้งหมด), การ์ดต้องเป็นข้อแรกของ section, ไม่อยู่ใน section `pronunciation`, มีไม่เกิน 1 การ์ดต่อบท, และทุกแถวของ `table` มีจำนวนเซลล์เท่าแถวแรก
+**error** (ตรวจโครงสร้างล้วน ไม่มีทางผิดพลาด): id ใน `structures` ต้องมีใน `GRAMMAR_STRUCTURES` (ข้อความบอก id ที่ใช้ได้ทั้งหมด), structure ต้องไม่ถูกสอนก่อนวันของมัน (การ์ดนำรูปเข้ามาก่อนวันไม่ได้: `structure "has" is not taught before day 29`), การ์ดต้องเป็นข้อแรกของ section, ไม่อยู่ใน section `pronunciation`, structure หนึ่งอยู่ในการ์ดเดียวของบท (`list a structure in only one grammar_note per lesson`), และทุกแถวของ `table` มีจำนวนเซลล์เท่าแถวแรก
 
 ```
 ERROR content/lessons/day-036.json [d036-read-01]: structures: "third-person" is not a grammar structure id. Use one of: has, third-person-s, es-ending, do-does-question, do-not, but (the table GRAMMAR_STRUCTURES in src/lib/content/rules/grammar-not-yet.ts; add the structure there first if it is new).
@@ -164,7 +164,7 @@ WARN content/lessons/day-036.json [d036-pron-03]: the grammar structure "third-p
 ### ภาระของบทเรียน: คำใหม่ต่อวัน การเจอคำซ้ำ และการ์ดจับคู่ (ตัดสินใจโดยเจ้าของ 2026-11-28)
 สัปดาห์ที่ 6 เป็นสัปดาห์แรกที่สอน 10–12 คำต่อวัน จึงมีกฎต่อไปนี้ (ไฟล์ `word-load.ts`; แต่ละกฎมีค่าคงที่ "เริ่มใช้ตั้งแต่วัน/สัปดาห์ไหน" เพื่อไม่ขวางสัปดาห์ 1–5)
 - **`new-words-per-day` (error):** บทไม่มี `vocab` เกิน 12 คำทุกวัน (ตรวจใน `validate.ts`) และตั้งแต่ **วัน 43** บทที่มี `grammar_note` (วันที่เริ่มรูปไวยากรณ์ใหม่) สอนได้ไม่เกิน **9 คำ** (`GRAMMAR_DAY_MAX_NEW_WORDS`) วันอื่นสอนได้ถึง 12
-- **`word-exposure` (warning ตั้งแต่วัน 36):** คำใหม่ของบทต้องปรากฏอย่างน้อย **3 ครั้ง** ใน **2 ชนิด exercise** ขึ้นไปของบทเดียวกัน (ไม่นับ `vocab_match`; นับรูปผัน คำฝึกเสียง และตัวอย่างในการ์ดไวยากรณ์) ข้อความบอกจำนวนแยกตามชนิดและบอกให้เพิ่มในข้อฟัง/พูด/อ่าน/เขียน
+- **`word-exposure` (warning ตั้งแต่วัน 36):** คำใหม่ของบทต้องปรากฏอย่างน้อย **3 ครั้ง** ใน **2 ชนิด exercise** ขึ้นไปของบทเดียวกัน (ไม่นับ `vocab_match`; นับรูปผัน; นับเฉพาะสิ่งที่ผู้เรียน **ได้ยิน อ่านเป็นบทความ/บทสนทนา พูด หรือเขียนเอง** ไม่นับข้อความคำถามที่มีคำแปลไทยกำกับ ตัวเลือกคำตอบ คำฝึกเสียง (`phoneme_intro`, `minimal_pair`) และตัวอย่างในการ์ดไวยากรณ์ ซึ่งผู้เรียนแค่ผ่านตา) ข้อความบอกจำนวนแยกตามชนิดและบอกให้เพิ่มในข้อฟัง/พูด/อ่าน/เขียน
 - **`week-recycle` (warning ตั้งแต่สัปดาห์ 6):** ทุกคำที่สอนในวัน `lesson` ของสัปดาห์ต้องปรากฏอย่างน้อย 1 ครั้งในวัน `review` หรือ `challenge` ของสัปดาห์เดียวกัน (ไม่นับ `vocab_match`) รายงานรายคำพร้อมวันที่สอน
 - **`vocab-match-covers-new-words` (error ตั้งแต่วัน 36):** `vocab_match` ของวันรวมกันต้องมีทุกคำใหม่ของวัน และ `vocab_match` หนึ่งข้อมีได้ไม่เกิน **8 คู่** (12 คู่ไม่พอดีหน้าจอ 360px) ให้แยกเป็นสองข้อ
 
@@ -174,7 +174,7 @@ ERROR content/lessons/day-040.json [d040-vocab-01]: this vocab_match has 9 pairs
 ```
 
 ### `phrase-lint` (warning): สำนวนที่ไม่ควรสอน
-ตาราง `PHRASE_LINTS` ใน `phrase-lint.ts` (เพิ่มเมื่อรีวิวเจอซ้ำครั้งที่สอง): `like some` (ยกเว้นประโยคที่มี `would`/`'d`), `I order ... please` (ยกเว้น `Can I order`), `do you not`, `How many X has the/a/my/...` ข้อความบอกรูปที่ใช้แทน
+ตาราง `PHRASE_LINTS` ใน `phrase-lint.ts` (เพิ่มเมื่อรีวิวเจอซ้ำครั้งที่สอง): `like some` (ยกเว้นประโยคที่มี `would`/`'d`, `some of`, หรือ `some ... but`), `I order ... please` (เฉพาะเมื่อ `please` ปิดอนุประโยค; ยกเว้น `Can I order`; `please note` ไม่ถูกเตือน), `do you not`, `How many X has the/a/my/...` (ยกเว้นเมื่อมี past participle ตามหลัง: `How many cats has the dog eaten?`) ตรวจทั้งบทเรียนและ checkpoint ข้อความบอกรูปที่ใช้แทน
 
 ### `vocab-used`: คำใหม่ต้องถูกใช้ในวันนั้น
 ทุก id ใน `vocab` ของบทต้องปรากฏ (รวมรูปผัน) ในข้อความอังกฤษที่ผู้เรียนเห็นของ exercise อย่างน้อยหนึ่งข้อในบทเดียวกัน (นับรวมคำฝึกเสียง แต่ไม่นับ `vocab_match` ที่แสดงแค่คู่คำ) คำหลายคำเช่น `wake up` ถือว่าใช้เมื่อคำหลัก (`wake` และรูปผัน `wakes`/`waking`/`woke`) ปรากฏ ส่วนคำเสริมเดี่ยว ๆ (`up`) ไม่นับ
@@ -316,10 +316,10 @@ ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.
 - ID ของทุกข้อเป็น `cXXX-<skill>-NN` โดย XXX = `afterDay` (`d…` ในไฟล์แบบทดสอบ = error)
 - หนึ่งทักษะมีได้หนึ่ง section; `weight` รวมทุก section = 100
 - section ที่ `weight > 0`: มีอย่างน้อย 3 ข้อ และทุกข้อเป็นชนิดตรวจอัตโนมัติ (`minimal_pair`, `listen_choose`, `dictation`, `read_passage`, `arrange_words`, `fill_blank`, `translate_th_en`, `vocab_match`); section ที่ `weight = 0`: ทุกข้อเป็นชนิดประเมินตัวเอง (`repeat_after_me`, `shadowing`, `speak_answer`) ห้ามปนกัน
-- ห้ามทุกที่: `phoneme_intro`, `free_write`, `roleplay`, `spell_word`, `use_in_sentence`
+- ห้ามทุกที่: `phoneme_intro`, `grammar_note` (checkpoint ทดสอบ ไม่สอน), `free_write`, `roleplay`, `spell_word`, `use_in_sentence`
 - ไม่มีคำใหม่: ไม่มีช่อง `vocab` (schema ปฏิเสธ), `read_passage` ห้ามมี `glossary` (ช่องทางเดียวที่ `taught-words` ยอมให้ใช้คำที่ยังไม่สอน), `vocab_match` อ้างได้เฉพาะคำที่สอนในวัน ≤ A
 - ทุก `minimal_pair` และทุกข้อใน section `pronunciation` ต้องมี `phonemes` (แบบทดสอบไม่มี `phoneme_intro` ให้ยืมรหัสเสียง) และทุกรหัสต้องเคยปรากฏในบทวัน ≤ A (กันพิมพ์ผิด)
-- `reviewDays` ทุกวัน ≤ A, มีไฟล์บท และบทนั้นมี section ของทักษะเดียวกัน (ลิงก์ฝึกซ่อมจึงไม่พัง)
+- `reviewDays` ไม่ซ้ำกันใน section เดียวกัน (`day 1 is listed twice`), ทุกวัน ≤ A, มีไฟล์บท และบทนั้นมี section ของทักษะเดียวกัน (ลิงก์ฝึกซ่อมจึงไม่พัง)
 - warning (ไม่ทำให้ check ล้ม): เสียงที่ `phoneme_intro` สอนในวัน A−29..A แต่ไม่มีข้อไหนของแบบทดสอบติดแท็ก; ข้อที่ข้อความหลัก (`audioText`, `text`, `answer`, `th`) ซ้ำกับข้อในบทวัน ≤ A (เทียบแบบไม่สนตัวพิมพ์/วรรคตอน); `estimatedMinutes` นอก 20–45
 
 ### รายงานใน CI

@@ -65,3 +65,11 @@ Rules added: `arrange-question`, `sound-words`, `phoneme-tags`, `cast-consistenc
 ## Week 6 review: Oxford level doubt
 
 - `plate`, `bowl`, `fork`, `knife`, `spoon`, `bill`, `thirsty` (day 40) are labelled A1 only because `a1.json` and preA1 lessons require it (an A2 label is rejected: "level A2 does not match file name a1.json" and "v-bill is Oxford A2 but the lesson is preA1"). The reviewer thinks they are A2. Verify against the official Oxford 3000 list file when the owner supplies it; if they are A2, relabel and decide where they live (a later week, `a2.json`, or a lesson `cefr` of A2). The levels of all other week-5 and week-6 words were also written from memory.
+
+## Round 7, merge follow-ups
+
+- **Checkpoint units:** `phrase-lint` and the phoneme tag sound check now read checkpoint files (`ctx.units`); `grammar-note`, `grammar-note-required` and the word-load rules stay lesson-only (a test with `checkpointFixture` proves they report nothing for a checkpoint). `grammar_note` is a banned type in a checkpoint. `reviewDays` must be unique within a section, and `loadCheckpoint(afterDay)` fails when the file says another `afterDay`.
+- **Open decision (checkpoint content PR):** `minimal_pair` words in a checkpoint are not checked against the words taught so far (sound-drill fields are exempt from `taught-words` by design).
+- **Open for the E2E work:** `e2e/helpers/day1.ts` `playStep` has no `grammar_note` case. Add one (read the card, press ถัดไป, no answer) before an E2E plays a day that has a note.
+- **grammar_note per section:** one card per section, each first in its section; a structure may appear in only one card of a lesson, and not before its curriculum day (`GRAMMAR_STRUCTURES[id].day`).
+- **word-exposure now counts only** what the learner hears, reads as passage or dialogue text, says or writes. Question texts, answer choices, sound drills and grammar_note examples no longer count. Week 6 gaps found by that stricter count are listed in the PR description, not fixed here.
