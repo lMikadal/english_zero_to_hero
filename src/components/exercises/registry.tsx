@@ -33,6 +33,8 @@ export type ExerciseHandlers = {
   onAnswer(answer: AttemptAnswer): void;
   onContinue(): void;
   result?: Grade;
+  /** Default true; false hides right / wrong after a result (the monthly checkpoint). */
+  reveal?: boolean;
 };
 
 export function renderExercise(exercise: Exercise, h: ExerciseHandlers): ReactNode {

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { AudioFallback, useExerciseAudio } from "@/components/audio/AudioControls";
 import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { AudioCard } from "./ui/AudioCard";
 import { CheckButton } from "./ui/CheckButton";
 import { ExerciseShell } from "./ui/ExerciseShell";
@@ -10,13 +10,14 @@ import { Mark } from "./ui/Mark";
 import { Instruction } from "./ui/Instruction";
 import { rightWrong, fieldToneClass, FIELD, type Tone } from "./ui/tone";
 
-export function Dictation({ exercise, onAnswer, onContinue, result }: ExerciseProps<"dictation">) {
+export function Dictation({ exercise, onAnswer, onContinue, result, reveal = true }: ExerciseProps<"dictation">) {
+  const seen = shown(result, reveal);
   const audio = useExerciseAudio(exercise.audioText);
   const [text, setText] = useState("");
   const [sent, setSent] = useState(false);
   const locked = result !== undefined || sent;
   const empty = text.trim() === "";
-  const tone: Tone = result ? rightWrong(result.correct) : "idle";
+  const tone: Tone = seen ? rightWrong(seen.correct) : "idle";
 
   const check = () => {
     if (empty || locked) return;
@@ -44,7 +45,7 @@ export function Dictation({ exercise, onAnswer, onContinue, result }: ExercisePr
         spellCheck={false}
         className={`${FIELD} ${fieldToneClass(tone)}`}
       />
-      {result ? <p className="text-[13px] font-medium"><Mark ok={result.correct} /></p> : null}
+      {seen ? <p className="text-[13px] font-medium"><Mark ok={seen.correct} /></p> : null}
       <CheckButton type="submit" hidden={result !== undefined} disabled={empty || sent} />
     </ExerciseShell>
   );
