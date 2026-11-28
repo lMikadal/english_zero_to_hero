@@ -53,6 +53,20 @@ describe("word-exposure (WARNING from day 36): a new word occurs 3+ times in 2+ 
     const out = checkWordExposure(ctx([lesson(36, ["v-cat"], [say(36, "Hello."), match(36, ["v-cat", "v-dog"])])]));
     expect(out[0].message).toContain("0 time");
   });
+  it("counts only what the learner hears, reads as text, says or produces: not question or choice texts, sound drills, grammar_note examples", () => {
+    const lc: Exercise = { id: exId(36, "listen", 5), type: "listen_choose", instruction, audioText: "Hello.", question: { en: "Is it a cat?", th: "ก" }, choices: ["A cat", "A dog"], answer: 0 };
+    const rp: Exercise = { id: exId(36, "read", 5), type: "read_passage", instruction, text: "Hello.", questions: [{ question: { en: "Is the cat big?", th: "ก" }, choices: ["The cat", "No"], answer: 0 }] };
+    const out = checkWordExposure(ctx([lesson(36, ["v-cat"], [lc, rp])]));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).toContain("0 times");
+    const mp: Exercise = { id: exId(36, "pron", 5), type: "minimal_pair", instruction, pairs: [{ a: "cat", b: "cut", answer: "a" }] };
+    const pi: Exercise = { id: exId(36, "pron", 6), type: "phoneme_intro", instruction, phoneme: "ae", ipa: "/æ/", tipTh: "ก", examples: ["cat", "cat"] };
+    expect(checkWordExposure(ctx([lesson(36, ["v-cat"], [mp, pi, note(36), say(36, "A cat.")])]))[0].message).toContain("1 time");
+  });
+  it("a grammar_note with two examples plus one repeat line does not make a word pass", () => {
+    const n = { ...note(36), examples: [{ en: "A cat.", th: "ก" }, { en: "Two cats.", th: "ก" }] } as Exercise;
+    expect(checkWordExposure(ctx([lesson(36, ["v-cat"], [n, say(36, "A cat.")])]))).toHaveLength(1);
+  });
   it("is quiet before day 36 (and says what it would report when asked for every day)", () => {
     const l = lesson(20, ["v-cat"], [say(20, "A cat.")]);
     expect(checkWordExposure(ctx([l]))).toEqual([]);

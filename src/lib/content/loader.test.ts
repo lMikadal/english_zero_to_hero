@@ -238,6 +238,11 @@ describe("checkpoints/ folder", () => {
     expect(() => loadCheckpoint(60, root)).toThrow(ContentError);
     expect(() => loadCheckpoint(90, root)).toThrow(/checkpoint-090\.json.*file not found/s);
   });
+  it("loadCheckpoint fails clearly when the file's afterDay is not the requested one", () => {
+    write("checkpoints/checkpoint-060.json", checkpoint(30));
+    expect(() => loadCheckpoint(60, root)).toThrow(ContentError);
+    expect(() => loadCheckpoint(60, root)).toThrow(/checkpoint-060\.json.*afterDay 30.*60/s);
+  });
   it("loadCheckpoint rejects an afterDay that is not a checkpoint day", () => {
     expect(() => loadCheckpoint(45, root)).toThrow(/45/);
   });

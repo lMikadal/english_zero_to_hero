@@ -31,6 +31,19 @@ describe("GrammarNote (placeholder card until the real design lands)", () => {
     expect(onContinue).toHaveBeenCalledTimes(1);
     expect(onAnswer).not.toHaveBeenCalled();
   });
+  it("without audio: the examples stay visible, the learner is told there is no sound, and the only way on is ถัดไป", async () => {
+    const onContinue = vi.fn();
+    renderWithAudio(<GrammarNote exercise={exercise} vocab={{}} onAnswer={vi.fn()} onContinue={onContinue} />, fakeAudio(false));
+    await screen.findByText("อุปกรณ์นี้ไม่มีเสียงภาษาอังกฤษ");
+    expect(screen.getByText("She likes tea.")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "ถัดไป" }));
+    expect(onContinue).toHaveBeenCalledTimes(1);
+  });
+  it("two examples with the same English text both render (keys do not rely on the text)", () => {
+    const dup = { ...exercise, examples: [{ en: "I like tea.", th: "ก" }, { en: "I like tea.", th: "ข" }] };
+    renderWithAudio(<GrammarNote exercise={dup} vocab={{}} onAnswer={vi.fn()} onContinue={vi.fn()} />, fakeAudio(true));
+    expect(screen.getAllByText("I like tea.")).toHaveLength(2);
+  });
   it("the registry renders it (the player must not show 'not supported')", () => {
     expect(renderExercise(exercise, { vocab: {}, onAnswer: () => {}, onContinue: () => {} })).not.toBeNull();
   });

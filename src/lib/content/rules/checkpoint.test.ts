@@ -114,6 +114,7 @@ describe("banned types (item 5)", () => {
     ["roleplay", { id: cpId("write", 4), type: "roleplay", instruction, scenario: { en: "Hello", th: "สวัสดี" }, aiRole: "friend", goals: [{ en: "Hello", th: "สวัสดี" }] }],
     ["spell_word", { id: cpId("write", 4), type: "spell_word", instruction, vocabId: "v-cat" }],
     ["use_in_sentence", { id: cpId("write", 4), type: "use_in_sentence", instruction, vocabId: "v-cat", prompt: "Use it." }],
+    ["grammar_note", { id: cpId("write", 4), type: "grammar_note", instruction, titleTh: "ก", bodyTh: "ก", examples: [{ en: "Hello cat.", th: "ก" }], structures: ["third-person-s"] }],
   ];
   it.each(banned)("flags %s anywhere, once", (type, ex) => {
     const msg = only(errors(withSections((s) => { s[4].exercises.push(ex); return s; })));
@@ -257,5 +258,17 @@ describe("world builder sanity", () => {
     const w = world();
     expect(w.checkpoints).toHaveLength(1);
     expect(w.lessons.map((l) => l.lesson.day)).toEqual([1, 30]);
+  });
+});
+
+describe("reviewDays must be unique within a section", () => {
+  it("flags a repeated day, naming it", () => {
+    const ctx = withSections((s) => { s[0].reviewDays = [1, 1]; return s; });
+    const msg = only(errors(ctx));
+    expect(msg).toMatch(/reviewDays/);
+    expect(msg).toContain("day 1 is listed twice");
+  });
+  it("accepts distinct days", () => {
+    expect(errors(withSections((s) => { s[0].reviewDays = [1, 30]; return s; }))).toEqual([]);
   });
 });

@@ -23,6 +23,17 @@ describe("phrase-lint (warnings): phrasings an A1 lesson should not teach", () =
     expect(run("Would you like some tea?", "I would like some tea, please.", "I'd like some tea.", "She would like some water.", "I like tea.", "I order tea.",
       "Do you like tea?", "Don't you like tea?", "How many cats does my sister have?", "How many cats have you?", "Can I order a coffee, please?")).toEqual([]);
   });
+  it("false positives: 'some of', 'some X but', 'please' that is not the end of the clause, a participle after has", () => {
+    expect(run("I like some of the cats.", "He likes some music but not all.", "I order pizza every day, please note.", "How many cats has the dog eaten?",
+      "How many books has the teacher read?", "How many cats has my sister been given?")).toEqual([]);
+  });
+  it("still flags the plain forms, and 'please' at the end of the clause", () => {
+    expect(run("I order a coffee, please")).toHaveLength(1);
+    expect(run("I order a coffee please.")).toHaveLength(1);
+    expect(run("I order tea, please. Thank you.")).toHaveLength(1);
+    expect(run("How many cats has my sister?")).toHaveLength(1);
+    expect(run("He likes some tea but she likes coffee.")).toHaveLength(0);
+  });
   it("one warning per pattern per exercise, and the table is explicit", () => {
     expect(run("I like some tea. He likes some water.")).toHaveLength(1);
     expect(PHRASE_LINTS.map((p) => p.id)).toEqual(["like-some", "i-order-please", "do-you-not", "how-many-has"]);

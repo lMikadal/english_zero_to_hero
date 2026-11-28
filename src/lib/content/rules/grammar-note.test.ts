@@ -44,10 +44,24 @@ describe("grammar-note: structure ids, placement, table", () => {
     expect(out).toHaveLength(1);
     expect(out[0].message).toContain("pronunciation");
   });
-  it("flags a second note in one lesson (list every structure in one note)", () => {
-    const out = checkGrammarNote(ctxOf([lessonWith(36, [[note(36)], [note(36, { structures: ["has"] }, 2)]], ["reading", "writing"])]));
+  it("allows one note per SECTION, each first in its section, so every card sits before the practice it explains", () => {
+    expect(checkGrammarNote(ctxOf([lessonWith(37, [[note(37, { structures: ["do-does-question"] })], [note(37, { structures: ["do-not"] }, 2)]], ["listening", "writing"])]))).toEqual([]);
+  });
+  it("flags a structure listed in two notes of one lesson, naming both cards", () => {
+    const out = checkGrammarNote(ctxOf([lessonWith(36, [[note(36)], [note(36, {}, 2)]], ["reading", "writing"])]));
     expect(out).toHaveLength(1);
-    expect(out[0].message).toContain("one grammar_note per lesson");
+    expect(out[0].id).toBe("d036-read-02");
+    expect(out[0].message).toContain('"third-person-s"');
+    expect(out[0].message).toContain("d036-read-01");
+    expect(out[0].message).toContain("only one grammar_note");
+  });
+  it("flags a structure that is not taught before its day (a note cannot bring a form in early)", () => {
+    const out = checkGrammarNote(ctxOf([lessonWith(10, [[note(10, { structures: ["has", "third-person-s", "do-not"] })]])]));
+    expect(out).toHaveLength(3);
+    expect(out[0].message).toContain('structure "has" is not taught before day 29');
+    expect(out[1].message).toContain("day 36");
+    expect(checkGrammarNote(ctxOf([lessonWith(29, [[note(29, { structures: ["has"] })]])]))).toEqual([]);
+    expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36)]])]))).toEqual([]);
   });
   it("flags table rows with different numbers of cells", () => {
     const out = checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["a", "b"], ["c"]] })]])]));
