@@ -42,6 +42,24 @@ describe("soundClaims: '/x/ ใน w1, w2 และ w3' and '/x/ in w1, w2 and w
   });
 });
 
+describe("soundClaims: an English list stops at 'not' / 'unlike' (what the sound is NOT in)", () => {
+  it("'/θ/ in three, not in this' and 'Watch /θ/ in three, not tree'", () => {
+    expect(soundClaims("Say /θ/ in three, not in this")).toEqual([{ symbol: "θ", words: ["three"] }]);
+    expect(soundClaims("Watch /θ/ in three, not tree")).toEqual([{ symbol: "θ", words: ["three"] }]);
+    expect(soundClaims("Watch /θ/ in three and thank, unlike tree")).toEqual([{ symbol: "θ", words: ["three", "thank"] }]);
+  });
+});
+
+describe("sound-words: real mistakes are caught, typing variants are not errors", () => {
+  const bank = [word("happy", "/ˈhæpi/"), word("eight", "/eɪt/"), word("five", "/faɪv/"), word("this", "/ðɪs/"), word("mother", "/ˈmʌðər/"), word("car", "/kɑːr/"), word("good", "/ɡʊd/")];
+  it.each([["/iː/", "happy"], ["/e/", "eight"], ["/ɪ/", "five"], ["/d/", "this"], ["/θ/", "mother"]])("%s in %s is an error", (sym, w) => {
+    expect(check([repeat(`ระวัง ${sym} ใน ${w}`)], bank)).toHaveLength(1);
+  });
+  it.each([["/ɑ/", "car"], ["/g/", "good"], ["/ɹ/", "car"]])("%s in %s is fine", (sym, w) => {
+    expect(check([repeat(`ระวัง ${sym} ใน ${w}`)], bank)).toEqual([]);
+  });
+});
+
 describe("sound-words: every listed word that has a vocab entry must contain the named sound", () => {
   it("flags the incident: /v/ named for sixteen, which has no /v/", () => {
     const out = check([repeat("ฟังแล้วพูดตาม ระวังเสียง /v/ ใน five, seven, sixteen และ seventeen")]);

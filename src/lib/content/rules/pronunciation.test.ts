@@ -93,3 +93,28 @@ describe("ipaContains: whole phonemes, longest match", () => {
     expect(ipaContains("/siːt/", "i")).toBe(false);
   });
 });
+
+describe("ipaContains: typing variants are normalised, a short ɑ/ɔ/ɜ written without ː matches the bank's long vowel", () => {
+  it("ASCII g = ɡ, ʧ = tʃ, ʤ = dʒ, ɹ = r (either side)", () => {
+    expect(ipaContains("/ɡʊd/", "g")).toBe(true);
+    expect(ipaContains("/gʊd/", "ɡ")).toBe(true);
+    expect(ipaContains("/tʃiːz/", "ʧ")).toBe(true);
+    expect(ipaContains("/dʒɪm/", "ʤ")).toBe(true);
+    expect(ipaContains("/ˈfɑːðər/", "ɹ")).toBe(true);
+    expect(ipaContains("/ʧiːz/", "tʃ")).toBe(true);
+  });
+  it("/ɑ/ matches ɑː, /ɔ/ matches ɔː, /ɜ/ matches ɜː, but not the other way round", () => {
+    expect(ipaContains("/kɑːr/", "ɑ")).toBe(true);
+    expect(ipaContains("/fɔːr/", "ɔ")).toBe(true);
+    expect(ipaContains("/ɡɜːrl/", "ɜ")).toBe(true);
+    expect(ipaContains("/kɑr/", "ɑː")).toBe(false);
+  });
+  it("real mistakes are still caught", () => {
+    expect(ipaContains("/ˈhæpi/", "iː")).toBe(false); // happy
+    expect(ipaContains("/eɪt/", "e")).toBe(false); // eight
+    expect(ipaContains("/faɪv/", "ɪ")).toBe(false); // five
+    expect(ipaContains("/ðɪs/", "d")).toBe(false); // this
+    expect(ipaContains("/ˈmʌðər/", "θ")).toBe(false); // mother
+    expect(ipaContains("/siːt/", "i")).toBe(false);
+  });
+});
