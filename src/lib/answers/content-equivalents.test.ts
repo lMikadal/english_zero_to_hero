@@ -27,7 +27,7 @@ function variants(sentence: string): string[] {
   let out = [sentence];
   const swaps: [RegExp, string][] = [];
   // 's is only folded when what follows cannot be a verb: written out by hand here (determiners, numbers, a few prepositions/places, -ing words, plain adjectives)
-  const NOT_PARTICIPLE = "(?= (?:not )?(?:a|an|the|my|your|his|her|our|their|this|that|these|those|in|at|on|from|here|there|\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|\\w{3,}ing|happy|big|nice|fine|good|hot|old|well|ready|late|sorry|tall|short|busy)\\b)";
+  const NOT_PARTICIPLE = "(?= (?:not )?(?:a|an|the|my|your|his|her|our|their|this|that|these|those|in|at|on|from|here|there|\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|\\w{2,}ing|happy|big|nice|fine|good|hot|old|well|ready|late|sorry|tall|short|busy)\\b)";
   for (const [full, short] of PAIRS) {
     const guard = short.endsWith("'s") ? NOT_PARTICIPLE : "";
     swaps.push([new RegExp(`(?<![\\w'])${full}(?![\\w'])${guard}`, "gi"), short], [new RegExp(`(?<![\\w'])${short}(?![\\w'])${guard}`, "gi"), full]);

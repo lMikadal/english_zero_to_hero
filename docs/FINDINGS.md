@@ -9,3 +9,9 @@
 - **`one` กับเลข 1:** สรรพนาม `one` พับกับตัวเลข ทำให้ `the red 1` / `no 1 is here` ถูกรับเมื่อเฉลยคือ `the red one` / `no one is here` เป็นการรับเกิน ที่ยอมรับเพราะพบน้อยมากและแก้ได้ด้วย `strict: true`
 - **`'d`** ที่ไม่ใช่ก่อน like/love ไม่พับ (would หรือ had?) ผู้เขียนต้องใส่รูปเต็ม
 - dictation รับตัวเลขแทนคำอ่านเลข (`10` แทน `ten`) ซึ่งเป็นการตัดสินใจด้านการสอน รอผู้ใช้ตัดสิน
+
+## Round 4
+
+- **Over-acceptance the next-word test cannot prevent:** possession written as `'s` without `got` (British: `He's no idea`, `He's two cars`, `She's long hair`). After `no`, a number or `many`, `'s` folds to `is`, so the wrong `He is two cars` is accepted. Mitigation: the validator gives a WARNING (not an error) when `he's`/`she's` is followed by no / many / a lot of / a number 2-10 plus a bank noun that is not a unit of time. Authors write possession as `has` / `has got`.
+- `He has not finished` is rejected for an accepted `He's not finished` ('s before "not" + participle is not folded); the author lists both forms and the rule asks for it.
+- Added to the safe list: weather adjectives, days and months (not `may`/`march`), nationalities/languages, and object/possessive pronouns only after he/she/it. Not added: `half`, pronouns after a wh-word.

@@ -68,7 +68,19 @@ const NOT_ING = new Set(["thing", "bring", "spring", "string", "swing"]);
 export const ADVERBS: ReadonlySet<string> = new Set(
   "not never already just ever always often also still only really usually sometimes recently finally even almost nearly".split(" "));
 
+// Groups added in round 4. Each can never be a past participle, so "X's <word>" can only be "X is <word>":
+/** weather adjectives (adjectives only; no verb form exists) */
+const WEATHER = ["sunny", "rainy", "cloudy", "windy", "foggy", "snowy", "stormy"];
+/** days and months (nouns; "has Monday" is not English) */
+const CALENDAR = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "january", "february", "april", "june", "july", "august", "september", "october", "november", "december"];
+/** nationalities / languages (adjective or noun, never a participle) */
+const NATIONALITIES = ["thai", "english", "japanese", "chinese", "american", "british", "french", "german", "korean", "indian", "italian", "spanish", "australian", "canadian"];
+/** object and possessive pronouns: safe only after he's/she's/it's ("it's me"); after a wh-word they would hide "What's he done" style has-readings */
+const OBJECT_PRONOUNS = new Set(["me", "him", "us", "them", "mine", "yours", "ours", "theirs"]);
+const SAFE_EXTRA = new Set([...WEATHER, ...CALENDAR, ...NATIONALITIES]);
+
 export function isSafeAfterS(w: string): boolean {
+  if (SAFE_EXTRA.has(w)) return true;
   if (DETERMINERS.has(w) || PLACES.has(w) || ADJECTIVES.has(w) || NUMBER_WORD_SET.has(w)) return true;
   if (/^\d+$/.test(w)) return true;
   if (/^[a-z]+'s$/.test(w) && !S_FORM.test(w)) return true; // a possessive ("it's Ann's pen") starts a noun phrase
@@ -88,6 +100,7 @@ export function sReading(tokens: readonly string[], i: number): "is" | "has" | n
   if (next === "been" || next === "got") return "has";
   if (t === "name's") return next !== undefined && isParticipleLike(next) ? null : "is";
   if (next === "not") next = tokens[i + 2];
+  if (next !== undefined && OBJECT_PRONOUNS.has(next) && /^(he|she|it)'s$/.test(t)) return "is";
   return next !== undefined && isSafeAfterS(next) ? "is" : null;
 }
 const WOULD = /^(i|you|he|she|we|they)'d$/;

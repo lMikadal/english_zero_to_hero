@@ -58,11 +58,18 @@ const AMBIGUOUS_AFTER_NAME = new Set(["home", "back", "out", "in", "off", "up", 
 /** After a common noun's 's these can only follow a contraction ("my mother's a teacher"), never a possessive. */
 const CONTRACTION_CONTEXT = new Set(["a", "an", "the", "from", "in", "at", "on", "under", "near", "behind", "not"]);
 
+/** A pronoun alone after "is" ("Where is he?"): the contraction would not be a sentence the learner writes. */
+const PRONOUNS = new Set(["he", "she", "it", "they", "we", "you", "i", "him", "her", "them", "us", "me"]);
+/** Possession is "has" / "has got"; written as 's ("He's two cars") the wrong "He is two cars" would be accepted. */
+const POSSESSION_DETERMINERS = new Set(["no", "many", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "2", "3", "4", "5", "6", "7", "8", "9", "10"]);
+const TIME_NOUNS = new Set(["year", "years", "month", "months", "day", "days", "week", "weeks", "hour", "hours", "minute", "minutes"]);
+
 /** First word after any adverbs (never, just, not, ...), and the number of tokens skipped. */
 const skipAdverbs = (rest: readonly string[]): string | undefined => rest.find((w) => !ADVERBS.has(w));
 
 export function checkAnswerForms(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
+  const warned = new Set<string>();
   const nouns = new Set<string>(), adjectives = new Set<string>(ADJECTIVES);
   for (const { item } of ctx.bank.values()) {
     const w = item.word.toLowerCase();
@@ -118,12 +125,22 @@ export function checkAnswerForms(ctx: RuleContext): Problem[] {
             const next = clauseEnd[i + 1] === clauseEnd[i] ? tokens[i + 1] : undefined;
             const prev = tokens[i - 1];
             const rest = tokens.slice(i + 1, clauseEnd[i] + 1);
+            if (/^(he|she)'s$/.test(t)) {
+              let k = 0;
+              if (rest[0] === "a" && rest[1] === "lot" && rest[2] === "of") k = 3;
+              else if (rest[0] !== undefined && POSSESSION_DETERMINERS.has(rest[0])) k = 1;
+              const noun = k > 0 ? rest[k] : undefined;
+              if (noun !== undefined && nouns.has(noun) && !TIME_NOUNS.has(noun) && !warned.has(raw)) {
+                warned.add(raw);
+                problems.push({ rule: ANSWER_FORMS_RULE, file, id: ex.id, severity: "warning", message: `"${raw}": "${t} ${rest.slice(0, k + 1).join(" ")}" looks like possession written as 's. Write possession as "has" / "has got" ("he has two cars"); otherwise the wrong "${t.slice(0, -2)} is ${rest.slice(0, k + 1).join(" ")}" is accepted.` });
+              }
+            }
             if (isSForm(t)) {
               const base = t.slice(0, -2);
               if (reading(tokens, i) === null && !listed(variant(i, `${base} is`), variant(i, `${base} has`))) {
                 add(`"${raw}": "${t}" before "${next ?? "the end"}" is ambiguous ("${base} is" or "${base} has") or not provably an "is", so grading does not fold it. ${BOTH}, ${STRICT}.`);
               }
-            } else if (S_BASES.includes(t) && next === "is" && clauseEnd[i + 1] > i + 1) {
+            } else if (S_BASES.includes(t) && next === "is" && clauseEnd[i + 1] > i + 1 && !(clauseEnd[i + 1] === i + 2 && PRONOUNS.has(tokens[i + 2]))) {
               const hypothetical = [...tokens.slice(0, i), `${t}'s`, ...tokens.slice(i + 2)];
               if (sReading(hypothetical.slice(0, clauseEnd[i + 1]), i) === null && !listed(variant(i, `${t}'s`, 2))) {
                 add(`"${raw}": "${t} is ..." is not folded with "${t}'s ..." here (the word after it is not provably a non-verb). Also accept the contracted form ("${variant(i, `${t}'s`, 2)}"), ${STRICT}.`);
@@ -139,10 +156,10 @@ export function checkAnswerForms(ctx: RuleContext): Problem[] {
                 }
               }
             }
-            if (t === "would" && prev !== undefined && WOULD_SUBJECT.has(prev) && next !== "like" && next !== "love") {
+            if (t === "would" && prev !== undefined && WOULD_SUBJECT.has(prev) && next !== undefined && next !== "like" && next !== "love") {
               if (!listed(variant(i - 1, `${prev}'d`, 2))) add(`"${raw}": "${prev} would" is not folded with "${prev}'d" (only 'd like/love is). Also accept the contracted form ("${variant(i - 1, `${prev}'d`, 2)}"), ${STRICT}.`);
             }
-            if (NAMES.has(t) && next === "is") {
+            if (NAMES.has(t) && next === "is" && clauseEnd[i + 1] > i + 1 && !(clauseEnd[i + 1] === i + 2 && PRONOUNS.has(tokens[i + 2]))) {
               if (!listed(variant(i, `${t}'s`, 2))) add(`"${raw}": "${t} is" is not folded with "${t}'s". Also accept the contracted form ("${variant(i, `${t}'s`, 2)}"), ${STRICT}.`);
             }
             const nm = /^([a-z]+)'s$/.exec(t);

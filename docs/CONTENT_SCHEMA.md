@@ -161,6 +161,9 @@ ERROR content/lessons/day-021.json [d021-write-02]: answer "ten" is a contractio
 - คำนามทั่วไป + `'s` + a/an/the/not/คำบุพบท (`My mother's a teacher`) ต้องใส่ `My mother is ...` ด้วย
 - `Name's` + คำที่เป็นทั้งคำนามและ adjective/adverb (`Tom's home`, `Ann's back`) ถือเป็นคำย่อ; adjective สูงสุด 2 คำ + คำนาม (`Ann's big red bag`) ถือเป็น possessive
 
+- เขียนความเป็นเจ้าของด้วย `has` / `has got` ห้ามเขียนเป็น `'s` (`He's two cars` ผิด): ตัวตรวจเตือน (warning) เมื่อ `he's`/`she's` ตามด้วย no/many/a lot of/เลข 2-10 + คำนามในคลังคำ ที่ไม่ใช่หน่วยเวลา
+- ท้ายประโยคย่อย (`Yes, he is.`) และสรรพนามเดี่ยวหลัง `is` (`Where is he?`) ไม่ต้องมีรูปย่อ
+
 ### `vocab-forms`: adjective ต้องลงรูปเปรียบเทียบ
 adjective ทุกคำใน `forms` ต้องมี `comparative` และ `superlative` (ให้ `taught-words` รู้ว่า `bigger` คือ `big`) หรือ `"gradable": "no"` ถ้าเทียบไม่ได้ (`dead`)
 

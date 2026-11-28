@@ -68,8 +68,8 @@ describe("what still folds (provably not a verb)", () => {
 
 describe("round 4 allow-list groups: weather, days/months, nationalities, object pronouns after he/she/it only", () => {
   it.each([
-    ["It is sunny", "It's sunny"], ["It is rainy", "It's rainy"], ["It is Monday", "It's Monday"], ["It is May", "It's May"],
-    ["He is Thai", "He's Thai"], ["She is Japanese", "She's Japanese"], ["It is me", "It's me"], ["That is mine", "That's mine"],
+    ["It is sunny", "It's sunny"], ["It is rainy", "It's rainy"], ["It is Monday", "It's Monday"],
+    ["He is Thai", "He's Thai"], ["She is Japanese", "She's Japanese"], ["It is me", "It's me"],
     ["He is him", "He's him"], ["It is theirs", "It's theirs"],
   ])("%s = %s", (a, b) => { expect(matchesAny(a, [b]), a).toBe(true); expect(matchesAny(b, [a]), b).toBe(true); });
   it("pronouns after a wh-word are NOT folded (What's him done is not English, but What's he done is has)", () => {
