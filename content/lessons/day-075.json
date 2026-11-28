@@ -1,0 +1,338 @@
+{
+  "day": 75,
+  "phase": 2,
+  "week": 11,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "Trips: mountain, river, sea and island",
+    "th": "ทริป: ภูเขา แม่น้ำ ทะเล และเกาะ"
+  },
+  "objectives": [
+    {
+      "en": "Tell about a trip in the past: where you went and what you did",
+      "th": "เล่าเรื่องทริปในอดีตได้: ไปที่ไหนและทำอะไร"
+    },
+    {
+      "en": "Name places in nature: mountain, river, lake, island, beach, sea",
+      "th": "เรียกชื่อสถานที่ธรรมชาติได้: mountain, river, lake, island, beach, sea"
+    },
+    {
+      "en": "Say /r/ in river and /l/ in lake",
+      "th": "ออกเสียง /r/ ใน river และ /l/ ใน lake ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-mountain",
+    "v-river",
+    "v-lake",
+    "v-island",
+    "v-beach",
+    "v-sea",
+    "v-boat",
+    "v-camp"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sounds /r/ and /l/",
+        "th": "เสียง /r/ และ /l/"
+      },
+      "exercises": [
+        {
+          "id": "d075-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "r",
+          "ipa": "/r/ /l/",
+          "tipTh": "river ขึ้นต้นด้วย /r/ ม้วนลิ้นขึ้นโดยไม่แตะเพดาน ส่วน lake ขึ้นต้นด้วย /l/ ปลายลิ้นแตะเหงือกบน คนไทยมักสลับสองเสียงนี้ ทำให้ river ฟังเป็น 'ลิเวอร์' และ lake ฟังเป็น 'เรก' ฝึกให้ลิ้นเริ่มต่างกันตั้งแต่ต้นคำ",
+          "examples": [
+            "river",
+            "lake",
+            "road",
+            "light"
+          ]
+        },
+        {
+          "id": "d075-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม river ขึ้นต้นด้วย /r/ และ lake ขึ้นต้นด้วย /l/"
+          },
+          "text": "The river was near the lake.",
+          "ipa": "/ðə ˈrɪvər wəz nɪr ðə leɪk/",
+          "phonemes": [
+            "r"
+          ]
+        },
+        {
+          "id": "d075-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม river มี /r/ สองตัว (ต้นคำและท้ายคำแบบอเมริกัน)"
+          },
+          "text": "We camped near a river.",
+          "ipa": "/wi kæmpt nɪr ə ˈrɪvər/",
+          "phonemes": [
+            "r"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: two trips",
+        "th": "ฟัง: สองทริป"
+      },
+      "exercises": [
+        {
+          "id": "d075-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าครอบครัวเดินทางไปเกาะอย่างไร"
+          },
+          "audioText": "I am Leo. Two years ago we travelled to an island by boat. The island was small. We stayed at a hotel near the beach. The sea was warm and the beach was white. We played on the beach.",
+          "question": {
+            "en": "How did the family travel to the island?",
+            "th": "ครอบครัวเดินทางไปเกาะอย่างไร"
+          },
+          "choices": [
+            "By boat",
+            "By train",
+            "By bus"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d075-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-mountain"
+            },
+            {
+              "vocabId": "v-river"
+            },
+            {
+              "vocabId": "v-lake"
+            },
+            {
+              "vocabId": "v-island"
+            },
+            {
+              "vocabId": "v-beach"
+            },
+            {
+              "vocabId": "v-sea"
+            },
+            {
+              "vocabId": "v-boat"
+            },
+            {
+              "vocabId": "v-camp"
+            }
+          ]
+        },
+        {
+          "id": "d075-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอกับแดนตั้งแคมป์ที่ไหน"
+          },
+          "audioText": "Last year Leo and Dan camped near a lake. They climbed a mountain. The river was cold. Leo was tired and happy.",
+          "question": {
+            "en": "Where did Leo and Dan camp?",
+            "th": "ลีโอกับแดนตั้งแคมป์ที่ไหน"
+          },
+          "choices": [
+            "Near a lake",
+            "On a beach",
+            "At a hotel"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d075-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The sea was warm. We walked on the beach."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: a trip",
+        "th": "พูด: ทริป"
+      },
+      "exercises": [
+        {
+          "id": "d075-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "We travelled to an island by boat.",
+            "The island was small.",
+            "The sea was warm.",
+            "We walked on the beach.",
+            "Leo and Dan camped near a lake.",
+            "They climbed a mountain.",
+            "The river was cold.",
+            "Chiang Mai has mountains."
+          ]
+        },
+        {
+          "id": "d075-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณเคยไปเที่ยวที่ไหน ภูเขา ทะเล หรือเกาะ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Did you visit a mountain, a beach or an island?",
+          "sampleAnswer": "I visited a mountain last year. It was beautiful.",
+          "keywords": [
+            "visited"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: two trips",
+        "th": "อ่าน: สองทริป"
+      },
+      "exercises": [
+        {
+          "id": "d075-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Last year Leo and Dan camped near a lake in Chiang Mai. They climbed a mountain and walked near a river. The river was cold. Leo laughed and Dan smiled. In March the family travelled to an island by boat. They stayed at a hotel near the beach. The sea was warm. It was a great trip.",
+          "questions": [
+            {
+              "question": {
+                "en": "Where did Leo and Dan camp?",
+                "th": "ลีโอกับแดนตั้งแคมป์ที่ไหน"
+              },
+              "choices": [
+                "Near the sea",
+                "Near a lake",
+                "At a hotel"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "How did the family travel to the island?",
+                "th": "ครอบครัวเดินทางไปเกาะอย่างไร"
+              },
+              "choices": [
+                "By train",
+                "By bus",
+                "By boat"
+              ],
+              "answer": 2
+            },
+            {
+              "question": {
+                "en": "Where did the family stay on the island?",
+                "th": "ครอบครัวพักที่ไหนบนเกาะ"
+              },
+              "choices": [
+                "At a hotel near the beach",
+                "At Mali's house",
+                "Near a lake"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: a trip",
+        "th": "เขียน: ทริป"
+      },
+      "exercises": [
+        {
+          "id": "d075-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "travelled",
+            "We",
+            "to",
+            "an",
+            "island",
+            "by",
+            "boat"
+          ],
+          "answer": "We travelled to an island by boat",
+          "statementOnly": true
+        },
+        {
+          "id": "d075-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (ทะเล; ชายหาด)"
+          },
+          "text": "The ___ was warm. We walked on the ___.",
+          "answer": [
+            "sea",
+            "beach"
+          ]
+        },
+        {
+          "id": "d075-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เราตั้งแคมป์ใกล้ทะเลสาบ",
+          "accept": [
+            "We camped near a lake"
+          ]
+        },
+        {
+          "id": "d075-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เราปีนภูเขา",
+          "accept": [
+            "We climbed a mountain"
+          ]
+        },
+        {
+          "id": "d075-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แม่น้ำเย็น",
+          "accept": [
+            "The river was cold"
+          ]
+        }
+      ]
+    }
+  ]
+}
