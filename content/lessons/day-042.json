@@ -1,0 +1,223 @@
+{
+  "day": 42,
+  "phase": 1,
+  "week": 6,
+  "type": "challenge",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 6 challenge: tell me about your food",
+    "th": "ภารกิจสัปดาห์ที่ 6: เล่าเรื่องอาหารของคุณ"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read short texts about food and meals",
+      "th": "ฟังและอ่านเรื่องสั้นเกี่ยวกับอาหารและมื้ออาหารได้"
+    },
+    {
+      "en": "Tell about the food you like and do not like aloud in about 30 seconds",
+      "th": "เล่าเรื่องอาหารที่ชอบและไม่ชอบด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write 5–6 sentences about your food with the Present Simple",
+      "th": "เขียน 5–6 ประโยคเกี่ยวกับอาหารของตัวเองด้วย Present Simple ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d042-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /tʃ/ ใน cheese และ chocolate ลิ้นแตะเหงือกแล้วปล่อยลมทันที"
+          },
+          "text": "I do not like cheese or chocolate.",
+          "ipa": "/aɪ duː nɑːt laɪk tʃiːz ɔːr ˈtʃɔːklət/",
+          "phonemes": [
+            "ch"
+          ]
+        },
+        {
+          "id": "d042-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /ʃ/ ใน she และ wash ปากห่อ ลมไหลต่อเนื่อง และ -es ท้าย washes ออกเสียงเป็นพยางค์เพิ่ม ('วอ-ชิส')"
+          },
+          "text": "She washes the plate and the bowl.",
+          "ipa": "/ʃiː ˈwɑːʃɪz ðə pleɪt ænd ðə boʊl/",
+          "phonemes": [
+            "sh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to people talk about food",
+        "th": "ฟังเรื่องอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d042-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนดื่มอะไร"
+          },
+          "audioText": "Hello! I am Nan. I eat breakfast at home. I like bread and cheese. I drink coffee. I do not eat meat. I like vegetables and salad. I have lunch at school.",
+          "question": {
+            "en": "What does Nan drink?",
+            "th": "แนนดื่มอะไร"
+          },
+          "choices": [
+            "Coffee",
+            "Tea",
+            "Milk"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d042-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามาลีอาศัยอยู่ที่ไหน (lives = อาศัยอยู่ เพราะประธานเป็นคนเดียว)"
+          },
+          "audioText": "This is my mother, Mali. She is sixty. She lives in Chiang Mai. She cooks soup and rice. She likes vegetables. She drinks tea.",
+          "question": {
+            "en": "Where does Mali live?",
+            "th": "มาลีอาศัยอยู่ที่ไหน"
+          },
+          "choices": [
+            "Chiang Mai",
+            "Bangkok"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d042-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Dan does not cook. Rose cooks dinner."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d042-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "Hi, Nan! Do you want some lunch?",
+            "Yes, I do. I am hungry and thirsty.",
+            "What do you want?",
+            "I want a salad and a bottle of water.",
+            "Do you want some chicken?",
+            "No, thank you. I do not eat meat.",
+            "The menu, please!"
+          ]
+        },
+        {
+          "id": "d042-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องอาหารของคุณด้วยเสียงประมาณ 30 วินาที: ชอบอะไร ไม่ชอบอะไร และกินมื้อกลางวันที่ไหน"
+          },
+          "prompt": "What food do you like? What food do you not like? Where do you eat lunch?",
+          "sampleAnswer": "I like rice, chicken and fruit. I do not like cheese. I eat lunch at school.",
+          "keywords": [
+            "like",
+            "eat"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read about a family",
+        "th": "อ่านเรื่องครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d042-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hi! I am Leo. This is my family. My mother, Rose, goes to the market and buys vegetables. She cooks dinner in the kitchen. My father, Dan, does not cook. He eats a big meal and drinks coffee. I do not like vegetables. I like potatoes, pizza and chocolate cake. We have dinner at home. It is my favourite meal.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who cooks dinner?",
+                "th": "ใครทำอาหารเย็น"
+              },
+              "choices": [
+                "Rose",
+                "Dan",
+                "Leo"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo like?",
+                "th": "ลีโอชอบอะไร"
+              },
+              "choices": [
+                "Pizza and cake",
+                "Vegetables"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where does the family have dinner?",
+                "th": "ครอบครัวกินอาหารเย็นที่ไหน"
+              },
+              "choices": [
+                "At home",
+                "In a restaurant"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about your food",
+        "th": "เขียนเกี่ยวกับอาหารของคุณ"
+      },
+      "exercises": [
+        {
+          "id": "d042-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยคเกี่ยวกับอาหารของคุณ: ชอบอะไร ไม่ชอบอะไร ใครทำอาหาร และกินอาหารเย็นที่ไหน"
+          },
+          "prompt": "Write 5–6 sentences about your food. What do you like? What do you not like? Who cooks dinner? Where do you eat dinner?",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}

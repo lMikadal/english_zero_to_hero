@@ -1,0 +1,352 @@
+{
+  "day": 38,
+  "phase": 1,
+  "week": 6,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "I don't cook! Meals and negatives",
+    "th": "I don't cook! มื้ออาหารและประโยคปฏิเสธ"
+  },
+  "objectives": [
+    {
+      "en": "Say what you do not eat or like: I do not like vegetables, he does not cook",
+      "th": "บอกสิ่งที่ไม่กินหรือไม่ชอบได้: I do not like vegetables, he does not cook"
+    },
+    {
+      "en": "Name the meals and where you eat them: breakfast, lunch, dinner, at home, in a restaurant",
+      "th": "เรียกมื้ออาหารและบอกว่ากินที่ไหนได้"
+    },
+    {
+      "en": "Tell /tʃ/ from /dʒ/: chain–Jane, cheap–jeep, choke–joke, batch–badge",
+      "th": "แยก /tʃ/ กับ /dʒ/ ได้: chain–Jane, cheap–jeep, choke–joke, batch–badge"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-breakfast",
+    "v-lunch",
+    "v-dinner",
+    "v-meal",
+    "v-restaurant",
+    "v-kitchen",
+    "v-cook",
+    "v-vegetable",
+    "v-salad",
+    "v-potato",
+    "v-home"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sounds /tʃ/ and /dʒ/",
+        "th": "เสียง /tʃ/ และ /dʒ/"
+      },
+      "exercises": [
+        {
+          "id": "d038-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "ch",
+          "ipa": "/tʃ/ /dʒ/",
+          "tipTh": "/tʃ/ ใน lunch และ kitchen ลิ้นแตะเหงือกแล้วระเบิดลมออก คอไม่สั่น (เหมือน ช ในภาษาไทย) ส่วน /dʒ/ ใน vegetable และ orange ตำแหน่งปากเดียวกัน แต่ต้องสั่นคอตลอดเสียง ภาษาไทยไม่มีเสียงนี้ คนไทยมักออกเป็น 'จ' (ไม่สั่นคอ ไม่มีลม) หรือ 'ช' ทำให้ juice ฟังเหมือน 'จูส' หรือ 'ชูส' วิธีฝึก: วางมือที่คอแล้วออกเสียง /dʒ/ ต้องรู้สึกว่าคอสั่น",
+          "examples": [
+            "lunch",
+            "kitchen",
+            "vegetable",
+            "orange"
+          ]
+        },
+        {
+          "id": "d038-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "chain",
+              "b": "Jane",
+              "answer": "a"
+            },
+            {
+              "a": "jeep",
+              "b": "cheap",
+              "answer": "b"
+            },
+            {
+              "a": "joke",
+              "b": "choke",
+              "answer": "b"
+            },
+            {
+              "a": "batch",
+              "b": "badge",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "ch",
+            "jh"
+          ]
+        },
+        {
+          "id": "d038-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /tʃ/ ใน lunch และ kitchen ลิ้นแตะเหงือกแล้วปล่อยลมทันที คอไม่สั่น"
+          },
+          "text": "I eat lunch in the kitchen.",
+          "ipa": "/aɪ iːt lʌntʃ ɪn ðə ˈkɪtʃɪn/",
+          "phonemes": [
+            "ch"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: who cooks?",
+        "th": "ฟัง: ใครทำอาหาร"
+      },
+      "exercises": [
+        {
+          "id": "d038-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครทำอาหารเย็น ไวยากรณ์ใหม่ ประโยคปฏิเสธ Present Simple: I/you/we/they + do not (don't) + กริยา; he/she/it หรือชื่อคนเดียว + does not (doesn't) + กริยาเดิม (ไม่เติม -s: He does not cook)"
+          },
+          "audioText": "Rose cooks dinner in the kitchen. Dan does not cook. He eats dinner with Leo. Leo does not like vegetables. He likes potatoes.",
+          "question": {
+            "en": "Who cooks dinner?",
+            "th": "ใครทำอาหารเย็น"
+          },
+          "choices": [
+            "Rose",
+            "Dan",
+            "Leo"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d038-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนกินเนื้อไหม"
+          },
+          "audioText": "I am Nan. I have lunch at school. I do not eat meat. I like vegetables and salad.",
+          "question": {
+            "en": "Does Nan eat meat?",
+            "th": "แนนกินเนื้อสัตว์ไหม"
+          },
+          "choices": [
+            "No",
+            "Yes"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d038-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "He does not like vegetables. He likes potatoes."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Meals and places",
+        "th": "มื้ออาหารและสถานที่"
+      },
+      "exercises": [
+        {
+          "id": "d038-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I eat breakfast at home.",
+            "We eat dinner in a restaurant.",
+            "Rose cooks dinner in the kitchen.",
+            "Dan does not cook.",
+            "I do not like potatoes.",
+            "She likes salad and vegetables.",
+            "I have lunch at school.",
+            "It is a big meal."
+          ]
+        },
+        {
+          "id": "d038-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอาหารเย็นไหม และกินอาหารเช้าที่ไหน ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Do you cook dinner? Where do you eat breakfast?",
+          "sampleAnswer": "Yes, I cook dinner. I eat breakfast at home.",
+          "keywords": [
+            "cook"
+          ]
+        },
+        {
+          "id": "d038-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /dʒ/ ใน vegetable คอสั่น ไม่ใช่ 'เวจ' แบบ 'จ' และหลัง does ไม่เติม -s ที่กริยา (like)"
+          },
+          "text": "He does not like vegetables.",
+          "ipa": "/hiː dʌz nɑːt laɪk ˈvedʒtəblz/",
+          "phonemes": [
+            "jh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Dinner at home",
+        "th": "อาหารเย็นที่บ้าน"
+      },
+      "exercises": [
+        {
+          "id": "d038-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (does not = doesn't: ไม่ทำ/ไม่ชอบ สำหรับ he, she และชื่อคนเดียว)"
+          },
+          "text": "Rose cooks dinner at home. She cooks rice, chicken and vegetables. Dan does not cook. He eats a big meal and drinks coffee. Leo does not like vegetables. He likes potatoes. Rose and Dan like salad. The family has dinner in the kitchen.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who cooks dinner?",
+                "th": "ใครทำอาหารเย็น"
+              },
+              "choices": [
+                "Rose",
+                "Dan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Does Leo like vegetables?",
+                "th": "ลีโอชอบผักไหม"
+              },
+              "choices": [
+                "No",
+                "Yes"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo like?",
+                "th": "ลีโอชอบอะไร"
+              },
+              "choices": [
+                "Potatoes",
+                "Salad"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: do not and does not",
+        "th": "เขียน: do not และ does not"
+      },
+      "exercises": [
+        {
+          "id": "d038-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "does",
+            "He",
+            "not",
+            "cook"
+          ],
+          "answer": "He does not cook"
+        },
+        {
+          "id": "d038-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำช่วย (Leo เป็นคนเดียว จึงใช้ does)"
+          },
+          "text": "Leo ___ not like vegetables.",
+          "answer": [
+            "does"
+          ]
+        },
+        {
+          "id": "d038-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันไม่ทำอาหารเย็น",
+          "accept": [
+            "I do not cook dinner"
+          ]
+        },
+        {
+          "id": "d038-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-breakfast"
+            },
+            {
+              "vocabId": "v-lunch"
+            },
+            {
+              "vocabId": "v-dinner"
+            },
+            {
+              "vocabId": "v-meal"
+            },
+            {
+              "vocabId": "v-restaurant"
+            },
+            {
+              "vocabId": "v-kitchen"
+            },
+            {
+              "vocabId": "v-cook"
+            },
+            {
+              "vocabId": "v-vegetable"
+            },
+            {
+              "vocabId": "v-salad"
+            },
+            {
+              "vocabId": "v-potato"
+            },
+            {
+              "vocabId": "v-home"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

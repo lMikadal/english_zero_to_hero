@@ -1,0 +1,354 @@
+{
+  "day": 41,
+  "phase": 1,
+  "week": 6,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 6 review: food, Present Simple and the sounds sh, ch, j",
+    "th": "ทบทวนสัปดาห์ที่ 6: อาหาร, Present Simple และเสียง sh, ch, j"
+  },
+  "objectives": [
+    {
+      "en": "Tell /s/–/ʃ/, /ʃ/–/tʃ/, /tʃ/–/dʒ/ and /dʒ/–/j/ apart in this week's words",
+      "th": "แยกเสียง /s/–/ʃ/, /ʃ/–/tʃ/, /tʃ/–/dʒ/ และ /dʒ/–/j/ ในคำของสัปดาห์นี้ได้"
+    },
+    {
+      "en": "Use the Present Simple: she likes, Does he like…?, he does not cook, she goes",
+      "th": "ใช้ Present Simple ได้: she likes, Does he like…?, he does not cook, she goes"
+    },
+    {
+      "en": "Talk about food, meals, shopping and ordering in a restaurant",
+      "th": "พูดเรื่องอาหาร มื้ออาหาร การซื้อของ และการสั่งอาหารในร้านได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "sh, ch and j",
+        "th": "เสียง sh, ch และ j"
+      },
+      "exercises": [
+        {
+          "id": "d041-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "sip",
+              "b": "ship",
+              "answer": "b"
+            },
+            {
+              "a": "chair",
+              "b": "share",
+              "answer": "a"
+            },
+            {
+              "a": "cheap",
+              "b": "jeep",
+              "answer": "a"
+            },
+            {
+              "a": "yet",
+              "b": "jet",
+              "answer": "b"
+            },
+            {
+              "a": "watch",
+              "b": "wash",
+              "answer": "a"
+            },
+            {
+              "a": "Sue",
+              "b": "shoe",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "s",
+            "sh",
+            "ch",
+            "jh",
+            "y"
+          ]
+        },
+        {
+          "id": "d041-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /ʃ/ ใน she และ /tʃ/ ใน chicken และ kitchen อย่าสลับกัน"
+          },
+          "text": "She cooks chicken and rice in the kitchen.",
+          "ipa": "/ʃiː kʊks ˈtʃɪkɪn ænd raɪs ɪn ðə ˈkɪtʃɪn/",
+          "phonemes": [
+            "sh",
+            "ch"
+          ]
+        },
+        {
+          "id": "d041-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /dʒ/ ใน orange และ juice ต้องสั่นคอ และ you ขึ้นต้นด้วย /j/"
+          },
+          "text": "Do you want some orange juice?",
+          "ipa": "/duː juː wɑːnt sʌm ˈɔːrɪndʒ dʒuːs/",
+          "phonemes": [
+            "jh",
+            "y"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d041-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแม่ของคนพูดทำอาหารอะไร"
+          },
+          "audioText": "A: Do you like cheese? B: Yes, I do. A: Do you like chocolate? B: No, I don't. I like fruit. A: Does your mother cook? B: Yes, she does. She cooks soup and rice. A: Does your father cook? B: No, he doesn't.",
+          "question": {
+            "en": "What does B's mother cook?",
+            "th": "แม่ของ B ทำอาหารอะไร"
+          },
+          "choices": [
+            "Soup and rice",
+            "Pizza and cake"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d041-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแดนดื่มอะไรกับน้ำตาล"
+          },
+          "audioText": "Rose goes to the market. She buys vegetables, chicken and rice. Dan does not cook. He drinks coffee with some sugar. Leo does not like vegetables. His favourite food is pizza.",
+          "question": {
+            "en": "What does Dan drink?",
+            "th": "แดนดื่มอะไร"
+          },
+          "choices": [
+            "Coffee",
+            "Tea",
+            "Milk"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d041-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Rose goes to the market. She buys some fruit and vegetables."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d041-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Do you like coffee?",
+            "No, I don't. I drink tea.",
+            "Dan does not cook. He eats a big meal.",
+            "Rose goes to the market and buys fruit.",
+            "What do you want? I want a bowl of soup, please.",
+            "The bill is sixty baht."
+          ]
+        },
+        {
+          "id": "d041-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าที่บ้านคุณกินอะไร และชอบผักไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you eat at home? Do you like vegetables?",
+          "sampleAnswer": "I eat rice and chicken at home. Yes, I like vegetables.",
+          "keywords": [
+            "eat",
+            "like"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d041-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's = ของลีโอ)"
+          },
+          "text": "Rose goes to the market. She buys vegetables, chicken and rice. She needs some milk too. The price of the milk is forty baht. Rose cooks dinner in the kitchen. Dan does not cook. He drinks coffee with some sugar. Leo does not like vegetables. His favourite food is pizza. The family has dinner at home. It is a good meal.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who cooks dinner?",
+                "th": "ใครทำอาหารเย็น"
+              },
+              "choices": [
+                "Rose",
+                "Dan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is Leo's favourite food?",
+                "th": "อาหารโปรดของลีโอคืออะไร"
+              },
+              "choices": [
+                "Pizza",
+                "Cake"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where does Rose buy food?",
+                "th": "โรสซื้ออาหารที่ไหน"
+              },
+              "choices": [
+                "At the market",
+                "In a restaurant"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d041-write-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-rice"
+            },
+            {
+              "vocabId": "v-chicken"
+            },
+            {
+              "vocabId": "v-coffee"
+            },
+            {
+              "vocabId": "v-sugar"
+            },
+            {
+              "vocabId": "v-cheese"
+            },
+            {
+              "vocabId": "v-lunch"
+            },
+            {
+              "vocabId": "v-kitchen"
+            },
+            {
+              "vocabId": "v-vegetable"
+            },
+            {
+              "vocabId": "v-market"
+            },
+            {
+              "vocabId": "v-price"
+            },
+            {
+              "vocabId": "v-waiter"
+            },
+            {
+              "vocabId": "v-bowl"
+            }
+          ]
+        },
+        {
+          "id": "d041-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติม do หรือ does"
+          },
+          "text": "___ she like cake? Yes, she ___.",
+          "answer": [
+            "Does",
+            "does"
+          ]
+        },
+        {
+          "id": "d041-write-03",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "does",
+            "My",
+            "father",
+            "not",
+            "cook"
+          ],
+          "answer": "My father does not cook"
+        },
+        {
+          "id": "d041-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลีโอไม่ชอบผัก",
+          "accept": [
+            "Leo does not like vegetables"
+          ]
+        },
+        {
+          "id": "d041-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แม่ของฉันไปตลาด",
+          "accept": [
+            "My mother goes to the market"
+          ]
+        }
+      ]
+    }
+  ]
+}

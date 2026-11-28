@@ -1,0 +1,354 @@
+{
+  "day": 39,
+  "phase": 1,
+  "week": 6,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "At the market! goes, buys, What does she want?",
+    "th": "At the market! goes, buys และ What does she want?"
+  },
+  "objectives": [
+    {
+      "en": "Go shopping for food: go to the market, buy, need, want, pay",
+      "th": "พูดเรื่องไปซื้อของที่ตลาดได้: go to the market, buy, need, want, pay"
+    },
+    {
+      "en": "Use -es and -s correctly (goes, does, washes, buys) and ask What/Where do/does…?",
+      "th": "เติม -es และ -s ให้ถูก (goes, does, washes, buys) และถามด้วย What/Where do/does…? ได้"
+    },
+    {
+      "en": "Tell /dʒ/ from /j/: jet–yet, jam–yam, joke–yolk, Jess–yes",
+      "th": "แยก /dʒ/ กับ /j/ ได้: jet–yet, jam–yam, joke–yolk, Jess–yes"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-go",
+    "v-buy",
+    "v-need",
+    "v-want",
+    "v-pay",
+    "v-price",
+    "v-market",
+    "v-take",
+    "v-give",
+    "v-ask"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sounds /dʒ/ and /j/",
+        "th": "เสียง /dʒ/ และ /j/"
+      },
+      "exercises": [
+        {
+          "id": "d039-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "jh",
+          "ipa": "/dʒ/ /j/",
+          "tipTh": "/dʒ/ ใน juice และ orange ลิ้นแตะเหงือกก่อนแล้วปล่อยลมพร้อมสั่นคอ ส่วน /j/ ใน yes และ yellow ลิ้นกลางยกใกล้เพดานปากโดยไม่แตะ เหมือน ย ในภาษาไทย สองเสียงนี้มักถูกสลับกัน: jam ในภาษาไทยออกเป็น 'แยม' (เสียง /j/) ทำให้ jam ฟังเหมือน yam และ yes ถูกออกเป็น 'เจส' ได้",
+          "examples": [
+            "juice",
+            "orange",
+            "yes",
+            "yellow"
+          ]
+        },
+        {
+          "id": "d039-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "jet",
+              "b": "yet",
+              "answer": "a"
+            },
+            {
+              "a": "yam",
+              "b": "jam",
+              "answer": "b"
+            },
+            {
+              "a": "joke",
+              "b": "yolk",
+              "answer": "a"
+            },
+            {
+              "a": "yes",
+              "b": "Jess",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "jh",
+            "y"
+          ]
+        },
+        {
+          "id": "d039-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /j/ ใน yes และ /dʒ/ ใน juice ต้องไม่สลับกัน"
+          },
+          "text": "Yes, I want some juice.",
+          "ipa": "/jes aɪ wɑːnt sʌm dʒuːs/",
+          "phonemes": [
+            "y",
+            "jh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: at the market",
+        "th": "ฟัง: ที่ตลาด"
+      },
+      "exercises": [
+        {
+          "id": "d039-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสซื้ออะไร ไวยากรณ์ใหม่: กริยาที่ลงท้าย -o, -s, -sh, -ch, -x เติม -es (go → goes, do → does, wash → washes) ส่วน buy, pay, take เติม -s ธรรมดา (buys, pays, takes)"
+          },
+          "audioText": "Rose goes to the market. She buys fruit and vegetables. She pays eighty baht. She goes home with the bag.",
+          "question": {
+            "en": "What does Rose buy?",
+            "th": "โรสซื้ออะไร"
+          },
+          "choices": [
+            "Fruit and vegetables",
+            "Meat and bread"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d039-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่านมราคาเท่าไร คำถาม What/Where + do/does + ประธาน + กริยาเดิม (What do you need? What does she want?)"
+          },
+          "audioText": "Man: What do you need? Rose: I need some milk and bread. How much is the milk? Man: The price is forty baht.",
+          "question": {
+            "en": "What is the price of the milk?",
+            "th": "นมราคาเท่าไร"
+          },
+          "choices": [
+            "Forty baht",
+            "Fourteen baht",
+            "Fifty baht"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d039-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "She goes to the market. She buys some fruit."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shopping",
+        "th": "ซื้อของ"
+      },
+      "exercises": [
+        {
+          "id": "d039-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I go to the market.",
+            "She goes to the market.",
+            "What do you need?",
+            "I need some milk.",
+            "I want some bread.",
+            "What is the price?",
+            "He takes the bus to the market.",
+            "I pay sixty baht.",
+            "Give the money to the man.",
+            "Ask the man."
+          ]
+        },
+        {
+          "id": "d039-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณซื้ออาหารที่ไหน และตอนนี้ต้องการอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Where do you buy food? What do you need?",
+          "sampleAnswer": "I buy food at the market. I need some rice.",
+          "keywords": [
+            "buy",
+            "need"
+          ]
+        },
+        {
+          "id": "d039-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม คำถามที่ขึ้นต้นด้วย What เสียงลงท้ายประโยค (↘) และหลัง does ไม่เติม -s ที่ want"
+          },
+          "text": "What does he want?",
+          "ipa": "/wʌt dʌz hiː wɑːnt/",
+          "phonemes": [
+            "y"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Nan at the market",
+        "th": "แนนที่ตลาด"
+      },
+      "exercises": [
+        {
+          "id": "d039-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (goes, buys, wants, asks, says, gives, pays, takes: กริยาของ she เติม -s หรือ -es)"
+          },
+          "text": "Nan goes to the market in Bangkok. She buys bread and bananas. She wants some milk too. She asks the man, \"What is the price of the milk?\" The man says, \"The price is forty baht.\" Nan gives the man fifty baht. She pays and takes the bag.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Nan want?",
+                "th": "แนนอยากได้อะไร"
+              },
+              "choices": [
+                "Milk",
+                "Cheese"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How much is the milk?",
+                "th": "นมราคาเท่าไร"
+              },
+              "choices": [
+                "Forty baht",
+                "Fifty baht"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where does Nan go?",
+                "th": "แนนไปที่ไหน"
+              },
+              "choices": [
+                "To the market",
+                "To a restaurant"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: goes, buys, wants",
+        "th": "เขียน: goes, buys, wants"
+      },
+      "exercises": [
+        {
+          "id": "d039-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "goes",
+            "She",
+            "to",
+            "the",
+            "market"
+          ],
+          "answer": "She goes to the market"
+        },
+        {
+          "id": "d039-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมกริยา 'ไป' ให้ถูกรูป (Rose = she ต้องเติม -es)"
+          },
+          "text": "Rose ___ to the market.",
+          "answer": [
+            "goes"
+          ]
+        },
+        {
+          "id": "d039-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันอยากได้นมและขนมปัง",
+          "accept": [
+            "I want some milk and bread",
+            "I want milk and bread"
+          ]
+        },
+        {
+          "id": "d039-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-go"
+            },
+            {
+              "vocabId": "v-buy"
+            },
+            {
+              "vocabId": "v-need"
+            },
+            {
+              "vocabId": "v-want"
+            },
+            {
+              "vocabId": "v-pay"
+            },
+            {
+              "vocabId": "v-price"
+            },
+            {
+              "vocabId": "v-market"
+            },
+            {
+              "vocabId": "v-take"
+            },
+            {
+              "vocabId": "v-give"
+            },
+            {
+              "vocabId": "v-ask"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
