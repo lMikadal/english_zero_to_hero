@@ -10,7 +10,7 @@ const repo = path.resolve(import.meta.dirname, "../../..");
 describe("real content/ directory", () => {
   it("validates with no problems", () => {
     const r = validateContentDir(path.join(repo, "content"));
-    expect(r.problems.map(formatProblem)).toEqual([]);
+    expect(r.problems.filter((p) => p.severity !== "warning").map(formatProblem)).toEqual([]);
     expect(r.summary.lessons).toBeGreaterThanOrEqual(1);
     expect(r.summary.words).toBeGreaterThanOrEqual(1);
   });

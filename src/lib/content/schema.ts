@@ -46,8 +46,10 @@ export const listenChooseSchema = z.strictObject({
   ...base, type: z.literal("listen_choose"),
   audioText: text, question: bilingual, choices: z.array(text).min(2), answer: choiceIndex,
 });
+/** `strict: true` turns off the contraction / digit folding for this item (case and punctuation are still ignored). */
+const strict = z.boolean().optional();
 export const dictationSchema = z.strictObject({
-  ...base, type: z.literal("dictation"), audioText: text, accept: z.array(text).min(1).optional(),
+  ...base, type: z.literal("dictation"), audioText: text, accept: z.array(text).min(1).optional(), strict,
 });
 export const shadowingSchema = z.strictObject({
   ...base, type: z.literal("shadowing"), lines: z.array(text).min(1),
@@ -69,10 +71,10 @@ export const arrangeWordsSchema = z.strictObject({
   ...base, type: z.literal("arrange_words"), words: z.array(text).min(2), answer: text, accept: z.array(text).min(1).optional(),
 });
 export const fillBlankSchema = z.strictObject({
-  ...base, type: z.literal("fill_blank"), text, answer: z.array(text).min(1),
+  ...base, type: z.literal("fill_blank"), text, answer: z.array(text).min(1), strict,
 });
 export const translateThEnSchema = z.strictObject({
-  ...base, type: z.literal("translate_th_en"), th: thai, accept: z.array(text).min(1),
+  ...base, type: z.literal("translate_th_en"), th: thai, accept: z.array(text).min(1), strict,
 });
 export const freeWriteSchema = z.strictObject({
   ...base, type: z.literal("free_write"),

@@ -33,6 +33,7 @@
 - `free_write`: `prompt` เป็น string, `minWords` เป็นจำนวนเต็มบวก, `rubric` เป็น `string[]` (เกณฑ์ให้ AI ตรวจ) ใส่หรือไม่ก็ได้
 - `read_passage.glossary` เป็น `{ [word]: คำแปลไทย }`
 - `vocab_match.pairs` ต้องมีอย่างน้อย 2 คู่; `vocabId` ทุกที่ต้องตรง `^v-[a-z0-9]+(-[a-z0-9]+)*$`
+- `dictation`, `translate_th_en`, `fill_blank` มี `strict: boolean` (ไม่บังคับ) ปิดการพับคำย่อ/ตัวเลขของข้อนั้น
 - `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string); `accept` (ไม่บังคับ) เป็น `string[]` อย่างน้อย 1 รายการ
 - `fill_blank.answer` เป็น array ของคำตอบ **หนึ่งตัวต่อหนึ่ง `___`** ตามลำดับ
 - ใน VocabItem `forms` เป็น `{ [ชื่อรูปผัน]: string }` ชื่อใดก็ได้ (ไม่จำกัดแค่ตัวอย่าง) และ `topics` ต้องเป็น slug ในรายการของ VOCABULARY.md หัวข้อ 3 เท่านั้น ห้ามซ้ำ
@@ -49,11 +50,25 @@
 5. ลบ `.` `!` `?` `,` ทุกตำแหน่ง (แทนด้วยช่องว่าง)
 6. ยุบช่องว่างซ้ำและตัดหัวท้าย
 
-ตัวอย่าง: `"B, U, S"` กับ `"b u s"` ตรงกัน, `"Nice to meet you…"` ตรงกับ `"Nice to meet you."` แต่ `"B-U-S"` ไม่ตรงกับ `"B U S"` (ขีดกลางไม่ถูกลบ) และ `"I am"` ไม่ตรงกับ `"I'm"`
+7. (เฉพาะตอนเทียบ ไม่ใช่ตอนแสดงผล) พับรูปที่ผู้เรียนเลือกเขียนได้อิสระให้เป็นรูปเดียว ทั้งสองฝั่ง (`src/lib/answers/equivalents.ts`) ใช้กับ `dictation`, `translate_th_en`, `fill_blank` และ `arrange_words` ผ่านฟังก์ชันเดียวกันที่ client, server และตัวสุ่มแผ่นป้าย และ **ปิดได้เป็นรายข้อด้วย `strict: true`** (ดูข้างล่าง)
+
+| พับให้เท่ากัน (เขียนรูปเดียวพอ) | ไม่พับ (ต้องใส่ทุกรูปใน `accept` หรือตั้ง `strict: true`; ตัวตรวจกฎ `answer-forms` บังคับ) |
+|---|---|
+| คำย่อที่มีความหมายเดียว: `I'm`=`I am`, `you're`, `isn't`, `aren't`, `don't`..., และ `he's`/`she's`/`it's`/`that's`/`what's`... = `... is` **เฉพาะเมื่อคำถัดไป (ข้าม `not` ได้หนึ่งคำ) เป็น a/an/the/my/your..., เลข, `in/at/on/from/here/there...`, คำ `-ing`, หรือ adjective ในรายการ `ADJECTIVES`** (รายการปิดใน `equivalents.ts`: `He's a teacher`, `She's happy`, `It's in the bag`, `He's reading`), `isn't`, `aren't`, `don't`, `doesn't`, `can't`=`cannot`, `won't`, `I'll`... (ตาราง `CONTRACTIONS`) | `'s` ก่อนคำอื่นทุกคำ เช่น adverb (`He's never been`, `She's just finished`), สรรพนาม (`What's he done`) หรือคำที่ไม่รู้จัก, และก่อน past participle (ตาราง `PARTICIPLES` ใน `equivalents.ts`: `come`, `had`, `sat`, `bought`... ทุกคำที่ผันไม่ปกติ) หรือคำ `-ed` ตั้งแต่ 5 ตัวอักษร (`He's tired`, `He's gone`: is หรือ has?) ทั้งสองทิศทาง: `He's come home` ไม่เท่ากับ `He has come home` และไม่เท่ากับ `He is come home` (ผิดไวยากรณ์ จึงตรวจว่าไม่ถูกรับ) |
+| `'s` ก่อน `been`/`got` = `has` (`He's been` = `He has been`; ไม่เท่ากับ `He is been`) | `'d` ยกเว้นก่อน `like`/`love` (`I'd like` = `I would like`) |
+| `name's` (`My name's Ann` = `My name is Ann`) | ชื่อ + `'s` (`Sam's from Japan` อาจเป็น possessive) ต้องใส่รูปเต็ม `Sam is ...` หรือ `strict`; กลับทิศก็เหมือนกัน: `Sam is happy` ไม่เท่ากับ `Sam's happy`, `He has finished` ไม่เท่ากับ `He's finished`, `I would go` ไม่เท่ากับ `I'd go` |
+| ตัวเลข 1–20, 30–90, 100: `10`=`ten`, `a hundred`=`one hundred`=`100` | ลำดับที่ทุกตัว (`first`/`1st`, `twenty-first`/`21st`, `thirtieth`/`30th`), `zero`/`0`, เลข 101 ขึ้นไป, เลขที่มี `:` `,` `.` (`3:30`, `1,000`), เลขนำหน้าด้วย 0 |
+| 21–99: `21`=`twenty-one`=`twenty one` | `a 100` (ไม่เท่ากับ `100`), `110` (ไม่เท่ากับ `ten`) |
+| `its` ≠ `it's`, `his` ≠ `he's` (ไม่แตะ) | |
+
+**`strict: true`** (ไม่บังคับ) ใช้ได้กับ `dictation`, `translate_th_en`, `fill_blank` ปิดการพับ เหลือเพียงตัวพิมพ์เล็กใหญ่/เครื่องหมาย/ช่องว่าง ตัวอย่างข้อที่ต้องใช้: คำตอบของ `fill_blank` ที่เป็นคำย่อหรือตัวเลข (`answer: ["ten"]`) **ต้องตั้ง `strict` ให้ชัด** (`true` = รับ `ten` เท่านั้น, `false` = รับ `10` ด้วย) กฎ `answer-forms` บังคับ
+
+ตัวอย่าง: `"B, U, S"` กับ `"b u s"` ตรงกัน, `"Nice to meet you…"` ตรงกับ `"Nice to meet you."`, `"He's 10"` ตรงกับ `"He is ten"` แต่ `"B-U-S"` ไม่ตรงกับ `"B U S"` (ขีดกลางไม่ถูกลบ) และ `"Its a door"` ไม่ตรงกับ `"It's a door"`
 
 **แนวทางเขียน `accept`**
 - ไม่ต้องใส่รูปที่ต่างกันแค่ตัวพิมพ์ใหญ่เล็ก หรือเครื่องหมาย `. ! ? ,` (`"Nice to meet you"` ครอบคลุม `"nice to meet you!"`)
-- ต้องใส่รูปที่ต่างจริง: คำย่อกับคำเต็ม (`"I'm from Bangkok"` และ `"I am from Bangkok"`) คำพ้อง (`"Pleased to meet you"`) และขีดกลาง (`"b-u-s"`)
+- **ไม่ต้องใส่** รูปที่ตัวตรวจพับให้ (คอลัมน์ซ้ายของตารางข้อ 7: `I'm` / `I am`, `10` / `ten`, `21` / `twenty-one`) เขียนรูปเดียวพอ แต่รูปในคอลัมน์ขวา (`'s` + participle, ชื่อ + `'s`, ลำดับที่, เลขใหญ่, zero) **ต้องใส่ทุกรูป** หรือตั้ง `strict: true`
+- ต้องใส่รูปที่ต่างจริง: คำพ้อง (`"Pleased to meet you"`) ลำดับคำที่ถูกอีกแบบ และขีดกลาง (`"b-u-s"`)
 - `dictation`: `audioText` ถือเป็นคำตอบที่รับเสมอ จึงไม่ต้องซ้ำใน `accept` และถ้าไม่มี `accept` จะใช้ `audioText` อย่างเดียว
 - `arrange_words`: ถ้าแผ่นป้ายต่อเป็นประโยคถูกต้องได้มากกว่าหนึ่งแบบ ให้ใส่แบบอื่นใน `accept` (เช่น `answer: "My name is Sam"`, `accept: ["Sam is my name"]`) validator ตรวจว่าทุกรายการใช้แผ่นป้ายครบพอดี เทียบตัวพิมพ์เล็กใหญ่แบบไม่สนใจ เพราะตัวพิมพ์ของแผ่นป้ายตามประโยคใน `answer` (เช่น ป้าย `This` กับคำตอบ `Is this my pen`) และต้องเว้นวรรคเดียวระหว่างคำ ตอนแสดงผล player แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กเสมอ เพื่อไม่ให้ตัวพิมพ์ใหญ่บอกใบ้คำแรก ยกเว้น `I` (และ `I'm` ฯลฯ) และคำที่ขึ้นต้นด้วยตัวพิมพ์ใหญ่กลางประโยคใน `answer` หรือ `accept` ข้อใดข้อหนึ่ง (ชื่อเฉพาะ เช่น `Sam`) แผ่นแรกในแถวคำตอบแสดงตัวพิมพ์ใหญ่ เป็นการแสดงผลเท่านั้น: ข้อความที่ส่งตรวจใช้คำตามต้นฉบับใน `words` และการตรวจไม่สนตัวพิมพ์ ดังนั้นใน `words` ใส่ตัวพิมพ์ตามที่ขึ้นต้นประโยคใน `answer` ได้ตามเดิม
 - `fill_blank`: ช่องหนึ่งรับคำตอบที่ถูกได้หนึ่งสตริง (ข้อจำกัดที่ทราบแล้ว)
@@ -77,6 +92,89 @@
 - ไฟล์คำศัพท์ตรวจทีละคำ: คำที่ผิดจะถูกรายงานด้วยชื่อไฟล์ ลำดับ และ id ส่วนคำอื่นในไฟล์ยังถูกใช้ตรวจต่อ
 - รันกับสำเนาอื่นได้ด้วย `pnpm content:validate <dir>` (ค่าเริ่มต้น `./content`)
 - กฎเรื่องคำศัพท์ทั้งหมดอยู่ที่ [VOCABULARY.md หัวข้อ 6](VOCABULARY.md#6-กฎการตรวจ-pnpm-contentvalidate)
+
+## กฎที่ตัวตรวจบังคับ
+
+กฎชุดนี้อยู่ที่ `src/lib/content/rules/` (หนึ่งไฟล์ต่อหนึ่งกลุ่มกฎ) รันพร้อม `make validate` และบล็อก CI ตัวตรวจพิมพ์ปัญหาเป็นกลุ่มตามชื่อกฎ (`== rule taught-words (3) ==`) แต่ละบรรทัดบอกไฟล์ และ `[exercise id หรือ vocab id]` อ่านกฎเหล่านี้ก่อนเขียนบทเรียน
+
+### `taught-words`: ใช้เฉพาะคำที่สอนแล้ว
+- **ประโยคตัวอย่างของคำ (`examples[].en`)** ใช้ได้เฉพาะคำที่สอนแล้ว *ภายในวันเดียวกับที่คำนั้นถูกสอน* หรือก่อนหน้า
+- **ข้อความอังกฤษที่ผู้เรียนเห็น/ได้ยินใน exercise** (`text`, `audioText`, `lines`, `prompt`, `sampleAnswer`, `choices`, `answer`, เฉลยแรกของ `translate_th_en`) ใช้ได้เฉพาะคำที่สอนภายในวันของบทนั้นหรือก่อนหน้า
+- รูปผันถือเป็นคำเดียวกัน: พหูพจน์/`-s`/`-es`/`-ing`/`-ed` ปกติ รูปใน `forms` ของคำ (`am / is / are` ของ `be`) และคำย่อ (`I'm` = I + am) `Sam's` นับเป็น `Sam`
+- **ได้รับยกเว้น:** คำใน `src/lib/content/rules/allowlists.ts`: `FUNCTION_WORDS` (a, an, the, and, or, but, of, to, at, baht), `A1_WORDS_WITHOUT_ENTRY_YET` (I, you, it, this, that, my, your, what, who, have, too: คำ A1 ที่ยังไม่มี entry), `NUMBER_WORDS_WITHOUT_ENTRY` (11–19 และสิบๆ), `PROPER_NAMES`, ตัวอักษร a–z, และ `USED_BEFORE_TAUGHT` (คำที่มี entry แต่เนื้อหาใช้ก่อนวันสอน: คำ → วันสุดท้ายที่ยังใช้ได้ เช่น `is: 7`) คำที่อธิบายไทยไว้ใน `glossary` ของบทอ่านนั้น ข้อความ `{ en, th }` ที่มีไทยกำกับ (`question`, `scenario`, `goals`), `prompt` ของ `free_write`/`use_in_sentence` (instruction ไทยบอกงานซ้ำอยู่แล้ว) และคำฝึกเสียงล้วน (`phoneme_intro.examples`, `minimal_pair`)
+- รายการใน `allowlists.ts` ต้อง **หดลง**: เทสต์ `allowlists.stale.test.ts` ล้มเมื่อคำในรายการ (ยกเว้นชื่อและตัวอักษร) มี entry ในคลังแล้ว หรือเมื่อคำใน `USED_BEFORE_TAUGHT` ไม่มี entry, ไม่ถูกใช้ก่อนวันสอนอีกแล้ว หรือวันจำกัดไม่ตรงกับการใช้จริง ห้ามเพิ่มคำเพื่อให้ผ่านโดยไม่คิด: สอนคำก่อน หรือเขียนประโยคใหม่
+
+```
+ERROR content/lessons/day-009.json [d009-speak-02]: uses words not taught by day 9: "count" in prompt. Teach the word earlier, rewrite the text, or (names, function words) add it to src/lib/content/rules/allowlists.ts.
+ERROR content/vocab/oxford-3000/a1.json [v-fine]: examples[1] "My dog is fine." uses words not taught by day 2 (the day v-fine is first taught): "dog". ...
+```
+
+### `vocab-used`: คำใหม่ต้องถูกใช้ในวันนั้น
+ทุก id ใน `vocab` ของบทต้องปรากฏ (รวมรูปผัน) ในข้อความอังกฤษที่ผู้เรียนเห็นของ exercise อย่างน้อยหนึ่งข้อในบทเดียวกัน (นับรวมคำฝึกเสียง แต่ไม่นับ `vocab_match` ที่แสดงแค่คู่คำ) คำหลายคำเช่น `wake up` ถือว่าใช้เมื่อคำหลัก (`wake` และรูปผัน `wakes`/`waking`/`woke`) ปรากฏ ส่วนคำเสริมเดี่ยว ๆ (`up`) ไม่นับ
+
+```
+ERROR content/lessons/day-005.json [v-letter]: vocab[1]: "letter" is taught on day 5 but no exercise of this lesson uses it (looked for "letter" or an inflected form in the learner-facing English). Use it in an exercise or move it to the day that does.
+```
+
+### `gloss-unique`: คำแปลบนแฟลชการ์ดต้องไม่ซ้ำ
+การ์ดไทย→อังกฤษแสดง `th` ทั้งสตริง จึงเทียบ *สิ่งที่ผู้เรียนเห็น*: รายการคำแปล (แยกด้วยจุลภาคนอกวงเล็บ รวมข้อความในวงเล็บ ปรับเป็น NFC ยุบช่องว่าง ตัดอักขระความกว้างศูนย์) ถ้าสองคำที่สอนแล้วมีรายการเหมือนกันเป๊ะ การ์ดแยกไม่ได้ **error** ไม่มีทางหนี: แก้คำแปลให้ต่างกัน (เช่น เติมวงเล็บอธิบาย) ส่วนรายการที่เหมือนกันเฉพาะเมื่อไม่นับวงเล็บ (`ไม่ (คำตอบ)` กับ `ไม่ (วางหลัง is)`) เป็นการ์ดคนละใบ จึงผ่าน แต่พิมพ์ **WARN** (`near-clash`) ให้ผู้ตรวจดู ไม่ทำให้ตรวจไม่ผ่าน
+
+```
+ERROR content/vocab/oxford-3000/a1.json [v-nice]: th "ดี, น่ายินดี": the gloss item "ดี" is also a gloss item of v-good ("ดี"); the Thai->English flashcards cannot tell them apart. Rewrite one gloss to disambiguate it (e.g. add a qualifier in parentheses or a distinguishing word).
+WARN content/vocab/oxford-3000/a1.json [v-not]: near-clash: the gloss item "ไม่ (วางหลัง is)" matches "ไม่" in v-no ("ไม่ (คำตอบ)") once the parenthetical qualifiers are removed. ...
+```
+
+### `pronunciation`: ความสอดคล้องของข้อฝึกออกเสียง
+- `repeat_after_me` ที่มี `ipa`: จำนวนคำใน `ipa` ต้องเท่ากับจำนวนคำใน `text` (กัน IPA ของประโยคอื่น)
+- `minimal_pair`: ห้ามใช้คำที่ออกเสียงได้หลายแบบตามความหมาย (`HETERONYMS` ใน `pronunciation.ts`: live, read, lead, wind, tear, close, bow, row, use, present, record, object, minute ...) เพราะ TTS อ่านไม่แน่นอน
+- ถ้า `instruction` ของ `repeat_after_me`/`phoneme_intro` เอ่ยสัญลักษณ์ IPA ระหว่างเครื่องหมาย `/ /` (เช่น `/ɔː/` จะติดกับตัวอักษรไทยก็ได้) สัญลักษณ์นั้นต้องอยู่ใน `ipa` **ในฐานะหน่วยเสียงเต็ม** (`/ɪ/` ไม่ตรงกับ `aɪ`, `/e/` ไม่ตรงกับ `eɪ`, `/t/` ไม่ตรงกับ `tʃ`) ของข้อนั้น (หรือของคำตัวอย่างใน `examples` ที่มีในคลัง) `tipTh` ของ `phoneme_intro` เอ่ยเสียงอื่นเพื่อเทียบได้ จึงไม่ถูกตรวจ ข้อ `repeat_after_me` ที่เอ่ยสัญลักษณ์แต่ไม่มี `ipa` ก็ผิด
+
+```
+ERROR content/lessons/day-010.json [d010-pron-03]: ipa "/ɪˈlevn twelv/" has 2 word(s) but text "Eleven, twelve, thirteen, fourteen, fifteen." has 5 word(s); the IPA probably belongs to another sentence.
+ERROR content/lessons/day-010.json [d010-speak-03]: the instruction names /ɔː/ but the item's ipa "/ˌsɪksˈtiːn .../" does not contain it. Practise the sound ...
+```
+
+### `arrange-words`: ชื่อเฉพาะต้องตรงกับที่ UI แสดง
+UI (`tile-label.ts`) แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กทั้งหมด ยกเว้น `I` และคำที่ขึ้นต้นตัวใหญ่ *กลางประโยค* ใน `answer` หรือ `accept` กฎจึงบังคับว่า
+- คำขึ้นต้นตัวใหญ่กลางประโยค (ไม่ใช่ `I`) ต้องอยู่ใน `PROPER_NAMES` (`allowlists.ts`)
+- ชื่อใน `PROPER_NAMES` ที่ขึ้นต้นประโยคอย่างเดียวในทุกประโยคที่รับ จะถูกแสดงเป็นตัวเล็ก (`sam`) ให้เพิ่ม `accept` ที่ชื่ออยู่กลางประโยค (เช่น `"My friend is Sam"`) หรือเรียบเรียงใหม่
+
+```
+ERROR content/lessons/day-001.json [d001-write-01]: "Sam" is a proper name that only starts a sentence here, so the tile UI shows it in lower case ("sam"). Add an accepted sentence with "Sam" in the middle ...
+```
+
+
+
+### `answer-forms`: รูปคำตอบที่ตัวตรวจไม่พับให้
+ตรวจ `accept`/`audioText`/`answer` ของ `dictation`, `translate_th_en`, `fill_blank` (ข้ามข้อที่ตั้ง `strict: true`) ตามตารางข้อ 7 ของหัวข้อการเทียบคำตอบ: ถ้ามีรูปที่ไม่พับ ต้องใส่รูปคู่กันใน `accept` ด้วย หรือตั้ง `strict: true` และ `fill_blank` ที่เฉลยเป็นคำย่อ/คำเต็ม/ตัวเลข ต้องตั้ง `strict` ให้ชัด
+- `'s` ก่อน participle หรือคำ `-ed`, `X has + participle`, `X is + participle` (X = he/she/it/that/there/here/what/where/who/how/name หรือชื่อ), `pronoun would` (ไม่ใช่ก่อน like/love), `Name is`, `'d`: ต้องมีทั้งสองรูป ข้อความของตัวตรวจ **ไม่ยกประโยคตัวอย่างที่อาจผิดไวยากรณ์** ให้เลือกรูปเต็มที่ถูกเอง: `X has ...` (perfect) หรือ `X is ...` (adjective/passive)
+- possessive: `Name's` ตามด้วยคำนามจากคลังคำ (หรือ adjective + คำนาม) ถือเป็นความเป็นเจ้าของ ไม่ผิด (`It is Ann's pen`); ตามด้วย a/the/from/in/not/adjective ล้วน ถือเป็นคำย่อ ต้องใส่ `Name is ...`; พหูพจน์ `students'` ผ่าน
+- ลำดับที่ 1st–100th และ `twenty first` = `twenty-first`
+
+```
+ERROR content/lessons/day-020.json [d020-write-03]: "He's tired": "he's" before "tired" is ambiguous ("he is" or "he has"), so grading does not fold it. Also accept whichever full form is correct: "X has ..." (perfect) or "X is ..." (adjective or passive), or set "strict": true on this exercise (then only the listed spellings are accepted).
+ERROR content/lessons/day-021.json [d021-write-02]: answer "ten" is a contraction, a full form or a number; grading would fold it with its other spelling. Decide explicitly: set "strict": true (only "ten") or "strict": false (the other spelling is accepted too).
+```
+
+### `answer-forms`: ข้อสังเกตเพิ่ม
+- `'s` พับเฉพาะในบริบทที่แน่ใจว่าไม่ใช่กริยา (allow-list) คำที่ไม่รู้จักจึงทำให้เข้มขึ้นเท่านั้น ไม่เคยทำให้รับคำตอบผิด; กฎและการตรวจคำตอบใช้ฟังก์ชัน `sReading` ตัวเดียวกัน
+- คำนามทั่วไป + `'s` + a/an/the/not/คำบุพบท (`My mother's a teacher`) ต้องใส่ `My mother is ...` ด้วย
+- `Name's` + คำที่เป็นทั้งคำนามและ adjective/adverb (`Tom's home`, `Ann's back`) ถือเป็นคำย่อ; adjective สูงสุด 2 คำ + คำนาม (`Ann's big red bag`) ถือเป็น possessive
+
+- เขียนความเป็นเจ้าของด้วย `has` / `has got` ห้ามเขียนเป็น `'s` (`He's two cars` ผิด): ตัวตรวจเตือน (warning) เมื่อ `he's`/`she's` ตามด้วย no/many/a lot of/เลข 2-10 + คำนามในคลังคำ ที่ไม่ใช่หน่วยเวลา
+- ท้ายประโยคย่อย (`Yes, he is.`) และสรรพนามเดี่ยวหลัง `is` (`Where is he?`) ไม่ต้องมีรูปย่อ
+
+### `vocab-forms`: adjective ต้องลงรูปเปรียบเทียบ
+adjective ทุกคำใน `forms` ต้องมี `comparative` และ `superlative` (ให้ `taught-words` รู้ว่า `bigger` คือ `big`) หรือ `"gradable": "no"` ถ้าเทียบไม่ได้ (`dead`)
+
+```
+ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.comparative / forms.superlative. Add them (e.g. "comparative": "bigger", "superlative": "biggest") or, for an adjective that cannot be compared, "gradable": "no".
+```
+
+เมื่อ `taught-words` พบคำที่ดูเหมือนรูปผันของคำที่สอนแล้ว (เช่น `bigger`, `hopping`) ข้อความจะบอกให้เติมรูปนั้นใน `forms` ของ entry ไม่ใช่ใส่ allowlist
+
+### รายงานใน CI
+`make validate` เขียนรายงาน (จำนวนและ warning) ลง `.content-validate-summary.md` และ CI ต่อท้ายไฟล์นี้ใน job summary ของ GitHub เพื่อให้ผู้ตรวจ PR เห็น warning (warning ไม่ทำให้ check ล้ม) เมื่อรันนอก CI ตั้งตัวแปร `CONTENT_VALIDATE_SUMMARY=<ไฟล์>` หรือ `GITHUB_STEP_SUMMARY` ได้เอง
 
 ## VocabItem
 

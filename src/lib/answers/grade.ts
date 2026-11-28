@@ -55,14 +55,14 @@ export function gradeExercise(ex: Exercise, answer: AttemptAnswer): Grade | Grad
       if (answer.kind !== "pairs" || answer.selected.length !== ex.pairs.length) return MISMATCH;
       return fraction(ex.pairs.map((p, i) => answer.selected[i] === p.answer));
     case "dictation":
-      return answer.kind === "text" ? exact(matchesAny(answer.text, [...(ex.accept ?? []), ex.audioText])) : MISMATCH;
+      return answer.kind === "text" ? exact(matchesAny(answer.text, [...(ex.accept ?? []), ex.audioText], ex)) : MISMATCH;
     case "translate_th_en":
-      return answer.kind === "text" ? exact(matchesAny(answer.text, ex.accept)) : MISMATCH;
+      return answer.kind === "text" ? exact(matchesAny(answer.text, ex.accept, ex)) : MISMATCH;
     case "arrange_words":
       return answer.kind === "text" ? exact(matchesAny(answer.text, [ex.answer, ...(ex.accept ?? [])])) : MISMATCH;
     case "fill_blank":
       if (answer.kind !== "texts" || answer.texts.length !== ex.answer.length) return MISMATCH;
-      return fraction(ex.answer.map((a, i) => matchesAny(answer.texts[i], [a])));
+      return fraction(ex.answer.map((a, i) => matchesAny(answer.texts[i], [a], ex)));
     case "vocab_match": {
       if (answer.kind !== "match") return MISMATCH;
       const keys = Object.keys(answer.pairs);

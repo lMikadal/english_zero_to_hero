@@ -251,17 +251,19 @@ describe("loadReviewQueue", () => {
   const load = (now = NOW, content: CardContent = repoContent) => loadReviewQueue(db, userId, now, content);
   const keys = (q: Awaited<ReturnType<typeof load>>) => q.cards.map((c) => `${c.vocabId}/${c.direction}`);
 
-  it("BACKFILL: days 1-7 finished before the feature: 72 cards are created, 36 are due today (all en_th)", async () => {
+  it("BACKFILL: days 1-7 finished before the feature: two cards per word are created, one per word is due today (all en_th)", async () => {
+    // Counts come from the content itself: a word added to days 1-7 must not break this test.
+    const n = ALL_WORDS_1_7.length;
     for (let d = 1; d <= 7; d++) await markDone(d);
-    expect(ALL_WORDS_1_7).toHaveLength(36);
+    expect(n).toBeGreaterThan(0);
     const q = await load();
     const rows = await cards();
-    expect(rows).toHaveLength(72);
-    expect(rows.filter((c) => c.direction === "en_th")).toHaveLength(36);
+    expect(rows).toHaveLength(2 * n);
+    expect(rows.filter((c) => c.direction === "en_th")).toHaveLength(n);
     expect(rows.filter((c) => c.direction === "en_th").every((c) => c.due.getTime() === NOW.getTime())).toBe(true);
     const tomorrow = localMidnight(addDays(localDate(NOW, BKK), 1), BKK);
     expect(rows.filter((c) => c.direction === "th_en").every((c) => c.due.getTime() === tomorrow.getTime())).toBe(true);
-    expect(q.cards).toHaveLength(36);
+    expect(q.cards).toHaveLength(n);
     expect(q.cards.every((c) => c.direction === "en_th")).toBe(true);
     expect(q.cards.map((c) => c.vocabId)).toEqual(ALL_WORDS_1_7); // new cards in teaching order
   });
@@ -446,9 +448,10 @@ describe("getReviewSummary", () => {
     expect(await agree()).toEqual({ due: 10, withCard: 5 });
   });
 
-  it("backfill of days 1-7: 36 words, 36 cards due (the en_th ones), and it is the queue's n", async () => {
+  it("backfill of days 1-7: one card due per word (the en_th ones), and it is the queue's n", async () => {
+    const n = ALL_WORDS_1_7.length;
     for (let d = 1; d <= 7; d++) await markDone(d);
-    expect(await agree()).toEqual({ due: 36, withCard: 36 });
+    expect(await agree()).toEqual({ due: n, withCard: n });
   });
 
   it("the day boundary is the learner's zone: due at the end of today is not counted, one millisecond before is", async () => {

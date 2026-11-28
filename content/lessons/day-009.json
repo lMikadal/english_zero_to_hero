@@ -177,7 +177,7 @@
           "instruction": {
             "th": "นับเลข 6 ถึง 10 ด้วยเสียง"
           },
-          "prompt": "Count from six to ten.",
+          "prompt": "Six to ten, please.",
           "sampleAnswer": "Six, seven, eight, nine, ten.",
           "keywords": [
             "six",

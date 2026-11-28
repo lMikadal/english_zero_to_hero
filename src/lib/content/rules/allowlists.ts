@@ -1,0 +1,65 @@
+// The ONLY place where words are allowed in learner-facing English without being taught (rule "taught-words").
+// Every list here must SHRINK over time; tests (allowlists.stale.test.ts) fail when an entry makes an item redundant.
+// Adding a word here is a decision, not a fix: prefer teaching the word earlier or rewriting the sentence.
+//
+// Everything is lower case except PROPER_NAMES (which also drives the arrange_words rule, see arrange-words.ts).
+
+/**
+ * Closed-class words with no entry (and none planned): they are not "new vocabulary", the course introduces them
+ * through patterns (My name is..., This is a...). A test fails if one of these gets a vocab entry.
+ */
+export const FUNCTION_WORDS: readonly string[] = [
+  "a", "an", "the", // articles
+  "and", "or", "but", // conjunctions
+  "of", "to", "at", // prepositions
+  "baht", // the currency of the learner's country, used in the number lessons (a loanword, not an Oxford word)
+];
+
+/**
+ * Oxford A1 words that are used from day 1 but have no vocab entry yet. Known gap: give each an entry, then delete it
+ * here. A test fails as soon as an entry exists, so this list cannot rot.
+ */
+export const A1_WORDS_WITHOUT_ENTRY_YET: readonly string[] = [
+  "i", "you", "it", "this", "that", "my", "your", // pronouns and determiners of the day-1 patterns
+  "what", "who", // question words
+  "have", // "I have a cat"
+  "too", // "Nice to meet you, too"
+];
+
+/**
+ * Words that HAVE an entry, but the reviewed lessons use them before the entry's day. word -> the LATEST lesson day
+ * on which it may still be used untaught (always before the entry's day). Fix for the content writer: teach the entry
+ * earlier, then delete the word here. A test fails when the entry is missing, the word is no longer used untaught,
+ * or the limit is not before the teaching day.
+ */
+export const USED_BEFORE_TAUGHT: Readonly<Record<string, number>> = {
+  // forms of "be" are used as chunks from day 1 (My name IS Sam, I AM Ann); v-be is taught on day 8
+  am: 7, is: 7, are: 7,
+  in: 11, // v-in is taught on day 12; "Ann is in my school" (day 9), "I work in a school" (day 11)
+  yes: 9, no: 9, // Yes / No answer choices in the day-3 and day-4 reading questions; v-yes, v-no are taught on day 10
+};
+
+/**
+ * Number words with no entry of their own: 11-19 and the tens are taught as a pattern (-teen / -ty) in the pronunciation
+ * sections of days 10-11 rather than as cards.
+ */
+export const NUMBER_WORDS_WITHOUT_ENTRY: readonly string[] = [
+  "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
+  "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
+];
+
+/**
+ * Names of people, places and brands used in the lessons. Written as they are spelled (capital first letter).
+ * arrange_words checks that a capitalised mid-sentence word is in this list (UI and content must agree).
+ */
+export const PROPER_NAMES: readonly string[] = [
+  "Sam", "Ann", "Ben", "Mai", "Tom", "Nok", "Max", "Jen", "Jim", "Thailand", "Bangkok", "England", "Japan", "Chiang",
+];
+
+/** Every single letter is allowed: the alphabet and spelling exercises (B, U, S). */
+export const LETTERS: readonly string[] = "abcdefghijklmnopqrstuvwxyz".split("");
+
+/** Lower-case set used by the taught-words rule. */
+export const ALWAYS_ALLOWED: ReadonlySet<string> = new Set([
+  ...FUNCTION_WORDS, ...A1_WORDS_WITHOUT_ENTRY_YET, ...NUMBER_WORDS_WITHOUT_ENTRY, ...PROPER_NAMES.map((n) => n.toLowerCase()), ...LETTERS,
+]);

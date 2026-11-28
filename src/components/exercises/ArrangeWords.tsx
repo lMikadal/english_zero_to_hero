@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { normalizeAnswer } from "@/lib/answers/normalize";
+import { comparableAnswer } from "@/lib/answers/normalize";
 import type { ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
@@ -18,9 +18,9 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
 
   // The pool order is a deterministic shuffle that is never a correct sentence (when another order exists).
   const poolOrder = useMemo(() => {
-    const correct = new Set([exercise.answer, ...(exercise.accept ?? [])].map(normalizeAnswer));
+    const correct = new Set([exercise.answer, ...(exercise.accept ?? [])].map((a) => comparableAnswer(a)));
     const indexes = exercise.words.map((_, i) => i);
-    return shuffleSeeded(indexes, exercise.id, (order) => correct.has(normalizeAnswer(order.map((i) => exercise.words[i]).join(" "))));
+    return shuffleSeeded(indexes, exercise.id, (order) => correct.has(comparableAnswer(order.map((i) => exercise.words[i]).join(" "))));
   }, [exercise]);
 
   const sentences = [exercise.answer, ...(exercise.accept ?? [])];
