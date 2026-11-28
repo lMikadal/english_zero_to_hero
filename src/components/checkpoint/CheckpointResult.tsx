@@ -26,7 +26,7 @@ export function CheckpointResult({
   const rejection = completion.kind === "rejected" ? rejectedMessage(completion.code, completion.error) : null;
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-14">
-      <h1 className="text-2xl font-bold leading-snug text-fg">ผลแบบทดสอบ ครั้งที่ {k}</h1>
+      <h1 className="text-2xl font-bold leading-snug text-fg">ผลแบบทดสอบ <span className="whitespace-nowrap">ครั้งที่ {k}</span></h1>
       {shown ? <Shown checkpoint={checkpoint} display={shown} practised={practised} /> : null}
       {completion.kind === "pending" && <p className={TEXT}>กำลังบันทึก…</p>}
       {completion.kind === "queued" && (
@@ -95,27 +95,36 @@ function Shown({ checkpoint, display, practised }: { checkpoint: Checkpoint; dis
         <section aria-labelledby="repair-h" className="flex flex-col gap-2">
           <h2 id="repair-h" className="text-base font-bold text-fg">ควรฝึกซ่อม</h2>
           <p className={TEXT}>เล่นซ้ำส่วนนี้ของบทที่เคยเรียน ไม่กระทบคะแนนบท</p>
-          <ul className="flex flex-col gap-2">
-            {weak.flatMap((s) => {
-              const days = checkpoint.sections.find((c) => c.skill === s.skill)?.reviewDays ?? [];
-              return days.map((day) => {
-                const label = `${REPLAY_SKILL_LABEL_TH[s.skill]} · วันที่ ${day}`;
-                const done = practised.has(practisedKey(day, s.skill));
-                return (
-                  <li key={`${s.skill}-${day}`}>
-                    <Link href={replayHref(day, s.skill)} aria-label={done ? `${label} ฝึกแล้ว` : undefined} className="flex min-h-11 items-center justify-between gap-2 rounded-xl border border-line bg-card px-3.5 py-2.5 text-[15px] font-medium text-fg">
-                      <span>{label}</span>
-                      {done ? (
-                        <span className="text-[13px] font-medium text-good-fg">
-                          <span aria-hidden="true">✓ ฝึกแล้ว</span>
-                        </span>
-                      ) : <span aria-hidden="true" className="text-muted">›</span>}
-                    </Link>
-                  </li>
-                );
-              });
+          <div className="flex flex-col gap-3">
+            {weak.map((s) => {
+              const name = REPLAY_SKILL_LABEL_TH[s.skill];
+              const days = [...(checkpoint.sections.find((c) => c.skill === s.skill)?.reviewDays ?? [])].sort((x, y) => x - y);
+              return (
+                <div key={s.skill} role="group" aria-labelledby={`repair-${s.skill}`} className="flex flex-col gap-2 rounded-xl border border-line bg-card p-3">
+                  <h3 id={`repair-${s.skill}`} className="text-[15px] font-medium text-fg">{name}</h3>
+                  <ul className="flex flex-wrap gap-2">
+                    {days.map((day) => {
+                      const done = practised.has(practisedKey(day, s.skill));
+                      return (
+                        <li key={day}>
+                          <Link
+                            href={replayHref(day, s.skill)}
+                            aria-label={`${name} · วันที่ ${day}${done ? " ฝึกแล้ว" : ""}`}
+                            className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 py-2 text-[13px] font-medium ${
+                              done ? "border-good/40 bg-good-soft text-good-fg" : "border-line bg-surface text-fg"
+                            }`}
+                          >
+                            {done ? <span aria-hidden="true">✓</span> : null}
+                            <span>วันที่ {day}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
             })}
-          </ul>
+          </div>
         </section>
       ) : null}
 

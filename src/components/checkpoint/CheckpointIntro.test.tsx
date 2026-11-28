@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { smallTargets } from "@/components/exercises/touch-target-check";
@@ -19,6 +19,13 @@ describe("CheckpointIntro (plan 3.3 item 18)", () => {
     show();
     expect(screen.getByRole("heading", { level: 1, name: "แบบทดสอบประจำเดือน ครั้งที่ 1" })).toBeInTheDocument();
     expect(screen.getByText("บทเรียนวันที่ 1–30 · 16 ข้อ · ประมาณ 30 นาที")).toBeInTheDocument();
+  });
+  it("with the real file's title (which already holds the day range) the heading is built from the number and the range appears once", () => {
+    const real = { ...checkpointFixture, title: { en: "Checkpoint 1", th: "แบบทดสอบประจำเดือน ครั้งที่ 1: วันที่ 1–30" } };
+    const { container } = render(<CheckpointIntro checkpoint={real} resume={null} last={null} onStart={() => {}} />);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^แบบทดสอบประจำเดือน ครั้งที่ 1$/);
+    expect((container.textContent ?? "").match(/วันที่ 1–30/g)).toHaveLength(1);
+    expect(within(screen.getByRole("heading", { level: 1 })).getByText("ครั้งที่ 1").className).toMatch(/whitespace-nowrap/);
   });
   it("states the four rules in plain Thai", () => {
     show();

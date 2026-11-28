@@ -145,9 +145,9 @@ describe("getCheckpoint", () => {
     sections: [{ skill: "listening", title: bi, weight: 100, reviewDays: [1],
       exercises: [{ id: "c030-listen-01", type: "dictation", instruction: { th: "ก" }, audioText: "Hello." }] }],
   };
-  it("returns null when there is no file, even when the folder is missing (the repo has none yet)", () => {
+  it("returns null when there is no file, even when the folder is missing (checkpoint 60 does not exist yet)", () => {
     expect(getCheckpoint(30, mk())).toBeNull();
-    expect(getCheckpoint(30)).toBeNull(); // the real content/ has no checkpoints/ in this PR
+    expect(getCheckpoint(60)).toBeNull(); // the real content/ has checkpoint-030 only (the first monthly checkpoint, PR 7)
   });
   it("returns null for days that are not checkpoint days", () => {
     expect(getCheckpoint(0)).toBeNull();
