@@ -5787,7 +5787,7 @@
     "ipa": { "us": "/kloʊðz/", "uk": "/kləʊðz/" },
     "th": "เสื้อผ้า",
     "topics": ["clothes"],
-    "examples": [{ "en": "These are nice clothes.", "th": "นี่คือเสื้อผ้าที่สวย" }, { "en": "This shop has big clothes.", "th": "ร้านนี้มีเสื้อผ้าไซส์ใหญ่" }],
+    "examples": [{ "en": "These are nice clothes.", "th": "นี่คือเสื้อผ้าที่สวย" }, { "en": "This shop has nice clothes.", "th": "ร้านนี้มีเสื้อผ้าสวย ๆ" }],
     "collocations": ["nice clothes"]
   },
   {
@@ -5894,7 +5894,7 @@
     "ipa": { "us": "/ˈweðər/", "uk": "/ˈweðə/" },
     "th": "อากาศ, สภาพอากาศ",
     "topics": ["weather_nature"],
-    "examples": [{ "en": "The weather is hot today.", "th": "วันนี้อากาศร้อน" }, { "en": "What is the weather?", "th": "อากาศเป็นอย่างไร" }],
+    "examples": [{ "en": "The weather is hot today.", "th": "วันนี้อากาศร้อน" }, { "en": "How is the weather today?", "th": "วันนี้อากาศเป็นอย่างไร" }],
     "collocations": ["nice weather"]
   },
   {
@@ -5916,7 +5916,7 @@
     "ipa": { "us": "/ˈreɪni/", "uk": "/ˈreɪni/" },
     "th": "ฝนตก, มีฝน",
     "topics": ["weather_nature"],
-    "examples": [{ "en": "Today is rainy.", "th": "วันนี้ฝนตก" }, { "en": "July is a rainy month.", "th": "กรกฎาคมเป็นเดือนที่ฝนตก" }],
+    "examples": [{ "en": "It is rainy today.", "th": "วันนี้ฝนตก" }, { "en": "July is a rainy month.", "th": "กรกฎาคมเป็นเดือนที่ฝนตก" }],
     "collocations": ["a rainy day"],
     "forms": { "comparative": "rainier", "superlative": "rainiest" }
   },
@@ -6131,7 +6131,7 @@
     "ipa": { "us": "/ˈtɔɪlət/", "uk": "/ˈtɔɪlət/" },
     "th": "ส้วม, ห้องส้วม",
     "topics": ["home"],
-    "examples": [{ "en": "The toilet is downstairs.", "th": "ห้องส้วมอยู่ชั้นล่าง" }, { "en": "The toilet is clean.", "th": "ห้องส้วมสะอาด" }],
+    "examples": [{ "en": "The toilet is upstairs.", "th": "ห้องส้วมอยู่ชั้นบน" }, { "en": "The toilet is clean.", "th": "ห้องส้วมสะอาด" }],
     "collocations": ["a clean toilet"],
     "forms": { "plural": "toilets" }
   },

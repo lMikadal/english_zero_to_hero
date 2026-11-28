@@ -53,7 +53,7 @@
           "id": "d062-pron-02",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม คำถาม Wh- เสียงลงท้ายประโยค ↘ และ hotel เน้นพยางค์หลัง"
+            "th": "ฟังแล้วพูดตาม คำถาม Wh- เสียงลงท้ายประโยค และ hotel เน้นพยางค์หลัง"
           },
           "text": "Where is the hotel? It is near the station.",
           "ipa": "/wer ɪz ðə hoʊˈtel ɪt ɪz nɪr ðə ˈsteɪʃn/"
@@ -82,7 +82,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าโรสไปที่ไหนในเมือง"
           },
-          "audioText": "It is Saturday. The weather is rainy and the road is wet. I take an umbrella. I go to the supermarket in the town. In the evening we go to the cinema.",
+          "audioText": "I am Rose. On Saturday I go to the supermarket in the town. On rainy days I take an umbrella. On Saturday evenings we go to the cinema.",
           "question": {
             "en": "Where does Rose go in the town?",
             "th": "โรสไปที่ไหนในเมือง"
@@ -100,7 +100,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าจักรยานของใครช้า (Ray's = ของเรย์)"
           },
-          "audioText": "It is Leo's birthday party. The garden is sunny and dry. Leo's friends run in the garden. Ray rides his bike. It is slow. Leo's bike is fast. Rose takes a photo. Leo draws a picture. Nan paints a picture. It is fun!",
+          "audioText": "Every May Leo has a birthday party. The garden is sunny and dry. Leo's friends run in the garden. Ray rides his bike. It is slow. Leo's bike is fast. Rose takes photos. Leo draws a picture. Nan paints a picture. It is fun!",
           "question": {
             "en": "Whose bike is slow?",
             "th": "จักรยานของใครช้า"
@@ -136,8 +136,8 @@
             "th": "พูดตามทันทีทีละประโยค"
           },
           "lines": [
-            "Today is cloudy.",
-            "I wear a green shirt and black shoes.",
+            "It is cloudy today.",
+            "I wear a green shirt and black shoes to school.",
             "My shoes are size thirty.",
             "My father wears a white coat at work.",
             "The hospital is in the town.",
@@ -175,7 +175,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Nan is in the town. The weather is cloudy and dry. She wears a red skirt and a brown jacket. She goes to the museum. The library is near the museum. Then she goes to the station. The hotel is near the station. The airport is far from the town.",
+          "text": "Nan is in the town. The weather is cloudy and dry. The clouds are white. She wears a red skirt and a brown jacket. She goes to the museum. The library is near the museum. Then she goes to the station. The hotel is near the station. The airport is far from the town.",
           "questions": [
             {
               "question": {
@@ -308,7 +308,12 @@
           "th": "ฉันถ่ายรูปที่งานเลี้ยง",
           "accept": [
             "I take a photo at the party",
-            "At the party I take a photo"
+            "At the party I take a photo",
+            "I take photos at the party",
+            "At the party I take photos",
+            "I take a photo at a party",
+            "I take photos at a party",
+            "At a party I take photos"
           ]
         }
       ]

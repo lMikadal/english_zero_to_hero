@@ -46,11 +46,11 @@
           "id": "d059-pron-01",
           "type": "phoneme_intro",
           "instruction": {
-            "th": "ฟังและสังเกตรูปปาก"
+            "th": "ฟังและสังเกตเสียงขึ้นลงท้ายประโยค"
           },
           "phoneme": "intonation",
           "ipa": "intonation",
-          "tipTh": "ประโยคคำถามที่ตอบ Yes/No (Is it near?) เสียงปลายประโยคขึ้นสูง ↗ ส่วนคำถาม Wh- (Where is the station?) และประโยคบอกเล่า เสียงปลายประโยคลงต่ำ ↘ คนไทยมักใช้วรรณยุกต์ของคำสุดท้ายแทน ทำให้ได้ยินเป็นเสียงอื่น ให้ปล่อยเสียงขึ้นหรือลงตามชนิดประโยคตั้งแต่คำสำคัญคำสุดท้าย",
+          "tipTh": "ประโยคคำถามที่ตอบ Yes/No (Is it near?) เสียงปลายประโยคขึ้นสูง ส่วนคำถาม Wh- (Where is the station?) และประโยคบอกเล่า เสียงปลายประโยคลงต่ำ คนไทยมักใช้วรรณยุกต์ของคำสุดท้ายแทน ทำให้ได้ยินเป็นเสียงอื่น ให้ปล่อยเสียงขึ้นหรือลงตามชนิดประโยคตั้งแต่คำสำคัญคำสุดท้าย",
           "examples": [
             "Is it near?",
             "Where is the station?",
@@ -61,7 +61,7 @@
           "id": "d059-pron-02",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม คำถาม Yes/No เสียงขึ้นท้ายประโยค ↗ ที่คำว่า near"
+            "th": "ฟังแล้วพูดตาม คำถาม Yes/No เสียงขึ้นท้ายประโยค ที่คำว่า near"
           },
           "text": "Is the station near?",
           "ipa": "/ɪz ðə ˈsteɪʃn nɪr/"
@@ -70,7 +70,7 @@
           "id": "d059-pron-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม คำถาม Wh- เสียงลงท้ายประโยค ↘ ที่คำว่า hospital"
+            "th": "ฟังแล้วพูดตาม คำถาม Wh- เสียงลงท้ายประโยค ที่คำว่า hospital"
           },
           "text": "Where is the hospital?",
           "ipa": "/wer ɪz ðə ˈhɑːspɪtl/"
@@ -173,7 +173,7 @@
             "The station is near the hotel.",
             "The supermarket is near the library.",
             "The museum is near the cinema.",
-            "On Saturday evening we go to the cinema.",
+            "On Saturday evenings we go to the cinema.",
             "The airport is far."
           ]
         },
@@ -205,7 +205,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (Leo's town = เมืองของลีโอ)"
           },
-          "text": "Leo's town is big. It has a hospital, a station, a library and a museum. The hospital is near the bank and Dan works in the hospital. The library is near the museum. The hotel is near the station and the airport is far from the town. On Saturday evening the family goes to the cinema.",
+          "text": "Leo's town is big. It has a hospital, a station, a library and a museum. The hospital is near the bank and Dan works in the hospital. The library is near the museum. The hotel is near the station and the airport is far from the town. On Saturday evenings the family goes to the cinema.",
           "questions": [
             {
               "question": {
@@ -237,7 +237,7 @@
                 "th": "ครอบครัวไปโรงภาพยนตร์เมื่อไร"
               },
               "choices": [
-                "On Saturday evening",
+                "On Saturday evenings",
                 "On Sunday",
                 "On Friday"
               ],
@@ -305,11 +305,11 @@
           "th": "เราไปโรงภาพยนตร์วันเสาร์ตอนเย็น",
           "accept": [
             "We go to the cinema on Saturday evening",
-            "On Saturday evening we go to the cinema",
-            "We go to the cinema on Saturday evenings",
             "On Saturday evenings we go to the cinema",
+            "We go to the cinema on Saturday evenings",
             "We go to the cinema every Saturday evening",
-            "Every Saturday evening we go to the cinema"
+            "Every Saturday evening we go to the cinema",
+            "On Saturday evening we go to the cinema"
           ]
         },
         {

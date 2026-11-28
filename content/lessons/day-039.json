@@ -286,7 +286,7 @@
           "id": "d039-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม คำถามที่ขึ้นต้นด้วย What เสียงลงท้ายประโยค (↘) หลัง does ไม่เติม -s ที่ want และ /dʒ/ ใน juice สั่นคอ"
+            "th": "ฟังแล้วพูดตาม คำถามที่ขึ้นต้นด้วย What เสียงลงท้ายประโยค หลัง does ไม่เติม -s ที่ want และ /dʒ/ ใน juice สั่นคอ"
           },
           "text": "What juice does he want?",
           "ipa": "/wʌt dʒuːs dʌz hiː wɑːnt/",

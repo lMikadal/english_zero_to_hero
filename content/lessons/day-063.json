@@ -36,7 +36,7 @@
           "id": "d063-pron-01",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม คำถาม Yes/No เสียงขึ้นท้ายประโยค ↗ และ from ออกเสียงเบา /frəm/"
+            "th": "ฟังแล้วพูดตาม คำถาม Yes/No เสียงขึ้นท้ายประโยค และ from ออกเสียงเบา /frəm/"
           },
           "text": "Is the airport far from the town?",
           "ipa": "/ɪz ðə ˈerpɔːrt fɑːr frəm ðə taʊn/"
@@ -65,7 +65,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่ามาลีทำอะไรในสวน"
           },
-          "audioText": "I am Mali. I live in Chiang Mai. In December the weather is cold. I wear a coat and my yellow jacket. My garden is small. I paint pictures in the garden. It is fun. My family visits in December.",
+          "audioText": "I am Mali. I live in Chiang Mai. In December the weather is cold. I wear my yellow jacket. My garden is small. I paint pictures in the garden. It is fun. My family visits in December.",
           "question": {
             "en": "What does Mali do in the garden?",
             "th": "มาลีทำอะไรในสวน"
@@ -101,7 +101,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "My computer is on the sofa. The toilet is downstairs."
+          "audioText": "My computer is on the sofa. The toilet is upstairs."
         }
       ]
     },
@@ -119,12 +119,12 @@
             "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
           },
           "lines": [
-            "On Saturday we go to the museum.",
+            "On Saturdays we go to the museum.",
             "The museum is near the library.",
             "Leo runs and rides his bike.",
             "His bike is fast.",
             "Ray's bike is slow.",
-            "I take a photo.",
+            "I take photos.",
             "Leo draws a picture.",
             "It is fun!"
           ]
@@ -157,7 +157,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (Rose's house = บ้านของโรส)"
           },
-          "text": "Rose's house is white and the door is green. The kitchen and the sofa are downstairs. Leo's bedroom is upstairs. The family has a small garden. Today is rainy. The rain is cold, a cloud is big and the road is wet. Rose wears a blue dress and takes an umbrella. Dan wears a white coat at work. Leo wears a green shirt and black shoes. In the evening the family goes to the cinema.",
+          "text": "Rose's house is white and the door is green. The kitchen and the sofa are downstairs. Leo's bedroom is upstairs. The family has a small garden. Today it is rainy. The rain is cold and the road is wet. Rose wears a blue dress to school. On rainy days she takes an umbrella. Dan wears a white coat at work. Leo wears a green shirt and black shoes. In the evening the family goes to the cinema.",
           "questions": [
             {
               "question": {

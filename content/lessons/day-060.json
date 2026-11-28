@@ -45,7 +45,7 @@
           "id": "d060-pron-01",
           "type": "phoneme_intro",
           "instruction": {
-            "th": "ฟังและสังเกตรูปปาก"
+            "th": "ฟังและสังเกตว่าพยางค์ไหนแรง"
           },
           "phoneme": "stress",
           "ipa": "/ˈ/",
@@ -306,7 +306,10 @@
           },
           "th": "ห้องครัวและโซฟาอยู่ชั้นล่าง",
           "accept": [
-            "The kitchen and the sofa are downstairs"
+            "The kitchen and the sofa are downstairs",
+            "The kitchen and sofa are downstairs",
+            "The sofa and the kitchen are downstairs",
+            "The sofa and kitchen are downstairs"
           ]
         },
         {

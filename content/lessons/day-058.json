@@ -46,7 +46,7 @@
           "id": "d058-pron-01",
           "type": "phoneme_intro",
           "instruction": {
-            "th": "ฟังและสังเกตรูปปาก"
+            "th": "ฟังและสังเกตว่าพยางค์ไหนแรง"
           },
           "phoneme": "stress",
           "ipa": "/ˈ/",
@@ -103,7 +103,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าอากาศที่เชียงใหม่เป็นอย่างไร (Mali's = ของมาลี)"
           },
-          "audioText": "Today is rainy in Bangkok. It is cloudy and the road is wet. Leo takes an umbrella to school. In Chiang Mai it is sunny and dry. Mali's jacket is yellow.",
+          "audioText": "It is rainy in Bangkok today. It is cloudy and the road is wet. On rainy days Leo takes an umbrella to school. In Chiang Mai it is sunny and dry. Mali's jacket is yellow.",
           "question": {
             "en": "What is the weather in Chiang Mai?",
             "th": "อากาศที่เชียงใหม่เป็นอย่างไร"
@@ -163,7 +163,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "It is rainy today. The road is wet. A cloud is white."
+          "audioText": "It is rainy today. The road is wet. The clouds are white."
         }
       ]
     },
@@ -184,9 +184,9 @@
             "Hello! What is the weather today?",
             "Today is rainy.",
             "It is cloudy and the road is wet.",
-            "A cloud is white.",
+            "The clouds are white.",
             "I take my umbrella.",
-            "Tomorrow is sunny and dry.",
+            "In December it is sunny and dry.",
             "I don't like rain.",
             "I like sunny days."
           ]
@@ -219,7 +219,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "The weather in Bangkok is hot. In July it is rainy and the road is wet. Leo takes an umbrella to school. In December the family visits Mali in Chiang Mai. It is cold and dry in Chiang Mai in December. England is cloudy, a cloud is white and in winter snow is white too.",
+          "text": "The weather in Bangkok is hot. In July it is rainy and the road is wet. Leo takes an umbrella to school. In December the family visits Mali in Chiang Mai. It is cold and dry in Chiang Mai in December. In England it is often cloudy and the clouds are white. In winter it is cold and the snow is white.",
           "questions": [
             {
               "question": {
@@ -311,7 +311,15 @@
             "It is rainy today. The road is wet",
             "Today it is rainy. The road is wet",
             "It's rainy today. The road is wet",
-            "Today it's rainy. The road is wet"
+            "Today it's rainy. The road is wet",
+            "It is raining today. The road is wet",
+            "It's raining today. The road is wet",
+            "Today it is raining. The road is wet",
+            "Today it's raining. The road is wet",
+            "The road is wet. It is rainy today",
+            "The road is wet. Today is rainy",
+            "The road is wet. It is raining today",
+            "The road is wet. It's raining today"
           ]
         },
         {
@@ -322,7 +330,8 @@
           },
           "th": "ฉันไม่ชอบฝน ฉันชอบวันที่แดดจ้า",
           "accept": [
-            "I do not like rain. I like sunny days"
+            "I do not like rain. I like sunny days",
+            "I like sunny days. I do not like rain"
           ]
         },
         {
