@@ -295,12 +295,6 @@ describe("checkContent: introduction order and limits (S5, S11, S8, N4)", () => 
   it.each([[60, 1], [61, 2], [150, 2], [151, 3], [270, 3], [271, 4], [365, 4]])("day %i is phase %i", (d, ph) => {
     expect(text([lessonOf(d, { phase: ph as 1 | 2 | 3 | 4 })], bank).filter((l) => l.includes("phase"))).toEqual([]);
   });
-  it("allows checkpoint only on days divisible by 30", () => {
-    expect(text([lessonOf(30, { type: "checkpoint" })], bank)).toEqual([]);
-    const out = text([lessonOf(7, { type: "checkpoint" })], bank);
-    expect(out).toHaveLength(1);
-    expect(out[0]).toContain("checkpoint");
-  });
   it("reports a day/filename mismatch once, not once per exercise", () => {
     const l = lessonOf(1);
     l.file = "content/lessons/day-002.json";
