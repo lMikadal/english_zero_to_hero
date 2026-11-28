@@ -260,4 +260,17 @@ describe("Home page: monthly checkpoint (plan PR 6, D10, D15)", () => {
     const { container } = await show();
     expect(container).not.toHaveTextContent("แบบทดสอบ");
   });
+
+  it("the done-today banner agrees with the card: blocked says to go on with the checkpoint, not the next lesson", async () => {
+    query.result = { ...fresh, currentDay: 31, activeToday: true, blockingCheckpoint: 30, checkpointNote: { afterDay: 30, status: "not_taken" } };
+    await show();
+    expect(screen.getByText("วันนี้เรียนแล้ว ทำแบบทดสอบประจำเดือนต่อได้เลย")).toBeInTheDocument();
+    expect(screen.queryByText(/เรียนบทถัดไปต่อได้เลย/)).toBeNull();
+  });
+
+  it("not blocked: the banner is the old one", async () => {
+    query.result = { ...fresh, currentDay: 31, activeToday: true, blockingCheckpoint: null, checkpointNote: null };
+    await show();
+    expect(screen.getByText("วันนี้เรียนแล้ว เรียนบทถัดไปต่อได้เลย")).toBeInTheDocument();
+  });
 });

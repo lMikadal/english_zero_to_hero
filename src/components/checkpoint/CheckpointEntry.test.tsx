@@ -17,6 +17,13 @@ describe("HomeCheckpointCard (D10: the home card while a checkpoint blocks the n
     expect(screen.getAllByRole("link")).toEqual([link]);
     expect(container).not.toHaveTextContent("เริ่มบทเรียนวันที่");
   });
+  it("the title breaks only between the phrase and the ordinal, never inside แบบทดสอบประจำเดือน (Thai has no spaces to break at)", () => {
+    render(<HomeCheckpointCard afterDay={60} />);
+    const h2 = screen.getByRole("heading", { level: 2 });
+    expect(within(h2).getByText("แบบทดสอบประจำเดือน").className).toMatch(/whitespace-nowrap/);
+    expect(within(h2).getByText("ครั้งที่ 2").className).toMatch(/whitespace-nowrap/);
+    expect(h2.className).not.toMatch(/text-balance/); // balancing is what split the word
+  });
   it("says why: the next day opens once it is sat, whatever the score", () => {
     render(<HomeCheckpointCard afterDay={60} />);
     expect(screen.getByRole("region", { name: "แบบทดสอบประจำเดือน" })).toHaveTextContent("แล้วบทเรียนวันที่ 61 จะเปิดให้");
