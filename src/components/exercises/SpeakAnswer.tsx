@@ -10,7 +10,7 @@ import { SelfRating } from "./ui/SelfRating";
 
 // Self-rated speaking: the two rating buttons are the answer. The sample answer appears only after rating.
 // The question can be heard through the same play buttons as the sound exercises (hidden without sound).
-export function SpeakAnswer({ exercise, onAnswer, result }: ExerciseProps<"speak_answer">) {
+export function SpeakAnswer({ exercise, onAnswer, result, reveal = true }: ExerciseProps<"speak_answer">) {
   const audio = useExerciseAudio(exercise.prompt);
   const [rating, setRating] = useState<"ok" | "unsure" | null>(null);
   const revealed = rating !== null || result !== undefined;
@@ -28,7 +28,7 @@ export function SpeakAnswer({ exercise, onAnswer, result }: ExerciseProps<"speak
         <p lang="en" className="whitespace-pre-line break-words text-xl font-bold leading-snug">{exercise.prompt}</p>
       </AudioCard>
       <p className="text-[13px] text-muted">ลองพูดตอบออกเสียงแล้วประเมินตัวเอง</p>
-      {revealed ? (
+      {revealed && reveal ? (
         <Card pad="p-3.5">
           <p className="text-[13px] text-muted">ตัวอย่างคำตอบ</p>
           <p lang="en" className="break-words text-lg text-fg">{exercise.sampleAnswer}</p>

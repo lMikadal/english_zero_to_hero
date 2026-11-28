@@ -1,17 +1,18 @@
 "use client";
 import { useState } from "react";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { ExerciseShell } from "./ui/ExerciseShell";
 import { Mark } from "./ui/Mark";
 import { Instruction, Prompt } from "./ui/Instruction";
 import { rightWrong, fieldToneClass, FIELD, type Tone } from "./ui/tone";
 
-export function TranslateThEn({ exercise, onAnswer, result }: ExerciseProps<"translate_th_en">) {
+export function TranslateThEn({ exercise, onAnswer, result, reveal = true }: ExerciseProps<"translate_th_en">) {
+  const seen = shown(result, reveal);
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const locked = submitted || result !== undefined;
-  const tone: Tone = result ? rightWrong(result.correct) : "idle";
+  const tone: Tone = seen ? rightWrong(seen.correct) : "idle";
 
   function check() {
     if (locked || text.trim() === "") return;
@@ -40,7 +41,7 @@ export function TranslateThEn({ exercise, onAnswer, result }: ExerciseProps<"tra
         onChange={(e) => setText(e.target.value)}
         className={`${FIELD} ${fieldToneClass(tone)}`}
       />
-      {result ? <p className="-mt-2 text-[13px] font-medium"><Mark ok={result.correct} /></p> : null}
+      {seen ? <p className="-mt-2 text-[13px] font-medium"><Mark ok={seen.correct} /></p> : null}
       <CheckButton type="submit" hidden={result !== undefined} disabled={locked || text.trim() === ""} />
     </ExerciseShell>
   );

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction } from "./ui/Instruction";
@@ -10,7 +10,8 @@ import { rightWrong, toneClass, type Tone } from "./ui/tone";
 
 const OPTION = "relative flex min-h-12 w-full items-center justify-between gap-2 rounded-[11px] border px-3 py-3 text-left text-[15px] font-medium";
 
-export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<"vocab_match">) {
+export function VocabMatch({ exercise, vocab, onAnswer, result, reveal = true }: ExerciseProps<"vocab_match">) {
+  const seen = shown(result, reveal);
   const ids = exercise.pairs.map((p) => p.vocabId);
   // pairs[wordId] = the id whose Thai meaning the learner matched to that word
   const [pairs, setPairs] = useState<Record<string, string>>({});
@@ -31,10 +32,10 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
   const leftOf = (rightId: string) => ids.find((id) => pairs[id] === rightId);
   const resultTone = (leftId: string): Tone => {
     const i = ids.indexOf(leftId);
-    return rightWrong(result?.items ? result.items[i] === true : (result?.correct ?? false));
+    return rightWrong(seen?.items ? seen.items[i] === true : (seen?.correct ?? false));
   };
   /** Right / wrong after the result, "paired" before it. */
-  const pairedTone = (leftId: string): Tone => (result ? resultTone(leftId) : "paired");
+  const pairedTone = (leftId: string): Tone => (seen ? resultTone(leftId) : "paired");
 
   function unpair(leftId: string) {
     setPairs(Object.fromEntries(Object.entries(pairs).filter(([k]) => k !== leftId)));
@@ -66,7 +67,7 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
   );
   const trailing = (leftId: string) => (
     <span className="flex items-center gap-1">
-      {result ? <Mark ok={resultTone(leftId) === "right"} /> : null}
+      {seen ? <Mark ok={resultTone(leftId) === "right"} /> : null}
       {badge(leftId)}
     </span>
   );
@@ -80,7 +81,7 @@ export function VocabMatch({ exercise, vocab, onAnswer, result }: ExerciseProps<
           {ids.map((id) => {
             const partner = pairs[id];
             const tone: Tone = partner !== undefined ? pairedTone(id) : selected === id ? "selected" : "idle";
-            const wrong = result !== undefined && partner !== undefined && resultTone(id) === "wrong";
+            const wrong = seen !== undefined && partner !== undefined && resultTone(id) === "wrong";
             return (
               <div key={id}>
                 <button

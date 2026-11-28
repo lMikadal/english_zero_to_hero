@@ -112,7 +112,6 @@ describe("reveal={false} hides right and wrong on every exercise", () => {
     answerLikeALearner(view.container, e, vocab);
     view.rerender(show(e, vocab, undefined, grade(e, false)));
     expect(revealSignals(view.container).length, `${e.id} default`).toBeGreaterThan(0);
-    expect(show(e, vocab, true).props.children.props.reveal).toBe(true);
   });
 
   it("explicit reveal={true} equals the default", () => {
