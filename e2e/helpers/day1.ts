@@ -17,7 +17,7 @@ const exercises = lesson.sections.flatMap((s) => s.exercises);
 const byInstruction = new Map(exercises.map((e) => [e.instruction.th, e]));
 if (byInstruction.size !== exercises.length) throw new Error("day 1 instructions must be unique for this test");
 
-export const SLOW = { timeout: 30_000 }; // the dev server compiles pages and API routes on first use
+export const SLOW = { timeout: 30_000 }; // generous for a slow CI runner; waits end as soon as the state is reached
 
 export async function expectNoHorizontalScroll(page: Page, where: string) {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

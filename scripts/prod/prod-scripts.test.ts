@@ -587,7 +587,7 @@ describe("Makefile guards", () => {
   it("C6: no target passes -v / --volumes (or removes a volume) for the production project", () => {
     const bad = makefile.split("\n").filter((l) => {
       const touchesVolumes = /(\s-v\b|--volumes|volume\s+(rm|prune)|system\s+prune)/.test(l) && !/^\s*#/.test(l);
-      return touchesVolumes && !l.includes("-p ezh_stage") && !l.includes("-p ezh_ci") && !l.includes("-v /app/.next");
+      return touchesVolumes && !l.includes("-p ezh_stage") && !l.includes("-p ezh_ci") && !l.includes("-p ezh_e2e") && !l.includes("-v /app/.next");
     });
     expect(bad).toEqual([]);
   });

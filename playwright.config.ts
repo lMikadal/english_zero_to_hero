@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
-// The app is started by docker compose (service `app`); the e2e service
-// reaches it at BASE_URL=http://e2e-target:3000.
+// `make e2e` starts a production build of the app (project ezh_e2e) and runs this in the `e2e` compose service,
+// which reaches it at BASE_URL=http://127.0.0.1:3196 (set by the Makefile).
 export default defineConfig({
   testDir: "./e2e",
   // Only *.spec.ts are Playwright tests; e2e/helpers/*.test.ts are Vitest unit tests (run by `make check`).
@@ -9,10 +9,8 @@ export default defineConfig({
   outputDir: "./test-results",
   // html report (never auto-opened) is uploaded as a CI artifact on failure
   reporter: [["list"], ["html", { open: "never" }]],
-  // the dev server compiles pages on first request
   timeout: 60_000,
-  // One worker: the tests share one learner and one dev server. A second worker opening routes the dev server has not
-  // compiled yet is suspected of making the lesson page reload mid-test (docs/PLAN.md, "E2E ไม่นิ่ง").
+  // One worker: the specs share one learner (and one database), and lesson.spec.ts must run before replay.spec.ts.
   workers: 1,
   use: {
     baseURL: process.env.BASE_URL ?? "http://localhost:3000",

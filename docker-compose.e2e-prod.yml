@@ -1,0 +1,8 @@
+# Added to docker-compose.prod.yml ONLY for the throwaway project ezh_e2e (make e2e; the Makefile adds this file for that
+# project and no other). It publishes the stack's postgres on this machine's loopback so that e2e/helpers/due.ts (which
+# changes review due dates by SQL, docs/TESTING.md) can reach it from the Playwright container. Never use it for the real
+# project: make e2e is the only caller, and the database it opens is english_zero_to_hero_e2e.
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:5439:5432"

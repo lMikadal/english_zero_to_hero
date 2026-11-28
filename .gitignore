@@ -17,4 +17,5 @@ next-env.d.ts
 .claude/worktrees/
 backups-stage/
 backups-ci/
+backups-e2e/
 .content-validate-summary.md
