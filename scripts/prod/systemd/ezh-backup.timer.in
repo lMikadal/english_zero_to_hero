@@ -1,0 +1,13 @@
+[Unit]
+Description=English Zero to Hero: hourly check for the daily backup of the @WHAT@ database
+
+[Timer]
+# Every hour while we are logged in. The backup script itself takes at most one backup per 22 hours and does nothing while
+# Docker or the app is off, so an hourly check means: as soon as Docker and the app are up and a backup is due, it is taken.
+# (A once-a-day timer would be "done" for the day by a catch-up run at login, when Docker is still off.)
+OnCalendar=hourly
+RandomizedDelaySec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

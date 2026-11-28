@@ -53,6 +53,8 @@ case "$bind" in ''|*[!0-9.]*) fail "APP_BIND=$bind in $file must be an IPv4 addr
 
 keep=$(get BACKUP_KEEP 14)
 printf %s "$keep" | grep -Eq '^[1-9][0-9]*$' || fail "BACKUP_KEEP=$keep in $file must be a whole number of at least 1 (no leading zero)"
+keep_auto=$(get BACKUP_KEEP_AUTO 14)
+printf %s "$keep_auto" | grep -Eq '^[1-9][0-9]*$' || fail "BACKUP_KEEP_AUTO=$keep_auto in $file must be a whole number of at least 1 (no leading zero)"
 
 # who may use the app: validated here, before anything starts, with the same rules as the app itself
 # (an invalid value would otherwise show up as "every page answers 500"). Empty = feature off.
