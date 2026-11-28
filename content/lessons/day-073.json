@@ -1,0 +1,393 @@
+{
+  "day": 73,
+  "phase": 2,
+  "week": 11,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "A trip: did and didn't",
+    "th": "ทริป: did และ didn't"
+  },
+  "objectives": [
+    {
+      "en": "Ask and answer about the past with did and didn't",
+      "th": "ถามและตอบเรื่องอดีตด้วย did และ didn't ได้"
+    },
+    {
+      "en": "Ask When and Why and answer with because",
+      "th": "ถามด้วย When และ Why และตอบด้วย because ได้"
+    },
+    {
+      "en": "Say the ending -n't /nt/ in didn't and wasn't",
+      "th": "ออกเสียงท้าย -n't /nt/ ใน didn't และ wasn't ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-when",
+    "v-why",
+    "v-because",
+    "v-trip",
+    "v-village"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The ending /nt/ in didn't",
+        "th": "เสียงท้าย /nt/ ใน didn't"
+      },
+      "exercises": [
+        {
+          "id": "d073-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "nt",
+          "ipa": "/nt/",
+          "tipTh": "didn't ออกเสียงสองพยางค์ DID-nt (/ˈdɪdnt/) ลงท้ายด้วย /nt/ ปลายลิ้นแตะเหงือกบนค้างไว้ ไม่ต้องเติมสระ ไม่ใช่ 'ดิด-เดิน' คนไทยมักตัด n หรือ t ทิ้ง ทำให้ didn't ฟังเหมือน did ซึ่งความหมายตรงข้ามกัน เสียง /nt/ แบบเดียวกันอยู่ท้ายคำเหล่านี้",
+          "examples": [
+            "student",
+            "parent",
+            "want",
+            "restaurant"
+          ]
+        },
+        {
+          "id": "d073-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม didn't ต้องได้ยิน n และ t ท้ายคำ"
+          },
+          "text": "I didn't stay at home.",
+          "ipa": "/aɪ ˈdɪdnt steɪ æt hoʊm/",
+          "phonemes": [
+            "nt"
+          ]
+        },
+        {
+          "id": "d073-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม didn't ลงท้ายด้วย /nt/ ชัดเจน"
+          },
+          "text": "Why didn't you wait?",
+          "ipa": "/waɪ ˈdɪdnt ju weɪt/",
+          "phonemes": [
+            "nt"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: a trip",
+        "th": "ฟัง: ทริป"
+      },
+      "exercises": [
+        {
+          "id": "d073-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "ถามและปฏิเสธอดีตด้วย did",
+          "bodyTh": "ถามอดีตด้วย Did + ประธาน + กริยาเดิม (ไม่เติม -ed): Did you visit Mali? ตอบสั้น: Yes, I did. / No, I didn't.\nปฏิเสธ: ประธาน + didn't + กริยาเดิม: I didn't stay. Wh-: When did you arrive? Why did you stay?\nผิดบ่อย: Did you visited? ✗ → Did you visit? ✓ และ I didn't visited ✗ → I didn't visit ✓",
+          "examples": [
+            {
+              "en": "Did you visit Mali?",
+              "th": "คุณไปเยี่ยมมาลีไหม"
+            },
+            {
+              "en": "Yes, I did.",
+              "th": "ไปครับ"
+            },
+            {
+              "en": "I didn't stay at a hotel.",
+              "th": "ฉันไม่ได้พักที่โรงแรม"
+            },
+            {
+              "en": "When did you arrive?",
+              "th": "คุณมาถึงเมื่อไร"
+            }
+          ],
+          "structures": [
+            "past-did"
+          ],
+          "table": [
+            [
+              "แบบ",
+              "โครงสร้าง",
+              "ตัวอย่าง"
+            ],
+            [
+              "ถาม ใช่/ไม่ใช่",
+              "Did + ประธาน + กริยาเดิม",
+              "Did Leo visit Mali?"
+            ],
+            [
+              "ถาม When / Why",
+              "When / Why + did + ประธาน + กริยาเดิม",
+              "When did you arrive?"
+            ],
+            [
+              "ตอบสั้น",
+              "Yes / No, ประธาน + did / didn't",
+              "No, he didn't."
+            ],
+            [
+              "ปฏิเสธ",
+              "ประธาน + didn't + กริยาเดิม",
+              "I didn't stay."
+            ]
+          ]
+        },
+        {
+          "id": "d073-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังบทสนทนาแล้วตอบว่าลีโอพักที่โรงแรมไหม"
+          },
+          "audioText": "Nan: Did you visit Mali in December? Leo: Yes, I did. The trip was great. We travelled by train. Nan: Did you stay at a hotel? Leo: No, we didn't. We stayed with Mali.",
+          "question": {
+            "en": "Did Leo stay at a hotel?",
+            "th": "ลีโอพักที่โรงแรมไหม"
+          },
+          "choices": [
+            "Yes, he did",
+            "No, he did not"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d073-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-when"
+            },
+            {
+              "vocabId": "v-why"
+            },
+            {
+              "vocabId": "v-because"
+            },
+            {
+              "vocabId": "v-trip"
+            },
+            {
+              "vocabId": "v-village"
+            }
+          ]
+        },
+        {
+          "id": "d073-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าทำไมมาลีอยู่บ้าน"
+          },
+          "audioText": "Dan: When did you arrive, Mali? Mali: I arrived on Friday. Dan: Why did you stay at home? Mali: Because I was sick.",
+          "question": {
+            "en": "Why did Mali stay at home?",
+            "th": "ทำไมมาลีอยู่บ้าน"
+          },
+          "choices": [
+            "She was sick",
+            "She was bored",
+            "She was angry"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d073-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Did you visit the village? No, I didn't."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: questions about the past",
+        "th": "พูด: ถามเรื่องอดีต"
+      },
+      "exercises": [
+        {
+          "id": "d073-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Did you visit Mali?",
+            "Yes, I did.",
+            "No, I didn't.",
+            "When did you arrive?",
+            "Why did you stay at home?",
+            "I stayed at home because I was sick.",
+            "The trip was great.",
+            "We visited a small village."
+          ]
+        },
+        {
+          "id": "d073-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบว่าปีที่แล้วคุณเดินทางไหม ตอบ Yes, I did. หรือ No, I didn't. แล้วพูดต่ออีกหนึ่งประโยค"
+          },
+          "prompt": "Did you travel last year?",
+          "sampleAnswer": "No, I didn't. I stayed at home.",
+          "keywords": [
+            "did"
+          ]
+        },
+        {
+          "id": "d073-speak-03",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกเหตุผลที่คุณหัวเราะหรือยิ้ม ใช้ because"
+          },
+          "prompt": "Why did you laugh? Say: I laughed because ...",
+          "sampleAnswer": "I laughed because the film was great.",
+          "keywords": [
+            "because"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: the trip to Chiang Mai",
+        "th": "อ่าน: ทริปไปเชียงใหม่"
+      },
+      "exercises": [
+        {
+          "id": "d073-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Last December the family travelled to Chiang Mai by train. They visited Mali. They stayed at Mali's house. They visited a small village near Chiang Mai. The trip was great. It was cold and dry.\nLeo: Why did you paint the village, Mali?\nMali: Because it was beautiful.",
+          "questions": [
+            {
+              "question": {
+                "en": "Did the family stay at a hotel?",
+                "th": "ครอบครัวพักที่โรงแรมไหม"
+              },
+              "choices": [
+                "Yes, they did",
+                "No, they did not"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "When did the family travel?",
+                "th": "ครอบครัวเดินทางเมื่อไร"
+              },
+              "choices": [
+                "Last July",
+                "Last December",
+                "Last Monday"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Why did Mali paint the village?",
+                "th": "ทำไมมาลีวาดหมู่บ้าน"
+              },
+              "choices": [
+                "Because it was cold",
+                "Because she was sick",
+                "Because it was beautiful"
+              ],
+              "answer": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: did and didn't",
+        "th": "เขียน: did และ didn't"
+      },
+      "exercises": [
+        {
+          "id": "d073-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "Did",
+            "Leo",
+            "visit",
+            "the",
+            "village"
+          ],
+          "answer": "Did Leo visit the village"
+        },
+        {
+          "id": "d073-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (did ใช้ถามและตอบ)"
+          },
+          "text": "___ Leo visit Mali? Yes, he ___.",
+          "answer": [
+            "Did",
+            "did"
+          ]
+        },
+        {
+          "id": "d073-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "คุณมาถึงเมื่อไร",
+          "accept": [
+            "When did you arrive"
+          ]
+        },
+        {
+          "id": "d073-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันไม่ได้พักที่โรงแรม",
+          "accept": [
+            "I didn't stay at a hotel",
+            "I did not stay at a hotel",
+            "I didn't stay at the hotel",
+            "I did not stay at the hotel"
+          ]
+        },
+        {
+          "id": "d073-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันอยู่บ้านเพราะฉันป่วย",
+          "accept": [
+            "I stayed at home because I was sick"
+          ]
+        }
+      ]
+    }
+  ]
+}
