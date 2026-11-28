@@ -34,7 +34,7 @@
 - `read_passage.glossary` เป็น `{ [word]: คำแปลไทย }`
 - `vocab_match.pairs` ต้องมีอย่างน้อย 2 คู่; `vocabId` ทุกที่ต้องตรง `^v-[a-z0-9]+(-[a-z0-9]+)*$`
 - `dictation`, `translate_th_en`, `fill_blank` มี `strict: boolean` (ไม่บังคับ) ปิดการพับคำย่อ/ตัวเลขของข้อนั้น
-- `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string); `accept` (ไม่บังคับ) เป็น `string[]` อย่างน้อย 1 รายการ
+- `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string); `accept` (ไม่บังคับ) เป็น `string[]` อย่างน้อย 1 รายการ; `statementOnly` (ไม่บังคับ, boolean) บอกกฎ `arrange-question` ว่าข้อนี้รับเฉพาะประโยคบอกเล่า
 - `fill_blank.answer` เป็น array ของคำตอบ **หนึ่งตัวต่อหนึ่ง `___`** ตามลำดับ
 - ใน VocabItem `forms` เป็น `{ [ชื่อรูปผัน]: string }` ชื่อใดก็ได้ (ไม่จำกัดแค่ตัวอย่าง) และ `topics` ต้องเป็น slug ในรายการของ VOCABULARY.md หัวข้อ 3 เท่านั้น ห้ามซ้ำ
 - `oxford`: list `"3000"` ใช้ระดับ A1–B2, list `"5000"` ใช้ระดับ B2–C1
@@ -145,6 +145,15 @@ ERROR content/lessons/day-001.json [d001-write-01]: "Sam" is a proper name that 
 
 
 
+### `arrange-question`: ประโยคบอกเล่าที่สลับเป็นคำถามได้ต้องรับคำถามด้วย
+`arrange_words` ที่ `answer` เป็น `<Subject> is/are/am ...` (หรือ `<Subject> can/could/should/must/will/would ...`) ใช้แผ่นป้ายชุดเดียวกันต่อเป็นคำถาม Yes/No ได้ (`Is <subject> ...`) ผู้เรียนต่อแบบไหนก็ได้ จึงต้องมีประโยคคำถามนั้นใน `accept` (เทียบแบบเดียวกับตอนตรวจคำตอบ: ไม่สนตัวพิมพ์ใหญ่เล็กและเครื่องหมายวรรคตอน) ถ้าข้อนั้นตั้งใจรับเฉพาะประโยคบอกเล่า ให้ตั้ง `"statementOnly": true` เป็น **error** เพราะประโยคคำถามที่กฎสร้างให้เป็นภาษาอังกฤษที่ถูกเสมอ และมีทางหนีด้วย `statementOnly`
+
+กฎ **ข้าม** (ตั้งใจให้แคบและแม่น): ประโยคปฏิเสธ (`I am not ...`), wh-question (`How are you`), `Yes, ...`/`No, ...`, ประโยคที่มีเครื่องหมายจุลภาค, สองอนุประโยค (มี is/are/modal ตัวที่สอง หรือ and/but/or/because/so/if/when หลังกริยา), `Here is ...`, คำสั่ง/คำเปิด (`Please be ...`), คำย่อ (`She's ...`) และกรณีที่แผ่นป้ายต่อประโยคคำถามนั้นไม่ได้
+
+```
+ERROR content/lessons/day-017.json [d017-write-01]: "My baby is very happy" has the same tiles as the yes/no question "Is my baby very happy", so a learner can build the question, but it is not in accept and would be marked wrong. Add "Is my baby very happy" to accept, or set "statementOnly": true if only the statement may be accepted.
+```
+
 ### `answer-forms`: รูปคำตอบที่ตัวตรวจไม่พับให้
 ตรวจ `accept`/`audioText`/`answer` ของ `dictation`, `translate_th_en`, `fill_blank` (ข้ามข้อที่ตั้ง `strict: true`) ตามตารางข้อ 7 ของหัวข้อการเทียบคำตอบ: ถ้ามีรูปที่ไม่พับ ต้องใส่รูปคู่กันใน `accept` ด้วย หรือตั้ง `strict: true` และ `fill_blank` ที่เฉลยเป็นคำย่อ/คำเต็ม/ตัวเลข ต้องตั้ง `strict` ให้ชัด
 - `'s` ก่อน participle หรือคำ `-ed`, `X has + participle`, `X is + participle` (X = he/she/it/that/there/here/what/where/who/how/name หรือชื่อ), `pronoun would` (ไม่ใช่ก่อน like/love), `Name is`, `'d`: ต้องมีทั้งสองรูป ข้อความของตัวตรวจ **ไม่ยกประโยคตัวอย่างที่อาจผิดไวยากรณ์** ให้เลือกรูปเต็มที่ถูกเอง: `X has ...` (perfect) หรือ `X is ...` (adjective/passive)
@@ -225,7 +234,7 @@ ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.
 | `speak_answer` | `prompt`, `sampleAnswer`, `keywords[]?` | ตอบคำถามด้วยเสียง |
 | `roleplay` | `scenario`, `aiRole`, `goals[]` | คุยกับ AI |
 | `read_passage` | `text`, `glossary?`, `questions[]` | อ่านแล้วตอบคำถาม |
-| `arrange_words` | `words[]`, `answer`, `accept[]?` | เรียงคำให้เป็นประโยค (`accept` = ประโยคอื่นที่ถูก) |
+| `arrange_words` | `words[]`, `answer`, `accept[]?`, `statementOnly?` | เรียงคำให้เป็นประโยค (`accept` = ประโยคอื่นที่ถูก) |
 | `fill_blank` | `text` (ใช้ `___`), `answer[]` | เติมคำ |
 | `translate_th_en` | `th`, `accept[]` | แปลไทยเป็นอังกฤษ |
 | `free_write` | `prompt`, `minWords`, `rubric?` | เขียนอิสระ (AI ตรวจ) |

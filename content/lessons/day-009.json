@@ -266,7 +266,8 @@
             "is",
             "my"
           ],
-          "answer": "She is my friend"
+          "answer": "She is my friend",
+          "accept": ["Is she my friend"]
         },
         {
           "id": "d009-write-02",

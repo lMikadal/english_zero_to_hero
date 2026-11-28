@@ -84,7 +84,7 @@
           "instruction": { "th": "เรียงคำให้เป็นประโยค" },
           "words": ["name", "My", "Sam", "is"],
           "answer": "My name is Sam",
-          "accept": ["Sam is my name"] },
+          "accept": ["Sam is my name", "Is my name Sam"] },
         { "id": "d001-write-02", "type": "translate_th_en",
           "instruction": { "th": "แปลเป็นภาษาอังกฤษ" },
           "th": "ยินดีที่ได้รู้จัก",

@@ -269,7 +269,8 @@
             "in",
             "the"
           ],
-          "answer": "They are in the park"
+          "answer": "They are in the park",
+          "accept": ["Are they in the park"]
         },
         {
           "id": "d012-write-02",
