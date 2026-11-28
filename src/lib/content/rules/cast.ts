@@ -65,7 +65,10 @@ export function ageClaims(text: string): AgeClaim[] {
   const sentences = norm.split(/(?<=[.!?])\s+|\n+/);
   sentences.forEach((sentence, i) => {
     const m = i > 0 ? PRONOUN_AGE.exec(sentence.trim()) : null;
-    const names = new Set([...(sentences[i - 1] ?? "").matchAll(NAME_G)].map((n) => n[1]));
+    // "He is Dan's father. He is seventy.": a possessive name ("Dan's father") is not the person the pronoun means
+    const prev = sentences[i - 1] ?? "";
+    const possessive = (n: RegExpMatchArray) => /^'s\s+[a-z]/.test(prev.slice((n.index ?? 0) + n[0].length));
+    const names = new Set([...prev.matchAll(NAME_G)].filter((n) => !possessive(n)).map((n) => n[1]));
     const age = m ? value(m[1]) : undefined;
     if (m && age !== undefined && names.size === 1) out.push({ name: [...names][0], age, sentence: `${[...names][0]} ... ${sentence.trim().replace(/[.!?]$/, "")}` });
   });
