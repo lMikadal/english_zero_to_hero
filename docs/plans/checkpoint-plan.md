@@ -2,7 +2,7 @@
 
 สถานะ: แผนของ architect (2026-11-28) ยังไม่เริ่มทำ อ่านคู่กับ `docs/ARCHITECTURE.md` §4/§5/§5.1, `docs/PROGRESS.md` §1/§3/§4/§5, `docs/CONTENT_SCHEMA.md`, `docs/plans/replay-plan.md` (รูปแบบและกลไกที่แผนนี้ใช้ซ้ำ)
 
-ที่เก็บ: `/home/pmikada/Documents/english_zero_to_hero` (path ในเอกสารนี้นับจากรากของ repo)
+ที่เก็บ: รากของ repo นี้ (path ในเอกสารนี้นับจากรากของ repo)
 
 คำที่ใช้: **A** = `afterDay` ของแบบทดสอบ (30, 60, … 360), **ครั้งที่ k** = A / 30, **รอบสอบ (sitting)** = การทำแบบทดสอบหนึ่งรอบ = `sessionId` หนึ่งค่า
 
