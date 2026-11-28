@@ -21,6 +21,7 @@ const CLIENT_SAFE = [
   // the checkpoint gate and scorer are pure: the player and the pages share them with the server
   "lib/checkpoints/gate.ts",
   "lib/checkpoints/score.ts",
+  "lib/checkpoints/retake.ts",
   // vocabulary review: the scheduler runs in the browser for the interval under each button
   "lib/srs/config.ts",
   "lib/srs/contract.ts",

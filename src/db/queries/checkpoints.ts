@@ -3,10 +3,11 @@
 import { and, asc, eq, gt, inArray, isNotNull, ne } from "drizzle-orm";
 import type { CheckpointSkillResult } from "@/lib/attempts/contract";
 import { blockingCheckpoint, playableDay } from "@/lib/checkpoints/gate";
+import { sittingSavedToday } from "@/lib/checkpoints/retake";
 import { checkpointSummary, type ScoreRow } from "@/lib/checkpoints/score";
 import { CHECKPOINT_INTERVAL, isCheckpointDay, type Checkpoint } from "@/lib/content/checkpoint-schema";
 import { CHECKPOINT_RESUME_HOURS } from "@/lib/progress/config";
-import { localDate, resolveTimeZone } from "@/lib/progress/dates";
+import { resolveTimeZone } from "@/lib/progress/dates";
 import { attempts, checkpointResults, profiles, progress } from "../schema";
 import type { DbOrTx } from "../types";
 
@@ -71,6 +72,20 @@ export async function listCheckpointResults(db: DbOrTx, userId: string, afterDay
     .from(checkpointResults)
     .where(and(eq(checkpointResults.userId, userId), afterDay === undefined ? undefined : eq(checkpointResults.afterDay, afterDay)))
     .orderBy(asc(checkpointResults.completedAt), asc(checkpointResults.id));
+}
+
+/**
+ * When the SERVER stored each sitting (`created_at`, not the completedAt a client claims), oldest first, optionally of one
+ * checkpoint, leaving out the sitting `exceptId` (the one being completed: a concurrent repeat of it must not count as an earlier
+ * sitting): what the retake rule (D4, `sittingSavedToday`) reads.
+ */
+export async function checkpointSavedAts(db: DbOrTx, userId: string, afterDay?: number, exceptId?: string): Promise<{ afterDay: number; savedAt: Date }[]> {
+  const rows = await db
+    .select({ afterDay: checkpointResults.afterDay, savedAt: checkpointResults.createdAt })
+    .from(checkpointResults)
+    .where(and(eq(checkpointResults.userId, userId), afterDay === undefined ? undefined : eq(checkpointResults.afterDay, afterDay), exceptId === undefined ? undefined : ne(checkpointResults.id, exceptId)))
+    .orderBy(asc(checkpointResults.createdAt), asc(checkpointResults.id));
+  return rows;
 }
 
 /**
@@ -191,7 +206,7 @@ export type CheckpointOverviewEntry = {
   best: number | null;
   /** Any sitting reached the pass mark. */
   passed: boolean;
-  /** The latest sitting finished on today's date in the learner's time zone (D4: the next one is for tomorrow). */
+  /** A sitting was stored on today's date in the learner's time zone (D4: the next one is for tomorrow; the same rule as the server's `retake_tomorrow`). */
   completedToday: boolean;
 };
 
@@ -218,13 +233,12 @@ export async function getCheckpointOverview(db: DbOrTx, userId: string, content:
   if (openDays.length === 0) return [];
   const [profile] = await db.select({ timezone: profiles.timezone }).from(profiles).where(eq(profiles.userId, userId));
   const zone = resolveTimeZone(profile?.timezone);
-  const today = localDate(now, zone);
   const results = await listCheckpointResults(db, userId);
+  const saved = await checkpointSavedAts(db, userId);
   const summaries = new Map(checkpointSummary(results).map((s) => [s.afterDay, s]));
   return openDays.map((afterDay): CheckpointOverviewEntry => {
     const s = summaries.get(afterDay);
     if (!s) return { afterDay, status: "not_taken", sittings: 0, latest: null, best: null, passed: false, completedToday: false };
-    const last = results.filter((r) => r.afterDay === afterDay).at(-1)!;
     return {
       afterDay,
       status: s.passed ? "passed" : "not_passed",
@@ -232,7 +246,7 @@ export async function getCheckpointOverview(db: DbOrTx, userId: string, content:
       latest: s.latest,
       best: s.best,
       passed: s.passed,
-      completedToday: localDate(last.completedAt, zone) === today,
+      completedToday: sittingSavedToday(saved.filter((r) => r.afterDay === afterDay).map((r) => r.savedAt), now, zone),
     };
   });
 }
