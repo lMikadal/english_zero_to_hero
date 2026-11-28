@@ -130,3 +130,22 @@ describe("what the date is compared on", () => {
     expect((await db.select().from(checkpointResults)).length).toBe(2);
   });
 });
+
+describe("two sittings completed at the same moment", () => {
+  it("two different sessions of one checkpoint on one local day: exactly one 200 and one 409 retake_tomorrow, one row, one activity row", async () => {
+    for (const session of [S1, S2]) {
+      const items = [cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { sessionId: session, createdAt: new Date(NOW.getTime() - 60_000).toISOString() })];
+      expect((await handlePostAttempts({ attempts: items }, { db, userId, now: NOW, content })).status).toBe(200);
+    }
+    await db.delete(activityDays);
+    await db.delete(streaks);
+    for (let round = 0; round < 3; round++) {
+      await db.delete(checkpointResults);
+      const out = await Promise.all([complete(S1, NOW), complete(S2, NOW)]);
+      expect(out.map((r) => r.status).sort()).toEqual([200, 409]);
+      expect(out.find((r) => r.status === 409)).toEqual(retakeTomorrow);
+      expect(await db.select().from(checkpointResults)).toHaveLength(1);
+      expect(await db.select().from(activityDays)).toHaveLength(1);
+    }
+  });
+});
