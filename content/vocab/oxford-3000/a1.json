@@ -3546,7 +3546,7 @@
     "ipa": { "us": "/ɑːrm/", "uk": "/ɑːm/" },
     "th": "แขน",
     "topics": ["body_health"],
-    "examples": [{ "en": "He has two arms.", "th": "เขามีสองแขน" }, { "en": "My arm is long.", "th": "แขนของฉันยาว" }],
+    "examples": [{ "en": "He has two arms.", "th": "เขามีสองแขน" }, { "en": "My arm is big.", "th": "แขนของฉันใหญ่" }],
     "collocations": ["my left arm"],
     "forms": { "plural": "arms" }
   },
@@ -3558,7 +3558,7 @@
     "ipa": { "us": "/leɡ/", "uk": "/leɡ/" },
     "th": "ขา (ส่วนที่ใช้เดิน)",
     "topics": ["body_health"],
-    "examples": [{ "en": "A cat has four legs.", "th": "แมวมีสี่ขา" }, { "en": "My legs are long.", "th": "ขาของฉันยาว" }],
+    "examples": [{ "en": "A cat has four legs.", "th": "แมวมีสี่ขา" }, { "en": "My legs are big.", "th": "ขาของฉันใหญ่" }],
     "collocations": ["a long leg"],
     "forms": { "plural": "legs" }
   },
@@ -3594,7 +3594,7 @@
     "ipa": { "us": "/bæk/", "uk": "/bæk/" },
     "th": "หลัง (ส่วนของร่างกาย)",
     "topics": ["body_health"],
-    "examples": [{ "en": "My bag is on my back.", "th": "กระเป๋าของฉันอยู่บนหลัง" }, { "en": "She has a long back.", "th": "เธอมีแผ่นหลังที่ยาว" }],
+    "examples": [{ "en": "My bag is on my back.", "th": "กระเป๋าของฉันอยู่บนหลัง" }, { "en": "She has a big back.", "th": "เธอมีแผ่นหลังที่กว้าง" }],
     "collocations": ["on my back"],
     "forms": { "plural": "backs" }
   },

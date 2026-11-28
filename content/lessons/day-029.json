@@ -1,0 +1,335 @@
+{
+  "day": 29,
+  "phase": 1,
+  "week": 5,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "I have two hands! have and has",
+    "th": "I have two hands! have และ has"
+  },
+  "objectives": [
+    {
+      "en": "Say what people and animals have with have and has: I have, she has",
+      "th": "บอกว่าคนและสัตว์มีอะไรด้วย have และ has: I have, she has"
+    },
+    {
+      "en": "Name seven body words: head, hand, arm, leg, foot, body and back",
+      "th": "เรียกชื่ออวัยวะ 7 คำ: head, hand, arm, leg, foot, body และ back"
+    },
+    {
+      "en": "Hear and say the final sounds /d/ and /t/: bed–bet, bat–bad, seat–seed, bid–bit",
+      "th": "ฟังและออกเสียง /d/ กับ /t/ ท้ายคำ: bed–bet, bat–bad, seat–seed, bid–bit"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-head",
+    "v-hand",
+    "v-arm",
+    "v-leg",
+    "v-foot",
+    "v-body",
+    "v-back"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final /d/ and /t/",
+        "th": "เสียง /d/ และ /t/ ท้ายคำ"
+      },
+      "exercises": [
+        {
+          "id": "d029-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "d",
+          "ipa": "/d/ /t/",
+          "tipTh": "ภาษาไทยมีตัวสะกด ด ต ท แต่ทุกตัวออกเสียงเป็น /t/ ที่ปิดลมโดยไม่ปล่อยเสียงสั่น (เช่น 'กด' กับ 'กต' ฟังเหมือนกัน) ภาษาอังกฤษแยกสองเสียงนี้ที่ท้ายคำ: /d/ ใน head, hand คอสั่นไปจนจบเสียงและปลายลิ้นแตะเหงือกเบา ๆ ส่วน /t/ ใน foot คอไม่สั่นและเสียงหยุดทันที ช่วยฟังได้อีกอย่างคือสระก่อน /d/ ฟังยาวกว่าสระก่อน /t/ (bed ยาวกว่า bet) อย่าออกเป็น 'เฮ็ด' หรือ 'แฮ็นท์'",
+          "examples": [
+            "head",
+            "hand",
+            "foot",
+            "bed"
+          ]
+        },
+        {
+          "id": "d029-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bed",
+              "b": "bet",
+              "answer": "a"
+            },
+            {
+              "a": "bat",
+              "b": "bad",
+              "answer": "b"
+            },
+            {
+              "a": "seat",
+              "b": "seed",
+              "answer": "b"
+            },
+            {
+              "a": "bid",
+              "b": "bit",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "d",
+            "t"
+          ]
+        },
+        {
+          "id": "d029-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /d/ ใน head และ hand คอต้องสั่นจนจบ ส่วนท้ายคำ feet เป็น /t/ คอไม่สั่น"
+          },
+          "text": "I have a head, two hands and two feet.",
+          "ipa": "/aɪ hæv ə hed tuː hændz ænd tuː fiːt/",
+          "phonemes": [
+            "d",
+            "t"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: have and has",
+        "th": "ฟัง: have และ has"
+      },
+      "exercises": [
+        {
+          "id": "d029-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแมวมีกี่ขา"
+          },
+          "audioText": "This is my cat. It has a big head and four legs. It is black and white.",
+          "question": {
+            "en": "How many legs?",
+            "th": "แมวมีกี่ขา"
+          },
+          "choices": [
+            "Two",
+            "Four",
+            "Five"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d029-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ากระเป๋าอยู่ที่ไหน"
+          },
+          "audioText": "Hi! I am Leo. I am nine. I have a brown bag on my back. I have an apple in my hand.",
+          "question": {
+            "en": "Where is the bag?",
+            "th": "กระเป๋าอยู่ที่ไหน"
+          },
+          "choices": [
+            "On his back",
+            "In his hand",
+            "On the floor"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d029-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "A man has two arms and two legs. A cat has four legs."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say what you have",
+        "th": "บอกว่าคุณมีอะไร"
+      },
+      "exercises": [
+        {
+          "id": "d029-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I have a head.",
+            "I have two hands.",
+            "He has two arms.",
+            "She has two legs.",
+            "A cat has four legs.",
+            "This is my body."
+          ]
+        },
+        {
+          "id": "d029-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณมีกี่มือและกี่เท้า ตอบตามจริง"
+          },
+          "prompt": "How many hands do you have? How many feet do you have?",
+          "sampleAnswer": "I have two hands. I have two feet.",
+          "keywords": [
+            "have"
+          ]
+        },
+        {
+          "id": "d029-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม has และ his ท้ายคำเป็นเสียงสั่นคอ (/z/) ไม่ใช่ 'แฮส' หรือ 'ฮิส' และ head ท้ายเป็น /d/"
+          },
+          "text": "The man has a red hat on his head.",
+          "ipa": "/ðə mæn hæz ə red hæt ɑːn hɪz hed/",
+          "phonemes": [
+            "z",
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My cat and my son",
+        "th": "แมวและลูกชายของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d029-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's bag = กระเป๋าของลีโอ)"
+          },
+          "text": "Hello! I am Rose. This is my cat. It is black and white. It has a big head and four legs. I have two legs and two arms. My son, Leo, is nine. He has a brown bag on his back.",
+          "questions": [
+            {
+              "question": {
+                "en": "How many legs has the cat?",
+                "th": "แมวมีกี่ขา"
+              },
+              "choices": [
+                "Four",
+                "Two"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What colour is the cat?",
+                "th": "แมวสีอะไร"
+              },
+              "choices": [
+                "Black and white",
+                "Brown"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is Leo's bag?",
+                "th": "กระเป๋าของลีโออยู่ที่ไหน"
+              },
+              "choices": [
+                "On his back",
+                "In his hand"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: have and has",
+        "th": "เขียน: have และ has"
+      },
+      "exercises": [
+        {
+          "id": "d029-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "She",
+            "two",
+            "hands"
+          ],
+          "answer": "She has two hands"
+        },
+        {
+          "id": "d029-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมตัวเลข เขียนเป็นตัวอักษร (แมวมีกี่ขา)"
+          },
+          "text": "A cat has ___ legs.",
+          "answer": [
+            "four"
+          ],
+          "strict": true
+        },
+        {
+          "id": "d029-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แดนมีสองแขนและสองขา",
+          "accept": [
+            "Dan has two arms and two legs"
+          ]
+        },
+        {
+          "id": "d029-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-head"
+            },
+            {
+              "vocabId": "v-hand"
+            },
+            {
+              "vocabId": "v-arm"
+            },
+            {
+              "vocabId": "v-leg"
+            },
+            {
+              "vocabId": "v-foot"
+            },
+            {
+              "vocabId": "v-back"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

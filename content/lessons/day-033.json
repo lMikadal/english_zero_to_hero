@@ -1,0 +1,339 @@
+{
+  "day": 33,
+  "phase": 1,
+  "week": 5,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Stand up! Put your hand on your head",
+    "th": "Stand up! ลุกขึ้นและวางมือบนหัว"
+  },
+  "objectives": [
+    {
+      "en": "Understand and say simple commands: Stand up, Open your mouth, Wash your hands",
+      "th": "เข้าใจและพูดคำสั่งง่าย ๆ ได้: Stand up, Open your mouth, Wash your hands"
+    },
+    {
+      "en": "Hear and say the final sounds /p/ and /b/: cap–cab, rope–robe, cup–cub, tap–tab",
+      "th": "ฟังและออกเสียง /p/ กับ /b/ ท้ายคำ: cap–cab, rope–robe, cup–cub, tap–tab"
+    },
+    {
+      "en": "Say what you wash and put with body words",
+      "th": "บอกว่าล้างอะไรและวางอะไรไว้ตรงไหนด้วยคำเรียกอวัยวะได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-open",
+    "v-stand",
+    "v-up",
+    "v-look",
+    "v-wash",
+    "v-clean",
+    "v-put",
+    "v-say"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final /p/ and /b/",
+        "th": "เสียง /p/ และ /b/ ท้ายคำ"
+      },
+      "exercises": [
+        {
+          "id": "d033-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "p",
+          "ipa": "/p/ /b/",
+          "tipTh": "ตัวสะกด บ ป พ ภาษาไทยออกเสียงเป็น /p/ ที่ปิดริมฝีปากโดยไม่ปล่อยลมเสมอ ในภาษาอังกฤษ /b/ ท้ายคำ (cab, cub) ต้องสั่นคอไปจนจบ ต่างจาก /p/ ใน up และ cup ที่คอไม่สั่นและมีลมออกเบา ๆ เมื่อเปิดริมฝีปาก คนไทยมักออก cab เป็น 'แค็บ' ซึ่งฟังเหมือน cap",
+          "examples": [
+            "up",
+            "cup",
+            "cab",
+            "cub"
+          ]
+        },
+        {
+          "id": "d033-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "cap",
+              "b": "cab",
+              "answer": "a"
+            },
+            {
+              "a": "robe",
+              "b": "rope",
+              "answer": "b"
+            },
+            {
+              "a": "cub",
+              "b": "cup",
+              "answer": "a"
+            },
+            {
+              "a": "tab",
+              "b": "tap",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "p",
+            "b"
+          ]
+        },
+        {
+          "id": "d033-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /p/ ใน up และ open ปิดริมฝีปากแล้วปล่อยลมออกเบา ๆ"
+          },
+          "text": "Stand up and open your mouth.",
+          "ipa": "/stænd ʌp ænd ˈoʊpən jɔːr maʊθ/",
+          "phonemes": [
+            "p"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: do what I say",
+        "th": "ฟัง: ทำตามที่บอก"
+      },
+      "exercises": [
+        {
+          "id": "d033-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าวางอะไรไว้บนหัว"
+          },
+          "audioText": "Stand up. Put your hands on your head. Open your mouth.",
+          "question": {
+            "en": "What do you put on your head?",
+            "th": "วางอะไรไว้บนหัว"
+          },
+          "choices": [
+            "Your hands",
+            "Your feet",
+            "Your bag"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d033-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอะไรไม่สะอาด"
+          },
+          "audioText": "Look at your hands. Wash your hands, please. Your hands are not clean.",
+          "question": {
+            "en": "What is not clean?",
+            "th": "อะไรไม่สะอาด"
+          },
+          "choices": [
+            "Your hands",
+            "Your face",
+            "Your feet"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d033-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Put your hand on your head. Say hello."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say what to do",
+        "th": "บอกให้ทำอะไร"
+      },
+      "exercises": [
+        {
+          "id": "d033-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Stand up.",
+            "Open your mouth.",
+            "Look at my face.",
+            "Wash your hands.",
+            "Put your hand on your head.",
+            "Say hello!"
+          ]
+        },
+        {
+          "id": "d033-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าตอนเช้าคุณล้างอะไรบ้าง ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you wash in the morning?",
+          "sampleAnswer": "I wash my hands and my face.",
+          "keywords": [
+            "wash"
+          ]
+        },
+        {
+          "id": "d033-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม hello ลงเสียงหนักที่พยางค์ท้าย (heLLO) ไม่ใช่ 'เฮลโล' ที่เสียงเท่ากันทุกพยางค์"
+          },
+          "text": "Open your mouth and say hello.",
+          "ipa": "/ˈoʊpən jɔːr maʊθ ænd seɪ həˈloʊ/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "In Rose's class",
+        "th": "ในห้องเรียนของโรส"
+      },
+      "exercises": [
+        {
+          "id": "d033-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Rose is a teacher. This is her school in Bangkok.\nRose: Good morning! Stand up, please. Put your hand on your head. Open your mouth. Say hello!\nChildren: Hello, Rose!\nRose: Wash your hands, please. Your hands are not clean.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who is a teacher?",
+                "th": "ใครเป็นครู"
+              },
+              "choices": [
+                "Rose",
+                "Leo"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is Rose?",
+                "th": "โรสอยู่ที่ไหน"
+              },
+              "choices": [
+                "In a school",
+                "In a shop"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is not clean?",
+                "th": "อะไรไม่สะอาด"
+              },
+              "choices": [
+                "The hands",
+                "The faces"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: commands",
+        "th": "เขียน: คำสั่ง"
+      },
+      "exercises": [
+        {
+          "id": "d033-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "Stand",
+            "up",
+            "please"
+          ],
+          "answer": "Stand up please",
+          "accept": [
+            "Please stand up"
+          ]
+        },
+        {
+          "id": "d033-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (สองมือ)"
+          },
+          "text": "Wash your ___.",
+          "answer": [
+            "hands"
+          ]
+        },
+        {
+          "id": "d033-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ล้างมือของคุณ",
+          "accept": [
+            "Wash your hands",
+            "Wash your hands, please"
+          ]
+        },
+        {
+          "id": "d033-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-open"
+            },
+            {
+              "vocabId": "v-stand"
+            },
+            {
+              "vocabId": "v-up"
+            },
+            {
+              "vocabId": "v-look"
+            },
+            {
+              "vocabId": "v-wash"
+            },
+            {
+              "vocabId": "v-clean"
+            },
+            {
+              "vocabId": "v-put"
+            },
+            {
+              "vocabId": "v-say"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

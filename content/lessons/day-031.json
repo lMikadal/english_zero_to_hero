@@ -1,0 +1,335 @@
+{
+  "day": 31,
+  "phase": 1,
+  "week": 5,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "My left hand, my right hand! Tall and beautiful",
+    "th": "My left hand, my right hand! tall และ beautiful"
+  },
+  "objectives": [
+    {
+      "en": "Say left and right and describe a person: tall, little, beautiful",
+      "th": "บอก left, right และบรรยายคนด้วย tall, little, beautiful ได้"
+    },
+    {
+      "en": "Hear and say the final sounds /f/ and /v/: leaf–leave, safe–save, proof–prove",
+      "th": "ฟังและออกเสียง /f/ กับ /v/ ท้ายคำ: leaf–leave, safe–save, proof–prove"
+    },
+    {
+      "en": "Use all and other: We all have two hands; this is my other hand",
+      "th": "ใช้ all และ other ได้: We all have two hands; this is my other hand"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-tall",
+    "v-beautiful",
+    "v-left",
+    "v-right",
+    "v-all",
+    "v-other",
+    "v-little"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final /f/ and /v/",
+        "th": "เสียง /f/ และ /v/ ท้ายคำ"
+      },
+      "exercises": [
+        {
+          "id": "d031-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "f",
+          "ipa": "/f/ /v/",
+          "tipTh": "ท้ายคำภาษาไทย ฟ จะออกเป็น /p/ และไม่มี /v/ ท้ายคำ คนไทยจึงมักออก five เป็น 'ไฟว์' (ท้ายเป็น ว) หรือ 'ไฟ' (ตัดเสียงท้าย) /v/ ใน have, love, five ให้ริมฝีปากล่างแตะฟันบนแล้วเป่าลมพร้อมสั่นคอ ค้างไว้ก่อนปล่อย ส่วน /f/ ใน wife ทำท่าเดียวกันแต่คอไม่สั่น",
+          "examples": [
+            "five",
+            "have",
+            "love",
+            "wife"
+          ]
+        },
+        {
+          "id": "d031-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "leaf",
+              "b": "leave",
+              "answer": "a"
+            },
+            {
+              "a": "save",
+              "b": "safe",
+              "answer": "b"
+            },
+            {
+              "a": "prove",
+              "b": "proof",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "f",
+            "v"
+          ]
+        },
+        {
+          "id": "d031-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /v/ ใน love และ five ต้องสั่นคอ ไม่ใช่ 'ไฟว์' ท้ายเป็น ว"
+          },
+          "text": "I love my five little cats.",
+          "ipa": "/aɪ lʌv maɪ faɪv ˈlɪtl kæts/",
+          "phonemes": [
+            "f",
+            "v"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: tall and little",
+        "th": "ฟัง: สูงและตัวเล็ก"
+      },
+      "exercises": [
+        {
+          "id": "d031-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครตัวเล็ก"
+          },
+          "audioText": "My husband, Dan, is tall. My son, Leo, is little. I am not tall.",
+          "question": {
+            "en": "Who is little?",
+            "th": "ใครตัวเล็ก"
+          },
+          "choices": [
+            "Dan",
+            "Leo",
+            "Rose"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d031-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแม่ของโรสอายุเท่าไร ระวัง sixty กับ sixteen"
+          },
+          "audioText": "Hello! I am Rose. My mother, Mali, is sixty. She is beautiful. She has short black hair.",
+          "question": {
+            "en": "How old is Rose's mother?",
+            "th": "แม่ของโรสอายุเท่าไร"
+          },
+          "choices": [
+            "Sixteen",
+            "Sixty",
+            "Seventy"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d031-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "This is my left hand. That is my right hand."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Left, right, tall",
+        "th": "ซ้าย ขวา สูง"
+      },
+      "exercises": [
+        {
+          "id": "d031-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "This is my left hand.",
+            "That is my right hand.",
+            "I have two hands.",
+            "This is my other hand.",
+            "My father is tall.",
+            "My mother is beautiful."
+          ]
+        },
+        {
+          "id": "d031-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าใครในครอบครัวตัวสูงและใครตัวเล็ก ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Who is tall in your family? Who is little?",
+          "sampleAnswer": "My father is tall. My brother is little.",
+          "keywords": [
+            "is"
+          ]
+        },
+        {
+          "id": "d031-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /f/ ใน wife และ /v/ ใน have ท้าย have ต้องสั่นคอ"
+          },
+          "text": "I have a wife and a little son.",
+          "ipa": "/aɪ hæv ə waɪf ænd ə ˈlɪtl sʌn/",
+          "phonemes": [
+            "f",
+            "v"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My family",
+        "th": "ครอบครัวของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d031-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Dan. I am thirty-two and I am a doctor. I am tall. I have short black hair. This is my wife, Rose. She is a teacher. She has long black hair and brown eyes. This is my son, Leo. He is little. He is nine. We all love our family.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who is a doctor?",
+                "th": "ใครเป็นหมอ"
+              },
+              "choices": [
+                "Dan",
+                "Rose"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Leo?",
+                "th": "ลีโออายุเท่าไร"
+              },
+              "choices": [
+                "Nine",
+                "Nineteen"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who has long black hair?",
+                "th": "ใครมีผมยาวสีดำ"
+              },
+              "choices": [
+                "Rose",
+                "Dan"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: tall and beautiful",
+        "th": "เขียน: สูงและสวย"
+      },
+      "exercises": [
+        {
+          "id": "d031-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "My",
+            "father",
+            "tall"
+          ],
+          "answer": "My father is tall",
+          "accept": [
+            "Is my father tall"
+          ]
+        },
+        {
+          "id": "d031-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (มือข้างซ้าย)"
+          },
+          "text": "This is my right hand. That is my ___ hand.",
+          "answer": [
+            "left"
+          ]
+        },
+        {
+          "id": "d031-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แม่ของฉันสวย",
+          "accept": [
+            "My mother is beautiful"
+          ]
+        },
+        {
+          "id": "d031-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-tall"
+            },
+            {
+              "vocabId": "v-beautiful"
+            },
+            {
+              "vocabId": "v-left"
+            },
+            {
+              "vocabId": "v-right"
+            },
+            {
+              "vocabId": "v-all"
+            },
+            {
+              "vocabId": "v-other"
+            },
+            {
+              "vocabId": "v-little"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
