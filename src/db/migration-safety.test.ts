@@ -14,12 +14,24 @@ describe("findDestructive", () => {
     ['ALTER TABLE "x" ALTER COLUMN "y" SET DATA TYPE integer;', "ALTER ... TYPE"],
     ['ALTER TABLE "x" ALTER COLUMN "y" TYPE text;', "ALTER ... TYPE"],
     ['drop   table if exists x;', "DROP TABLE"],
+    ['DELETE FROM "x" WHERE id = 1;', "DELETE FROM"],
+    ['DROP SCHEMA "drizzle" CASCADE;', "DROP SCHEMA"],
+    ['UPDATE "x" SET "a" = 1;', "UPDATE ... SET"],
+    ['update public.x as t set a = 1;', "UPDATE ... SET"],
+    ['ALTER TABLE "x" DROP "y";', "DROP COLUMN"],
+    ['ALTER TABLE "x" ALTER "y" TYPE text;', "ALTER ... TYPE"],
+    ['ALTER TABLE "x" ALTER "y" SET DATA TYPE text;', "ALTER ... TYPE"],
   ])("flags %s", (sql, what) => {
     expect(findDestructive(sql)).toContain(what);
   });
 
   it("does not flag additive migrations", () => {
     expect(findDestructive('CREATE TABLE "x" ("id" uuid);\n--> statement-breakpoint\nALTER TABLE "x" ADD COLUMN "z" text;\nCREATE INDEX i ON x (z);')).toEqual([]);
+  });
+
+  it("does not flag harmless DROPs and foreign-key actions", () => {
+    const sql = 'ALTER TABLE "x" DROP CONSTRAINT "c";\nALTER TABLE "x" ALTER COLUMN "y" DROP DEFAULT;\nALTER TABLE "x" ALTER COLUMN "y" DROP NOT NULL;\nALTER TABLE "x" ADD CONSTRAINT "f" FOREIGN KEY ("a") REFERENCES "z"("id") ON DELETE set null ON UPDATE cascade;\nDROP INDEX "i";';
+    expect(findDestructive(sql)).toEqual([]);
   });
 
   it("ignores words inside comments", () => {

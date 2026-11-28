@@ -85,6 +85,10 @@ describe("check-env.sh", () => {
     ["a POSTGRES_DB with odd characters", "POSTGRES_PASSWORD=abcdEFGH1234ijklMNOP5678\nPOSTGRES_DB=a/b\n"],
     ["a POSTGRES_DB with upper case", "POSTGRES_PASSWORD=abcdEFGH1234ijklMNOP5678\nPOSTGRES_DB=Prod\n"],
     ["a non-numeric APP_PORT", GOOD + "APP_PORT=abc\n"],
+    ["S3: APP_BIND=0.0.0.0 (open to everyone)", GOOD + "APP_BIND=0.0.0.0\n"],
+    ["S3: APP_BIND=::", GOOD + "APP_BIND=::\n"],
+    ["S5: an `export ` prefix (make ignores it, compose honours it)", GOOD + "export POSTGRES_DB=english_zero_to_hero\n"],
+    ["S5: an inline comment after a value", GOOD + "APP_PORT=3100 # my port\n"],
   ])("refuses %s", (_name, content) => {
     expect(run("check-env.sh", [envFile(content)]).code).not.toBe(0);
   });
@@ -213,6 +217,52 @@ describe("backup.sh", () => {
     const left = fs.readdirSync(backups);
     expect(left.filter((n) => n.includes("pre-update"))).toHaveLength(5);
     expect(normal.every((n) => left.includes(n))).toBe(true);
+  });
+
+  it("S1: the new backup survives even when later-named files exist (clock behind / timezone change)", () => {
+    const { cmd } = fakeCompose();
+    const backups = path.join(tmp, "backups");
+    fs.mkdirSync(backups);
+    for (const d of ["29990101", "29990102", "29990103"]) fs.writeFileSync(path.join(backups, name(`${d}-000000`)), "x");
+    const r = run("backup.sh", [], base(cmd, { KEEP: "3" }));
+    expect(r.code).toBe(0);
+    const file = r.out.trim().split("\n").pop()!;
+    expect(fs.existsSync(file)).toBe(true);
+    expect(fs.statSync(file).size).toBeGreaterThan(0);
+  });
+
+  it("S1: a -pre-update backup survives pruning of its own window too", () => {
+    const { cmd } = fakeCompose();
+    const backups = path.join(tmp, "backups");
+    fs.mkdirSync(backups);
+    for (let i = 1; i <= 6; i++) fs.writeFileSync(path.join(backups, name(`2999020${i}-000000`, "pre-update")), "x");
+    const r = run("backup.sh", [], base(cmd, { KEEP: "3", LABEL: "pre-update" }));
+    expect(fs.existsSync(r.out.trim().split("\n").pop()!)).toBe(true);
+  });
+
+  it("S1: -pre-restore backups are never pruned automatically (may be the only copy of the latest data)", () => {
+    const { cmd } = fakeCompose();
+    const backups = path.join(tmp, "backups");
+    fs.mkdirSync(backups);
+    for (let i = 1; i <= 9; i++) fs.writeFileSync(path.join(backups, name(`2020010${i}-000000`, "pre-restore")), "x");
+    expect(run("backup.sh", [], base(cmd, { KEEP: "1" })).code).toBe(0);
+    expect(fs.readdirSync(backups).filter((n) => n.includes("pre-restore"))).toHaveLength(9);
+  });
+
+  it("S1: two backups in the same second do not overwrite each other", () => {
+    const { cmd } = fakeCompose();
+    const a = run("backup.sh", [], base(cmd)).out.trim().split("\n").pop()!;
+    const b = run("backup.sh", [], base(cmd)).out.trim().split("\n").pop()!;
+    expect(a).not.toBe(b);
+    expect(fs.existsSync(a) && fs.existsSync(b)).toBe(true);
+  });
+
+  it("S1: time stamps are UTC", () => {
+    const { cmd } = fakeCompose();
+    const file = run("backup.sh", [], { ...base(cmd), TZ: "Asia/Bangkok" }).out.trim().split("\n").pop()!;
+    const m = path.basename(file).match(/-(\d{8})-(\d{2})(\d{4})\.dump$/)!;
+    const utcHour = new Date().getUTCHours();
+    expect(Math.abs(Number(m[2]) - utcHour) % 24 <= 1 || Math.abs(Number(m[2]) - utcHour) >= 23).toBe(true);
   });
 
   it("does not prune at all when PRUNE=0", () => {
@@ -388,6 +438,41 @@ describe("restore.sh", () => {
     expect(run("restore.sh", [dump(), DB], base(cmd, { FAKE_DBNAME: "english_zero_to_hero_dev", ALLOW_OTHER_DB: "1" })).code).toBe(0);
   });
 
+  it("M1: reads the dump's newest migration with `pg_restore ... -f -` (pg >= 12 needs -f), and says so when that fails", () => {
+    const { cmd, log } = fakeCompose();
+    expect(run("restore.sh", [dump(), DB], base(cmd)).code).toBe(0);
+    const c = calls(log).find((x) => x.includes("pg_restore --data-only"))!;
+    expect(c).toMatch(/ -f -(\s|$)/);
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "pg_restore --data-only" }));
+    expect(r.code).not.toBe(0);
+    expect(calls(log).some((x) => x.includes("stop app"))).toBe(false);
+  });
+
+  it("M1: cannot read the migration list of the image -> refuses (does not guess)", () => {
+    const { cmd, log } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "_journal.json" }));
+    expect(r.code).not.toBe(0);
+    expect(calls(log).some((x) => x.includes("stop app"))).toBe(false);
+  });
+
+  it("S2: exits non-zero and prints no success line when the app does not start afterwards", () => {
+    const { cmd } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "up -d --wait" }));
+    expect(r.code).not.toBe(0);
+    expect(r.out).not.toMatch(/เสร็จ|finished/i);
+  });
+
+  it("S2: success prints one final line with the address of the app", () => {
+    const { cmd } = fakeCompose();
+    const r = run("restore.sh", [dump(), DB], base(cmd, { APP_BIND: "127.0.0.1", APP_PORT: "3100" }));
+    expect(r.code).toBe(0);
+    expect(r.out.trim().split("\n").pop()).toContain("http://127.0.0.1:3100");
+  });
+
+  it("S5: starts the stack again when interrupted (INT/TERM are trapped, not only EXIT)", () => {
+    expect(fs.readFileSync(script("restore.sh"), "utf8")).toMatch(/trap [^\n]*INT[^\n]*TERM|trap [^\n]*TERM[^\n]*INT/);
+  });
+
   it("refuses a file that is not a valid backup", () => {
     const { cmd } = fakeCompose();
     const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "pg_restore -l" }));
@@ -502,5 +587,41 @@ describe("Makefile guards", () => {
   it("every prod-* env value comes from the one parser", () => {
     expect(makefile).toContain("scripts/prod/env-get.sh");
     expect(makefile).not.toMatch(/sed -n 's\/\^\$\(1\)=/);
+  });
+
+  it("S5: the 'is up' message says stage for the stage stack", () => {
+    expect(makefile).toMatch(/production is up|stage is up/);
+    expect(makefile).toContain("stage");
+    const up = makefile.slice(makefile.indexOf("prod-up:"), makefile.indexOf("prod-update:"));
+    expect(up).not.toMatch(/echo "production is up/);
+  });
+
+  const hasMake = spawnSync("make", ["--version"]).status === 0;
+  const dry = (target: string) =>
+    spawnSync("make", ["-n", "-C", repoRoot, target, "FILE=x", "CONFIRM=y"], { encoding: "utf8", env: { PATH: process.env.PATH ?? "" } }).stdout;
+
+  it.skipIf(!hasMake)("M2: stage and prod resolve to different images", () => {
+    const prod = dry("prod-build").match(/PROD_IMAGE=(\S+)/)?.[1];
+    const stage = dry("stage-build").match(/PROD_IMAGE=(\S+)/)?.[1];
+    expect(prod).toBeTruthy();
+    expect(stage).toBeTruthy();
+    expect(stage).not.toBe(prod);
+    expect(prod).toBe("ezh-prod-app:latest");
+  });
+
+  it.skipIf(!hasMake)("M2: stage uses its own backup folder, prod keeps backups/", () => {
+    expect(dry("prod-backup")).toMatch(/BACKUP_DIR=backups(\s|$)/);
+    expect(dry("stage-backup")).toMatch(/BACKUP_DIR=backups-stage(\s|$)/);
+  });
+
+  it("M2 (text check, runs without make): the image tag and the backup folder are derived from the project name", () => {
+    expect(makefile).toMatch(/^PROD_IMAGE\s*[:?]?=.*ezh-prod-app:latest/m);
+    expect(makefile).toMatch(/^PROD\s*:?=.*PROD_IMAGE=\$\(PROD_IMAGE\)/m);
+    expect(makefile).toMatch(/BACKUP_DIR=\$\(PROD_BACKUPS\)/);
+    expect(makefile).toMatch(/^PROD_BACKUPS\s*[:?]?=.*backups-/m);
+  });
+
+  it("M2: backups-stage/ is git-ignored", () => {
+    expect(fs.readFileSync(path.join(repoRoot, ".gitignore"), "utf8")).toMatch(/^backups-stage\/$/m);
   });
 });
