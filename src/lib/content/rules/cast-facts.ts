@@ -72,7 +72,7 @@ export function frequencyClaims(text: string): FrequencyClaim[] {
       let m = WITH_ADVERB_AFTER.exec(s);
       if (m) [, subject, adverb, verb, rest] = m;
       else if ((m = WITH_ADVERB_FIRST.exec(s))) [, adverb, subject, verb, rest] = [m[0], m[1], m[2], m[3], m[4]];
-      let head = "", tail = "";
+      let head = "";
       if (!m) {
         const b = BE_SENTENCE.exec(s);
         if (!b) continue;
