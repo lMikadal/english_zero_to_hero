@@ -70,6 +70,7 @@ export function checkGrammarNoteRequired(ctx: RuleContext): Problem[] {
         for (const f of checkedEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
           for (const form of usedForms(f.text, gate)) {
+            if (f.field.startsWith("accept[") && gate.get(form)!.lenientInAccept) continue; // an extra accepted answer introduces nothing
             const structure = gate.get(form)!.structure;
             if (!first.has(structure)) first.set(structure, { form, id: ex.id, field: f.field });
           }

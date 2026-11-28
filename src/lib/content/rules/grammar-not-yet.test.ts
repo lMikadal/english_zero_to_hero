@@ -201,7 +201,7 @@ describe("checkGrammarNotYet: checkpoints are checked as a unit of day afterDay"
 });
 
 describe("present continuous (week 10, day 64): am / is / are + -ing", () => {
-  const dict = (day: number, text: string, accept: string[]): Exercise => ({ id: exId(day, "listen", 2), type: "dictation", instruction, audioText: "Hello", accept: [text, ...accept] });
+  const dict = (day: number, audioText: string, accept: string[]): Exercise => ({ id: exId(day, "listen", 2), type: "dictation", instruction, audioText, accept });
   it("registers both structures: the statement on day 64, questions and negatives on day 65", () => {
     expect(GRAMMAR_STRUCTURES["present-continuous"]).toMatchObject({ day: 64 });
     expect(GRAMMAR_STRUCTURES["continuous-question"]).toMatchObject({ day: 65 });
@@ -224,7 +224,7 @@ describe("present continuous (week 10, day 64): am / is / are + -ing", () => {
     expect(check(on(20, say(20, "It is morning. It is shopping time.")), withEntry)).toEqual([]);
   });
   it("accepts the continuous in an extra accepted answer (a learner who knows it is not marked wrong) but not in the shown text", () => {
-    expect(check(on(58, dict(58, "It is rainy today", ["It is raining today"])))).toEqual([]);
+    expect(check(on(58, dict(58, "It is rainy today", ["It is rainy today", "It is raining today"])))).toEqual([]);
     expect(check(on(58, dict(58, "It is raining today", [])))).toHaveLength(1);
   });
 });
