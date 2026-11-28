@@ -54,7 +54,7 @@
 
 | พับให้เท่ากัน (เขียนรูปเดียวพอ) | ไม่พับ (ต้องใส่ทุกรูปใน `accept` หรือตั้ง `strict: true`; ตัวตรวจกฎ `answer-forms` บังคับ) |
 |---|---|
-| คำย่อที่มีความหมายเดียว: `I'm`=`I am`, `you're`, `he's`/`she's`/`it's`/`that's`/`what's`... = `... is`, `isn't`, `aren't`, `don't`, `doesn't`, `can't`=`cannot`, `won't`, `I'll`... (ตาราง `CONTRACTIONS`) | `'s` ก่อน past participle (ตาราง `PARTICIPLES` ใน `equivalents.ts`: `come`, `had`, `sat`, `bought`... ทุกคำที่ผันไม่ปกติ) หรือคำ `-ed` ตั้งแต่ 5 ตัวอักษร (`He's tired`, `He's gone`: is หรือ has?) ทั้งสองทิศทาง: `He's come home` ไม่เท่ากับ `He has come home` และไม่เท่ากับ `He is come home` (ผิดไวยากรณ์ จึงตรวจว่าไม่ถูกรับ) |
+| คำย่อที่มีความหมายเดียว: `I'm`=`I am`, `you're`, `isn't`, `aren't`, `don't`..., และ `he's`/`she's`/`it's`/`that's`/`what's`... = `... is` **เฉพาะเมื่อคำถัดไป (ข้าม `not` ได้หนึ่งคำ) เป็น a/an/the/my/your..., เลข, `in/at/on/from/here/there...`, คำ `-ing`, หรือ adjective ในรายการ `ADJECTIVES`** (รายการปิดใน `equivalents.ts`: `He's a teacher`, `She's happy`, `It's in the bag`, `He's reading`), `isn't`, `aren't`, `don't`, `doesn't`, `can't`=`cannot`, `won't`, `I'll`... (ตาราง `CONTRACTIONS`) | `'s` ก่อนคำอื่นทุกคำ เช่น adverb (`He's never been`, `She's just finished`), สรรพนาม (`What's he done`) หรือคำที่ไม่รู้จัก, และก่อน past participle (ตาราง `PARTICIPLES` ใน `equivalents.ts`: `come`, `had`, `sat`, `bought`... ทุกคำที่ผันไม่ปกติ) หรือคำ `-ed` ตั้งแต่ 5 ตัวอักษร (`He's tired`, `He's gone`: is หรือ has?) ทั้งสองทิศทาง: `He's come home` ไม่เท่ากับ `He has come home` และไม่เท่ากับ `He is come home` (ผิดไวยากรณ์ จึงตรวจว่าไม่ถูกรับ) |
 | `'s` ก่อน `been`/`got` = `has` (`He's been` = `He has been`; ไม่เท่ากับ `He is been`) | `'d` ยกเว้นก่อน `like`/`love` (`I'd like` = `I would like`) |
 | `name's` (`My name's Ann` = `My name is Ann`) | ชื่อ + `'s` (`Sam's from Japan` อาจเป็น possessive) ต้องใส่รูปเต็ม `Sam is ...` หรือ `strict`; กลับทิศก็เหมือนกัน: `Sam is happy` ไม่เท่ากับ `Sam's happy`, `He has finished` ไม่เท่ากับ `He's finished`, `I would go` ไม่เท่ากับ `I'd go` |
 | ตัวเลข 1–20, 30–90, 100: `10`=`ten`, `a hundred`=`one hundred`=`100` | ลำดับที่ทุกตัว (`first`/`1st`, `twenty-first`/`21st`, `thirtieth`/`30th`), `zero`/`0`, เลข 101 ขึ้นไป, เลขที่มี `:` `,` `.` (`3:30`, `1,000`), เลขนำหน้าด้วย 0 |
@@ -155,6 +155,11 @@ ERROR content/lessons/day-001.json [d001-write-01]: "Sam" is a proper name that 
 ERROR content/lessons/day-020.json [d020-write-03]: "He's tired": "he's" before "tired" is ambiguous ("he is" or "he has"), so grading does not fold it. Also accept whichever full form is correct: "X has ..." (perfect) or "X is ..." (adjective or passive), or set "strict": true on this exercise (then only the listed spellings are accepted).
 ERROR content/lessons/day-021.json [d021-write-02]: answer "ten" is a contraction, a full form or a number; grading would fold it with its other spelling. Decide explicitly: set "strict": true (only "ten") or "strict": false (the other spelling is accepted too).
 ```
+
+### `answer-forms`: ข้อสังเกตเพิ่ม
+- `'s` พับเฉพาะในบริบทที่แน่ใจว่าไม่ใช่กริยา (allow-list) คำที่ไม่รู้จักจึงทำให้เข้มขึ้นเท่านั้น ไม่เคยทำให้รับคำตอบผิด; กฎและการตรวจคำตอบใช้ฟังก์ชัน `sReading` ตัวเดียวกัน
+- คำนามทั่วไป + `'s` + a/an/the/not/คำบุพบท (`My mother's a teacher`) ต้องใส่ `My mother is ...` ด้วย
+- `Name's` + คำที่เป็นทั้งคำนามและ adjective/adverb (`Tom's home`, `Ann's back`) ถือเป็นคำย่อ; adjective สูงสุด 2 คำ + คำนาม (`Ann's big red bag`) ถือเป็น possessive
 
 ### `vocab-forms`: adjective ต้องลงรูปเปรียบเทียบ
 adjective ทุกคำใน `forms` ต้องมี `comparative` และ `superlative` (ให้ `taught-words` รู้ว่า `bigger` คือ `big`) หรือ `"gradable": "no"` ถ้าเทียบไม่ได้ (`dead`)
