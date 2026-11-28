@@ -143,7 +143,7 @@ prod-up: prod-check ## Start production (backup if migrations are pending, then 
 	$(PROD) up -d --wait
 	@echo "$(if $(filter ezh_prod,$(PROD_PROJECT)),production,stage ($(PROD_PROJECT))) is up: http://$(PROD_BIND):$(PROD_PORT)"
 	@sh scripts/prod/access-check.sh --note '$(PROD_ALLOWED)'
-	@if [ '$(AUTO_ON_UP)' = 1 ]; then $(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup.sh || echo "WARNING: the automatic backup failed: make $(PROD_PROJECT:ezh_%=%)-backup-auto-status (backup อัตโนมัติล้มเหลว)"; fi
+	@if [ '$(AUTO_ON_UP)' = 1 ]; then $(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) timeout 300 sh scripts/prod/auto-backup.sh || echo "WARNING: the automatic backup failed: make $(PROD_PROJECT:ezh_%=%)-backup-auto-status (backup อัตโนมัติล้มเหลว)"; fi
 
 prod-update: prod-check ## After git pull: backup (if data exists), build, start. THE way to update
 	@# only LOOK for a subnet clash first (stops nothing); the one-time network move itself happens inside prod-up, after backup and build
@@ -153,7 +153,7 @@ prod-update: prod-check ## After git pull: backup (if data exists), build, start
 	@$(MAKE) --no-print-directory prod-up SKIP=1 PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
 
 prod-down: ## Stop production (containers are removed, the database volume is kept); takes an automatic backup first when the newest is old
-	@if [ '$(AUTO_ON_UP)' = 1 ]; then $(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup.sh || echo "WARNING: the automatic backup failed: make $(PROD_PROJECT:ezh_%=%)-backup-auto-status (backup อัตโนมัติล้มเหลว)"; fi
+	@if [ '$(AUTO_ON_UP)' = 1 ]; then $(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) timeout 300 sh scripts/prod/auto-backup.sh || echo "WARNING: the automatic backup failed: make $(PROD_PROJECT:ezh_%=%)-backup-auto-status (backup อัตโนมัติล้มเหลว)"; fi
 	$(PROD) down
 
 prod-logs: ## Follow production logs
@@ -163,7 +163,7 @@ prod-status: ## Is production running and healthy?
 	$(PROD) ps -a
 	@curl -fsS --max-time 5 http://$(PROD_BIND):$(PROD_PORT)/api/health && echo " <- /api/health" || echo "app did not answer on $(PROD_BIND):$(PROD_PORT)"
 	@PROBE_EXEC='$(PROD) exec -T postgres' PROBE_GATEWAY='$(PROD_NET_PREFIX).1' sh scripts/prod/access-check.sh http://$(PROD_BIND):$(PROD_PORT) '$(PROD_ALLOWED)'
-	@$(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup-status.sh --brief
+	@$(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) REPO='$(CURDIR)' sh scripts/prod/auto-backup-status.sh --brief
 
 prod-migrate: prod-check ## Apply pending database migrations by hand (prod-up already does this)
 	$(PROD) up -d --wait postgres
@@ -190,7 +190,7 @@ prod-backup-auto-uninstall: ## Turn OFF the automatic daily backup (existing bac
 	@sh scripts/prod/auto-backup-install.sh uninstall '$(PROD_PROJECT)'
 
 prod-backup-auto-status: ## Is the automatic backup installed? Next run, last result, newest backup and its age
-	@$(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) sh scripts/prod/auto-backup-status.sh
+	@$(PROD_SCRIPT_ENV) $(PROD_AUTO_ENV) REPO='$(CURDIR)' sh scripts/prod/auto-backup-status.sh
 
 # ---- Stage and ci: throwaway copies of the production stack (never the real data) ---------------------------------
 # stage-<anything> / ci-<anything> = prod-<anything> with their own env file, compose project, image and backup folder:

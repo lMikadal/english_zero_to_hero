@@ -1,10 +1,12 @@
 [Unit]
-Description=English Zero to Hero: daily backup of the @WHAT@ database
+Description=English Zero to Hero: hourly check for the daily backup of the @WHAT@ database
 
 [Timer]
-OnCalendar=daily
-# spread the start a little, and run a missed day at the next opportunity (the PC was off at midnight)
-RandomizedDelaySec=30min
+# Every hour while we are logged in. The backup script itself takes at most one backup per 22 hours and does nothing while
+# Docker or the app is off, so an hourly check means: as soon as Docker and the app are up and a backup is due, it is taken.
+# (A once-a-day timer would be "done" for the day by a catch-up run at login, when Docker is still off.)
+OnCalendar=hourly
+RandomizedDelaySec=5min
 Persistent=true
 
 [Install]

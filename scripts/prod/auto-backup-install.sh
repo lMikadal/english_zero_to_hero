@@ -4,7 +4,8 @@
 #   auto-backup-install.sh uninstall ezh_prod
 #   auto-backup-install.sh render    <project> <out dir> <unit name>   (only writes the two files; used to test the templates)
 # `install` / `uninstall` accept ONLY the real production project: stage and ci never get a timer.
-# Environment (tests): UNIT_DIR (default ~/.config/systemd/user), SYSTEMCTL (default systemctl), REPO (default: this checkout), MAKE.
+# Environment (tests): UNIT_DIR (default ~/.config/systemd/user), STAMP_DIR (default ~/.local/share/systemd/timers), SYSTEMCTL, REPO (default: this checkout), MAKE.
+# `install` refuses a checkout without .env.prod and a linked git worktree (it may be deleted; the timer would then fail every hour).
 set -eu
 mode="${1:-}"; project="${2:-}"
 here=$(cd "$(dirname "$0")" && pwd)
@@ -12,6 +13,7 @@ repo="${REPO:-$(cd "$here/../.." && pwd)}"
 make_bin="${MAKE:-$(command -v make || true)}"
 systemctl_bin="${SYSTEMCTL:-systemctl}"
 unit_dir="${UNIT_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user}"
+stamp_dir="${STAMP_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/systemd/timers}"
 fail() { echo "ERROR: $*" >&2; exit 1; }
 
 case "$project" in
@@ -44,6 +46,12 @@ case "$mode" in
   install)
     [ "$project" = ezh_prod ] || fail "the automatic backup timer is only for the real production project ezh_prod, not '$project'. To try the mechanism on stage: make stage-backup-auto-run"
     command -v "$systemctl_bin" > /dev/null 2>&1 || fail "systemctl not found: this needs systemd"
+    [ -e "$repo/.env.prod" ] || fail "$repo has no .env.prod, so it is not the folder the real app runs from. Run this from ~/Documents/english_zero_to_hero (the folder with .env.prod) (ต้องสั่งจากโฟลเดอร์ที่มี .env.prod)"
+    if command -v git > /dev/null 2>&1; then
+      gd=$(git -C "$repo" rev-parse --path-format=absolute --git-dir 2> /dev/null || true)
+      gc=$(git -C "$repo" rev-parse --path-format=absolute --git-common-dir 2> /dev/null || true)
+      [ -z "$gd" ] || [ -z "$gc" ] || [ "$gd" = "$gc" ] || fail "$repo is a linked git worktree (it can be deleted at any time and the timer would then fail every hour). Install from the main checkout, the folder with .env.prod (ห้ามติดตั้งจาก worktree)"
+    fi
     name=ezh-prod-backup
     stage_dir=$(mktemp -d "${TMPDIR:-/tmp}/ezh-units.XXXXXX")
     trap 'rm -rf "$stage_dir"' EXIT
@@ -63,7 +71,7 @@ case "$mode" in
     if command -v "$systemctl_bin" > /dev/null 2>&1; then
       "$systemctl_bin" --user disable --now "$name.timer" 2> /dev/null || true
     fi
-    rm -f "$unit_dir/$name.timer" "$unit_dir/$name.service"
+    rm -f "$unit_dir/$name.timer" "$unit_dir/$name.service" "$stamp_dir/stamp-$name.timer"
     command -v "$systemctl_bin" > /dev/null 2>&1 && "$systemctl_bin" --user daemon-reload || true
     echo "automatic daily backup is OFF (timer removed). Existing backups are kept." ;;
   *) fail "usage: auto-backup-install.sh install|uninstall|render <project> ..." ;;

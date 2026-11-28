@@ -45,7 +45,7 @@ if [ -n "\${FAKE_FAIL:-}" ]; then
 fi
 case "$*" in
   *"ps --status running"*) [ "\${FAKE_STACK_DOWN:-}" = 1 ] || echo "abc123" ;;
-  *pg_dump*) printf 'PGDMP-fake-dump-bytes' ;;
+  *pg_dump*) printf 'PGDMP-fake-dump-bytes'; head -c 2048 /dev/zero | tr '\\\\0' x ;;
   *pg_database*) [ -z "\${FAKE_SCRATCH:-}" ] || printf '%s\\n' $FAKE_SCRATCH ;;
   *to_regclass*) [ "\${FAKE_NO_DATA:-}" = 1 ] || echo "drizzle.__drizzle_migrations" ;;
   *"count(*)"*) echo "7" ;;
@@ -658,7 +658,7 @@ describe("S3d: auto-backup-run.sh (what the unit runs) records failures that hap
     expect(st).toMatch(/^attempt=FAILED/m);
   });
   it("make fails AFTER the backup script recorded its own, more precise failure: that state is kept", () => {
-    const r = go(`printf 'result=FAILED\\nat=2026-01-01 00:00:00\\nmessage=pg_dump said no\\nattempt=FAILED\\nattempt_at=2026-01-01 00:00:00\\n' > "${state()}"; exit 1`);
+    const r = go(`mkdir -p "${path.dirname(state())}"; printf 'result=FAILED\\nat=2026-01-01 00:00:00\\nmessage=pg_dump said no\\nattempt=FAILED\\nattempt_at=2026-01-01 00:00:00\\n' > "${state()}"; exit 1`);
     expect(r.code).toBe(1);
     expect(fs.readFileSync(state(), "utf8")).toContain("message=pg_dump said no");
   });
