@@ -1,0 +1,325 @@
+{
+  "day": 17,
+  "phase": 1,
+  "week": 3,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "I love my family! The sound /v/",
+    "th": "I love my family! เสียง /v/"
+  },
+  "objectives": [
+    {
+      "en": "Say 'I have a son / a daughter' and 'I love…'",
+      "th": "พูด 'I have a son / a daughter' และ 'I love…' ได้"
+    },
+    {
+      "en": "Hear and say /v/ in very, five, seven and love without turning it into /w/ or /f/",
+      "th": "ฟังและออกเสียง /v/ ใน very, five, seven และ love โดยไม่เปลี่ยนเป็น /w/ หรือ /f/ ได้"
+    },
+    {
+      "en": "Use very with adjectives and say numbers 16–17",
+      "th": "ใช้ very นำหน้าคำคุณศัพท์ และพูดเลข 16–17 ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-son",
+    "v-daughter",
+    "v-child",
+    "v-baby",
+    "v-love",
+    "v-very",
+    "v-sixteen",
+    "v-seventeen",
+    "v-have"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sound /v/",
+        "th": "เสียง /v/"
+      },
+      "exercises": [
+        {
+          "id": "d017-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "v",
+          "ipa": "/v/",
+          "tipTh": "วางฟันบนแตะริมฝีปากล่างเบา ๆ แล้วเปล่งเสียงให้สั่นคอ (เหมือน /f/ แต่ /f/ ไม่สั่นคอ) ภาษาไทยไม่มีเสียงนี้ คนไทยมักออกเป็น 'ว' โดยห่อปาก (very เป็น 'เวรี') หรือเป็น 'ฟ' (five เป็น 'ไฟฟ์') ส่วนเสียง v ท้ายคำอย่าง love, five, seven (หรือ have ที่ใช้บ่อย) มักหายไปหรือกลายเป็น 'บ' ให้วางฟันบนริมฝีปากล่างค้างไว้แล้วปล่อยเสียงสั่นสั้น ๆ ท้ายคำ",
+          "examples": [
+            "very",
+            "five",
+            "seven",
+            "love"
+          ]
+        },
+        {
+          "id": "d017-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "very",
+              "b": "berry",
+              "answer": "a"
+            },
+            {
+              "a": "wine",
+              "b": "vine",
+              "answer": "b"
+            },
+            {
+              "a": "west",
+              "b": "vest",
+              "answer": "b"
+            }
+          ]
+        },
+        {
+          "id": "d017-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /v/ ใน love ให้วางฟันบนริมฝีปากล่างและสั่นคอ ไม่ใช่ 'เลอ' (เสียงท้ายหาย) หรือ 'เลิบ'"
+          },
+          "text": "I love my son and my daughter.",
+          "ipa": "/aɪ lʌv maɪ sʌn ænd maɪ ˈdɔːtər/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: sons and daughters",
+        "th": "ฟัง: ลูกชายและลูกสาว"
+      },
+      "exercises": [
+        {
+          "id": "d017-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลูกสาวอายุเท่าไร ระวัง seven กับ seventeen"
+          },
+          "audioText": "I have a son and a daughter. My son is sixteen. My daughter is seventeen.",
+          "question": {
+            "en": "How old is the daughter?",
+            "th": "ลูกสาวอายุเท่าไร"
+          },
+          "choices": [
+            "Sixteen",
+            "Seventeen",
+            "Seven"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d017-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครมีความสุขมาก"
+          },
+          "audioText": "This is my baby. She is very happy. I love my baby!",
+          "question": {
+            "en": "Who is very happy?",
+            "th": "ใครมีความสุขมาก"
+          },
+          "choices": [
+            "The baby",
+            "The father",
+            "The mother"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d017-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "I have two children. They are very happy."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say who you love",
+        "th": "บอกว่าคุณรักใคร"
+      },
+      "exercises": [
+        {
+          "id": "d017-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I have a son.",
+            "I have a daughter.",
+            "My son is sixteen.",
+            "My daughter is seventeen.",
+            "I love my children."
+          ]
+        },
+        {
+          "id": "d017-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ตอบตามจริงหรือแต่งเรื่องก็ได้ บอกว่ามีลูกชายหรือลูกสาวไหม และอายุเท่าไร"
+          },
+          "prompt": "Do you have a son or a daughter? How old is he or she?",
+          "sampleAnswer": "Yes, I have a son. He is sixteen. I love him.",
+          "keywords": [
+            "have"
+          ]
+        },
+        {
+          "id": "d017-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /v/ ใน five, seven และ seventeen"
+          },
+          "text": "Five, seven, sixteen, seventeen!",
+          "ipa": "/faɪv ˈsevn ˌsɪksˈtiːn ˌsevnˈtiːn/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Mai and her children",
+        "th": "ไหมกับลูก ๆ ของเธอ"
+      },
+      "exercises": [
+        {
+          "id": "d017-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Ann. My husband is Tom. We have two children, a son and a daughter. Our son is seventeen. Our daughter is sixteen. We love our children. We are very happy.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who is seventeen?",
+                "th": "ใครอายุสิบเจ็ด"
+              },
+              "choices": [
+                "The son",
+                "The daughter"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who is Tom?",
+                "th": "ทอมเป็นใคร"
+              },
+              "choices": [
+                "Her husband",
+                "Her brother"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Are they happy?",
+                "th": "พวกเขามีความสุขไหม"
+              },
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "answer": 0
+            }
+          ],
+          "glossary": {
+            "our": "ของพวกเรา"
+          }
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: I have, I love",
+        "th": "เขียน: I have, I love"
+      },
+      "exercises": [
+        {
+          "id": "d017-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "very",
+            "is",
+            "My",
+            "happy",
+            "baby"
+          ],
+          "answer": "My baby is very happy",
+          "accept": [
+            "Is my baby very happy"
+          ]
+        },
+        {
+          "id": "d017-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "I have a son and a daughter. I have two ___.",
+          "answer": [
+            "children"
+          ]
+        },
+        {
+          "id": "d017-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันรักลูกสาวของฉัน",
+          "accept": [
+            "I love my daughter"
+          ]
+        },
+        {
+          "id": "d017-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-son"
+            },
+            {
+              "vocabId": "v-daughter"
+            },
+            {
+              "vocabId": "v-child"
+            },
+            {
+              "vocabId": "v-baby"
+            },
+            {
+              "vocabId": "v-love"
+            },
+            {
+              "vocabId": "v-very"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

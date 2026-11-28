@@ -61,6 +61,11 @@ jobs:
       - name: make check
         run: make check
 
+      # Warnings do not fail the check; show them to reviewers of content PRs.
+      - name: Content validator report in the job summary
+        if: always()
+        run: if [ -f .content-validate-summary.md ]; then cat .content-validate-summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+
       - name: Migrations apply to a fresh database
         run: make db-migrate
 
@@ -135,3 +140,51 @@ jobs:
       - name: Restore workspace ownership
         if: always()
         run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
+
+  # A broken production build (next build, the Dockerfile prod stage, the migrate bundle, missing content/) must never
+  # merge: build the real prod image, start it with a throwaway postgres (random password, own project, torn down at
+  # the end) and GET the main pages. Nothing here is the user's real database.
+  prod-image:
+    name: prod image (build, start, smoke test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-buildx-action@v3
+
+      # The job runs the production stack as the throwaway project `ezh_ci` (own image tag, database, port, backups-ci/),
+      # never as the real project: the round trip below writes marker rows and replaces data, which must be impossible for the
+      # real app. `load: true` + the tag the Makefile derives for project ezh_ci: `make ci-up` then starts it without rebuilding
+      - name: Build the production image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: prod
+          load: true
+          tags: ezh-ci-app:latest
+          cache-from: type=gha,scope=prod-image
+          cache-to: type=gha,scope=prod-image,mode=max
+
+      - name: Start the production stack (migrations run first)
+        run: |
+          make ci-init
+          make ci-up
+
+      - name: Smoke test
+        run: sh scripts/prod/smoke.sh http://127.0.0.1:3195
+
+      # backup -> change -> restore with the real make targets and a marker row, so a restore that does nothing (or a
+      # refusal that does not happen) fails the job; the pg_dump / pg_restore flags run on every PR
+      - name: Backup, change, restore round trip (with marker)
+        run: make ci-roundtrip
+
+      - name: Production logs (on failure)
+        if: failure()
+        run: docker compose -p ezh_ci -f docker-compose.prod.yml --env-file .env.ci logs --no-color --tail=200 || true
+
+      - name: Tear down
+        if: always()
+        run: make ci-down || true

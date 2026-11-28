@@ -12,7 +12,7 @@
 | [docs/CURRICULUM.md](docs/CURRICULUM.md) | หลักสูตร 365 วัน, โครงสร้างสัปดาห์และบทเรียนรายวัน |
 | [docs/VOCABULARY.md](docs/VOCABULARY.md) | แผนคำศัพท์ Oxford 3000/5000 สำหรับชีวิตประจำวัน |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Tech stack, โครงสร้างโฟลเดอร์, data model |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | วิธี host บนเครื่องตัวเองด้วย Docker + Tailscale |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | ใช้แอปจริงบนเครื่องตัวเอง: `make prod` แล้วเปิดจากมือถือผ่าน Tailscale, backup, อัปเดต |
 | [docs/AI_TEAM.md](docs/AI_TEAM.md) | ทีม AI: บทบาท, โมเดล, ขั้นตอนทำงาน |
 | [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) | การแบ่ง branch, commit และแผน PR |
 | [docs/TESTING.md](docs/TESTING.md) | แนวทาง TDD และเทสต์แต่ละชั้น |

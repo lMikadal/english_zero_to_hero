@@ -16,6 +16,9 @@ if [ -f package.json ]; then
         else
           pnpm install --prefer-offline
         fi
+        # the dev cache (.next volume) goes stale when packages change and makes the browser reload in a loop: empty it
+        # (contents only, the directory is a volume mount point)
+        find /app/.next -mindepth 1 -delete 2>/dev/null || true
         echo "$stamp" > node_modules/.install-stamp
       fi
     ) 9> node_modules/.install.lock

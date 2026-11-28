@@ -4,7 +4,10 @@ import path from "node:path";
 import type { ZodType } from "zod";
 import { lessonSchema, vocabItemSchema, type Lesson, type VocabItem } from "./schema";
 
-export type Problem = { file: string; id?: string; message: string };
+/** `rule` names a content rule family (src/lib/content/rules/); the CLI groups problems by it. */
+export type Problem = { file: string; id?: string; message: string; rule?: string;
+  /** "warning" is printed but does not fail the validation; the default is an error. */
+  severity?: "warning" };
 export type LoadedLesson = { file: string; lesson: Lesson };
 export type LoadedVocab = { file: string; items: VocabItem[] };
 export type ContentData = { lessons: LoadedLesson[]; vocab: LoadedVocab[]; failedVocabIds?: string[] };
@@ -106,7 +109,7 @@ export function readContent(root: string): ContentData & { problems: Problem[] }
   }
 
   if (isDir(dirs.lessons)) {
-    const entries = fs.readdirSync(dirs.lessons, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
+    const entries = fs.readdirSync(/*turbopackIgnore: true*/ dirs.lessons, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
     for (const e of entries) {
       const abs = path.join(dirs.lessons, e.name);
       const display = displayName(root, abs);
@@ -123,7 +126,7 @@ export function readContent(root: string): ContentData & { problems: Problem[] }
 
   if (isDir(dirs.vocab)) {
     const walk = (dir: string) => {
-      for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      for (const e of fs.readdirSync(/*turbopackIgnore: true*/ dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
         const abs = path.join(dir, e.name);
         if (e.isDirectory()) walk(abs);
         else if (!e.isFile() || !e.name.endsWith(".json")) {

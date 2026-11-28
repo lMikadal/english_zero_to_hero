@@ -41,7 +41,7 @@
 | เสียง | ปัญหาที่พบบ่อย | คู่คำตัวอย่าง |
 |---|---|---|
 | /θ/ /ð/ | ออกเป็น ท/ด | think–sink, this–dis |
-| /v/ | ออกเป็น ว | van–wan, very–wary |
+| /v/ | ออกเป็น ว | van–wan, vet–wet |
 | /r/ vs /l/ | ใช้สลับกัน | rice–lice, right–light |
 | /z/ | ออกเป็น ซ | zoo–sue, rise–rice |
 | /ʃ/ vs /tʃ/ | ใช้สลับกัน | ship–chip, shoe–chew |
