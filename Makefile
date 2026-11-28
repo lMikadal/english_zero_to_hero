@@ -132,12 +132,14 @@ prod-build: prod-check ## Build the production image (run after git pull)
 # Before migrations can change the real data, a backup labelled -pre-update is taken when the image has a migration the
 # database lacks (scripts/prod/pre-update.sh). SKIP=1 turns that off (prod-update has already taken one).
 prod-up: prod-check ## Start production (backup if migrations are pending, then migrations, then the app)
+	@COMPOSE_CMD='$(PROD)' sh scripts/prod/net-fix.sh $(PROD_PROJECT)_default $(PROD_NET_PREFIX)
 	@MODE=if-pending $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
 	$(PROD) up -d --wait
 	@echo "$(if $(filter ezh_prod,$(PROD_PROJECT)),production,stage ($(PROD_PROJECT))) is up: http://$(PROD_BIND):$(PROD_PORT)"
 	@sh scripts/prod/access-check.sh --note '$(PROD_ALLOWED)'
 
 prod-update: prod-check ## After git pull: backup (if data exists), build, start. THE way to update
+	@COMPOSE_CMD='$(PROD)' sh scripts/prod/net-fix.sh $(PROD_PROJECT)_default $(PROD_NET_PREFIX)
 	@MODE=always $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
 	@$(MAKE) --no-print-directory prod-build PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
 	@$(MAKE) --no-print-directory prod-up SKIP=1 PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'

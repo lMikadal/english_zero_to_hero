@@ -31,7 +31,7 @@ failed=0
 fail() { echo "access FAIL: $*" >&2; failed=1; }
 code() { # <path> [curl -H args...]
   p="$1"; shift
-  curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$@" "$base$p" 2>/dev/null || printf 000
+  curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$@" "$base$p" 2>/dev/null || true
 }
 expect() { # <expected> <what> <path> [-H ...]
   want="$1"; what="$2"; shift 2
