@@ -262,7 +262,8 @@
             "are",
             "my"
           ],
-          "answer": "You are my friend"
+          "answer": "You are my friend",
+          "accept": ["Are you my friend"]
         },
         {
           "id": "d008-write-02",

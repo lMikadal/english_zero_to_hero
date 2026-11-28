@@ -123,12 +123,12 @@
           "id": "d010-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าแอนอายุเท่าไร"
+            "th": "ฟังแล้วตอบว่าเคทอายุเท่าไร"
           },
-          "audioText": "Ben is thirteen. Ann is fifteen.",
+          "audioText": "Jack is thirteen. Kate is fifteen.",
           "question": {
-            "en": "How old is Ann?",
-            "th": "แอนอายุเท่าไร"
+            "en": "How old is Kate?",
+            "th": "เคทอายุเท่าไร"
           },
           "choices": [
             "Thirteen",

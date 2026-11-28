@@ -1,0 +1,337 @@
+{
+  "day": 24,
+  "phase": 1,
+  "week": 4,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Chairs, clocks and pictures! The sound /z/",
+    "th": "Chairs, clocks and pictures! เสียง /z/"
+  },
+  "objectives": [
+    {
+      "en": "Name things in a house and talk about more than one: These are my chairs",
+      "th": "เรียกชื่อสิ่งของในบ้านและพูดถึงหลายชิ้น: These are my chairs"
+    },
+    {
+      "en": "Hear and say /z/ and /s/: zoo–Sue, rise–rice, bus–buzz, peace–peas",
+      "th": "ฟังและออกเสียง /z/ กับ /s/: zoo–Sue, rise–rice, bus–buzz, peace–peas"
+    },
+    {
+      "en": "Say fifty and tell it apart from fifteen",
+      "th": "พูด fifty และแยกให้ออกจาก fifteen"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-chair",
+    "v-clock",
+    "v-picture",
+    "v-ball",
+    "v-hat",
+    "v-camera",
+    "v-glass",
+    "v-fifty"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The sound /z/",
+        "th": "เสียง /z/"
+      },
+      "exercises": [
+        {
+          "id": "d024-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "z",
+          "ipa": "/z/",
+          "tipTh": "ภาษาไทยไม่มีเสียง /z/ คนไทยมักออกเป็น /s/ (เหมือน 'ซ') ทำให้ zoo ฟังเป็น Sue วิธีฝึก: วางมือที่คอแล้วออกเสียง /s/ (ซซซ) คอจะไม่สั่น จากนั้นตั้งลิ้นและปากเหมือนเดิมแต่ให้คอสั่นเหมือนเสียงผึ้งบิน (zzz) นั่นคือ /z/ เสียงนี้พบมากที่ท้ายคำ: is, his, these, those ล้วนออก /z/ ไม่ใช่ 's' ข้อสังเกต: ท้ายคำพหูพจน์ chairs, balls ออก /z/ แต่ clocks, hats ออก /s/ เพราะเสียงก่อนหน้า (k, t) ไม่สั่นคอ",
+          "examples": [
+            "is",
+            "his",
+            "these",
+            "those"
+          ]
+        },
+        {
+          "id": "d024-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "zoo",
+              "b": "Sue",
+              "answer": "a"
+            },
+            {
+              "a": "rice",
+              "b": "rise",
+              "answer": "b"
+            },
+            {
+              "a": "buzz",
+              "b": "bus",
+              "answer": "a"
+            },
+            {
+              "a": "peace",
+              "b": "peas",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "z",
+            "s"
+          ]
+        },
+        {
+          "id": "d024-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ chairs และ balls ต้องสั่นคอ (/z/) ส่วน clocks ท้ายเป็น /s/ ไม่สั่นคอ"
+          },
+          "text": "Two chairs, three clocks, four balls.",
+          "ipa": "/tuː tʃerz θriː klɑːks fɔːr bɔːlz/",
+          "phonemes": [
+            "z",
+            "s"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: how many?",
+        "th": "ฟัง: กี่ชิ้น"
+      },
+      "exercises": [
+        {
+          "id": "d024-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามีรูปภาพกี่รูป"
+          },
+          "audioText": "I have two chairs, a clock and three pictures.",
+          "question": {
+            "en": "How many pictures?",
+            "th": "มีรูปภาพกี่รูป"
+          },
+          "choices": [
+            "Two",
+            "Three",
+            "Five"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d024-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าปากกาสีแดงราคากี่บาท ระวัง fifty กับ fifteen"
+          },
+          "audioText": "The red pen is fifty baht. The blue pen is fifteen baht.",
+          "question": {
+            "en": "How much is the red pen?",
+            "th": "ปากกาสีแดงราคากี่บาท"
+          },
+          "choices": [
+            "Fifteen",
+            "Fifty",
+            "Five"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d024-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "These are my chairs. They are brown."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "These are my things",
+        "th": "นี่คือของของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d024-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "These are my chairs.",
+            "Those are my pictures.",
+            "This is a clock. These are clocks.",
+            "It is a big hat. They are big hats.",
+            "A glass of water, please.",
+            "How many balls? Three balls."
+          ]
+        },
+        {
+          "id": "d024-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณมีของเหล่านี้หรือเปล่า ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Do you have a clock? Do you have a camera? Do you have a hat?",
+          "sampleAnswer": "Yes, I have a clock. I have a camera, too. My hat is black.",
+          "keywords": [
+            "have"
+          ]
+        },
+        {
+          "id": "d024-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /z/ ท้ายคำ is ทั้งสองคำ ต้องสั่นคอจนจบ ไม่ใช่ 'อิส'"
+          },
+          "text": "Is this your picture? Yes, it is.",
+          "ipa": "/ɪz ðɪs jɔːr ˈpɪktʃər jes ɪt ɪz/",
+          "phonemes": [
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "A picture of my house",
+        "th": "รูปบ้านของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d024-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hi! I am Nan. I am forty and I am a teacher in Bangkok. This is a picture of my house. It is a small house. I have two chairs, a clock and a camera. The chairs are white. The clock is yellow. My camera is black. I love my camera!",
+          "questions": [
+            {
+              "question": {
+                "en": "How many chairs?",
+                "th": "มีเก้าอี้กี่ตัว"
+              },
+              "choices": [
+                "Two",
+                "Three"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What colour is the clock?",
+                "th": "นาฬิกาสีอะไร"
+              },
+              "choices": [
+                "Yellow",
+                "White"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What is black?",
+                "th": "อะไรเป็นสีดำ"
+              },
+              "choices": [
+                "The camera",
+                "The clock"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: one and two",
+        "th": "เขียน: หนึ่งชิ้นและหลายชิ้น"
+      },
+      "exercises": [
+        {
+          "id": "d024-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "are",
+            "These",
+            "my",
+            "chairs"
+          ],
+          "answer": "These are my chairs",
+          "accept": [
+            "Are these my chairs"
+          ]
+        },
+        {
+          "id": "d024-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำนามพหูพจน์ (เก้าอี้สองตัว)"
+          },
+          "text": "One chair, two ___.",
+          "answer": [
+            "chairs"
+          ]
+        },
+        {
+          "id": "d024-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "พวกนี้คือลูกบอลสีแดง",
+          "accept": [
+            "These are red balls"
+          ]
+        },
+        {
+          "id": "d024-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-chair"
+            },
+            {
+              "vocabId": "v-clock"
+            },
+            {
+              "vocabId": "v-picture"
+            },
+            {
+              "vocabId": "v-ball"
+            },
+            {
+              "vocabId": "v-hat"
+            },
+            {
+              "vocabId": "v-camera"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

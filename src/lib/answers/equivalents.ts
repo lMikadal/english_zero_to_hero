@@ -90,7 +90,7 @@ export function isSafeAfterS(w: string): boolean {
 }
 
 /**
- * How the 's at tokens[i] reads: "has" (directly before been/got), "is" (the next word, skipping one "not", is provably
+ * How the 's at tokens[i] reads: "has" (directly before been/got), "is" (the next word, skipping one "not" and one "very", is provably
  * not a verb), or null (not folded: the answer-forms rule makes the author list both forms or set `strict`).
  */
 export function sReading(tokens: readonly string[], i: number): "is" | "has" | null {
@@ -99,8 +99,16 @@ export function sReading(tokens: readonly string[], i: number): "is" | "has" | n
   let next = tokens[i + 1];
   if (next === "been" || next === "got") return "has";
   if (t === "name's") return next !== undefined && isParticipleLike(next) ? null : "is";
-  if (next === "not") next = tokens[i + 2];
-  if (next !== undefined && OBJECT_PRONOUNS.has(next) && /^(he|she|it)'s$/.test(t)) return "is";
+  let j = i + 1;
+  if (tokens[j] === "not") j++;
+  // "very" is transparent like "not": nothing perfect follows it ("He's very happy" can only be "is"), so the word after it
+  // is judged exactly as after "not". "very much" is not (He's very much done it), and really / so / too / quite are not
+  // either (He's really done it, He's so tired he has gone ...): they stay unfolded and the author lists both forms.
+  const afterVery = tokens[j] === "very";
+  if (afterVery) j++;
+  if (afterVery && tokens[j] === "much") return null;
+  next = tokens[j];
+  if (!afterVery && next !== undefined && OBJECT_PRONOUNS.has(next) && /^(he|she|it)'s$/.test(t)) return "is";
   return next !== undefined && isSafeAfterS(next) ? "is" : null;
 }
 const WOULD = /^(i|you|he|she|we|they)'d$/;

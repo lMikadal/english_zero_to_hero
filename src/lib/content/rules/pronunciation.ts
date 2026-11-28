@@ -23,8 +23,11 @@ export function namedIpaSymbols(text: string): string[] {
 
 /** Phonemes longest first, so "tʃ" is one phoneme and "aɪ" is not "a" + "ɪ". Stress and length marks are not phonemes. */
 const PHONEMES = ["tʃ", "dʒ", "eɪ", "aɪ", "ɔɪ", "aʊ", "oʊ", "əʊ", "ɪə", "eə", "ʊə", "iː", "uː", "ɔː", "ɜː", "ɑː", "æː"];
+/** Typing variants of one symbol: ASCII g, the ligatures ʧ ʤ, and ɹ for r. */
+const normaliseIpa = (ipa: string) => ipa.replace(/g/g, "ɡ").replace(/ʧ/g, "tʃ").replace(/ʤ/g, "dʒ").replace(/ɹ/g, "r");
+
 export function ipaTokens(ipa: string): string[] {
-  const chars = [...ipa.replace(/[\/ˈˌ.\s]/g, "")];
+  const chars = [...normaliseIpa(ipa).replace(/[\/ˈˌ.\s]/g, "")];
   const out: string[] = [];
   for (let i = 0; i < chars.length; ) {
     const two = chars[i] + (chars[i + 1] ?? "");
@@ -39,11 +42,15 @@ export function ipaTokens(ipa: string): string[] {
   return out;
 }
 
-/** True when `symbol` (one or more phonemes) occurs in `ipa` as whole phonemes. */
+/** A vowel written without the length mark (/ɑ/, /ɔ/, /ɜ/) matches the long vowel of the bank; /i/ and /u/ do not (they are other sounds). */
+const LONG_OF = new Set(["ɑ", "ɔ", "ɜ"]);
+const sameToken = (hay: string | undefined, needle: string) => hay === needle || (LONG_OF.has(needle) && hay === `${needle}ː`);
+
+/** True when `symbol` (one or more phonemes) occurs in `ipa` as whole phonemes. Typing variants are normalised (see normaliseIpa). */
 export function ipaContains(ipa: string, symbol: string): boolean {
   const hay = ipa.split(/\s+/).map(ipaTokens);
   const needle = ipaTokens(symbol);
-  return hay.some((word) => word.some((_, i) => needle.every((n, k) => word[i + k] === n)));
+  return hay.some((word) => word.some((_, i) => needle.every((n, k) => sameToken(word[i + k], n))));
 }
 
 const words = (s: string) => s.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w));

@@ -34,7 +34,7 @@
 - `read_passage.glossary` เป็น `{ [word]: คำแปลไทย }`
 - `vocab_match.pairs` ต้องมีอย่างน้อย 2 คู่; `vocabId` ทุกที่ต้องตรง `^v-[a-z0-9]+(-[a-z0-9]+)*$`
 - `dictation`, `translate_th_en`, `fill_blank` มี `strict: boolean` (ไม่บังคับ) ปิดการพับคำย่อ/ตัวเลขของข้อนั้น
-- `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string); `accept` (ไม่บังคับ) เป็น `string[]` อย่างน้อย 1 รายการ
+- `arrange_words.words` อย่างน้อย 2 คำ; `answer` เป็นประโยคเดียว (string); `accept` (ไม่บังคับ) เป็น `string[]` อย่างน้อย 1 รายการ; `statementOnly` (ไม่บังคับ, boolean) บอกกฎ `arrange-question` ว่าข้อนี้รับเฉพาะประโยคบอกเล่า
 - `fill_blank.answer` เป็น array ของคำตอบ **หนึ่งตัวต่อหนึ่ง `___`** ตามลำดับ
 - ใน VocabItem `forms` เป็น `{ [ชื่อรูปผัน]: string }` ชื่อใดก็ได้ (ไม่จำกัดแค่ตัวอย่าง) และ `topics` ต้องเป็น slug ในรายการของ VOCABULARY.md หัวข้อ 3 เท่านั้น ห้ามซ้ำ
 - `oxford`: list `"3000"` ใช้ระดับ A1–B2, list `"5000"` ใช้ระดับ B2–C1
@@ -54,7 +54,7 @@
 
 | พับให้เท่ากัน (เขียนรูปเดียวพอ) | ไม่พับ (ต้องใส่ทุกรูปใน `accept` หรือตั้ง `strict: true`; ตัวตรวจกฎ `answer-forms` บังคับ) |
 |---|---|
-| คำย่อที่มีความหมายเดียว: `I'm`=`I am`, `you're`, `isn't`, `aren't`, `don't`..., และ `he's`/`she's`/`it's`/`that's`/`what's`... = `... is` **เฉพาะเมื่อคำถัดไป (ข้าม `not` ได้หนึ่งคำ) เป็น a/an/the/my/your..., เลข, `in/at/on/from/here/there...`, คำ `-ing`, หรือ adjective ในรายการ `ADJECTIVES`** (รายการปิดใน `equivalents.ts`: `He's a teacher`, `She's happy`, `It's in the bag`, `He's reading`), `isn't`, `aren't`, `don't`, `doesn't`, `can't`=`cannot`, `won't`, `I'll`... (ตาราง `CONTRACTIONS`) | `'s` ก่อนคำอื่นทุกคำ เช่น adverb (`He's never been`, `She's just finished`), สรรพนาม (`What's he done`) หรือคำที่ไม่รู้จัก, และก่อน past participle (ตาราง `PARTICIPLES` ใน `equivalents.ts`: `come`, `had`, `sat`, `bought`... ทุกคำที่ผันไม่ปกติ) หรือคำ `-ed` ตั้งแต่ 5 ตัวอักษร (`He's tired`, `He's gone`: is หรือ has?) ทั้งสองทิศทาง: `He's come home` ไม่เท่ากับ `He has come home` และไม่เท่ากับ `He is come home` (ผิดไวยากรณ์ จึงตรวจว่าไม่ถูกรับ) |
+| คำย่อที่มีความหมายเดียว: `I'm`=`I am`, `you're`, `isn't`, `aren't`, `don't`..., และ `he's`/`she's`/`it's`/`that's`/`what's`... = `... is` **เฉพาะเมื่อคำถัดไป (ข้าม `not` ได้หนึ่งคำ แล้วข้าม `very` ได้หนึ่งคำ เช่น `She's very happy` = `She is very happy`) เป็น a/an/the/my/your..., เลข, `in/at/on/from/here/there...`, คำ `-ing`, หรือ adjective ในรายการ `ADJECTIVES`** (รายการปิดใน `equivalents.ts`: `He's a teacher`, `She's happy`, `It's in the bag`, `He's reading`), `isn't`, `aren't`, `don't`, `doesn't`, `can't`=`cannot`, `won't`, `I'll`... (ตาราง `CONTRACTIONS`) | `'s` ก่อนคำอื่นทุกคำ เช่น adverb (`He's never been`, `She's just finished`), สรรพนาม (`What's he done`) หรือคำที่ไม่รู้จัก, และก่อน past participle (ตาราง `PARTICIPLES` ใน `equivalents.ts`: `come`, `had`, `sat`, `bought`... ทุกคำที่ผันไม่ปกติ) หรือคำ `-ed` ตั้งแต่ 5 ตัวอักษร (`He's tired`, `He's gone`: is หรือ has?) `very` โปร่งใสเพราะไม่มี perfect ตามหลัง `very` ได้ (หลัง `very` ใช้การตรวจ adjective/participle แบบเดียวกับหลัง `not`: `He's very tired` ยังไม่พับ) แต่ `very much` (`He's very much done it`), `really`, `so`, `too`, `quite` **ไม่** โปร่งใส (`He's really done it` เป็น perfect ได้) ทั้งสองทิศทาง: `He's come home` ไม่เท่ากับ `He has come home` และไม่เท่ากับ `He is come home` (ผิดไวยากรณ์ จึงตรวจว่าไม่ถูกรับ) |
 | `'s` ก่อน `been`/`got` = `has` (`He's been` = `He has been`; ไม่เท่ากับ `He is been`) | `'d` ยกเว้นก่อน `like`/`love` (`I'd like` = `I would like`) |
 | `name's` (`My name's Ann` = `My name is Ann`) | ชื่อ + `'s` (`Sam's from Japan` อาจเป็น possessive) ต้องใส่รูปเต็ม `Sam is ...` หรือ `strict`; กลับทิศก็เหมือนกัน: `Sam is happy` ไม่เท่ากับ `Sam's happy`, `He has finished` ไม่เท่ากับ `He's finished`, `I would go` ไม่เท่ากับ `I'd go` |
 | ตัวเลข 1–20, 30–90, 100: `10`=`ten`, `a hundred`=`one hundred`=`100` | ลำดับที่ทุกตัว (`first`/`1st`, `twenty-first`/`21st`, `thirtieth`/`30th`), `zero`/`0`, เลข 101 ขึ้นไป, เลขที่มี `:` `,` `.` (`3:30`, `1,000`), เลขนำหน้าด้วย 0 |
@@ -109,6 +109,20 @@ ERROR content/lessons/day-009.json [d009-speak-02]: uses words not taught by day
 ERROR content/vocab/oxford-3000/a1.json [v-fine]: examples[1] "My dog is fine." uses words not taught by day 2 (the day v-fine is first taught): "dog". ...
 ```
 
+### `grammar-not-yet`: รูปคำที่ต้องใช้ไวยากรณ์ที่ยังไม่สอน
+`taught-words` ถือว่ารูปผันเป็นคำเดียวกับคำที่สอน (`lives` = `live`) ซึ่งถูกสำหรับคำถามว่า "ผู้เรียนเคยเจอคำนี้หรือยัง" แต่ไม่รู้ว่า `He lives ...` ต้องใช้ -s บุรุษที่สามของ Present Simple ที่หลักสูตรสอนสัปดาห์ 6 (วัน 36–42) จึงแยกเป็นกฎของตัวเอง (เป็นประตูไวยากรณ์ "รูปนี้ใช้ได้ตั้งแต่วันไหน" พร้อมคำแนะนำของตัวเอง ไม่ปนกับเรื่องคำศัพท์) ตารางอยู่ที่ `GRAMMAR_NOT_BEFORE` ใน `src/lib/content/rules/grammar-not-yet.ts` (รูป → วันแรกที่ใช้ได้ ตาม `docs/CURRICULUM.md` หัวข้อ 4):
+- `has` ไม่ก่อนวัน 29 (สัปดาห์ 5 have/has); `does`, `goes` ไม่ก่อนวัน 36
+- รูป -s บุรุษที่สามที่สร้างจากกริยา (`pos: verb`) ทุกคำในคลังคำ (`lives`, `loves`, `works`, ...) ไม่ก่อนวัน 36 ข้ามคำที่มี entry เป็นคำนามด้วย (`play`) และรูปที่ตามหลัง determiner/เลข (`their lives`, `two works` อ่านเป็นคำนาม)
+- `do not` / `don't` (ปฏิเสธด้วย do) ไม่ก่อนวัน 36 (Present Simple) ส่วนคำถาม `Do you ...?` / `How do you spell it` ใช้ได้ตั้งแต่วัน 5
+- ไม่สร้างรูปที่เป็นคำในตัวเอง (`thanks` ไม่ใช่ -s ของ `thank`) หรือที่เป็นคำในคลัง/รายการยกเว้นอยู่แล้ว
+- `but` ไม่ก่อนวัน 36 เป็น **warning** เพราะหลักสูตรยังไม่ระบุวันของ `but` (36 เป็นค่าชั่วคราว รอเจ้าของหลักสูตรตัดสิน) รายการอื่นเป็น **error**
+- ตรวจข้อความอังกฤษที่ผู้เรียนเห็นหรือได้ยินทุกช่อง รวม `accept` ทุกรายการของ `translate_th_en`/`dictation`/`arrange_words` (ฟังก์ชัน `checkedEnglish`; ไม่รวมคำฝึกเสียงและข้อความคำถามที่มีคำแปลไทยกำกับ) และ `examples` ของคำ (ที่วันที่สอนคำนั้น)
+- **ยกเว้นเมื่อ** `glossary` ของ `read_passage` ในข้อนั้นอธิบายรูปนั้นไว้ (คำ → คำแปลไทย) ไม่มี allow-list อื่น
+
+```
+ERROR content/lessons/day-019.json [d019-read-01]: text "My mother lives in Bangkok." uses a form of a grammar point not taught yet by day 19: "lives" is the third-person -s form of "live"; first allowed on day 36. Rewrite the sentence with I / you / we / they and the base verb (for example "They live in Bangkok"), or explain the form in the `glossary` of a read_passage.
+```
+
 ### `vocab-used`: คำใหม่ต้องถูกใช้ในวันนั้น
 ทุก id ใน `vocab` ของบทต้องปรากฏ (รวมรูปผัน) ในข้อความอังกฤษที่ผู้เรียนเห็นของ exercise อย่างน้อยหนึ่งข้อในบทเดียวกัน (นับรวมคำฝึกเสียง แต่ไม่นับ `vocab_match` ที่แสดงแค่คู่คำ) คำหลายคำเช่น `wake up` ถือว่าใช้เมื่อคำหลัก (`wake` และรูปผัน `wakes`/`waking`/`woke`) ปรากฏ ส่วนคำเสริมเดี่ยว ๆ (`up`) ไม่นับ
 
@@ -134,6 +148,41 @@ ERROR content/lessons/day-010.json [d010-pron-03]: ipa "/ɪˈlevn twelv/" has 2 
 ERROR content/lessons/day-010.json [d010-speak-03]: the instruction names /ɔː/ but the item's ipa "/ˌsɪksˈtiːn .../" does not contain it. Practise the sound ...
 ```
 
+### `sound-words`: เสียงที่เอ่ยถึงต้องอยู่ในคำที่ยกมา
+เมื่อ `instruction.th`, `instruction.en` หรือ `tipTh` ของ exercise ใดเขียนว่า `/x/ ใน w1, w2 และ w3` (หรือ `/x/ in w1, w2 and w3`) ทุกคำในรายการที่มี entry ในคลังคำต้องมี `/x/` (เป็นหน่วยเสียงเต็ม เหมือนกฎ `pronunciation`) ใน IPA แบบ US หรือ UK อย่างใดอย่างหนึ่ง ถ้าไม่มี เป็น **error** (เหตุการณ์จริง: "ระวังเสียง /v/ ใน five, seven, sixteen และ seventeen" ทั้งที่ sixteen ไม่มี /v/) ถ้าคำไม่มี entry ในคลัง ตรวจไม่ได้ จึงเป็น **warning** บอกให้ผู้เขียนตรวจ IPA เอง (หรือเพิ่มคำนั้นเข้าคลัง)
+- รายการคำหยุดเมื่อเจอคำที่ไม่ใช่ตัวอักษรละติน: `/w/ ใน we กับ /v/ ใน live และ very` อ่านเป็นสองข้อความ (`we` | `live, very`) และ `/v/ ใน eleven, twelve และ /θ/ ใน thirteen` ก็เช่นกัน
+- รายการภาษาอังกฤษหยุดที่ `not` / `unlike` / `but` (`/θ/ in three, not in this` อ่านเป็น three) เทียบ IPA โดยรวมตัวสะกดที่พิมพ์ต่างกัน (`g`=`ɡ`, `ʧ`=`tʃ`, `ʤ`=`dʒ`, `ɹ`=`r`) และ `/ɑ/ /ɔ/ /ɜ/` ที่ไม่มี `ː` ตรงกับสระยาวของคลัง (`/i/` ไม่ตรงกับ `iː`)
+- ไม่นับเป็นข้อความอ้าง (ข้าม): เสียงที่เขียนหลัง `ไม่ใช่`/`ต่างจาก`/`not` (เป็นเสียงที่คำ *ไม่มี* เพื่อเทียบ) และรายการที่ขึ้นต้นด้วย `the/a/an/word`
+- คำที่เป็นรูปผันของ entry (เช่น `women` ของ `woman`) ถือว่าไม่มี entry เพราะ IPA ของรูปผันต่างจากคำฐาน: ถ้าอยากให้ตรวจได้ ให้เพิ่มเป็น entry เอง
+- ไม่ตรวจ: ชื่อเสียงที่เขียนแบบอื่น (เช่น "เสียง v" ไม่มี `/ /`), ชื่อบท/objectives, คำที่ยกมาโดยไม่มีคำว่า ใน/in ติดหลังเสียง
+
+```
+ERROR content/lessons/day-017.json [d017-speak-03]: the text names /v/ in a list of words, but the vocab bank's IPA says "sixteen" (ipa /ˌsɪksˈtiːn/) does not contain /v/. Remove that word from the list, or name the sound the word really has.
+WARN content/lessons/day-021.json [d021-pron-02]: the text names /ð/ in a list of words, but "them" has no vocab entry, so the sound could not be checked. Check the IPA yourself, or add the word to the vocab bank.
+```
+
+### `phoneme-tags`: section ที่สอนหลายเสียงต้องติดแท็กเสียงให้ทุกข้อ
+ใน section `pronunciation` ที่มี `phoneme_intro` ถ้า section นั้นสอนเสียงมากกว่าหนึ่งเสียง ทุก `minimal_pair` และ `repeat_after_me` ใน section ต้องมี `phonemes` (array ของรหัสเสียง ชุดเดียวกับ `phoneme_intro.phoneme` เช่น `["th", "dh"]`) ไม่เช่นนั้นข้อนั้นจะได้แท็กตั้งต้นเป็นรหัสของ `phoneme_intro` ตัวแรกเท่านั้น (ดู `src/lib/attempts/derive.ts`) และการพลาดเสียง /ð/ จะถูกนับเป็นพลาดเสียง /θ/ เป็น **error** เพราะวิธีแก้คือเติม array อย่างเดียว
+
+"สอนหลายเสียง" ตัวตรวจรู้ได้จาก 3 อย่างเท่านั้น: `ipa` ของ `phoneme_intro` เอ่ยสัญลักษณ์ 2 ตัวขึ้นไป (`"/θ/ /ð/"`), section มี `phoneme_intro` มากกว่า 1 ข้อ, หรือมีข้อใดใน section ที่ติด `phonemes` ไว้ 2 รหัสขึ้นไปแล้ว (คู่เทียบ เช่น `["v", "w"]`) **ตรวจไม่ได้:** section ที่ intro เอ่ยเสียงเดียว และคู่เสียงเทียบที่ไม่มีข้อไหนติดแท็ก 2 รหัสเลย ผู้เขียนต้องคิดเอง (ถ้า `minimal_pair` เทียบสองเสียง ให้ติด `phonemes` ทั้งสองเสียงเสมอ) ข้อใน section อื่น (เช่น `speaking`) ไม่ถูกตรวจ
+
+```
+ERROR content/lessons/day-018.json [d018-pron-02]: this pronunciation section teaches more than one sound (/θ/ and /ð/), but this minimal_pair has no "phonemes", so it would be tagged only "th" (the first phoneme_intro's code) and a miss on the other sound is counted against the wrong one. Add "phonemes": [...] with the code(s) of the sound(s) it practises, the same codes as phoneme_intro.phoneme.
+```
+
+### `cast-consistency` (warning): ตัวละครเดียวกันอายุเท่าเดิมตลอดสัปดาห์
+ภายในสัปดาห์เดียวกัน (วัน 7k+1 ถึง 7k+7) ชื่อเดียวกัน (ต้องอยู่ใน `PROPER_NAMES`) ต้องมีอายุเดียวกัน ถ้าพบสองอายุ ตัวตรวจ **เตือน (warning)** หนึ่งข้อต่อชื่อ ระบุทั้งสองตำแหน่งและอายุ (warning ไม่ทำให้ check ล้ม แต่ขึ้นใน job summary ของ CI) ใช้ warning เพราะคนสองคนอาจใช้ชื่อเดียวกันได้ ถ้าเป็นคนละคนให้เปลี่ยนชื่อคนใดคนหนึ่ง ตัวตรวจอ่านรูปเหล่านี้ในข้อความอังกฤษที่ผู้เรียนเห็นและ `examples` ของคำ (นับที่วันที่สอนคำนั้น):
+- `Ann is thirteen` / `Ann's 13` / `Ben is 14 years old` (ชื่อ + is/'s + เลข 1–120 ที่ตามด้วยจบประโยค, `years old`, and หรือ but)
+- บทสนทนา `Ann: No, I am not. I am thirty.` ป้ายชื่อหน้าบรรทัดเป็นผู้พูดของ `I am N` ในบรรทัดนั้น และถูกตัดออกก่อนอ่านรูปอื่น
+- `I am Ann ... I am nineteen` / `My name is Sam. I'm 12` เฉพาะเมื่อข้อความนั้นมีชื่อผู้พูดเพียงชื่อเดียว
+- `This is my friend, Ann. She is eight.` (`He/She is N` ที่ตามหลังประโยคที่มีชื่อเพียงชื่อเดียว)
+
+**ตรวจไม่ได้** (ผู้เขียนต้องระวังเอง): อายุที่เขียนแบบอื่น (`Ann has ... birthday`, ปีเกิด), `How old is Ann?` + คำตอบที่อยู่คนละประโยค, `They are ten`, ข้อความที่มีผู้พูดสองคน (`Ann: I am ten` / `Ben: I am nine` ในบทสนทนา), ชื่อที่ไม่อยู่ใน `PROPER_NAMES`, และข้ามสัปดาห์ (สัปดาห์ใหม่เปลี่ยนตัวละครได้)
+
+```
+WARN content/lessons/day-010.json [d010-listen-02]: "Ann" has two different ages in days 8-14: 10 in content/lessons/day-009.json [d009-write-02] text ("Ann is ten") but 15 in content/lessons/day-010.json [d010-listen-02] audioText ("Ann is fifteen"). Within one week a character keeps one age: change one of them (or use another name if these are two different people).
+```
+
 ### `arrange-words`: ชื่อเฉพาะต้องตรงกับที่ UI แสดง
 UI (`tile-label.ts`) แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กทั้งหมด ยกเว้น `I` และคำที่ขึ้นต้นตัวใหญ่ *กลางประโยค* ใน `answer` หรือ `accept` กฎจึงบังคับว่า
 - คำขึ้นต้นตัวใหญ่กลางประโยค (ไม่ใช่ `I`) ต้องอยู่ใน `PROPER_NAMES` (`allowlists.ts`)
@@ -144,6 +193,17 @@ ERROR content/lessons/day-001.json [d001-write-01]: "Sam" is a proper name that 
 ```
 
 
+
+### `arrange-question`: ประโยคบอกเล่าที่สลับเป็นคำถามได้ต้องรับคำถามด้วย
+`arrange_words` ที่ `answer` เป็น `<Subject> is/are/am ...` (หรือ `<Subject> can/could/should/must/will/would ...`) ใช้แผ่นป้ายชุดเดียวกันต่อเป็นคำถาม Yes/No ได้ (`Is <subject> ...`) ผู้เรียนต่อแบบไหนก็ได้ จึงต้องมีประโยคคำถามนั้นใน `accept` (เทียบแบบเดียวกับตอนตรวจคำตอบ: ไม่สนตัวพิมพ์ใหญ่เล็กและเครื่องหมายวรรคตอน) ถ้าข้อนั้นตั้งใจรับเฉพาะประโยคบอกเล่า ให้ตั้ง `"statementOnly": true` เป็น **error** เพราะประโยคคำถามที่กฎสร้างให้เป็นภาษาอังกฤษที่ถูกเสมอ และมีทางหนีด้วย `statementOnly`
+
+ตัวตรวจสร้างประโยคคำถามเฉพาะเมื่อทุกอย่างก่อนกริยาเป็นประธานที่รู้จักแน่ๆ: สรรพนาม, determiner/possessive (`my`, `Tom's`), เลข, adjective/คำนามในคลัง, ชื่อใน `PROPER_NAMES` (หรือ `Mr/Mrs/Ms/Miss/Dr` + ชื่อ), เชื่อมด้วย `and`, และวลีบอกที่ในประธาน (`The cat in the box is big`) คำอื่นก่อนประธาน (`Tomorrow we will ...`, `Maybe she is ...`, `Usually I am ...`, `Of course he is ...`) หรือคำที่คลังไม่รู้จัก ทำให้ไม่สร้างคำถามเลย (ประโยคกลับด้านจะไม่ใช่ภาษาอังกฤษ)
+
+กฎ **ข้าม** (ตั้งใจให้แคบและแม่น): ประโยคปฏิเสธ (`I am not ...`), wh-question (`How are you`), `Yes, ...`/`No, ...`, ประโยคที่มีเครื่องหมายจุลภาค, สองอนุประโยค (มี is/are/modal ตัวที่สอง หรือ and/but/or/because/so/if/when หลังกริยา), `Here is ...`, คำสั่ง/คำเปิด (`Please be ...`), คำย่อ (`She's ...`) และกรณีที่แผ่นป้ายต่อประโยคคำถามนั้นไม่ได้
+
+```
+ERROR content/lessons/day-017.json [d017-write-01]: "My baby is very happy" has the same tiles as the yes/no question "Is my baby very happy", so a learner can build the question, but it is not in accept and would be marked wrong. Add "Is my baby very happy" to accept, or set "statementOnly": true if only the statement may be accepted.
+```
 
 ### `answer-forms`: รูปคำตอบที่ตัวตรวจไม่พับให้
 ตรวจ `accept`/`audioText`/`answer` ของ `dictation`, `translate_th_en`, `fill_blank` (ข้ามข้อที่ตั้ง `strict: true`) ตามตารางข้อ 7 ของหัวข้อการเทียบคำตอบ: ถ้ามีรูปที่ไม่พับ ต้องใส่รูปคู่กันใน `accept` ด้วย หรือตั้ง `strict: true` และ `fill_blank` ที่เฉลยเป็นคำย่อ/คำเต็ม/ตัวเลข ต้องตั้ง `strict` ให้ชัด
@@ -225,7 +285,7 @@ ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.
 | `speak_answer` | `prompt`, `sampleAnswer`, `keywords[]?` | ตอบคำถามด้วยเสียง |
 | `roleplay` | `scenario`, `aiRole`, `goals[]` | คุยกับ AI |
 | `read_passage` | `text`, `glossary?`, `questions[]` | อ่านแล้วตอบคำถาม |
-| `arrange_words` | `words[]`, `answer`, `accept[]?` | เรียงคำให้เป็นประโยค (`accept` = ประโยคอื่นที่ถูก) |
+| `arrange_words` | `words[]`, `answer`, `accept[]?`, `statementOnly?` | เรียงคำให้เป็นประโยค (`accept` = ประโยคอื่นที่ถูก) |
 | `fill_blank` | `text` (ใช้ `___`), `answer[]` | เติมคำ |
 | `translate_th_en` | `th`, `accept[]` | แปลไทยเป็นอังกฤษ |
 | `free_write` | `prompt`, `minWords`, `rubric?` | เขียนอิสระ (AI ตรวจ) |

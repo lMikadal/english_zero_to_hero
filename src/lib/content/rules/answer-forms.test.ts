@@ -215,6 +215,7 @@ describe("answer-forms and grading never disagree: rule silent => grading accept
     "He's in the park", "He is reading", "He's been to Japan", "He has been to Japan", "She's got a cat", "She has got a cat",
     "He's tired", "He is tired", "He's never been to Japan", "He has never been to Japan", "She's just finished", "She has finished",
     "What's he done", "He's used my pen", "He has used my pen", "It's gone", "He's never late", "He is never late",
+    "She's very happy", "She is very happy", "It's not very big", "It is not very big", "He's very tired", "He is very tired", "He's very much done it",
     "Tom's come home", "Tom has come home", "Sam is happy", "Sam's happy", "My name is Ann", "My name's Ann", "I would go", "I'd go", "I'd like tea",
   ];
   const alt = (s: string): string[] => {
@@ -238,6 +239,20 @@ describe("answer-forms and grading never disagree: rule silent => grading accept
     }
     expect(silent).toBeGreaterThan(5);
     expect(firing).toBeGreaterThan(5);
+  });
+});
+
+describe("answer-forms: 'very' is looked through like 'not' (never before a perfect participle)", () => {
+  it("'She's very happy' / 'She is very happy' need no second form", () => {
+    for (const t of ["She's very happy", "She is very happy", "It is not very big", "That's very good"]) expect(check(translate([t])), t).toEqual([]);
+  });
+  it("a participle after 'very' still demands both forms, exactly as after 'not'", () => {
+    expect(check(translate(["He's very tired"]))).toHaveLength(1);
+    expect(check(translate(["He's not tired"]))).toHaveLength(1);
+    expect(check(translate(["He's very tired", "He is very tired"]))).toEqual([]);
+  });
+  it("really / so / too / quite stay unfolded, so the rule still asks for both forms", () => {
+    for (const a of ["really", "so", "too", "quite"]) expect(check(translate([`She's ${a} happy`])), a).toHaveLength(1);
   });
 });
 
