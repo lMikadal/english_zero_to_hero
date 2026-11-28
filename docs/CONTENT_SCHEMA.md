@@ -109,6 +109,18 @@ ERROR content/lessons/day-009.json [d009-speak-02]: uses words not taught by day
 ERROR content/vocab/oxford-3000/a1.json [v-fine]: examples[1] "My dog is fine." uses words not taught by day 2 (the day v-fine is first taught): "dog". ...
 ```
 
+### `grammar-not-yet`: รูปคำที่ต้องใช้ไวยากรณ์ที่ยังไม่สอน
+`taught-words` ถือว่ารูปผันเป็นคำเดียวกับคำที่สอน (`lives` = `live`) ซึ่งถูกสำหรับคำถามว่า "ผู้เรียนเคยเจอคำนี้หรือยัง" แต่ไม่รู้ว่า `He lives ...` ต้องใช้ -s บุรุษที่สามของ Present Simple ที่หลักสูตรสอนสัปดาห์ 6 (วัน 36–42) จึงแยกเป็นกฎของตัวเอง (เป็นประตูไวยากรณ์ "รูปนี้ใช้ได้ตั้งแต่วันไหน" พร้อมคำแนะนำของตัวเอง ไม่ปนกับเรื่องคำศัพท์) ตารางอยู่ที่ `GRAMMAR_NOT_BEFORE` ใน `src/lib/content/rules/grammar-not-yet.ts` (รูป → วันแรกที่ใช้ได้ ตาม `docs/CURRICULUM.md` หัวข้อ 4):
+- `has` ไม่ก่อนวัน 29 (สัปดาห์ 5 have/has); `does`, `goes` ไม่ก่อนวัน 36
+- รูป -s บุรุษที่สามที่สร้างจากกริยา (`pos: verb`) ทุกคำในคลังคำ (`lives`, `loves`, `works`, ...) ไม่ก่อนวัน 36 ข้ามคำที่มี entry เป็นคำนามด้วย (`play`) และรูปที่ตามหลัง determiner/เลข (`their lives`, `two works` อ่านเป็นคำนาม)
+- `but` ไม่ก่อนวัน 36 เป็น **warning** เพราะหลักสูตรยังไม่ระบุวันของ `but` (36 เป็นค่าชั่วคราว รอเจ้าของหลักสูตรตัดสิน) รายการอื่นเป็น **error**
+- ตรวจข้อความอังกฤษที่ผู้เรียนเห็น (ไม่รวมคำฝึกเสียงและข้อความคำถามที่มีคำแปลไทยกำกับ) และ `examples` ของคำ (ที่วันที่สอนคำนั้น)
+- **ยกเว้นเมื่อ** `glossary` ของ `read_passage` ในข้อนั้นอธิบายรูปนั้นไว้ (คำ → คำแปลไทย) ไม่มี allow-list อื่น
+
+```
+ERROR content/lessons/day-019.json [d019-read-01]: text "My mother lives in Bangkok." uses a form of a grammar point not taught yet by day 19: "lives" is the third-person -s form of "live"; first allowed on day 36. Rewrite the sentence with I / you / we / they and the base verb (for example "They live in Bangkok"), or explain the form in the `glossary` of a read_passage.
+```
+
 ### `vocab-used`: คำใหม่ต้องถูกใช้ในวันนั้น
 ทุก id ใน `vocab` ของบทต้องปรากฏ (รวมรูปผัน) ในข้อความอังกฤษที่ผู้เรียนเห็นของ exercise อย่างน้อยหนึ่งข้อในบทเดียวกัน (นับรวมคำฝึกเสียง แต่ไม่นับ `vocab_match` ที่แสดงแค่คู่คำ) คำหลายคำเช่น `wake up` ถือว่าใช้เมื่อคำหลัก (`wake` และรูปผัน `wakes`/`waking`/`woke`) ปรากฏ ส่วนคำเสริมเดี่ยว ๆ (`up`) ไม่นับ
 

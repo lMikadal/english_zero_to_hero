@@ -64,7 +64,7 @@ describe("grammar-not-yet: forms that need a grammar point not yet taught", () =
     expect(check(on(15, passage(15, "My mother lives in Bangkok.", { other: "อื่น" })))).toHaveLength(1);
   });
   it("does not flag the base form, plurals of nouns, or a possessive 's", () => {
-    expect(check(on(15, say(15, "I live and we work. Sam's cat plays.")), BANK.filter((b) => b.pos === "verb" && b.word !== "play"))).toHaveLength(1); // only 'plays' (verb) ...
+    expect(check(on(15, say(15, "I live and we work. Sam's cat is here.")))).toEqual([]);
     expect(check(on(15, say(15, "They are my friends. Those are cats.")))).toEqual([]);
   });
   it("skips a form after a determiner or number (noun reading: 'their lives', 'two works')", () => {
