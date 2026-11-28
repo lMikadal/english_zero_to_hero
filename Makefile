@@ -7,12 +7,16 @@ COMPOSE := docker compose
 # Only the long-running `app` service container from THIS checkout counts: `compose ps` also lists
 # one-off `run` containers (e.g. another agent's test run from a git worktree using the same project
 # name), and exec-ing into one of those runs the wrong code and dies with it (exit 137).
+# The production and stage stacks run from this same folder (same working_dir label) and also have a service called
+# `app`, so the DEV compose project name is part of the filter: a running prod app must never be mistaken for the dev app.
+DEV_PROJECT = $(or $(COMPOSE_PROJECT_NAME),$(notdir $(CURDIR)))
 APP_UP = $(shell docker ps -q --filter status=running --filter label=com.docker.compose.service=app \
 	--filter label=com.docker.compose.oneoff=False \
+	--filter "label=com.docker.compose.project=$(DEV_PROJECT)" \
 	--filter "label=com.docker.compose.project.working_dir=$(CURDIR)" 2>/dev/null)
 RUN = $(if $(APP_UP),$(COMPOSE) exec -T app dev-entrypoint.sh,$(COMPOSE) run --rm --no-deps app)
 
-.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod prod-init prod-check prod-build prod-up prod-down prod-logs prod-status prod-migrate prod-backup prod-restore
+.PHONY: help postgres-up up down logs sh test test-unit e2e lint typecheck check validate db-generate db-migrate db-studio db-reset clean-cache audio prod prod-init prod-check prod-build prod-up prod-down prod-logs prod-status prod-migrate prod-backup prod-backup-verify prod-restore prod-update stage-init stage-down
 
 help: ## List targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -85,12 +89,16 @@ audio:       ; @echo "make $@: not implemented yet (PR 7: audio-tts)" >&2; exit 
 
 # ---- Production (the real app on this machine; see docs/DEPLOYMENT.md) --------------------------------------------
 # A separate compose file and project (ezh_prod) with its own database volume: it never shares anything with the
-# dev stack above and can run at the same time (dev: 127.0.0.1:3000, prod: 127.0.0.1:3100). PROD_ENV / PROD_PROJECT
-# can be overridden to run a throwaway copy, e.g. for testing: make prod-up PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
+# dev stack above and can run at the same time (dev: 127.0.0.1:3000, prod: 127.0.0.1:3100).
+# To try things WITHOUT touching real data use the stage-* targets at the end (project ezh_stage, database
+# english_zero_to_hero_stage, port 3190, file .env.stage): make stage-init stage-build stage-up ... stage-down.
+# RULE: no target ever passes -v / --volumes to the production project. The only command that removes a volume is
+# stage-down, which names the project ezh_stage itself (scripts/prod/prod-scripts.test.ts enforces this).
 PROD_ENV ?= .env.prod
 PROD_PROJECT ?= ezh_prod
 PROD := $(COMPOSE) -p $(PROD_PROJECT) -f docker-compose.prod.yml --env-file $(PROD_ENV)
-prod_var = $(or $(shell sed -n 's/^$(1)=//p' $(PROD_ENV) 2>/dev/null | tail -n 1),$(2))
+# every value is read by the same parser the scripts use: scripts/prod/env-get.sh
+prod_var = $(shell sh scripts/prod/env-get.sh '$(PROD_ENV)' $(1) '$(2)')
 PROD_DB = $(call prod_var,POSTGRES_DB,english_zero_to_hero)
 PROD_USER = $(call prod_var,POSTGRES_USER,ezh)
 PROD_PORT = $(call prod_var,APP_PORT,3100)
@@ -100,10 +108,10 @@ PROD_SCRIPT_ENV = COMPOSE_CMD='$(PROD)' DB_NAME='$(PROD_DB)' DB_USER='$(PROD_USE
 
 prod: prod-init prod-build prod-up ## Production, one command: create .env.prod if missing, build the image, start it
 
-prod-init: ## Create .env.prod with a random database password (does nothing if it already exists)
-	@if [ -f '$(PROD_ENV)' ]; then echo "$(PROD_ENV) already exists, leaving it alone"; else \
+prod-init: ## Create .env.prod with a random database password (never overwrites an existing file)
+	@if [ -e '$(PROD_ENV)' ]; then echo "$(PROD_ENV) already exists, leaving it alone"; else \
 	  pw=$$(head -c 48 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32); \
-	  sed "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$$pw/" .env.prod.example > '$(PROD_ENV)' && chmod 600 '$(PROD_ENV)' \
+	  ( umask 077; sed "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$$pw/" .env.prod.example > '$(PROD_ENV)' ) \
 	  && echo "created $(PROD_ENV) with a random database password"; fi
 
 prod-check:
@@ -112,9 +120,17 @@ prod-check:
 prod-build: prod-check ## Build the production image (run after git pull)
 	$(PROD) build
 
-prod-up: prod-check ## Start production (postgres + migrations + app); open http://127.0.0.1:3100
+# Before migrations can change the real data, a backup labelled -pre-update is taken when the image has a migration the
+# database lacks (scripts/prod/pre-update.sh). SKIP=1 turns that off (prod-update has already taken one).
+prod-up: prod-check ## Start production (backup if migrations are pending, then migrations, then the app)
+	@MODE=if-pending $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
 	$(PROD) up -d --wait
 	@echo "production is up: http://$(PROD_BIND):$(PROD_PORT)"
+
+prod-update: prod-check ## After git pull: backup (if data exists), build, start. THE way to update
+	@MODE=always $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
+	@$(MAKE) --no-print-directory prod-build PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
+	@$(MAKE) --no-print-directory prod-up SKIP=1 PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
 
 prod-down: ## Stop production (containers are removed, the database volume is kept)
 	$(PROD) down
@@ -124,7 +140,7 @@ prod-logs: ## Follow production logs
 
 prod-status: ## Is production running and healthy?
 	$(PROD) ps -a
-	@curl -fsS --max-time 5 http://127.0.0.1:$(PROD_PORT)/api/health && echo " <- /api/health" || echo "app did not answer on port $(PROD_PORT)"
+	@curl -fsS --max-time 5 http://$(PROD_BIND):$(PROD_PORT)/api/health && echo " <- /api/health" || echo "app did not answer on $(PROD_BIND):$(PROD_PORT)"
 
 prod-migrate: prod-check ## Apply pending database migrations by hand (prod-up already does this)
 	$(PROD) up -d --wait postgres
@@ -135,3 +151,19 @@ prod-backup: prod-check ## Dump the production database to backups/ (keeps the n
 
 prod-restore: prod-check ## Restore backups/<file> (needs FILE=... CONFIRM=<database name>); takes a safety backup first
 	@$(PROD_SCRIPT_ENV) sh scripts/prod/restore.sh '$(FILE)' '$(CONFIRM)'
+
+prod-backup-verify: prod-check ## Is a backup restorable? FILE=backups/<file>; tries it in a scratch database, real data untouched
+	@$(PROD_SCRIPT_ENV) sh scripts/prod/verify.sh '$(FILE)'
+
+# ---- Stage: a throwaway copy of the production stack for trying things (never the real data) ----------------------
+# stage-<anything> = prod-<anything> with PROD_ENV=.env.stage PROD_PROJECT=ezh_stage, e.g. stage-build, stage-up,
+# stage-status, stage-backup, stage-restore FILE=... CONFIRM=english_zero_to_hero_stage, stage-update, stage-logs.
+stage-init: ## Create .env.stage (own password, database english_zero_to_hero_stage, port 3190)
+	@$(MAKE) --no-print-directory prod-init PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
+	@sed -i -e 's/^POSTGRES_DB=.*/POSTGRES_DB=english_zero_to_hero_stage/' -e 's/^APP_PORT=.*/APP_PORT=3190/' .env.stage
+
+stage-down: ## Remove the stage stack AND its volume (only ever the project ezh_stage)
+	$(COMPOSE) -p ezh_stage -f docker-compose.prod.yml --env-file .env.stage down -v --remove-orphans
+
+stage-%:
+	@$(MAKE) --no-print-directory prod-$* PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
