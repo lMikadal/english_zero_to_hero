@@ -240,3 +240,29 @@ describe("answer-forms and grading never disagree: rule silent => grading accept
     expect(firing).toBeGreaterThan(5);
   });
 });
+
+describe("answer-forms: clause ends and pronoun-only remainders (round 4)", () => {
+  it("'Yes, Tom is.', 'Yes, he is.', 'Yes, he has.', 'Yes, I would.' are silent", () => {
+    for (const t of ["Yes, Tom is.", "Yes, he is.", "Yes, she has.", "Yes, I would.", "No, Sam is.", "Yes, it is. It is a pen."]) expect(check(translate([t])), t).toEqual([]);
+  });
+  it("a pronoun alone after 'is' needs no contraction ('Where is he?', 'What is it?')", () => {
+    for (const t of ["Where is he?", "What is it? It is a pen.", "Where is she", "Who is he"]) expect(check(translate([t])), t).toEqual([]);
+  });
+  it("but a real sentence still demands it", () => {
+    expect(check(translate(["Tom is never late"]))).toHaveLength(1);
+  });
+});
+
+describe("answer-forms: possession written as 's (warning)", () => {
+  const bank2 = [vocabItem({ id: "v-car", word: "car", pos: "noun" }), vocabItem({ id: "v-year", word: "year", pos: "noun" })];
+  const run2 = (ex: Exercise) => checkAnswerForms(buildContext(data([lessonFile(1, [], [ex])], [vocabFile(bank2)])));
+  it("He's two cars / She's no cars / He's a lot of cars warn", () => {
+    for (const t of ["He's two cars", "She's no cars", "He's many cars", "He's a lot of cars"]) {
+      const out = run2(translate([t]));
+      expect(out.some((p) => p.severity === "warning" && p.message.includes('"has"')), t).toBe(true);
+    }
+  });
+  it("does not warn for ages, plain numbers, or 'has'", () => {
+    for (const t of ["He's ten", "He's two years old", "He has two cars", "He's a doctor"]) expect(run2(translate([t])).filter((p) => p.severity === "warning"), t).toEqual([]);
+  });
+});
