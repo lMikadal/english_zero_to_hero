@@ -1,4 +1,8 @@
+import { createContext, useContext } from "react";
 import { buttonClass } from "@/components/ui/button-styles";
+
+/** The label of every exercise's own check button. The checkpoint player provides "ยืนยันคำตอบ" (no right/wrong is shown there). */
+export const CheckLabelContext = createContext("ตรวจคำตอบ");
 
 /**
  * The "ตรวจคำตอบ" button every exercise owns. `hidden` renders nothing (after a result the player shows feedback).
@@ -15,10 +19,11 @@ export function CheckButton({
   type?: "button" | "submit";
   hidden?: boolean;
 }) {
+  const label = useContext(CheckLabelContext);
   if (hidden) return null;
   return (
     <button type={type} disabled={disabled} onClick={onClick} className={buttonClass("primary", "mt-auto")}>
-      ตรวจคำตอบ
+      {label}
     </button>
   );
 }

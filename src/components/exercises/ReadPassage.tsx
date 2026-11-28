@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { ExerciseShell } from "./ui/ExerciseShell";
 import { Instruction } from "./ui/Instruction";
@@ -9,7 +9,8 @@ import { ChoiceButton } from "./ui/ChoiceButton";
 import { radioKeys } from "./ui/radio";
 import { rightWrong, type Tone } from "./ui/tone";
 
-export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_passage">) {
+export function ReadPassage({ exercise, onAnswer, result, reveal = true }: ExerciseProps<"read_passage">) {
+  const seen = shown(result, reveal);
   const [selected, setSelected] = useState<(number | null)[]>(() => exercise.questions.map(() => null));
   const [submitted, setSubmitted] = useState(false);
   const locked = submitted || result !== undefined;
@@ -23,7 +24,7 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
   }
 
   const choose = (qi: number, ci: number) => setSelected(selected.map((s, i) => (i === qi ? ci : s)));
-  const questionTone = (qi: number): Tone => (result ? rightWrong(result.items ? result.items[qi] === true : result.correct) : "idle");
+  const questionTone = (qi: number): Tone => (seen ? rightWrong(seen.items ? seen.items[qi] === true : seen.correct) : "idle");
 
   return (
     <ExerciseShell>
@@ -52,8 +53,8 @@ export function ReadPassage({ exercise, onAnswer, result }: ExerciseProps<"read_
             {q.choices.map((choice, ci) => {
               const chosen = selected[qi] === ci;
               let tone: Tone = chosen ? "selected" : "idle";
-              if (result) tone = ci === q.answer ? "right" : chosen ? "wrong" : "idle";
-              const mark = result ? (ci === q.answer ? true : chosen ? false : undefined) : undefined;
+              if (seen) tone = ci === q.answer ? "right" : chosen ? "wrong" : "idle";
+              const mark = seen ? (ci === q.answer ? true : chosen ? false : undefined) : undefined;
               return (
                 <ChoiceButton key={ci} index={ci} selectedIndex={selected[qi]} selected={chosen} tone={tone} mark={mark} disabled={locked} onClick={() => choose(qi, ci)}>
                   {choice}

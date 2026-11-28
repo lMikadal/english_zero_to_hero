@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { AudioFallback, useExerciseAudio } from "@/components/audio/AudioControls";
 import { GRADED_NO_AUDIO_NOTE } from "@/components/audio/AudioControls";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { AudioCard } from "./ui/AudioCard";
 import { CheckButton } from "./ui/CheckButton";
 import { ExerciseShell } from "./ui/ExerciseShell";
@@ -12,7 +12,8 @@ import { MixedText } from "./ui/MixedText";
 import { radioKeys } from "./ui/radio";
 import type { Tone } from "./ui/tone";
 
-export function ListenChoose({ exercise, onAnswer, onContinue, result }: ExerciseProps<"listen_choose">) {
+export function ListenChoose({ exercise, onAnswer, onContinue, result, reveal = true }: ExerciseProps<"listen_choose">) {
+  const seen = shown(result, reveal);
   const audio = useExerciseAudio(exercise.audioText);
   const [selected, setSelected] = useState<number | null>(null);
   const [sent, setSent] = useState(false);
@@ -24,8 +25,8 @@ export function ListenChoose({ exercise, onAnswer, onContinue, result }: Exercis
     onAnswer({ kind: "choice", selected });
   };
   const toneOf = (i: number): Tone =>
-    result === undefined ? (i === selected ? "selected" : "idle") : i === exercise.answer ? "right" : i === selected ? "wrong" : "idle";
-  const markOf = (i: number) => (result === undefined ? undefined : i === exercise.answer ? true : i === selected ? false : undefined);
+    seen === undefined ? (i === selected ? "selected" : "idle") : i === exercise.answer ? "right" : i === selected ? "wrong" : "idle";
+  const markOf = (i: number) => (seen === undefined ? undefined : i === exercise.answer ? true : i === selected ? false : undefined);
 
   return (
     <ExerciseShell>

@@ -315,10 +315,13 @@ PR 1 ──► PR 2 ──► PR 3 ──┐
 - เทสต์ก่อน (`cefr.test.ts`): วัน 60 done คะแนนบท 100% แต่ไม่มีผลแบบทดสอบ → ยัง preA1; ผล 0.7 + 400 คำ → A1; สองรอบ (0.5 แล้ว 0.8) → ผ่าน; ครบทุกอย่างยกเว้นแบบทดสอบ → `percentToNext` 99
 - ตรวจ: `make test-unit` (ไม่มีหน้าจอใช้สูตรนี้ จึงไม่มีอะไรให้ดูในแอป เขียนไว้ใน PR)
 
-### PR 4 `feat/exercise-conceal` (frontend-dev, คู่ขนานตั้งแต่ต้น; ตัดทิ้งถ้า D5 = เฉลยทันที)
+### PR 4 `feat/exercise-conceal` (frontend-dev, คู่ขนานตั้งแต่ต้น; ตัดทิ้งถ้า D5 = เฉลยทันที) — [x] ทำแล้ว 2026-11-28 (รอ merge)
 สัญญา: `ExerciseProps` มี `reveal?: boolean` (ค่าตั้งต้น true) เมื่อ `false` และมี `result`: ล็อกข้อและซ่อนปุ่มยืนยันเหมือนเดิม แต่ไม่มีสีถูก/ผิด ไม่มี `Mark` ไม่มี `data-state="right|wrong"` ไม่ชี้ตัวเลือกที่ถูก; `CheckButton` อ่านป้ายจาก context (`CheckLabelContext`, ค่าตั้งต้น "ตรวจคำตอบ"); พฤติกรรมเดิมไม่เปลี่ยน
 - เทสต์ก่อน: `conceal-guard.test.tsx` (เดินทุกข้อของ `weekOne` แบบเดียวกับ `a11y-guard.test.tsx`: render ด้วย `result` ผิด + `reveal={false}` → ไม่มี `[data-state=right]`/`[data-state=wrong]`, ไม่มีข้อความ sr-only "ถูก"/"ผิด", input ถูก disable; ชุดเดียวกันด้วย `reveal` ตั้งต้นยังมีสถานะ = guard ว่าเทสต์จับได้จริง); `CheckButton.test.tsx` (ป้ายจาก context)
 - ตรวจกับของจริง: `/day/1` ที่ 360px ทั้ง 13 ชนิดยังเฉลยตามเดิม (ไม่มีอะไรเปลี่ยนให้เห็น)
+- **ผลที่ทำ:** `reveal?: boolean` (ค่าตั้งต้น true) ใน `ExerciseProps` และ `ExerciseHandlers`; ตัวช่วย `shown(result, reveal)` ใน `types.ts` (ทุก component อ่านผลเพื่อ "แสดง" ผ่านตัวนี้เท่านั้น ส่วนการล็อกยังใช้ `result` จริง); `CheckLabelContext` ใน `ui/CheckButton.tsx` (PR 5 ครอบ `CheckpointPlayer` ด้วย `<CheckLabelContext.Provider value="ยืนยันคำตอบ">`); เทสต์ `conceal-guard.test.tsx` (ทุกข้อวัน 1–7 + `grammar_note`: หน้าจอหลังตอบ "ถูก" และ "ผิด" ต้องเป็น HTML เดียวกันทุกตัวอักษร) และ `ui/CheckButton.test.tsx`
+- **การตัดสินใจ:** (1) หลังยืนยัน ตัวเลือกที่ผู้เรียนเลือกยังแสดงสี `selected` (accent) ไม่ใช่ถูก/ผิด; `vocab_match` คู่ที่จับยังเป็น `paired` เป็นกลาง และไม่มีบรรทัดเฉลย "คำ → ความหมาย"; (2) `speak_answer`: **ซ่อน "ตัวอย่างคำตอบ"** เมื่อ `reveal=false` (ปุ่ม "พูดได้ / ยังไม่คล่อง" ยังอยู่และล็อกหลังเลือก) เพราะ D5 ห้ามเฉลย; ถ้าอยากให้เห็นตัวอย่างในแบบทดสอบ ให้เอาเงื่อนไข `&& reveal` ออกที่ `SpeakAnswer.tsx`
+- **ที่ PR 5 ต้องทำเอง (นอกขอบเขต PR นี้):** ตัวเล่นใน `LessonPlayer.tsx` ยังมี `Feedback` (live region `step-feedback` แสดง "✓ ถูกต้อง" / "✗ ยังไม่ถูก" + คำตอบที่ถูกต้อง) และ `aria-describedby` ของปุ่ม "ถัดไป" ที่ชี้ไปที่มัน: ตัวเล่นแบบทดสอบต้องแสดงแค่ "บันทึกคำตอบแล้ว" และไม่ใช้ `isRetryable`/รอบทวน
 
 ### PR 5 `feat/checkpoint-player` (frontend-dev)
 สัญญา: ข้อ 3.2.17, 3.3, 3.6, 3.7 ที่ `/checkpoint/[n]`
