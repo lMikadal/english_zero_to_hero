@@ -22,7 +22,7 @@
       "th": "ออกเสียง /θ/ ในคำว่า north และ south ได้"
     }
   ],
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 35,
   "vocab": [
     "v-map",
     "v-turn",
@@ -230,19 +230,6 @@
             "garden",
             "behind"
           ]
-        },
-        {
-          "id": "d068-speak-04",
-          "type": "speak_answer",
-          "instruction": {
-            "th": "บอกว่าบ้านของคุณอยู่ใกล้อะไร"
-          },
-          "prompt": "Where is your house? Is it near a bank or a station?",
-          "sampleAnswer": "My house is near the station. The bank is opposite the shop.",
-          "keywords": [
-            "near",
-            "house"
-          ]
         }
       ]
     },
@@ -259,7 +246,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Leo has a map of the town. The centre of the town has a market and a hospital. The hospital is north of the bank. The bank is between the hospital and the shop. The cafe is opposite the bank. The library is near the museum. The station is east of the town. The airport is west of the town.",
+          "text": "Leo has a map of the town. The centre of the town has a market and a hospital. The hospital is north of the bank. The bank is between the hospital and the shop. The cafe is opposite the bank. The library is near the museum. The station is east of the market, near the hospital. The airport is west of the town.",
           "questions": [
             {
               "question": {
@@ -341,9 +328,9 @@
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
           },
-          "th": "เลี้ยวขวาที่สถานี",
+          "th": "สวนอยู่ข้างหลังบ้าน",
           "accept": [
-            "Turn right at the station"
+            "The garden is behind the house"
           ]
         },
         {
@@ -352,24 +339,14 @@
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
           },
-          "th": "สวนอยู่ข้างหลังบ้าน",
+          "th": "ธนาคารอยู่ระหว่างโรงพยาบาลกับร้านค้า",
           "accept": [
-            "The garden is behind the house"
+            "The bank is between the hospital and the shop",
+            "The bank is between the shop and the hospital"
           ]
         },
         {
           "id": "d068-write-05",
-          "type": "translate_th_en",
-          "instruction": {
-            "th": "แปลเป็นภาษาอังกฤษ"
-          },
-          "th": "ธนาคารอยู่ระหว่างโรงพยาบาลกับร้านค้า",
-          "accept": [
-            "The bank is between the hospital and the shop"
-          ]
-        },
-        {
-          "id": "d068-write-06",
           "type": "translate_th_en",
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"

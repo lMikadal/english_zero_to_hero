@@ -6335,17 +6335,6 @@
     "collocations": ["help Rose"]
   },
   {
-    "id": "v-newspaper",
-    "word": "newspaper",
-    "pos": "noun",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/ˈnuːzpeɪpər/", "uk": "/ˈnjuːzpeɪpə/" },
-    "th": "หนังสือพิมพ์",
-    "topics": ["communication"],
-    "examples": [{ "en": "Dan reads a newspaper.", "th": "แดนอ่านหนังสือพิมพ์" }, { "en": "The newspaper is on the table.", "th": "หนังสือพิมพ์อยู่บนโต๊ะ" }],
-    "collocations": ["a new newspaper"]
-  },
-  {
     "id": "v-magazine",
     "word": "magazine",
     "pos": "noun",
@@ -6412,29 +6401,6 @@
     "collocations": ["use a computer"]
   },
   {
-    "id": "v-try",
-    "word": "try",
-    "pos": "verb",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/traɪ/", "uk": "/traɪ/" },
-    "th": "ลอง (เช่น ลองใส่, ลองกิน)",
-    "topics": ["shopping"],
-    "examples": [{ "en": "Nan tries a red skirt.", "th": "แนนลองใส่กระโปรงสีแดง" }, { "en": "Try the soup.", "th": "ลองชิมซุปดู" }],
-    "collocations": ["try a skirt"]
-  },
-  {
-    "id": "v-show",
-    "word": "show",
-    "pos": "verb",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/ʃoʊ/", "uk": "/ʃəʊ/" },
-    "th": "ให้ดู, แสดง",
-    "topics": ["communication"],
-    "examples": [{ "en": "Leo shows a picture.", "th": "ลีโอให้ดูรูปภาพ" }, { "en": "Nan shows her new skirt.", "th": "แนนให้ดูกระโปรงตัวใหม่ของเธอ" }],
-    "collocations": ["show a picture"],
-    "forms": { "past": "showed", "pastParticiple": "shown" }
-  },
-  {
     "id": "v-expensive",
     "word": "expensive",
     "pos": "adjective",
@@ -6493,17 +6459,6 @@
     "collocations": ["ten dollars"]
   },
   {
-    "id": "v-pound",
-    "word": "pound",
-    "pos": "noun",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/paʊnd/", "uk": "/paʊnd/" },
-    "th": "ปอนด์ (เงินของอังกฤษ)",
-    "topics": ["numbers_money"],
-    "examples": [{ "en": "The book is ten pounds.", "th": "หนังสือเล่มนี้สิบปอนด์" }, { "en": "In England, the money is the pound.", "th": "ที่อังกฤษ เงินคือปอนด์" }],
-    "collocations": ["twenty pounds"]
-  },
-  {
     "id": "v-cent",
     "word": "cent",
     "pos": "noun",
@@ -6557,29 +6512,6 @@
     "topics": ["food_drink"],
     "examples": [{ "en": "Leo likes ice cream.", "th": "ลีโอชอบไอศกรีม" }, { "en": "We eat ice cream in the cafe.", "th": "เรากินไอศกรีมในร้านกาแฟ" }],
     "collocations": ["eat ice cream"]
-  },
-  {
-    "id": "v-carrot",
-    "word": "carrot",
-    "pos": "noun",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/ˈkærət/", "uk": "/ˈkærət/" },
-    "th": "แครอท",
-    "topics": ["food_drink"],
-    "examples": [{ "en": "The soup has a carrot.", "th": "ซุปนี้มีแครอท" }, { "en": "Carrots are orange.", "th": "แครอทสีส้ม" }],
-    "collocations": ["a carrot"]
-  },
-  {
-    "id": "v-tomato",
-    "word": "tomato",
-    "pos": "noun",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/təˈmeɪtoʊ/", "uk": "/təˈmɑːtəʊ/" },
-    "th": "มะเขือเทศ",
-    "topics": ["food_drink"],
-    "examples": [{ "en": "The salad has a tomato.", "th": "สลัดนี้มีมะเขือเทศ" }, { "en": "Tomatoes are red.", "th": "มะเขือเทศสีแดง" }],
-    "collocations": ["a red tomato"],
-    "forms": { "plural": "tomatoes" }
   },
   {
     "id": "v-pepper",
@@ -6692,17 +6624,6 @@
     "topics": ["places_city", "travel_transport"],
     "examples": [{ "en": "Chiang Mai is in the north.", "th": "เชียงใหม่อยู่ทางเหนือ" }, { "en": "Chiang Mai is north of Bangkok.", "th": "เชียงใหม่อยู่ทางเหนือของกรุงเทพฯ" }],
     "collocations": ["in the north"]
-  },
-  {
-    "id": "v-east",
-    "word": "east",
-    "pos": "noun",
-    "oxford": { "list": "3000", "level": "A1" },
-    "ipa": { "us": "/iːst/", "uk": "/iːst/" },
-    "th": "ทิศตะวันออก",
-    "topics": ["places_city", "travel_transport"],
-    "examples": [{ "en": "The sun is in the east in the morning.", "th": "ตอนเช้าดวงอาทิตย์อยู่ทางทิศตะวันออก" }, { "en": "The station is east of the town.", "th": "สถานีอยู่ทางตะวันออกของเมือง" }],
-    "collocations": ["in the east"]
   },
   {
     "id": "v-west",
@@ -6819,5 +6740,84 @@
     "topics": ["places_city", "travel_transport"],
     "examples": [{ "en": "Bangkok is south of Chiang Mai.", "th": "กรุงเทพฯ อยู่ทางใต้ของเชียงใหม่" }, { "en": "The bank is south of the hospital.", "th": "ธนาคารอยู่ทางใต้ของโรงพยาบาล" }],
     "collocations": ["in the south"]
+  },
+  {
+    "id": "v-newspaper",
+    "word": "newspaper",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/ˈnuːzpeɪpər/", "uk": "/ˈnjuːzpeɪpə/" },
+    "th": "หนังสือพิมพ์",
+    "topics": ["communication"],
+    "examples": [{ "en": "Dan reads a newspaper.", "th": "แดนอ่านหนังสือพิมพ์" }, { "en": "The newspaper is on the table.", "th": "หนังสือพิมพ์อยู่บนโต๊ะ" }],
+    "collocations": ["read a newspaper"]
+  },
+  {
+    "id": "v-try",
+    "word": "try",
+    "pos": "verb",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/traɪ/", "uk": "/traɪ/" },
+    "th": "ลอง (เช่น ลองใส่, ลองกิน)",
+    "topics": ["shopping"],
+    "examples": [{ "en": "Nan tries on a red skirt.", "th": "แนนลองใส่กระโปรงสีแดง" }, { "en": "Try the soup.", "th": "ลองชิมซุปดู" }],
+    "collocations": ["try on a skirt"]
+  },
+  {
+    "id": "v-show",
+    "word": "show",
+    "pos": "verb",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/ʃoʊ/", "uk": "/ʃəʊ/" },
+    "th": "ให้ดู, แสดง",
+    "topics": ["communication"],
+    "examples": [{ "en": "Leo shows Rose a picture.", "th": "ลีโอให้โรสดูรูปภาพ" }, { "en": "Nan shows her new skirt.", "th": "แนนให้ดูกระโปรงตัวใหม่ของเธอ" }],
+    "collocations": ["show a picture"],
+    "forms": { "past": "showed", "pastParticiple": "shown" }
+  },
+  {
+    "id": "v-pound",
+    "word": "pound",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/paʊnd/", "uk": "/paʊnd/" },
+    "th": "ปอนด์ (เงินของอังกฤษ)",
+    "topics": ["numbers_money"],
+    "examples": [{ "en": "The book is ten pounds.", "th": "หนังสือเล่มนี้สิบปอนด์" }, { "en": "In England people pay in pounds.", "th": "ที่อังกฤษคนจ่ายเป็นปอนด์" }],
+    "collocations": ["twenty pounds"]
+  },
+  {
+    "id": "v-carrot",
+    "word": "carrot",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/ˈkærət/", "uk": "/ˈkærət/" },
+    "th": "แครอท",
+    "topics": ["food_drink"],
+    "examples": [{ "en": "This soup has carrots.", "th": "ซุปนี้มีแครอท" }, { "en": "Carrots are orange.", "th": "แครอทสีส้ม" }],
+    "collocations": ["a carrot"]
+  },
+  {
+    "id": "v-tomato",
+    "word": "tomato",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/təˈmeɪtoʊ/", "uk": "/təˈmɑːtəʊ/" },
+    "th": "มะเขือเทศ",
+    "topics": ["food_drink"],
+    "examples": [{ "en": "The salad has tomatoes.", "th": "สลัดนี้มีมะเขือเทศ" }, { "en": "Tomatoes are red.", "th": "มะเขือเทศสีแดง" }],
+    "collocations": ["a red tomato"],
+    "forms": { "plural": "tomatoes" }
+  },
+  {
+    "id": "v-east",
+    "word": "east",
+    "pos": "noun",
+    "oxford": { "list": "3000", "level": "A1" },
+    "ipa": { "us": "/iːst/", "uk": "/iːst/" },
+    "th": "ทิศตะวันออก",
+    "topics": ["places_city", "travel_transport"],
+    "examples": [{ "en": "The sun is in the east in the morning.", "th": "ตอนเช้าดวงอาทิตย์อยู่ทางทิศตะวันออก" }, { "en": "The station is east of the market.", "th": "สถานีอยู่ทางตะวันออกของตลาด" }],
+    "collocations": ["in the east"]
   }
 ]

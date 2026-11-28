@@ -47,8 +47,8 @@
           "instruction": {
             "th": "ฟังแล้วพูดตาม"
           },
-          "text": "The sun is in the east and the west.",
-          "ipa": "/ðə sʌn ɪz ɪn ði iːst ænd ðə west/"
+          "text": "The sun is in the east in the morning.",
+          "ipa": "/ðə sʌn ɪz ɪn ði iːst ɪn ðə ˈmɔːrnɪŋ/"
         }
       ]
     },
@@ -65,7 +65,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าโรสกำลังทำอะไร"
           },
-          "audioText": "I am Dan. It is Sunday. We are at home. Rose is making soup with a carrot, a tomato and pepper. It is a delicious dish. Leo is helping Rose. I am reading a newspaper. Then we are full and happy.",
+          "audioText": "I am Dan. It is Sunday. We are at home. Rose is making soup with carrots, tomatoes and pepper. It is a delicious dish. Leo is helping Rose. I am reading a newspaper. After dinner we are full and happy.",
           "question": {
             "en": "What is Rose making?",
             "th": "โรสกำลังทำอะไร"
@@ -83,7 +83,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าปากการาคาเท่าไร"
           },
-          "audioText": "Nan is a customer in a shop. A pen costs fifty cents. A book costs ten euros. Nan buys a pen and a book. She pays by card.",
+          "audioText": "A customer is in a shop. A pen costs fifty cents. A book costs ten dollars. A bag costs twenty euros. A coat costs eighty pounds. The customer pays by card.",
           "question": {
             "en": "How much does the pen cost?",
             "th": "ปากการาคาเท่าไร"
@@ -158,7 +158,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Nan writes a message to Rose: \"I am in the town. I am using the map. The station is east of the market and the library is west of the market. I find the cafe. It is opposite the bank. I am waiting. The ice cream is delicious. Leo is trying a guitar in a shop. It is not expensive. Leo is a customer. He is speaking English!\"",
+          "text": "Nan writes a message to Rose: \"I am in the town. I am using the map. The station is east of the market and the library is west of the market. I am in the cafe now. It is opposite the bank. I am waiting. The ice cream is delicious. Leo is trying a guitar in a shop. It is not expensive. Leo is a customer. He is speaking English!\"",
           "questions": [
             {
               "question": {

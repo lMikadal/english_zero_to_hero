@@ -107,9 +107,9 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าลีโอลองอะไร"
           },
-          "audioText": "Leo is a customer in a shop in the town. The shop sells shoes. Leo tries a pair of black shoes. They cost forty dollars. That is expensive. Dan pays by card.",
+          "audioText": "Leo is a customer in a shop in the town. The shop sells shoes. Leo tries on a pair of black shoes. They cost five hundred baht. That is expensive. Dan pays by card.",
           "question": {
-            "en": "What does Leo try?",
+            "en": "What does Leo try on?",
             "th": "ลีโอลองอะไร"
           },
           "choices": [
@@ -125,7 +125,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าพิพิธภัณฑ์อยู่ที่ไหน"
           },
-          "audioText": "Rose is at the station. She has a map. The library is north of the station. The museum is behind the library. Turn left at the library.",
+          "audioText": "Rose is in the centre of the town. She has a map. The library is west of the market. The museum is behind the library. The hospital is north of the bank.",
           "question": {
             "en": "Where is the museum?",
             "th": "พิพิธภัณฑ์อยู่ที่ไหน"
@@ -200,7 +200,7 @@
             "Mali is listening to the radio.",
             "I am learning English.",
             "The shirt costs fifty euros.",
-            "The soup has a carrot, a tomato and pepper.",
+            "The soup has carrots, tomatoes and pepper.",
             "I am full.",
             "The bank is between the hospital and the shop."
           ]
@@ -233,7 +233,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "It is Saturday. Leo is in the town with Nan. Leo has a map. Nan is showing the map. The station is east of the market and the library is west of the market. Leo reads a message from Rose: \"Turn left at the bank. The cafe is opposite the bank. I am waiting in the cafe.\" Leo and Nan find the bank and the cafe.",
+          "text": "It is Saturday. Leo is in the town with Nan. Leo has a map. Leo shows Nan the map. The station is east of the market and the library is west of the market. Leo reads a message from Rose: \"Turn left at the bank. The cafe is opposite the bank. I am waiting in the cafe.\" Leo and Nan find the bank and the cafe.",
           "questions": [
             {
               "question": {
@@ -338,7 +338,7 @@
           "instruction": {
             "th": "เติมคำ (ลอง ใส่ -ing; มีราคา ใส่ -s)"
           },
-          "text": "Nan is ___ a red skirt. The skirt ___ eighty baht.",
+          "text": "Nan is ___ on a red skirt. The skirt ___ ninety baht.",
           "answer": [
             "trying",
             "costs"
@@ -364,7 +364,10 @@
           "th": "รองเท้าคู่นี้ราคายี่สิบปอนด์",
           "accept": [
             "This pair of shoes costs twenty pounds",
-            "The pair of shoes costs twenty pounds"
+            "The pair of shoes costs twenty pounds",
+            "These shoes cost twenty pounds",
+            "These shoes are twenty pounds",
+            "This pair of shoes is twenty pounds"
           ]
         },
         {
@@ -375,7 +378,10 @@
           },
           "th": "ร้านกาแฟอยู่ใจกลางเมือง",
           "accept": [
-            "The cafe is in the centre of the town"
+            "The cafe is in the centre of the town",
+            "The cafe is in the center of the town",
+            "The cafe is in the town centre",
+            "The cafe is in the town center"
           ]
         },
         {

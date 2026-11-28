@@ -22,7 +22,7 @@
       "th": "ออกเสียงท้ายคำ -ing /ɪŋ/ ให้ชัด"
     }
   ],
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 35,
   "vocab": [
     "v-read",
     "v-wait",
@@ -98,7 +98,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "กำลังทำอะไรอยู่: am / is / are + กริยา-ing",
-          "bodyTh": "ใช้บอกสิ่งที่กำลังเกิดขึ้นตอนนี้ รูปคือ am / is / are + กริยา-ing\nI am reading. Leo is reading. We are reading.\nเติม -ing ท้ายกริยา ถ้าลงท้ายด้วย e ให้ตัด e (write → writing) ถ้าเป็นกริยาสั้นลงท้ายพยัญชนะตัวเดียว ให้ซ้ำตัวท้าย (run → running)\nผิดบ่อย: Leo reading ✗ → Leo is reading ✓ และ Leo is read ✗ → Leo is reading ✓\nทบทวน: Leo reads every day = ทำเป็นประจำ ส่วน Leo is reading now = กำลังอ่านอยู่ตอนนี้",
+          "bodyTh": "ใช้บอกสิ่งที่กำลังเกิดขึ้นตอนนี้: am / is / are + กริยา-ing (I am reading. Leo is reading.)\nลงท้ายด้วย e ตัด e (write → writing) สระสั้นตัวเดียว + พยัญชนะตัวเดียว ซ้ำตัวท้าย (run → running, sit → sitting) แต่ read → reading, wait → waiting\nผิดบ่อย: Leo reading ✗ → Leo is reading ✓ และ I am liking rice ✗ → I like rice ✓ (like, want, have ที่แปลว่ามี ไม่ใช้ -ing)",
           "examples": [
             {
               "en": "I am reading a book.",
@@ -243,18 +243,6 @@
           "id": "d064-speak-02",
           "type": "speak_answer",
           "instruction": {
-            "th": "พูดว่าคุณกำลังทำอะไรอยู่ตอนนี้ เช่น I am reading ตอบตามจริงหรือแต่งเรื่องก็ได้"
-          },
-          "prompt": "I am reading. I am waiting. I am helping. Say one.",
-          "sampleAnswer": "I am reading a magazine.",
-          "keywords": [
-            "reading"
-          ]
-        },
-        {
-          "id": "d064-speak-03",
-          "type": "speak_answer",
-          "instruction": {
             "th": "บอกว่าคุณอ่านหนังสือพิมพ์หรือนิตยสาร"
           },
           "prompt": "Do you read a newspaper or a magazine?",
@@ -279,7 +267,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "It is Sunday evening. Rose is in the kitchen. She is cooking dinner. Leo is helping Rose. Dan is on the sofa. He is reading a newspaper. Rose writes a message to Mali. Mali is in Chiang Mai. She is listening to the radio. The family is at home. It is a good evening.",
+          "text": "It is Sunday evening. Rose is in the kitchen. She is cooking dinner. Leo is helping Rose. Dan is on the sofa. He is reading a newspaper. Rose is writing a message to Mali. Mali is in Chiang Mai. She is listening to the radio. The family is at home. It is a good evening.",
           "questions": [
             {
               "question": {
@@ -366,9 +354,10 @@
           "th": "ลีโอกำลังเล่นกีตาร์",
           "accept": [
             "Leo is playing the guitar",
-            "Leo is playing a guitar"
-          ],
-          "strict": true
+            "Leo is playing a guitar",
+            "Leo's playing the guitar",
+            "Leo's playing a guitar"
+          ]
         },
         {
           "id": "d064-write-04",
@@ -379,8 +368,7 @@
           "th": "ฉันกำลังรอที่สถานี",
           "accept": [
             "I am waiting at the station"
-          ],
-          "strict": true
+          ]
         },
         {
           "id": "d064-write-05",
@@ -391,9 +379,10 @@
           "th": "โรสกำลังเขียนข้อความ",
           "accept": [
             "Rose is writing a message",
-            "Rose is writing a message to Mali"
-          ],
-          "strict": true
+            "Rose is writing a message to Mali",
+            "Rose's writing a message",
+            "Rose's writing a message to Mali"
+          ]
         },
         {
           "id": "d064-vocab-02",

@@ -22,7 +22,7 @@
       "th": "ฟังตำแหน่งเสียงหนักในตัวเลขได้: fifteen และ fifty"
     }
   ],
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 35,
   "vocab": [
     "v-expensive",
     "v-sell",
@@ -175,8 +175,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "The shop sells shoes. A pair of shoes costs forty dollars.",
-          "strict": true
+          "audioText": "The shop sells shoes. A pair of shoes costs forty dollars."
         }
       ]
     },
@@ -217,19 +216,6 @@
             "buy",
             "baht"
           ]
-        },
-        {
-          "id": "d066-speak-03",
-          "type": "speak_answer",
-          "instruction": {
-            "th": "บอกราคาของสิ่งของ เช่น ปากกา กระเป๋า หรือโทรศัพท์"
-          },
-          "prompt": "How much is your bag? Say a number and baht.",
-          "sampleAnswer": "My bag costs two hundred baht.",
-          "keywords": [
-            "costs",
-            "baht"
-          ]
         }
       ]
     },
@@ -246,7 +232,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Nan is a customer in a shop in the town. The shop sells clothes. Nan tries a green dress. The dress costs two hundred baht. It is expensive. Then Nan tries a red skirt. The skirt costs eighty baht. It is not expensive. Nan buys the red skirt. She pays by card.",
+          "text": "Nan is a customer in a shop in the town. The shop sells clothes. Nan tries on a green dress. The dress costs two hundred baht. It is expensive. Then Nan tries on a red skirt. The skirt costs ninety baht. It is not expensive. Nan buys the red skirt. She pays by card.",
           "questions": [
             {
               "question": {
@@ -355,7 +341,7 @@
           "th": "ลูกค้าจ่ายด้วยบัตร",
           "accept": [
             "The customer pays by card",
-            "The customer pays by a card"
+            "The customer pays with a card"
           ]
         },
         {
@@ -367,19 +353,9 @@
           "th": "หนังสือเล่มนี้ราคาสิบปอนด์",
           "accept": [
             "This book costs ten pounds",
-            "The book costs ten pounds"
-          ]
-        },
-        {
-          "id": "d066-write-07",
-          "type": "translate_th_en",
-          "instruction": {
-            "th": "แปลเป็นภาษาอังกฤษ"
-          },
-          "th": "กระเป๋าใบนี้ราคาสิบดอลลาร์",
-          "accept": [
-            "This bag costs ten dollars",
-            "The bag costs ten dollars"
+            "The book costs ten pounds",
+            "This book is ten pounds",
+            "The book is ten pounds"
           ]
         },
         {

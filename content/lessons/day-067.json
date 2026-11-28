@@ -96,7 +96,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าใครกินไอศกรีม"
           },
-          "audioText": "Rose and Leo are in a cafe. The cafe is near the bank. Rose has a soup. Leo has an ice cream. It is cold and sweet.",
+          "audioText": "Rose and Leo are in a cafe. The cafe is near the bank. Rose has a bowl of soup. Leo has an ice cream. It is cold and sweet.",
           "question": {
             "en": "Who has an ice cream?",
             "th": "ใครกินไอศกรีม"
@@ -174,7 +174,7 @@
             "Where is the cafe?",
             "The cafe is near the bank.",
             "Leo likes ice cream.",
-            "The soup has a carrot and a tomato.",
+            "The soup has carrots and tomatoes.",
             "Salt and pepper, please.",
             "This dish is delicious!",
             "I am full.",
@@ -193,19 +193,6 @@
             "favourite",
             "delicious"
           ]
-        },
-        {
-          "id": "d067-speak-03",
-          "type": "speak_answer",
-          "instruction": {
-            "th": "ตอบว่าคุณชอบไอศกรีมไหม และมันเป็นอย่างไร"
-          },
-          "prompt": "Do you like ice cream? Is it sweet or cold?",
-          "sampleAnswer": "Yes, I like ice cream. It is sweet and cold.",
-          "keywords": [
-            "ice",
-            "cream"
-          ]
         }
       ]
     },
@@ -222,7 +209,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Rose and Leo are in a cafe near the bank. Rose has a bowl of soup. The soup has a carrot, a tomato and pepper. It is a delicious dish. Leo has an ice cream. It is cold and sweet. Rose is full. Leo is happy.",
+          "text": "Rose and Leo are in a cafe near the bank. Rose has a bowl of soup. The soup has carrots, tomatoes and pepper. It is a delicious dish. Leo has an ice cream. It is cold and sweet. Rose is full. Leo is happy.",
           "questions": [
             {
               "question": {
@@ -242,7 +229,7 @@
                 "th": "ซุปมีอะไรบ้าง"
               },
               "choices": [
-                "A carrot, a tomato and pepper",
+                "Carrots, tomatoes and pepper",
                 "Rice and chicken",
                 "Cheese and bread"
               ],
@@ -318,7 +305,9 @@
           "th": "ซุปนี้มีแครอทและมะเขือเทศ",
           "accept": [
             "The soup has a carrot and a tomato",
-            "This soup has a carrot and a tomato"
+            "This soup has a carrot and a tomato",
+            "The soup has carrots and tomatoes",
+            "This soup has carrots and tomatoes"
           ]
         },
         {

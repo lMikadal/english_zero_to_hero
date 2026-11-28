@@ -158,6 +158,12 @@ ERROR content/lessons/day-036.json [d036-read-01]: structures: "third-person" is
 ### `grammar-not-yet`: คำตอบสำรองไม่ถูกตรวจประตูไวยากรณ์
 คำตอบที่ยอมรับเพิ่มเติม (extra accept) ไม่เคยแสดงเป็นเฉลยให้ผู้เรียน มีไว้กันไม่ให้ผู้เรียนที่รู้มากกว่าถูกตัดว่าผิด จึง **ไม่ถูกตรวจประตูไวยากรณ์ทุกประตู** (ทั้งบทเรียนและ checkpoint) และ `grammar-note-required` ก็ไม่นับ เฉลยที่ผู้เรียนเห็นยังถูกตรวจเต็ม: `answer` ของ `arrange_words`, `audioText` ของ `dictation`, `accept[0]` ของ `translate_th_en` (และ `answer` ของ `fill_blank`) ส่วน `accept` ของ `dictation` / `arrange_words` ทุกรายการ และ `accept[1..]` ของ `translate_th_en` เป็นคำตอบสำรอง ฟังก์ชัน `isExtraAccept` ใน `grammar-not-yet.ts` กำหนดเรื่องนี้ที่เดียว (ตัวตรวจ `taught-words` ยังตรวจคำตอบสำรองเหมือนเดิม)
 
+### กฎเพิ่มจากรีวิวสัปดาห์ 10 (PR #63)
+- `try-on` (error): `try / tries / trying / tried` + คำเสื้อผ้า (shirt, dress, skirt, shoes, jacket, coat, hat ...) ต้องมี `on` ("Nan tries on a red skirt"); try กับอาหารหรือสิ่งของไม่ต้องมี on ตรวจข้อความอังกฤษที่ผู้เรียนเห็น คำตอบ `accept` ทุกรายการ และตัวอย่างของคำ
+- `strict-contraction` (warning): `translate_th_en` ที่เป็น `strict` และ `accept` มี "ชื่อ/สรรพนาม + am/is/are (not)" ต้องมีรูปย่อ (Leo's, I'm, isn't) ในรายการด้วย ไม่เช่นนั้นให้เอา `strict` ออก (strict ปิดการเทียบรูปย่อ)
+- `stative-continuous` (warning): กริยาสถานะ/สำเร็จ (find, know, like, want, need, love, hate, cost, understand, believe) ไม่ใช้กับ am/is/are + -ing (ไม่รวม have เพราะกำกวม)
+- `grammar-note-length`: `bodyTh` เกิน 400 ตัวอักษรเป็น **error** (เดิม warning); ตารางเกิน 6 แถวและ "ผิดบ่อย" ที่ไม่มี ✓ ยังเป็น warning
+
 ### `grammar-note-required` (warning ตอนนี้): วันแรกที่ใช้รูปไวยากรณ์ต้องมีการ์ด
 ในบทแรกที่ **ใช้** โครงสร้างที่มีประตูใน `grammar-not-yet` (ข้อความอังกฤษที่ผู้เรียนเห็น ไม่นับข้อความในการ์ดเอง) บทนั้นต้องมี `grammar_note` ที่ `structures` มีโครงสร้างนั้น เป็น **warning** เพราะวัน 29–35 ยังไม่มีการ์ด (ไม่ขวางของเดิม) จะเปลี่ยนเป็น error ได้ด้วยการแก้ค่าเดียว `GRAMMAR_NOTE_REQUIRED_SEVERITY` ใน `src/lib/content/rules/grammar-note.ts` บทหลังจากนั้นที่ใช้ซ้ำไม่ต้องมีการ์ด
 

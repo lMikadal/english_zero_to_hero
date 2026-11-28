@@ -14,15 +14,15 @@
       "th": "ถามและตอบได้: What are you doing? Is Leo reading? Yes, he is"
     },
     {
-      "en": "Talk about making, using, trying, finding, learning and teaching",
-      "th": "พูดเรื่องการทำ การใช้ การลอง การหา การเรียนรู้ และการสอนได้"
+      "en": "Talk about making, using, trying, learning and teaching",
+      "th": "พูดเรื่องการทำ การใช้ การลอง การเรียนรู้ และการสอนได้"
     },
     {
       "en": "Say the small word are as /ər/ in questions",
       "th": "ออกเสียงคำเล็ก are เป็น /ər/ เบา ๆ ในประโยคคำถามได้"
     }
   ],
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 35,
   "vocab": [
     "v-make",
     "v-use",
@@ -54,7 +54,7 @@
           "examples": [
             "teacher",
             "computer",
-            "sofa",
+            "doctor",
             "newspaper"
           ]
         },
@@ -98,7 +98,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "ถามว่ากำลังทำอะไร: Are you ...? What are you doing?",
-          "bodyTh": "ถามโดยย้าย am / is / are ไปไว้หน้าประธาน: Are you reading? Is Leo reading? What are you doing?\nตอบสั้น: Yes, I am. / No, I am not. / Yes, he is. / No, he is not.\nปฏิเสธ: am / is / are + not + กริยา-ing (Leo is not reading)\nผิดบ่อย: Yes, I reading ✗ → Yes, I am ✓ และ What you are doing? ✗ → What are you doing? ✓\nคำตอบสั้นไม่ต้องมีกริยา-ing: Is Leo reading? Yes, he is ✓",
+          "bodyTh": "ถามโดยย้าย am / is / are ไปไว้หน้าประธาน: Are you reading? Is Leo reading? What are you doing?\nตอบสั้น: Yes, I am. / No, I am not. / Yes, he is. / No, he is not.\nปฏิเสธ: am / is / are + not + กริยา-ing (Leo is not reading)\nผิดบ่อย: Yes, I reading ✗ → Yes, I am ✓ / Yes, he's ✗ → Yes, he is ✓ และ What you are doing? ✗ → What are you doing? ✓\nคำตอบสั้นไม่ต้องมีกริยา-ing: Is Leo reading? Yes, he is ✓",
           "examples": [
             {
               "en": "What are you doing?",
@@ -196,7 +196,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าแดนกำลังทำอะไร"
           },
-          "audioText": "Rose is in the kitchen. She is making a cake. Dan is trying the soup. Leo is using the computer. He is finding a picture. He is showing the picture to Rose.",
+          "audioText": "Rose is in the kitchen. She is making a cake. Dan is trying the soup. Leo is using the computer. He is looking at a picture. He finds pictures on the computer every day. He is showing the picture to Rose.",
           "question": {
             "en": "What is Dan doing?",
             "th": "แดนกำลังทำอะไร"
@@ -240,7 +240,7 @@
             "No, he is not. He is learning English.",
             "Rose is teaching a class.",
             "Nan is showing a picture.",
-            "We are finding the key."
+            "Leo always finds his key."
           ]
         },
         {
@@ -263,7 +263,7 @@
             "th": "พูดประโยคเกี่ยวกับภาษาอังกฤษของคุณ"
           },
           "prompt": "Do you speak English? Say yes or no.",
-          "sampleAnswer": "I speak English. I learn English in class.",
+          "sampleAnswer": "Yes, I do. I speak English. I learn English in class.",
           "keywords": [
             "speak",
             "English"
@@ -284,7 +284,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Nan is at Rose's house. Rose is a teacher. She teaches English. Leo speaks English at school.\nNan: Hello, Rose! What are you doing?\nRose: I am making a cake.\nNan: Is Leo helping you?\nRose: No, he is not. He is learning English. He is using the computer and finding a picture.\nNan: Is Dan in the kitchen?\nRose: Yes, he is. He is trying the cake!",
+          "text": "Nan is at Rose's house. Rose is a teacher. She teaches English. Leo speaks English at school.\nNan: Hello, Rose! What are you doing?\nRose: I am making a cake.\nNan: Is Leo helping you?\nRose: No, he is not. He is learning English. He is using the computer. He often finds pictures on it.\nNan: Is Dan in the kitchen?\nRose: Yes, he is. He is trying the cake!",
           "questions": [
             {
               "question": {
@@ -364,12 +364,15 @@
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
           },
-          "th": "แนนกำลังลองกระโปรงสีแดง",
+          "th": "แนนกำลังลองใส่กระโปรงสีแดง",
           "accept": [
-            "Nan is trying a red skirt",
-            "Nan is trying the red skirt"
-          ],
-          "strict": true
+            "Nan is trying on a red skirt",
+            "Nan is trying on the red skirt",
+            "Nan is trying a red skirt on",
+            "Nan's trying on a red skirt",
+            "Nan's trying a red skirt on",
+            "Nan's trying on the red skirt"
+          ]
         },
         {
           "id": "d065-write-04",
@@ -380,23 +383,13 @@
           "th": "ลีโอกำลังให้โรสดูรูปภาพ",
           "accept": [
             "Leo is showing Rose a picture",
-            "Leo is showing a picture to Rose"
-          ],
-          "strict": true
-        },
-        {
-          "id": "d065-write-05",
-          "type": "translate_th_en",
-          "instruction": {
-            "th": "แปลเป็นภาษาอังกฤษ"
-          },
-          "th": "คุณกำลังทำอะไรอยู่",
-          "accept": [
-            "What are you doing"
+            "Leo is showing a picture to Rose",
+            "Leo's showing Rose a picture",
+            "Leo's showing a picture to Rose"
           ]
         },
         {
-          "id": "d065-write-06",
+          "id": "d065-write-05",
           "type": "translate_th_en",
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
@@ -405,9 +398,11 @@
           "accept": [
             "Leo is not using the computer",
             "Leo is not using a computer",
-            "Leo isn't using the computer"
-          ],
-          "strict": true
+            "Leo isn't using the computer",
+            "Leo isn't using a computer",
+            "Leo's not using the computer",
+            "Leo's not using a computer"
+          ]
         },
         {
           "id": "d065-vocab-02",
