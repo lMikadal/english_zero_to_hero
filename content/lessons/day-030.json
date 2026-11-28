@@ -1,0 +1,338 @@
+{
+  "day": 30,
+  "phase": 1,
+  "week": 5,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Long black hair! The sounds /g/ and /k/ at the end",
+    "th": "Long black hair! เสียง /g/ และ /k/ ท้ายคำ"
+  },
+  "objectives": [
+    {
+      "en": "Say what a face and hair are like with have and has: She has long hair",
+      "th": "บอกลักษณะใบหน้าและผมด้วย have และ has: She has long hair"
+    },
+    {
+      "en": "Hear and say the final sounds /g/ and /k/: bag–back, pig–pick, bug–buck, tag–tack",
+      "th": "ฟังและออกเสียง /g/ กับ /k/ ท้ายคำ: bag–back, pig–pick, bug–buck, tag–tack"
+    },
+    {
+      "en": "Name six face words and say long and short",
+      "th": "เรียกชื่อส่วนของใบหน้า 6 คำ และพูดว่า long, short ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-eye",
+    "v-ear",
+    "v-nose",
+    "v-mouth",
+    "v-face",
+    "v-hair",
+    "v-long",
+    "v-short"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final /g/ and /k/",
+        "th": "เสียง /g/ และ /k/ ท้ายคำ"
+      },
+      "exercises": [
+        {
+          "id": "d030-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "g",
+          "ipa": "/g/ /k/",
+          "tipTh": "ภาษาไทยมีตัวสะกด ก ที่ออกเป็น /k/ ปิดลมเท่านั้น ไม่มี /g/ ท้ายคำ คนไทยจึงมักออก bag เป็น 'แบ็ก' ซึ่งฟังเหมือน back /g/ ใน big, leg, bag ต้องสั่นคอไปจนจบเสียงแล้วปล่อยลมสั้น ๆ (อย่าเติมสระท้ายเป็น 'แบ็กเกอะ') ส่วน /k/ ใน back, black คอไม่สั่นและเสียงหยุดทันที ช่วยฟังได้อีกอย่างคือสระก่อน /g/ ฟังยาวกว่าสระก่อน /k/ เล็กน้อย",
+          "examples": [
+            "big",
+            "leg",
+            "back",
+            "black"
+          ]
+        },
+        {
+          "id": "d030-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bag",
+              "b": "back",
+              "answer": "a"
+            },
+            {
+              "a": "pick",
+              "b": "pig",
+              "answer": "b"
+            },
+            {
+              "a": "buck",
+              "b": "bug",
+              "answer": "b"
+            },
+            {
+              "a": "tag",
+              "b": "tack",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "g",
+            "k"
+          ]
+        },
+        {
+          "id": "d030-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /g/ ใน big และ dog ต้องสั่นคอจนจบ ส่วน /k/ ใน black และ back คอไม่สั่น"
+          },
+          "text": "A big black dog has a long back.",
+          "ipa": "/ə bɪɡ blæk dɔːɡ hæz ə lɔːŋ bæk/",
+          "phonemes": [
+            "g",
+            "k"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: hair and eyes",
+        "th": "ฟัง: ผมและตา"
+      },
+      "exercises": [
+        {
+          "id": "d030-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครมีผมสีน้ำตาล"
+          },
+          "audioText": "My name is Nan. I have long brown hair. My friend Rose has long black hair. Her eyes are brown.",
+          "question": {
+            "en": "Who has brown hair?",
+            "th": "ใครมีผมสีน้ำตาล"
+          },
+          "choices": [
+            "Nan",
+            "Rose",
+            "Leo"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d030-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าผมของแดนยาวหรือสั้น"
+          },
+          "audioText": "This is my father, Dan. He has short black hair and a big nose.",
+          "question": {
+            "en": "Is his hair long or short?",
+            "th": "ผมของเขายาวหรือสั้น"
+          },
+          "choices": [
+            "Short",
+            "Long"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d030-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "She has long hair and brown eyes."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say what a face is like",
+        "th": "บอกลักษณะใบหน้า"
+      },
+      "exercises": [
+        {
+          "id": "d030-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I have two eyes.",
+            "I have two ears and a nose.",
+            "This is my mouth.",
+            "This is my face.",
+            "She has long hair.",
+            "He has short hair."
+          ]
+        },
+        {
+          "id": "d030-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณผมยาวหรือสั้น และผมสีอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Do you have long hair or short hair? What colour is your hair?",
+          "sampleAnswer": "I have short black hair.",
+          "keywords": [
+            "have",
+            "hair"
+          ]
+        },
+        {
+          "id": "d030-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ eyes, ears และ nose เป็นเสียงสั่นคอ ส่วน mouth ท้ายคำให้ปลายลิ้นแตะระหว่างฟัน (th) ไม่ใช่ 'เมาท์'"
+          },
+          "text": "My eyes, my ears, my nose and my mouth.",
+          "ipa": "/maɪ aɪz maɪ ɪrz maɪ noʊz ænd maɪ maʊθ/",
+          "phonemes": [
+            "z",
+            "th"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My family",
+        "th": "ครอบครัวของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d030-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (mother's friend = เพื่อนของแม่, Nan's hair = ผมของแนน)"
+          },
+          "text": "Hi! I am Leo. I am nine. This is my family. My mother, Rose, has long black hair and brown eyes. My father, Dan, has short black hair. I have short black hair too. This is my mother's friend, Nan. She has long brown hair.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who has long black hair?",
+                "th": "ใครมีผมยาวสีดำ"
+              },
+              "choices": [
+                "Rose",
+                "Dan",
+                "Nan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How old is Leo?",
+                "th": "ลีโออายุเท่าไร"
+              },
+              "choices": [
+                "Nine",
+                "Nineteen"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What colour is Nan's hair?",
+                "th": "ผมของแนนสีอะไร"
+              },
+              "choices": [
+                "Brown",
+                "Black"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: hair and eyes",
+        "th": "เขียน: ผมและตา"
+      },
+      "exercises": [
+        {
+          "id": "d030-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "My",
+            "mother",
+            "long",
+            "black",
+            "hair"
+          ],
+          "answer": "My mother has long black hair"
+        },
+        {
+          "id": "d030-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมอวัยวะที่ใช้ฟัง (หู)"
+          },
+          "text": "I have two ___.",
+          "answer": [
+            "ears"
+          ]
+        },
+        {
+          "id": "d030-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เธอมีผมยาวสีดำ",
+          "accept": [
+            "She has long black hair"
+          ]
+        },
+        {
+          "id": "d030-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-eye"
+            },
+            {
+              "vocabId": "v-ear"
+            },
+            {
+              "vocabId": "v-nose"
+            },
+            {
+              "vocabId": "v-mouth"
+            },
+            {
+              "vocabId": "v-face"
+            },
+            {
+              "vocabId": "v-hair"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

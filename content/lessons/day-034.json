@@ -1,0 +1,340 @@
+{
+  "day": 34,
+  "phase": 1,
+  "week": 5,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 5 review: final sounds, the body and has",
+    "th": "ทบทวนสัปดาห์ที่ 5: เสียงท้ายคำ, ร่างกาย และ has"
+  },
+  "objectives": [
+    {
+      "en": "Tell the final sounds apart: /d/–/t/, /g/–/k/, /f/–/v/, /l/–/n/ and /p/–/b/",
+      "th": "แยกเสียงท้ายคำ /d/–/t/, /g/–/k/, /f/–/v/, /l/–/n/ และ /p/–/b/ ได้"
+    },
+    {
+      "en": "Use have and has to say what people and animals have",
+      "th": "ใช้ have และ has บอกว่าคนและสัตว์มีอะไรได้"
+    },
+    {
+      "en": "Describe a person: hair, eyes, tall, short and how he or she feels",
+      "th": "บรรยายคนได้: ผม ตา สูง เตี้ย และความรู้สึก"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final sounds",
+        "th": "เสียงท้ายคำ"
+      },
+      "exercises": [
+        {
+          "id": "d034-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bed",
+              "b": "bet",
+              "answer": "a"
+            },
+            {
+              "a": "bag",
+              "b": "back",
+              "answer": "b"
+            },
+            {
+              "a": "leave",
+              "b": "leaf",
+              "answer": "a"
+            },
+            {
+              "a": "tell",
+              "b": "ten",
+              "answer": "a"
+            },
+            {
+              "a": "cab",
+              "b": "cap",
+              "answer": "b"
+            },
+            {
+              "a": "bug",
+              "b": "buck",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "d",
+            "t",
+            "g",
+            "k",
+            "f",
+            "v",
+            "l",
+            "n",
+            "p",
+            "b"
+          ]
+        },
+        {
+          "id": "d034-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /g/ ใน dog และ big ต้องสั่นคอ ส่วน /k/ ใน back คอไม่สั่น"
+          },
+          "text": "My dog has a big head and a long back.",
+          "ipa": "/maɪ dɔːɡ hæz ə bɪɡ hed ænd ə lɔːŋ bæk/",
+          "phonemes": [
+            "g",
+            "k",
+            "d"
+          ]
+        },
+        {
+          "id": "d034-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /p/ ใน put และ cup ปิดริมฝีปากแล้วปล่อยลมออกเบา ๆ"
+          },
+          "text": "Wash your hands and put your cup on the table.",
+          "ipa": "/wɑːʃ jɔːr hændz ænd pʊt jɔːr kʌp ɑːn ðə ˈteɪbl/",
+          "phonemes": [
+            "p"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d034-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าผมของลีโอสีอะไร (Leo's hair = ผมของลีโอ)"
+          },
+          "audioText": "Hi! I am Leo. I have short black hair. I am hungry and tired. My hands are cold.",
+          "question": {
+            "en": "What colour is Leo's hair?",
+            "th": "ผมของลีโอสีอะไร"
+          },
+          "choices": [
+            "Black",
+            "Brown",
+            "White"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d034-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครมีตาสีน้ำตาล"
+          },
+          "audioText": "This is my father. He is tall and he has short black hair. This is my mother. She has long black hair and brown eyes.",
+          "question": {
+            "en": "Who has brown eyes?",
+            "th": "ใครมีตาสีน้ำตาล"
+          },
+          "choices": [
+            "His mother",
+            "His father",
+            "His dog"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d034-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Wash your hands. Your hands are not clean."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d034-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I have two arms and two legs.",
+            "She has long black hair.",
+            "My father is tall.",
+            "A bird is an animal.",
+            "Stand up and put your hand on your head."
+          ]
+        },
+        {
+          "id": "d034-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าบนใบหน้าของคุณมีอะไรบ้าง ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you have on your face?",
+          "sampleAnswer": "I have two eyes, a nose and a mouth.",
+          "keywords": [
+            "have"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d034-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Leo. I am nine. This is my grandfather, Ray. He is seventy. He is tall and he has short white hair. This is my grandmother, Mali. She is sixty. She is beautiful and she has short black hair. This is my cat. It is black and white. It has four legs and two ears.",
+          "questions": [
+            {
+              "question": {
+                "en": "How old is Ray?",
+                "th": "เรย์อายุเท่าไร"
+              },
+              "choices": [
+                "Seventy",
+                "Seventeen"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who has short white hair?",
+                "th": "ใครมีผมสั้นสีขาว"
+              },
+              "choices": [
+                "Ray",
+                "Mali"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How many legs?",
+                "th": "แมวมีกี่ขา"
+              },
+              "choices": [
+                "Four",
+                "Two"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d034-write-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-head"
+            },
+            {
+              "vocabId": "v-nose"
+            },
+            {
+              "vocabId": "v-hair"
+            },
+            {
+              "vocabId": "v-tall"
+            },
+            {
+              "vocabId": "v-cold"
+            },
+            {
+              "vocabId": "v-wash"
+            }
+          ]
+        },
+        {
+          "id": "d034-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติม have หรือ has"
+          },
+          "text": "I ___ two hands. She ___ two hands.",
+          "answer": [
+            "have",
+            "has"
+          ]
+        },
+        {
+          "id": "d034-write-03",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "has",
+            "The",
+            "cat",
+            "four",
+            "legs"
+          ],
+          "answer": "The cat has four legs"
+        },
+        {
+          "id": "d034-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เธอมีผมสั้นสีดำ",
+          "accept": [
+            "She has short black hair"
+          ]
+        },
+        {
+          "id": "d034-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันหนาวและหิว",
+          "accept": [
+            "I am cold and hungry"
+          ]
+        }
+      ]
+    }
+  ]
+}
