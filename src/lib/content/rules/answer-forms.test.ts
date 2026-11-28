@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { Exercise } from "../schema";
 import { buildContext } from "./context";
 import { checkAnswerForms } from "./answer-forms";
+import { matchesAny } from "@/lib/answers/normalize";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const translate = (accept: string[], strict?: boolean): Exercise => ({ id: exId(1, "write"), type: "translate_th_en", instruction, th: "ก", accept, ...(strict === undefined ? {} : { strict }) });
@@ -141,4 +142,101 @@ describe("answer-forms: fill_blank must decide", () => {
     expect(check(blank(a, false))).toEqual([]);
   });
   it("leaves ordinary answers alone", () => expect(check(blank("Ann"))).toEqual([]));
+});
+
+describe("answer-forms: Name + participle converges (no ping-pong, never prints a wrong sentence)", () => {
+  const WRONG = /\b(tom|ann|sam|mai|he|she|it|that|who) is (come|gone|had|sat|bought|finished|tired|used|died|eaten|never been|already)\b/i;
+  it("Tom's come home: neutral message, and listing 'Tom has come home' clears it", () => {
+    const out = check(translate(["Tom's come home"]));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).not.toMatch(WRONG);
+    expect(out[0].message).toContain("X has");
+    expect(check(translate(["Tom's come home", "Tom has come home"]))).toEqual([]);
+  });
+  it("Ann has come home demands Ann's come home, and then both together are quiet", () => {
+    const out = check(translate(["Ann has come home"]));
+    expect(out).toHaveLength(1);
+    expect(out[0].message).not.toMatch(WRONG);
+    expect(check(translate(["Ann has come home", "Ann's come home"]))).toEqual([]);
+  });
+  it("no message of any firing in a table contains '<name or pronoun> is <participle>'", () => {
+    const sentences = ["Tom's come home", "Sam's finished", "He's tired", "It's gone", "She has finished", "Ann has eaten", "He's never been here", "She's just arrived", "What's he done", "He's used my pen"];
+    for (const s of sentences) for (const p of check(translate([s]))) expect(p.message, s).not.toMatch(WRONG);
+  });
+});
+
+describe("answer-forms: 's after a word between (adverb) and short -ed words", () => {
+  it("demands both forms when grading does not fold", () => {
+    for (const t of ["He's never been to Japan", "She's just finished", "What's he done", "Where's she gone", "He's used my pen", "She's died", "It's crept away"]) {
+      expect(check(translate([t])), t).toHaveLength(1);
+    }
+  });
+  it("is quiet once a full form is listed", () => {
+    expect(check(translate(["He's never been to Japan", "He has never been to Japan"]))).toEqual([]);
+    expect(check(translate(["He's used my pen", "He has used my pen"]))).toEqual([]);
+  });
+  it("has + (adverb) + participle demands the 's form, even for short -ed words", () => {
+    expect(check(translate(["He has never been to Japan"]))).toHaveLength(1);
+    expect(check(translate(["She has just finished"]))).toHaveLength(1);
+    expect(check(translate(["He has used my pen"]))).toHaveLength(1);
+  });
+});
+
+describe("answer-forms: possessive heuristic, round 3", () => {
+  const bank = [
+    vocabItem({ id: "v-home", word: "home", pos: "noun" }), vocabItem({ id: "v-bag", word: "bag", pos: "noun" }),
+    vocabItem({ id: "v-big", word: "big", pos: "adjective" }), vocabItem({ id: "v-cold", word: "cold", pos: "adjective" }),
+    vocabItem({ id: "v-back", word: "back", pos: "noun" }),
+  ];
+  const run = (ex: Exercise) => checkAnswerForms(buildContext(data([lessonFile(1, [], [ex])], [vocabFile(bank)])));
+  it("words that are also adjectives or adverbs after Name's are contractions", () => {
+    for (const t of ["Tom's home", "Ann's back", "Mai's cold", "Tom's out", "Ann's late", "Sam's here", "Sam's there", "Tom's in"]) expect(run(translate([t])), t).toHaveLength(1);
+    expect(run(translate(["Tom's home", "Tom is home"]))).toEqual([]);
+  });
+  it("two adjectives and a noun is a possessive", () => {
+    expect(run(translate(["It is Ann's big red bag"]))).toEqual([]);
+  });
+});
+
+describe("answer-forms: common-noun 's before a/an/the or a preposition is a contraction", () => {
+  it("demands the full form", () => {
+    expect(check(translate(["My mother's a teacher"]))).toHaveLength(1);
+    expect(check(translate(["My mother's a teacher", "My mother is a teacher"]))).toEqual([]);
+    expect(check(translate(["The dog's in the park"]))).toHaveLength(1);
+  });
+  it("still lets a possessive through", () => {
+    expect(check(translate(["It is my friend's pen"]))).toEqual([]);
+  });
+});
+
+describe("answer-forms and grading never disagree: rule silent => grading accepts the other form", () => {
+  const SENTENCES = [
+    "He's a doctor", "He is a doctor", "She's not happy", "She is not happy", "It's the first door", "That's my pen", "What's your name", "Where is the bus",
+    "He's in the park", "He is reading", "He's been to Japan", "He has been to Japan", "She's got a cat", "She has got a cat",
+    "He's tired", "He is tired", "He's never been to Japan", "He has never been to Japan", "She's just finished", "She has finished",
+    "What's he done", "He's used my pen", "He has used my pen", "It's gone", "He's never late", "He is never late",
+    "Tom's come home", "Tom has come home", "Sam is happy", "Sam's happy", "My name is Ann", "My name's Ann", "I would go", "I'd go", "I'd like tea",
+  ];
+  const alt = (s: string): string[] => {
+    const out: string[] = [];
+    const m1 = /^(.*?\b)(he|she|it|that|what|where|who|how|there|here|name)'s (.*)$/i.exec(s);
+    if (m1) { out.push(`${m1[1]}${m1[2]} is ${m1[3]}`); if (/^(not )?(been|got)\b/.test(m1[3])) out.push(`${m1[1]}${m1[2]} has ${m1[3]}`); }
+    const m2 = /^(.*?\b)(he|she|it|that|what|where|who|how|there|here|name|sam|tom|ann) (is|has) (.*)$/i.exec(s);
+    if (m2) out.push(`${m2[1]}${m2[2]}'s ${m2[4]}`);
+    return out;
+  };
+  it("for every sentence: if the rule is silent on [s], grading accepts each alternative form of s", () => {
+    
+    let silent = 0, firing = 0;
+    for (const s of SENTENCES) {
+      const quiet = check(translate([s])).length === 0;
+      for (const a of alt(s)) {
+        const accepted = matchesAny(a, [s]);
+        if (quiet) { silent++; expect(accepted, `${s} -> ${a}`).toBe(true); }
+        else { firing++; expect(accepted, `rule fired, so grading must reject ${s} -> ${a}`).toBe(false); }
+      }
+    }
+    expect(silent).toBeGreaterThan(5);
+    expect(firing).toBeGreaterThan(5);
+  });
 });

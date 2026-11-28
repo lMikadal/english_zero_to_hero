@@ -95,6 +95,11 @@ describe("surfaceForms: no unrelated words", () => {
     expect(f("lie", "verb").has("liing")).toBe(false);
     expect(f("die", "verb").has("dying")).toBe(true);
   });
+  it("the marker forms.gradable is not a word form: \"no\" does not count as using the entry", () => {
+    const e = vocabItem({ id: "v-dead", word: "dead", pos: "adjective", forms: { gradable: "no" } });
+    expect([...surfaceForms(e)]).toEqual(["dead"]);
+    expect([...usageForms(e)]).toEqual(["dead"]);
+  });
   it("does not add -ed to a verb whose entry lists its own past", () => {
     expect(f("come", "verb", { past: "came", pastParticiple: "come" }).has("commed")).toBe(false);
     expect(f("come", "verb", { past: "came" }).has("comed")).toBe(false);

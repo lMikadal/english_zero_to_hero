@@ -11,7 +11,12 @@ describe("PARTICIPLES (one table for grading and the answer-forms rule)", () => 
     "shown", "slept", "sold", "taught", "understood", "won", "worn", "caught", "held", "let", "set", "hit", "hurt", "cost", "flown",
     "drawn", "thrown", "risen", "ridden", "sung", "swum"])("contains %s", (w) => expect(PARTICIPLES.has(w)).toBe(true));
 
-  it("isParticipleLike: table, or an -ed word of 5+ letters that is not on the exception list", () => {
+  it("short -ed words are participle-like too, except real non-participles", () => {
+    for (const w of ["used", "died", "tied", "lied", "fled"]) expect(isParticipleLike(w), w).toBe(true);
+    for (const w of ["need", "feed", "seed", "shed", "red"]) expect(isParticipleLike(w), w).toBe(false);
+    for (const w of ["meant", "learnt", "beaten", "sought", "crept"]) expect(PARTICIPLES.has(w), w).toBe(true);
+  });
+  it("isParticipleLike: table, or an -ed word of 4+ letters that is not on the exception list", () => {
     expect(isParticipleLike("bought")).toBe(true);
     expect(isParticipleLike("tired")).toBe(true);
     expect(isParticipleLike("red")).toBe(false);
@@ -19,14 +24,14 @@ describe("PARTICIPLES (one table for grading and the answer-forms rule)", () => 
     expect(isParticipleLike("happy")).toBe(false);
   });
 
-  it("every past / pastParticiple form in the vocab bank ends in -ed or is in the table, so the bank can never get ahead of grading", () => {
+  it("every past / pastParticiple form in the vocab bank satisfies isParticipleLike itself, so the bank can never get ahead of grading", () => {
     const { vocab } = readContent(path.resolve(import.meta.dirname, "../../../content"));
     const missing: string[] = [];
     for (const { items } of vocab) {
       for (const item of items) {
         for (const key of ["past", "pastParticiple"]) {
           for (const form of (item.forms?.[key] ?? "").toLowerCase().split("/").map((f) => f.trim().split(" ")[0]).filter(Boolean)) {
-            if (!form.endsWith("ed") && !PARTICIPLES.has(form)) missing.push(`${item.id}.${key}="${form}"`);
+            if (!isParticipleLike(form)) missing.push(`${item.id}.${key}="${form}"`);
           }
         }
       }

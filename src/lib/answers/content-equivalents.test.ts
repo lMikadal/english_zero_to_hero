@@ -26,8 +26,8 @@ const NUMBERS: [string, string][] = [
 function variants(sentence: string): string[] {
   let out = [sentence];
   const swaps: [RegExp, string][] = [];
-  // 's is only folded when it can only mean "is": never before got/been (those are "has") and never before a participle or -ed word
-  const NOT_PARTICIPLE = "(?! (?:got|been|gone|done|seen|taken|come|had|sat|bought|\\w+ed)\\b)";
+  // 's is only folded when what follows cannot be a verb: written out by hand here (determiners, numbers, a few prepositions/places, -ing words, plain adjectives)
+  const NOT_PARTICIPLE = "(?= (?:not )?(?:a|an|the|my|your|his|her|our|their|this|that|these|those|in|at|on|from|here|there|\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|\\w{3,}ing|happy|big|nice|fine|good|hot|old|well|ready|late|sorry|tall|short|busy)\\b)";
   for (const [full, short] of PAIRS) {
     const guard = short.endsWith("'s") ? NOT_PARTICIPLE : "";
     swaps.push([new RegExp(`(?<![\\w'])${full}(?![\\w'])${guard}`, "gi"), short], [new RegExp(`(?<![\\w'])${short}(?![\\w'])${guard}`, "gi"), full]);
@@ -98,6 +98,10 @@ describe("over-acceptance: wrong answers stay wrong", () => {
     [["He's sat down"], "He is sat down"],
     [["He's bought a car"], "He is bought a car"],
     [["He's come home"], "He has come home"],
+    [["He's never been to Japan"], "He is never been to Japan"],
+    [["She's just finished"], "She is just finished"],
+    [["He's used my pen"], "He is used my pen"],
+    [["What's he done"], "What is he done"],
     [["It's a door"], "Its a door"],
     [["Its door is big"], "It's door is big"],
     [["His door"], "He's door"],
