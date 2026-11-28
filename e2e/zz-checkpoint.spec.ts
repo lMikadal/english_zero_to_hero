@@ -159,6 +159,9 @@ test("one sitting: intro, every exercise with no right or wrong shown, reload an
     answered.add(id);
   }
   expect([...answered].filter((id) => WRONG.has(id)).sort(), "both wrong answers were given").toEqual([...WRONG].sort());
+  // every exercise was either answered once or skipped for want of a voice; the run's log says which mode it was
+  expect(answered.size + second.skipped.length, "answered + skipped").toBe(TOTAL);
+  console.log(`checkpoint sitting: ${answered.size} of ${TOTAL} answered, ${second.skipped.length} skipped (no English voice on this device)`);
 
   // the result: the server's answer
   await expect(resultHeading(page, K)).toBeVisible(SLOW);
