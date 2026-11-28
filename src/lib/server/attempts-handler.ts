@@ -1,14 +1,16 @@
 // POST /api/attempts: parse -> look up in content -> grade -> store, all on the server (docs/ARCHITECTURE.md 5.1).
 // One bad item never fails the batch: it is answered `rejected` and the rest is stored.
+import { getCheckpointGate, hasEarlierAnswer } from "@/db/queries/checkpoints";
 import { getDayStatus } from "@/db/queries/practice";
 import { findStoredGrade, getProfileShared, insertAttempt, markInProgress, refreshDoneScore } from "@/db/queries/attempts";
 import { isDataError, withTransactionRetry } from "@/db/queries/tx";
 import type { Db } from "@/db/types";
 import { gradeExercise, isAttemptNoAllowed } from "@/lib/answers/grade";
 import { parseAttemptBatch, type AttemptInput, type AttemptResult, type PostAttemptsResponse } from "@/lib/attempts/contract";
-import { attemptSkill, deriveTags, findExercise } from "@/lib/attempts/derive";
+import { attemptSkill, deriveTags, findExercise, type HasSections } from "@/lib/attempts/derive";
 import { isDayUnlocked } from "@/lib/attempts/unlock";
-import { getLesson, getTaughtWords } from "@/lib/content/repo";
+import type { Checkpoint } from "@/lib/content/checkpoint-schema";
+import { getCheckpoint, getLesson, getTaughtWords } from "@/lib/content/repo";
 import { hasRole } from "@/lib/progress/sources";
 import type { Lesson } from "@/lib/content/schema";
 import { clampTimestamp, timestampFloor } from "./clamp";
@@ -16,33 +18,46 @@ import { clampTimestamp, timestampFloor } from "./clamp";
 export type HandlerDeps = { db: Db; userId: string; now: Date };
 export type HandlerResult<T> = { status: 200; body: T } | { status: 400 | 409; body: { error: string } };
 
+/** The day in the id: `d031-...` is the lesson of day 31, `c030-...` the checkpoint taken after day 30 (its attempts belong to day 30). */
 const dayOf = (exerciseId: string) => Number(exerciseId.slice(1, 4));
+const isCheckpointId = (exerciseId: string) => exerciseId.startsWith("c");
+const isCheckpointSource = (source: AttemptInput["source"]) => source === "checkpoint" || source === "checkpoint_retake";
 
-type Prepared = { index: number; a: AttemptInput; day: number; lesson: Lesson; found: NonNullable<ReturnType<typeof findExercise>>; tags: string[] };
+type Prepared = { index: number; a: AttemptInput; day: number; container: HasSections; found: NonNullable<ReturnType<typeof findExercise>>; tags: string[] };
 
-export async function handlePostAttempts(body: unknown, { db, userId, now }: HandlerDeps): Promise<HandlerResult<PostAttemptsResponse>> {
+/** Where exercises come from; a test seam (default: the content files). */
+export type AttemptsContent = {
+  getLesson(day: number): Lesson | null;
+  getCheckpoint(afterDay: number): Checkpoint | null;
+  getTaughtWords(day: number): ReadonlyMap<string, string>;
+};
+// wrappers, not the functions themselves: each call goes through the module, so a test can spy on the repo
+const repoContent: AttemptsContent = { getLesson: (d) => getLesson(d), getCheckpoint: (d) => getCheckpoint(d), getTaughtWords: (d) => getTaughtWords(d) };
+
+export async function handlePostAttempts(body: unknown, { db, userId, now, content = repoContent }: HandlerDeps & { content?: AttemptsContent }): Promise<HandlerResult<PostAttemptsResponse>> {
   const parsed = parseAttemptBatch(body);
   if (!parsed.ok) return { status: 400, body: { error: "invalid_body" } };
 
-  // Content is read once per request (each lesson, and each day's taught words), never once per item. A lesson file
-  // that fails to load only affects its own items: they are answered `unknown_exercise`.
-  const lessons = new Map<number, Lesson | null>();
-  const lessonFor = (day: number) => {
-    if (!lessons.has(day)) {
+  // Content is read once per request (each lesson or checkpoint, and each day's taught words), never once per item. A
+  // file that fails to load only affects its own items: they are answered `unknown_exercise`.
+  const containers = new Map<string, HasSections | null>();
+  const containerFor = (checkpoint: boolean, day: number): HasSections | null => {
+    const key = `${checkpoint ? "c" : "d"}${day}`;
+    if (!containers.has(key)) {
       try {
-        lessons.set(day, getLesson(day));
+        containers.set(key, checkpoint ? content.getCheckpoint(day) : content.getLesson(day));
       } catch (err) {
-        console.error(`[attempts] lesson for day ${day} failed to load:`, err);
-        lessons.set(day, null);
+        console.error(`[attempts] ${checkpoint ? "checkpoint" : "lesson"} for day ${day} failed to load:`, err);
+        containers.set(key, null);
       }
     }
-    return lessons.get(day)!;
+    return containers.get(key)!;
   };
   const taught = new Map<number, ReturnType<typeof getTaughtWords> | null>();
   const taughtFor = (day: number) => {
     if (!taught.has(day)) {
       try {
-        taught.set(day, getTaughtWords(day));
+        taught.set(day, content.getTaughtWords(day));
       } catch (err) {
         console.error(`[attempts] taught words for day ${day} failed to load:`, err);
         taught.set(day, null);
@@ -59,15 +74,22 @@ export async function handlePostAttempts(body: unknown, { db, userId, now }: Han
       return;
     }
     const a = item.attempt;
+    // `c…` ids are checkpoint exercises: source checkpoint or checkpoint_retake, first try only. A `d…` id never uses
+    // those two sources (the server alone decides which of them a checkpoint answer is stored as).
+    const checkpoint = isCheckpointId(a.exerciseId);
+    if (checkpoint ? !isCheckpointSource(a.source) || a.attemptNo !== 1 : isCheckpointSource(a.source)) {
+      fixed[index] = { id: a.id, status: "rejected", reason: "invalid" };
+      return;
+    }
     const day = dayOf(a.exerciseId);
-    const lesson = lessonFor(day);
-    const found = lesson ? findExercise(lesson, a.exerciseId) : undefined;
-    const words = lesson && found ? taughtFor(day) : null;
-    if (!lesson || !found || !words) {
+    const container = containerFor(checkpoint, day);
+    const found = container ? findExercise(container, a.exerciseId) : undefined;
+    const words = container && found ? taughtFor(day) : null;
+    if (!container || !found || !words) {
       fixed[index] = { id: a.id, status: "rejected", reason: "unknown_exercise" };
       return;
     }
-    work.push({ index, a, day, lesson, found, tags: deriveTags(lesson, found.exercise, found.section, words) });
+    work.push({ index, a, day, container, found, tags: deriveTags(container, found.exercise, found.section, words) });
   });
 
   // Rows are written in id order whatever the request order, so two batches with the same ids can never wait on each
@@ -79,10 +101,12 @@ export async function handlePostAttempts(body: unknown, { db, userId, now }: Han
     const profile = await getProfileShared(tx, userId);
     const floor = timestampFloor(now, profile.startDate, profile.timezone);
     const firstCreated = new Map<number, Date>(); // day -> earliest created_at of a newly stored attempt
+    // a checkpoint that has not been taken holds day A+1 back: the highest playable day is then A (docs/plans/checkpoint-plan.md D1)
+    const { playableDay } = await getCheckpointGate(tx, userId, profile, content);
 
     for (const w of ordered) {
       const { a, day, found } = w;
-      if (!isDayUnlocked(day, profile.currentDay)) {
+      if (!isDayUnlocked(day, playableDay)) {
         out[w.index] = { id: a.id, status: "rejected", reason: "locked_day" };
         continue;
       }
@@ -106,6 +130,8 @@ export async function handlePostAttempts(body: unknown, { db, userId, now }: Han
       try {
         // a savepoint per item: a database error in one item rolls back only that item
         out[w.index] = await tx.transaction(async (sp) => {
+          // D11: the first answer a learner ever gives to a checkpoint exercise is `checkpoint`, every later one `checkpoint_retake`
+          const source = isCheckpointId(a.exerciseId) ? ((await hasEarlierAnswer(sp, userId, a.exerciseId, a.id)) ? "checkpoint_retake" : "checkpoint") : a.source;
           const created = await insertAttempt(sp, {
             id: a.id,
             userId,
@@ -118,7 +144,7 @@ export async function handlePostAttempts(body: unknown, { db, userId, now }: Han
             answer: a.answer,
             durationMs: a.durationMs ?? null,
             tags: w.tags,
-            source: a.source,
+            source,
             sessionId: a.sessionId,
             attemptNo: a.attemptNo,
             createdAt,

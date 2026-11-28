@@ -120,7 +120,7 @@ describe("locking (item 26 and 3.2 items 14-15)", () => {
 
   it("while the checkpoint blocks, a d031 attempt is locked_day and day 30 and earlier stay open", async () => {
     await blockedAfterDay30();
-    const r = statuses(await post([attemptItem("d031-listen-01", { kind: "choice", selected: 0 }), attemptItem("d001-listen-01", ANSWERS.listenChooseRight, { source: "practice" })]));
+    const r = statuses(await post([attemptItem("d031-listen-01", { kind: "choice", selected: 0 }), attemptItem("d001-listen-01", ANSWERS.listenChooseRight)]));
     expect(r[0]).toMatchObject({ status: "rejected", reason: "locked_day" });
     expect(r[1]).toMatchObject({ status: "created" });
   });

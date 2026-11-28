@@ -1,6 +1,5 @@
 // @vitest-environment node
 // POST /api/checkpoints/complete (docs/plans/checkpoint-plan.md 3.5 items 29-35).
-import { randomUUID } from "node:crypto";
 import { asc, eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activityDays, attempts, checkpointResults, profiles, progress, streaks, user } from "@/db/schema";
