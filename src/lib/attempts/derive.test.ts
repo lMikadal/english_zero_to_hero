@@ -167,7 +167,7 @@ describe("exerciseEnglishText", () => {
     expect(text("d001-listen-02")).toEqual(["Nice to meet you."]);
     expect(text("d001-speak-01")).toEqual(["Hello!", "My name is Ann.", "Nice to meet you."]);
     expect(text("d001-speak-02")).toEqual(["Hello! What's your name?", "Hello! My name is Ann. Nice to meet you."]);
-    expect(text("d001-write-01")).toEqual(["My name is Sam", "Sam is my name"]);
+    expect(text("d001-write-01")).toEqual(["My name is Sam", "Sam is my name", "Is my name Sam"]);
     expect(text("d001-write-02")).toEqual(expect.arrayContaining(["Nice to meet you", "Nice to meet you."]));
     expect(text("d003-write-03")).toEqual(["Where are you ___?", "from"]);
     expect(text("d003-write-04")).toEqual([]);

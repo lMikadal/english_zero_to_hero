@@ -1,0 +1,120 @@
+// Rule "cast-consistency" (WARNING): the same character keeps one age within a week (days 7k+1 .. 7k+7).
+// Detected, in learner-facing English and in the examples of vocab entries (read on the day the word is taught):
+//   "Ann is thirteen" / "Ann's 13" / "Ben is 14 years old"          (a PROPER_NAMES name, is or 's, a number 1-120)
+//   "I am Ann ... I am nineteen" / "My name is Sam. I'm 12"         (only when the text has exactly ONE speaker name)
+//   "This is my friend, Ann. She is eight."                         (he/she + number right after a sentence with exactly one name)
+// Warning, not error: two people can share a name, and a different week may legitimately change a character.
+// NOT detected (also in docs/FINDINGS.md): ages written another way ("Ann has a birthday: she is ..."), "How old is
+// Ann? She is ten" (a question in between), "They are ten", ages across weeks, a name that is not in PROPER_NAMES, birth years,
+// two speakers in one text.
+import type { Problem } from "../loader";
+import { NUMBER_WORDS } from "@/lib/answers/equivalents";
+import { PROPER_NAMES } from "./allowlists";
+import type { RuleContext } from "./context";
+import { learnerEnglish } from "./learner-text";
+
+export const CAST_RULE = "cast-consistency";
+export type AgeClaim = { name: string; age: number; sentence: string };
+
+const WORD_VALUE = new Map<string, number>(NUMBER_WORDS.filter(([, w]) => !w.includes(" ")).map(([d, w]) => [w, Number(d)]));
+const UNITS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+const TENS = ["twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+const NUM = `(?:\\d{1,3}|(?:${TENS.join("|")})[- ](?:${UNITS.join("|")})|${[...WORD_VALUE.keys()].sort((a, b) => b.length - a.length).join("|")})`;
+const NAME = `(${[...PROPER_NAMES].join("|")})`;
+const TAIL = String.raw`(?:\s+years?\s+old)?(?=\s*(?:[.!?,;]|$)|\s+(?:and|but)\b)`;
+const THIRD = new RegExp(String.raw`\b${NAME}(?:\s+is|'s)\s+(${NUM})${TAIL}`, "g");
+const SPEAKER = new RegExp(String.raw`\b(?:I am|I'm|My name is|My name's)\s+${NAME}\b`, "g");
+const NAME_G = new RegExp(String.raw`\b${NAME}\b`, "g");
+const PRONOUN_AGE = new RegExp(String.raw`^(?:He|She)(?: is|'s)\s+(${NUM})${TAIL}`);
+const FIRST = new RegExp(String.raw`\b(?:I am|I'm)\s+(${NUM})${TAIL}`, "g");
+
+function value(num: string): number | undefined {
+  if (/^\d+$/.test(num)) return Number(num) <= 120 ? Number(num) : undefined;
+  const w = num.toLowerCase().replace(/ /g, "-");
+  const direct = WORD_VALUE.get(w);
+  if (direct !== undefined) return direct;
+  const [t, u] = w.split("-");
+  const ti = TENS.indexOf(t), ui = UNITS.indexOf(u);
+  return ti >= 0 && ui >= 0 ? (ti + 2) * 10 + ui + 1 : undefined;
+}
+
+const LABEL = new RegExp(String.raw`^${NAME}:\s*`);
+
+export function ageClaims(text: string): AgeClaim[] {
+  const raw = text.replace(/[’‘ʼ´`]/g, "'");
+  const out: AgeClaim[] = [];
+  // Dialogue: "Ann: No, I am not. I am thirty." The label is the speaker of that line's "I am N", and is removed
+  // before the other patterns (otherwise "Mai: This is the boy, Tom." would name two people).
+  let labelled = false;
+  const unlabelled = raw.split("\n").map((line) => {
+    const m = LABEL.exec(line);
+    if (!m) return line;
+    labelled = true;
+    for (const f of line.slice(m[0].length).matchAll(FIRST)) {
+      const age = value(f[1]);
+      if (age !== undefined) out.push({ name: m[1], age, sentence: `${m[1]}: I am ${f[1]}` });
+    }
+    return line.slice(m[0].length);
+  });
+  const norm = unlabelled.join("\n");
+  for (const m of norm.matchAll(THIRD)) {
+    const age = value(m[2]);
+    if (age !== undefined) out.push({ name: m[1], age, sentence: m[0].replace(/\s+years?\s+old$/, "") });
+  }
+  // "This is my friend, Ann. She is eight.": a he/she age belongs to the one name in the sentence before it
+  const sentences = norm.split(/(?<=[.!?])\s+|\n+/);
+  sentences.forEach((sentence, i) => {
+    const m = i > 0 ? PRONOUN_AGE.exec(sentence.trim()) : null;
+    // "He is Dan's father. He is seventy.": a possessive name ("Dan's father") is not the person the pronoun means
+    const prev = sentences[i - 1] ?? "";
+    const possessive = (n: RegExpMatchArray) => /^'s\s+[a-z]/.test(prev.slice((n.index ?? 0) + n[0].length));
+    const names = new Set([...prev.matchAll(NAME_G)].filter((n) => !possessive(n)).map((n) => n[1]));
+    const age = m ? value(m[1]) : undefined;
+    if (m && age !== undefined && names.size === 1) out.push({ name: [...names][0], age, sentence: `${[...names][0]} ... ${sentence.trim().replace(/[.!?]$/, "")}` });
+  });
+  const speakers = new Set([...norm.matchAll(SPEAKER)].map((m) => m[1]));
+  if (speakers.size === 1 && !labelled) {
+    for (const m of norm.matchAll(FIRST)) {
+      const age = value(m[1]);
+      if (age !== undefined) out.push({ name: [...speakers][0], age, sentence: `I am ${m[1]}` });
+    }
+  }
+  return out;
+}
+
+type Place = { file: string; id: string; where: string; day: number };
+type Seen = Place & { age: number; sentence: string };
+
+export function checkCast(ctx: RuleContext): Problem[] {
+  const seen = new Map<string, Seen[]>(); // `${week}|${name}` -> claims in reading order
+  const note = (day: number, place: Omit<Place, "day">, text: string) => {
+    for (const c of ageClaims(text)) {
+      const key = `${Math.floor((day - 1) / 7)}|${c.name}`;
+      seen.set(key, [...(seen.get(key) ?? []), { ...place, day, age: c.age, sentence: c.sentence }]);
+    }
+  };
+  for (const [id, { day }] of [...ctx.taughtIn].sort((a, b) => a[1].day - b[1].day)) {
+    const entry = ctx.bank.get(id);
+    entry?.item.examples.forEach((ex, i) => note(day, { file: entry.file, id, where: `${entry.file} [${id}] examples[${i}]` }, ex.en));
+  }
+  for (const { file, lesson } of ctx.lessons) {
+    for (const section of lesson.sections) {
+      for (const ex of section.exercises) {
+        for (const f of learnerEnglish(ex)) note(lesson.day, { file, id: ex.id, where: `${file} [${ex.id}] ${f.field}` }, f.text);
+      }
+    }
+  }
+  const problems: Problem[] = [];
+  for (const [key, claims] of seen) {
+    const name = key.slice(key.indexOf("|") + 1);
+    const first = claims[0];
+    const differing = claims.filter((c) => c.age !== first.age);
+    if (differing.length === 0) continue;
+    const listed = differing.map((c) => `${c.age} in ${c.where} ("${c.sentence}")`).join("; ");
+    problems.push({
+      rule: CAST_RULE, file: differing[0].file, id: differing[0].id, severity: "warning",
+      message: `"${name}" has two different ages in days ${Math.floor((first.day - 1) / 7) * 7 + 1}-${Math.floor((first.day - 1) / 7) * 7 + 7}: ${first.age} in ${first.where} ("${first.sentence}") but ${listed}. Within one week a character keeps one age: change one of them (or use another name if these are two different people).`,
+    });
+  }
+  return problems;
+}

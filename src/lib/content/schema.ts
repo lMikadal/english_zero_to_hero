@@ -67,8 +67,10 @@ export const readPassageSchema = z.strictObject({
   text, glossary: z.record(z.string(), thai).optional(),
   questions: z.array(z.strictObject({ question: bilingual, choices: z.array(text).min(2), answer: choiceIndex })).min(1),
 });
+/** `statementOnly: true` tells rule "arrange-question" that the yes/no question built from the same tiles is NOT an accepted answer here. */
 export const arrangeWordsSchema = z.strictObject({
   ...base, type: z.literal("arrange_words"), words: z.array(text).min(2), answer: text, accept: z.array(text).min(1).optional(),
+  statementOnly: z.boolean().optional(),
 });
 export const fillBlankSchema = z.strictObject({
   ...base, type: z.literal("fill_blank"), text, answer: z.array(text).min(1), strict,
