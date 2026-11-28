@@ -7,6 +7,7 @@ import { checkArrangeWords } from "./arrange-words";
 import { checkCast } from "./cast";
 import { checkCastProps } from "./cast-props";
 import { checkGlossUniqueness } from "./gloss";
+import { checkGrammarNote, checkGrammarNoteRequired } from "./grammar-note";
 import { checkGrammarNotYet } from "./grammar-not-yet";
 import { checkPhonemeTags } from "./phoneme-tags";
 import { checkPronunciation } from "./pronunciation";
@@ -18,5 +19,5 @@ import { checkTaughtWords, checkVocabUsedOnItsDay } from "./taught-words";
 
 export function checkContentRules(data: ContentData): Problem[] {
   const ctx = buildContext(data);
-  return [...checkTaughtWords(ctx), ...checkGrammarNotYet(ctx), ...checkVocabUsedOnItsDay(ctx), ...checkGlossUniqueness(ctx), ...checkPronunciation(ctx), ...checkSoundWords(ctx), ...checkPhonemeTags(ctx), ...checkArrangeWords(ctx), ...checkArrangeQuestion(ctx), ...checkAnswerForms(ctx), ...checkCast(ctx), ...checkCastProps(ctx), ...checkThaiNames(ctx), ...checkVocabForms(ctx), ...checkVocabSpelling(ctx)];
+  return [...checkTaughtWords(ctx), ...checkGrammarNotYet(ctx), ...checkGrammarNote(ctx), ...checkGrammarNoteRequired(ctx), ...checkVocabUsedOnItsDay(ctx), ...checkGlossUniqueness(ctx), ...checkPronunciation(ctx), ...checkSoundWords(ctx), ...checkPhonemeTags(ctx), ...checkArrangeWords(ctx), ...checkArrangeQuestion(ctx), ...checkAnswerForms(ctx), ...checkCast(ctx), ...checkCastProps(ctx), ...checkThaiNames(ctx), ...checkVocabForms(ctx), ...checkVocabSpelling(ctx)];
 }

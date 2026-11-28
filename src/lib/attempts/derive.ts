@@ -36,6 +36,7 @@ export function exerciseEnglishText(ex: Exercise): string[] {
     case "translate_th_en": return [...ex.accept];
     case "free_write": return [ex.prompt];
     case "use_in_sentence": return [ex.prompt];
+    case "grammar_note": return ex.examples.map((e) => e.en);
     case "vocab_match":
     case "spell_word": return [];
   }

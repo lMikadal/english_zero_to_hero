@@ -13,12 +13,12 @@ export type Grade = { correct: boolean; score: number | null; items?: boolean[] 
 export type GradeError = { error: "kind_mismatch" | "unsupported" };
 
 /** Shown to the learner but never stored as an attempt. */
-export const UNGRADED_TYPES = ["phoneme_intro"] as const;
+export const UNGRADED_TYPES = ["phoneme_intro", "grammar_note"] as const;
 
-/** The 13 types that appear in days 1-7. Others (roleplay, spell_word, use_in_sentence) are `unsupported`. */
+/** The 13 types that appear in days 1-7, plus the grammar_note card. Others (roleplay, spell_word, use_in_sentence) are `unsupported`. */
 export const SUPPORTED_TYPES = [
   "phoneme_intro", "minimal_pair", "repeat_after_me", "listen_choose", "dictation", "shadowing", "speak_answer",
-  "read_passage", "arrange_words", "fill_blank", "translate_th_en", "free_write", "vocab_match",
+  "read_passage", "arrange_words", "fill_blank", "translate_th_en", "free_write", "vocab_match", "grammar_note",
 ] as const satisfies readonly ExerciseType[];
 
 /** Auto-graded types: the only ones that come back in the end-of-lesson retry round. */

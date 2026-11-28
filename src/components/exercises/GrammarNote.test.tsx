@@ -21,7 +21,9 @@ describe("GrammarNote (placeholder card until the real design lands)", () => {
   }
   it("shows the title, the body, the table cells and every example in English and Thai", () => {
     setup();
-    for (const t of [exercise.titleTh, exercise.bodyTh, "ประธาน", "he / she / it", "likes", "She likes tea.", "เธอชอบชา", "I like tea."]) expect(screen.getByText(t)).toBeInTheDocument();
+    // MixedText splits Latin words into their own spans, so Thai text with English inside is compared on the whole text
+    const text = document.body.textContent ?? "";
+    for (const t of [exercise.titleTh, exercise.bodyTh, "ประธาน", "he / she / it", "likes", "She likes tea.", "เธอชอบชา", "I like tea."]) expect(text, t).toContain(t);
   });
   it("never records an attempt: the button only continues", async () => {
     const { onAnswer, onContinue } = setup();

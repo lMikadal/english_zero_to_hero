@@ -93,11 +93,24 @@ export const useInSentenceSchema = z.strictObject({
   ...base, type: z.literal("use_in_sentence"), vocabId, prompt: text,
 });
 
+/**
+ * A grammar explanation card: displayed, no question, no attempt, no score (like phoneme_intro). `structures` are ids of
+ * the gate table in rules/grammar-not-yet.ts (GRAMMAR_STRUCTURES); `table` rows are cells (the first row may be a header);
+ * `examples` are voiced like every other English example.
+ */
+export const grammarNoteSchema = z.strictObject({
+  ...base, type: z.literal("grammar_note"),
+  titleTh: thai, bodyTh: thai,
+  table: z.array(z.array(text).min(1)).min(1).optional(),
+  examples: z.array(bilingual).min(1).max(6),
+  structures: z.array(text).min(1),
+});
+
 export const exerciseSchema = z.discriminatedUnion("type", [
   phonemeIntroSchema, minimalPairSchema, repeatAfterMeSchema, listenChooseSchema, dictationSchema,
   shadowingSchema, speakAnswerSchema, roleplaySchema, readPassageSchema, arrangeWordsSchema,
   fillBlankSchema, translateThEnSchema, freeWriteSchema, vocabMatchSchema, spellWordSchema,
-  useInSentenceSchema,
+  useInSentenceSchema, grammarNoteSchema,
 ]);
 export const EXERCISE_TYPES = exerciseSchema.options.map((o) => o.shape.type.value);
 
