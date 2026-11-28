@@ -60,7 +60,8 @@ function regularForms(base: string, item: VocabItem): string[] {
 const words = (item: VocabItem) => item.word.toLowerCase().split(/\s+/).filter(Boolean);
 
 /** Each listed form ("am / is / are", "woke up") as separate alternatives. */
-const listedAlternatives = (item: VocabItem) => Object.values(item.forms ?? {}).flatMap((v) => v.toLowerCase().split("/").map((x) => x.trim()).filter(Boolean));
+/** `gradable` is a marker ("no"), not a word form. */
+const listedAlternatives = (item: VocabItem) => Object.entries(item.forms ?? {}).filter(([k]) => k !== "gradable").map(([, v]) => v).flatMap((v) => v.toLowerCase().split("/").map((x) => x.trim()).filter(Boolean));
 
 /** The word of a multi-word headword that inflects: the first for a verb (wake up), the last otherwise (ice cream). */
 function headIndex(item: VocabItem): number {

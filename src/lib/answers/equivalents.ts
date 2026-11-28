@@ -3,7 +3,8 @@
 //   - a contraction and its full form ("he's" / "he is", "don't" / "do not", "can't" / "cannot"),
 //   - a number word and its digits ("ten" / "10", "twenty-one" / "21", "a hundred" / "100").
 // What is NOT folded (the author must list both forms, or set `strict`; the validator rule "answer-forms" checks it):
-//   's before a past participle or -ed word (is/has?), 'd except before like/love, Name+'s, ordinals, 101+, "zero", 3:30.
+//   's unless what follows is provably not a verb (see sReading: an ALLOW-list, so an unknown word can only under-accept),
+//   'd except before like/love, Name+'s, ordinals, 101+, "zero", 3:30.
 // Rule is documented in docs/CONTENT_SCHEMA.md ("การเทียบคำตอบ"). Input must already be normalised
 // (lower case, straight apostrophe, punctuation removed).
 
@@ -44,8 +45,53 @@ const S_FORM = /^(he|she|it|that|there|here|what|where|who|how|name)'s$/;
 /** The words an ambiguous 's (is / has) can follow, without the 's. */
 export const S_BASES: readonly string[] = ["he", "she", "it", "that", "there", "here", "what", "where", "who", "how", "name"];
 export const isSForm = (t: string): boolean => S_FORM.test(t);
+
+// ---- 's -> "is": an ALLOW-list. X's is folded to "X is" only when the next word (after an optional "not") provably cannot
+// be part of a verb: a determiner, a number, a closed set of prepositions/places, an -ing word, or a plain adjective.
+// Everything else (adverbs, pronouns, unknown words, any participle) is NOT folded, so an unknown word can only make
+// grading stricter; the answer-forms rule then asks the author to list both forms. Used by grading AND by the rule.
+export const DETERMINERS: ReadonlySet<string> = new Set(
+  "a an the my your his her our their its this that these those some any no every each another many much all both".split(" "));
+export const PLACES: ReadonlySet<string> = new Set(
+  "in at on from under here there near behind over with of for to by about into inside outside up down off out away back home next between beside above below across around".split(" "));
+/** Adjectives that cannot be a participle. Never contains a PARTICIPLES word (a test checks), and covers every adjective of the vocab bank that is not participle-like (a test checks). */
+export const ADJECTIVES: ReadonlySet<string> = new Set((
+  "good bad big small little nice fine hot cold warm cool old new young happy sad tall short long fat thin hungry thirsty ready busy free late early " +
+  "right wrong easy hard difficult cheap expensive clean dirty kind sick ill well great ok okay sorry angry afraid sure pretty beautiful quiet loud " +
+  "fast slow strong weak rich poor full empty open safe real true correct high low heavy light dark bright soft sweet delicious famous different same " +
+  "special important interesting funny friendly careful lovely red blue green yellow black white brown pink orange purple grey gray hungry fun " +
+  "nervous healthy lucky shy polite honest clever smart cute proud brave calm crazy rude silly all"
+).split(" "));
+const NUMBER_WORD_SET = new Set<string>([...NUMBER_WORDS.flatMap(([, w]) => w.split(" ")), "zero", "hundred", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]);
+const NOT_ING = new Set(["thing", "bring", "spring", "string", "swing"]);
+/** Adverbs that may stand between a subject (or has) and the verb; the rule looks through them. */
+export const ADVERBS: ReadonlySet<string> = new Set(
+  "not never already just ever always often also still only really usually sometimes recently finally even almost nearly".split(" "));
+
+export function isSafeAfterS(w: string): boolean {
+  if (DETERMINERS.has(w) || PLACES.has(w) || ADJECTIVES.has(w) || NUMBER_WORD_SET.has(w)) return true;
+  if (/^\d+$/.test(w)) return true;
+  if (/^[a-z]+'s$/.test(w) && !S_FORM.test(w)) return true; // a possessive ("it's Ann's pen") starts a noun phrase
+  const h = HYPHENATED.exec(w);
+  if (h) return true;
+  return w.length >= 5 && w.endsWith("ing") && !NOT_ING.has(w);
+}
+
+/**
+ * How the 's at tokens[i] reads: "has" (directly before been/got), "is" (the next word, skipping one "not", is provably
+ * not a verb), or null (not folded: the answer-forms rule makes the author list both forms or set `strict`).
+ */
+export function sReading(tokens: readonly string[], i: number): "is" | "has" | null {
+  const t = tokens[i];
+  if (t === undefined || !S_FORM.test(t)) return null;
+  let next = tokens[i + 1];
+  if (next === "been" || next === "got") return "has";
+  if (t === "name's") return next !== undefined && isParticipleLike(next) ? null : "is";
+  if (next === "not") next = tokens[i + 2];
+  return next !== undefined && isSafeAfterS(next) ? "is" : null;
+}
 const WOULD = /^(i|you|he|she|we|they)'d$/;
-const NOT_ED = new Set(["speed", "breed", "indeed", "hundred"]);
+const NOT_ED = new Set(["speed", "breed", "indeed", "hundred", "need", "feed", "seed", "weed", "deed", "reed", "heed", "shed", "sled", "naked"]);
 
 /**
  * Irregular past forms and participles (and the -ed look-alikes' counterparts that do not end in -ed). A word here means
@@ -61,12 +107,13 @@ export const PARTICIPLES: ReadonlySet<string> = new Set((
   "swept swung bent bet bitten bled blown bred burnt burst dealt dug dreamt dived fed fled flung forgiven fought frozen " +
   "hung hidden knelt laid lain led leapt lent lit mistaken overcome proven proved quit rung rode sawn sewn shone shorn slain " +
   "slit smelt sown spat spelt spilt spun stolen strung strode swollen thrust trodden upset wept withdrawn " +
+  "meant learnt learned beaten sought crept used died tied lied dyed lay laid swept wept leant leapt dwelt " +
   "forgot got saw ate took gave knew wrote spoke broke chose drove flew grew threw drew rose rang sang swam wore began did went came was were"
 ).split(" "));
 
-/** A word after 's that may be a past participle (so 's may be "has"): the table, or an -ed word of 5+ letters. */
+/** A word after 's that may be a past participle (so 's may be "has"): the table, or an -ed word of 4+ letters. */
 export function isParticipleLike(w: string): boolean {
-  return PARTICIPLES.has(w) || (w.length >= 5 && w.endsWith("ed") && !NOT_ED.has(w));
+  return PARTICIPLES.has(w) || (w.length >= 4 && w.endsWith("ed") && !NOT_ED.has(w));
 }
 
 function numberTokens(t: string): string[] | undefined {
@@ -86,10 +133,10 @@ export function canonicalAnswer(normalised: string): string {
       out[out.length - 1] = "one"; // "a hundred" = "100"
       out.push(t);
     } else if (S_FORM.test(t)) {
-      const base = t.slice(0, -2);
-      if (next === "been" || next === "got") out.push(base, "has");
-      else if (next !== undefined && isParticipleLike(next)) out.push(t);
-      else out.push(...(CONTRACTED.get(t) ?? t).split(" "));
+      const reading = sReading(tokens, i);
+      if (reading === "has") out.push(t.slice(0, -2), "has");
+      else if (reading === "is") out.push(...(CONTRACTED.get(t) ?? t).split(" "));
+      else out.push(t);
     } else if (WOULD.test(t) && (next === "like" || next === "love")) {
       out.push(t.slice(0, -2), "would");
     } else if (t === "let's" || (CONTRACTED.has(t) && !t.endsWith("'s"))) {

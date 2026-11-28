@@ -2,7 +2,7 @@
 // only where an expression has ONE reading. Where it cannot fold (ambiguous 's, 'd, Name's, ordinals, big numbers, zero),
 // the author must either list every spelling the learner may type, or set `strict: true` on the item (which turns
 // the folding off and says "only this spelling"). Checked for typed accepted answers of dictation, translate_th_en and fill_blank.
-import { CONTRACTIONS, NUMBER_WORDS, S_BASES, isParticipleLike, isSForm } from "@/lib/answers/equivalents";
+import { ADJECTIVES, ADVERBS, CONTRACTIONS, NUMBER_WORDS, S_BASES, isParticipleLike, isSForm, isSafeAfterS, sReading } from "@/lib/answers/equivalents";
 import { normalizeAnswer } from "@/lib/answers/normalize";
 import type { Problem } from "../loader";
 import type { Exercise } from "../schema";
@@ -53,17 +53,29 @@ function acceptedOf(ex: Exercise): string[] {
 
 /** Pronoun + 'd or would: grading folds only "'d like/love". */
 const WOULD_SUBJECT = new Set(["i", "you", "he", "she", "we", "they"]);
+/** Words that are a noun AND an adjective/adverb/place: after Name's they make it a contraction ("Tom's home"), never a possessive. */
+const AMBIGUOUS_AFTER_NAME = new Set(["home", "back", "out", "in", "off", "up", "down", "here", "there", "right", "left", "long", "near", "fast", "late", "early", "free", "hard", "well"]);
+/** After a common noun's 's these can only follow a contraction ("my mother's a teacher"), never a possessive. */
+const CONTRACTION_CONTEXT = new Set(["a", "an", "the", "from", "in", "at", "on", "under", "near", "behind", "not"]);
+
+/** First word after any adverbs (never, just, not, ...), and the number of tokens skipped. */
+const skipAdverbs = (rest: readonly string[]): string | undefined => rest.find((w) => !ADVERBS.has(w));
 
 export function checkAnswerForms(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
-  const nouns = new Set<string>(), adjectives = new Set<string>();
+  const nouns = new Set<string>(), adjectives = new Set<string>(ADJECTIVES);
   for (const { item } of ctx.bank.values()) {
     const w = item.word.toLowerCase();
     if (item.pos === "noun") nouns.add(w).add(`${w}s`).add(`${w}es`);
     if (item.pos === "adjective") adjectives.add(w);
   }
-  const isPossessive = (next: string | undefined, after: string | undefined) =>
-    next !== undefined && (nouns.has(next) || (adjectives.has(next) && after !== undefined && nouns.has(after)));
+  /** Name's + up to two adjectives + a noun of the bank (that is not also an adjective/adverb) is a possessive. */
+  const isPossessive = (rest: readonly string[]) => {
+    let k = 0;
+    while (k < 2 && rest[k] !== undefined && adjectives.has(rest[k])) k++;
+    const w = rest[k];
+    return w !== undefined && nouns.has(w) && !adjectives.has(w) && !AMBIGUOUS_AFTER_NAME.has(w);
+  };
 
   for (const { file, lesson } of ctx.lessons) {
     for (const section of lesson.sections) {
@@ -85,7 +97,16 @@ export function checkAnswerForms(ctx: RuleContext): Problem[] {
         }
 
         for (const raw of new Set(accepted)) {
-          const tokens = joinOrdinals(normalizeAnswer(raw)).split(" ").filter(Boolean);
+          // clauses end at . ! ? , ; : an "is" at the end of a clause ("Yes, it is.") can never be contracted
+          const tokens: string[] = [];
+          const clauseEnd: number[] = [];
+          for (const clause of raw.split(/[.!?,;]+/)) {
+            const ts = joinOrdinals(normalizeAnswer(clause)).split(" ").filter(Boolean);
+            if (ts.length === 0) continue;
+            tokens.push(...ts);
+            clauseEnd.push(...ts.map(() => tokens.length - 1));
+          }
+          const reading = (ts: readonly string[], i: number) => sReading(ts.slice(0, clauseEnd[i] + 1), i);
           const variant = (i: number, replacement: string, drop = 1) => [...tokens.slice(0, i), replacement, ...tokens.slice(i + drop)].join(" ");
           const listed = (...vs: string[]) => vs.some((v) => have.has(v));
 
@@ -94,22 +115,28 @@ export function checkAnswerForms(ctx: RuleContext): Problem[] {
             continue;
           }
           tokens.forEach((t, i) => {
-            const next = tokens[i + 1];
+            const next = clauseEnd[i + 1] === clauseEnd[i] ? tokens[i + 1] : undefined;
             const prev = tokens[i - 1];
+            const rest = tokens.slice(i + 1, clauseEnd[i] + 1);
             if (isSForm(t)) {
               const base = t.slice(0, -2);
-              if (next !== "been" && next !== "got" && next !== undefined && isParticipleLike(next)) {
-                if (!listed(variant(i, `${base} is`), variant(i, `${base} has`))) {
-                  add(`"${raw}": "${t}" before "${next}" is ambiguous ("${base} is" or "${base} has"), so grading does not fold it. ${BOTH}, ${STRICT}.`);
-                }
+              if (reading(tokens, i) === null && !listed(variant(i, `${base} is`), variant(i, `${base} has`))) {
+                add(`"${raw}": "${t}" before "${next ?? "the end"}" is ambiguous ("${base} is" or "${base} has") or not provably an "is", so grading does not fold it. ${BOTH}, ${STRICT}.`);
               }
-            } else if (S_BASES.includes(t) && next === "is" && tokens[i + 2] !== undefined && isParticipleLike(tokens[i + 2])) {
-              if (!listed(variant(i, `${t}'s`, 2))) add(`"${raw}": "${t} is ${tokens[i + 2]}" is not folded with "${t}'s ${tokens[i + 2]}" (ambiguous). Also accept the contracted form ("${variant(i, `${t}'s`, 2)}"), ${STRICT}.`);
+            } else if (S_BASES.includes(t) && next === "is" && clauseEnd[i + 1] > i + 1) {
+              const hypothetical = [...tokens.slice(0, i), `${t}'s`, ...tokens.slice(i + 2)];
+              if (sReading(hypothetical.slice(0, clauseEnd[i + 1]), i) === null && !listed(variant(i, `${t}'s`, 2))) {
+                add(`"${raw}": "${t} is ..." is not folded with "${t}'s ..." here (the word after it is not provably a non-verb). Also accept the contracted form ("${variant(i, `${t}'s`, 2)}"), ${STRICT}.`);
+              }
             }
-            if (t === "has" && prev !== undefined && next !== undefined && isParticipleLike(next)) {
-              const folded = next === "been" || next === "got";
-              if ((S_BASES.includes(prev) && !folded) || NAMES.has(prev)) {
-                if (!listed(variant(i - 1, `${prev}'s`, 2))) add(`"${raw}": "${prev} has ${next}" is not folded with "${prev}'s ${next}". Also accept the contracted form ("${variant(i - 1, `${prev}'s`, 2)}"), ${STRICT}.`);
+            if (t === "has" && prev !== undefined) {
+              const w = skipAdverbs(rest);
+              if (w !== undefined && isParticipleLike(w) && (S_BASES.includes(prev) || NAMES.has(prev))) {
+                const hypothetical = [...tokens.slice(0, i - 1), `${prev}'s`, ...tokens.slice(i + 1)];
+                const folded = S_BASES.includes(prev) && sReading(hypothetical.slice(0, clauseEnd[i]), i - 1) === "has";
+                if (!folded && !listed(variant(i - 1, `${prev}'s`, 2))) {
+                  add(`"${raw}": "${prev} has ..." is not folded with "${prev}'s ..." here. Also accept the contracted form ("${variant(i - 1, `${prev}'s`, 2)}"), ${STRICT}.`);
+                }
               }
             }
             if (t === "would" && prev !== undefined && WOULD_SUBJECT.has(prev) && next !== "like" && next !== "love") {
@@ -119,9 +146,14 @@ export function checkAnswerForms(ctx: RuleContext): Problem[] {
               if (!listed(variant(i, `${t}'s`, 2))) add(`"${raw}": "${t} is" is not folded with "${t}'s". Also accept the contracted form ("${variant(i, `${t}'s`, 2)}"), ${STRICT}.`);
             }
             const nm = /^([a-z]+)'s$/.exec(t);
-            if (nm && NAMES.has(nm[1])) {
-              if (!isPossessive(next, tokens[i + 2]) && !listed(variant(i, `${nm[1]} is`))) {
-                add(`"${raw}": "${t}" may be "${nm[1]} is" or a possessive; it is not folded. Also accept the full form ("${variant(i, `${nm[1]} is`)}"), ${STRICT} (use strict when it is a possessive; a possessive followed by a noun from the vocab bank is recognised automatically).`);
+            if (nm && !isSForm(t) && !CONTRACTED_KEYS.has(t)) {
+              const owner = nm[1];
+              const isName = NAMES.has(owner);
+              const contractionContext = isName ? !isPossessive(rest) : next !== undefined && CONTRACTION_CONTEXT.has(next);
+              if (contractionContext && !listed(variant(i, `${owner} is`), variant(i, `${owner} has`))) {
+                const w = skipAdverbs(rest);
+                const provablyIs = w !== undefined && !ADVERBS.has(next ?? "") && isSafeAfterS(w) && next === w;
+                add(`"${raw}": "${t}" may be "${owner} is" / "${owner} has" or a possessive; it is not folded. ${provablyIs ? `Also accept the full form ("${variant(i, `${owner} is`)}")` : BOTH}, ${STRICT} (use strict when it is a possessive; a possessive followed by a noun from the vocab bank is recognised automatically).`);
               }
             } else if (t.includes("'") && !CONTRACTED_KEYS.has(t) && !isSForm(t) && !/^[a-z]+'s$/.test(t) && !/^[a-z]+s'$/.test(t) && t !== "o'clock") {
               const would = /^(i|you|he|she|we|they)'d$/.test(t) && (next === "like" || next === "love");

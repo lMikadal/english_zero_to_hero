@@ -211,7 +211,7 @@ describe("answer-forms: common-noun 's before a/an/the or a preposition is a con
 
 describe("answer-forms and grading never disagree: rule silent => grading accepts the other form", () => {
   const SENTENCES = [
-    "He's a doctor", "He is a doctor", "She's not happy", "She is not happy", "It's the first door", "That's my pen", "What's your name", "Where is the bus",
+    "He's a doctor", "He is a doctor", "She's not happy", "She is not happy", "It's the big door", "That's my pen", "What's your name", "Where is the bus",
     "He's in the park", "He is reading", "He's been to Japan", "He has been to Japan", "She's got a cat", "She has got a cat",
     "He's tired", "He is tired", "He's never been to Japan", "He has never been to Japan", "She's just finished", "She has finished",
     "What's he done", "He's used my pen", "He has used my pen", "It's gone", "He's never late", "He is never late",
@@ -220,7 +220,7 @@ describe("answer-forms and grading never disagree: rule silent => grading accept
   const alt = (s: string): string[] => {
     const out: string[] = [];
     const m1 = /^(.*?\b)(he|she|it|that|what|where|who|how|there|here|name)'s (.*)$/i.exec(s);
-    if (m1) { out.push(`${m1[1]}${m1[2]} is ${m1[3]}`); if (/^(not )?(been|got)\b/.test(m1[3])) out.push(`${m1[1]}${m1[2]} has ${m1[3]}`); }
+    if (m1) out.push(`${m1[1]}${m1[2]} ${/^(been|got)\b/.test(m1[3]) ? "has" : "is"} ${m1[3]}`);
     const m2 = /^(.*?\b)(he|she|it|that|what|where|who|how|there|here|name|sam|tom|ann) (is|has) (.*)$/i.exec(s);
     if (m2) out.push(`${m2[1]}${m2[2]}'s ${m2[4]}`);
     return out;
