@@ -121,6 +121,33 @@
       },
       "exercises": [
         {
+          "id": "d036-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-food"
+            },
+            {
+              "vocabId": "v-rice"
+            },
+            {
+              "vocabId": "v-bread"
+            },
+            {
+              "vocabId": "v-meat"
+            },
+            {
+              "vocabId": "v-chicken"
+            },
+            {
+              "vocabId": "v-fruit"
+            }
+          ]
+        },
+        {
           "id": "d036-listen-01",
           "type": "listen_choose",
           "instruction": {
@@ -161,7 +188,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "Dan likes meat. He eats some chicken."
+          "audioText": "My son likes bread and some fruit. He drinks milk."
         }
       ]
     },
@@ -176,17 +203,16 @@
           "id": "d036-speak-01",
           "type": "shadowing",
           "instruction": {
-            "th": "พูดตามทันทีทีละประโยค"
+            "th": "พูดตามทันทีทีละประโยค (some = บ้าง/สักหน่อย ใช้กับของนับไม่ได้ เช่น some milk, some rice หรือพหูพจน์ some bananas; ใช้ในประโยคบอกเล่าและตอนเสนอ: Do you want some water?)"
           },
           "lines": [
-            "I like rice.",
-            "I eat rice and chicken.",
-            "I drink some milk.",
-            "She likes fruit.",
-            "He eats a banana.",
-            "The food is good.",
-            "We eat bread and meat.",
-            "They drink milk."
+            "I like rice and chicken.",
+            "My son likes bread and milk.",
+            "He eats a banana and some fruit.",
+            "My husband likes meat.",
+            "He eats some meat and some rice.",
+            "We drink some milk and some water.",
+            "The food is good. We like our food."
           ]
         },
         {
@@ -196,7 +222,7 @@
             "th": "บอกว่าคุณชอบอาหารอะไรและดื่มอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
           },
           "prompt": "What food do you like? What do you drink?",
-          "sampleAnswer": "I like rice and fruit. I drink water.",
+          "sampleAnswer": "I like rice, bread and fruit. I drink some milk.",
           "keywords": [
             "like",
             "drink"
@@ -230,7 +256,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (สังเกต likes, drinks: กริยาเติม -s เพราะประธานเป็นคนเดียว)"
           },
-          "text": "Hi! I am Leo. I am nine. This is my family. My mother, Rose, likes rice and fish. She drinks tea. My father, Dan, likes meat and chicken. I like bananas, bread and milk. We all like food!",
+          "text": "Hi! I am Leo. I am nine. This is my family. My mother, Rose, likes rice and fish. She drinks tea. My father, Dan, likes meat and chicken. I like bananas, bread and milk. We eat some fruit too. We all like food!",
           "questions": [
             {
               "question": {
@@ -313,35 +339,29 @@
           ]
         },
         {
-          "id": "d036-write-04",
+          "id": "d036-vocab-02",
           "type": "vocab_match",
           "instruction": {
             "th": "จับคู่คำกับความหมายภาษาไทย"
           },
           "pairs": [
             {
-              "vocabId": "v-food"
-            },
-            {
-              "vocabId": "v-rice"
-            },
-            {
-              "vocabId": "v-bread"
-            },
-            {
-              "vocabId": "v-meat"
-            },
-            {
-              "vocabId": "v-chicken"
-            },
-            {
-              "vocabId": "v-fruit"
-            },
-            {
               "vocabId": "v-banana"
             },
             {
+              "vocabId": "v-eat"
+            },
+            {
+              "vocabId": "v-drink"
+            },
+            {
+              "vocabId": "v-like"
+            },
+            {
               "vocabId": "v-milk"
+            },
+            {
+              "vocabId": "v-some"
             }
           ]
         }

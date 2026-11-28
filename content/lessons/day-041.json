@@ -117,16 +117,16 @@
           "id": "d041-listen-01",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าแม่ของคนพูดทำอาหารอะไร"
+            "th": "ฟังแล้วตอบว่าอาหารโปรดของ B คืออะไร (B's = ของ B)"
           },
-          "audioText": "A: Do you like cheese? B: Yes, I do. A: Do you like chocolate? B: No, I don't. I like fruit. A: Does your mother cook? B: Yes, she does. She cooks soup and rice. A: Does your father cook? B: No, he doesn't.",
+          "audioText": "A: What is your favourite food? B: Pizza! I like cheese pizza and chocolate cake. Cake is sweet. A: Do you eat meat? B: Yes, I do. I eat chicken and rice. A: Do you drink coffee? B: No, I don't. I drink milk and juice. I eat some fruit and a cheese sandwich.",
           "question": {
-            "en": "What does B's mother cook?",
-            "th": "แม่ของ B ทำอาหารอะไร"
+            "en": "What is B's favourite food?",
+            "th": "อาหารโปรดของ B คืออะไร"
           },
           "choices": [
-            "Soup and rice",
-            "Pizza and cake"
+            "Pizza",
+            "Soup"
           ],
           "answer": 0
         },
@@ -134,17 +134,16 @@
           "id": "d041-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าแดนดื่มอะไรกับน้ำตาล"
+            "th": "ฟังแล้วตอบว่าโรสซื้ออะไร"
           },
-          "audioText": "Rose goes to the market. She buys vegetables, chicken and rice. Dan does not cook. He drinks coffee with some sugar. Leo does not like vegetables. His favourite food is pizza.",
+          "audioText": "Rose goes to the market. She needs vegetables, potatoes and chicken. She asks the man, \"What is the price of the chicken?\" He says, \"It is eighty baht.\" Rose buys the chicken, some bananas and some bread. She pays and takes the bag. She goes home and cooks dinner in the kitchen.",
           "question": {
-            "en": "What does Dan drink?",
-            "th": "แดนดื่มอะไร"
+            "en": "What does Rose buy?",
+            "th": "โรสซื้ออะไร"
           },
           "choices": [
-            "Coffee",
-            "Tea",
-            "Milk"
+            "Chicken, bananas and bread",
+            "Pizza and cake"
           ],
           "answer": 0
         },
@@ -154,7 +153,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "Rose goes to the market. She buys some fruit and vegetables."
+          "audioText": "Rose cooks soup. She puts some salt in the soup."
         }
       ]
     },
@@ -172,12 +171,14 @@
             "th": "พูดตามทันทีทีละประโยค"
           },
           "lines": [
-            "Do you like coffee?",
-            "No, I don't. I drink tea.",
-            "Dan does not cook. He eats a big meal.",
-            "Rose goes to the market and buys fruit.",
-            "What do you want? I want a bowl of soup, please.",
-            "The bill is sixty baht."
+            "Hello! I need some vegetables and some rice.",
+            "I want some fruit too. What's the price?",
+            "The bananas are twenty baht.",
+            "I buy the bananas and the rice.",
+            "I give you a hundred baht.",
+            "Take the bag. Thank you!",
+            "I go home and cook dinner in the kitchen.",
+            "Dan doesn't cook. He drinks coffee with sugar."
           ]
         },
         {
@@ -208,7 +209,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (Leo's = ของลีโอ)"
           },
-          "text": "Rose goes to the market. She buys vegetables, chicken and rice. She needs some milk too. The price of the milk is forty baht. Rose cooks dinner in the kitchen. Dan does not cook. He drinks coffee with some sugar. Leo does not like vegetables. His favourite food is pizza. The family has dinner at home. It is a good meal.",
+          "text": "Rose goes to the market. She buys potatoes, rice and some milk. The price of the milk is forty baht. She pays and goes home. At home Rose cooks lunch in the kitchen. Dan does not cook. He eats a big meal and drinks coffee with some sugar. Leo does not like vegetables. His favourite food is pizza. The family has dinner at home. It is a good meal.",
           "questions": [
             {
               "question": {
@@ -255,7 +256,7 @@
       },
       "exercises": [
         {
-          "id": "d041-write-01",
+          "id": "d041-vocab-01",
           "type": "vocab_match",
           "instruction": {
             "th": "จับคู่คำกับความหมายภาษาไทย"
@@ -274,33 +275,21 @@
               "vocabId": "v-sugar"
             },
             {
-              "vocabId": "v-cheese"
-            },
-            {
               "vocabId": "v-lunch"
             },
             {
               "vocabId": "v-kitchen"
             },
             {
-              "vocabId": "v-vegetable"
-            },
-            {
               "vocabId": "v-market"
             },
             {
               "vocabId": "v-price"
-            },
-            {
-              "vocabId": "v-waiter"
-            },
-            {
-              "vocabId": "v-bowl"
             }
           ]
         },
         {
-          "id": "d041-write-02",
+          "id": "d041-write-01",
           "type": "fill_blank",
           "instruction": {
             "th": "เติม do หรือ does"
@@ -312,7 +301,7 @@
           ]
         },
         {
-          "id": "d041-write-03",
+          "id": "d041-write-02",
           "type": "arrange_words",
           "instruction": {
             "th": "เรียงคำให้เป็นประโยค"
@@ -327,7 +316,7 @@
           "answer": "My father does not cook"
         },
         {
-          "id": "d041-write-04",
+          "id": "d041-write-03",
           "type": "translate_th_en",
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
@@ -338,7 +327,7 @@
           ]
         },
         {
-          "id": "d041-write-05",
+          "id": "d041-write-04",
           "type": "translate_th_en",
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"

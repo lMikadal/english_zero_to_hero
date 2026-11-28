@@ -115,12 +115,39 @@
       },
       "exercises": [
         {
+          "id": "d038-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-breakfast"
+            },
+            {
+              "vocabId": "v-lunch"
+            },
+            {
+              "vocabId": "v-dinner"
+            },
+            {
+              "vocabId": "v-meal"
+            },
+            {
+              "vocabId": "v-restaurant"
+            },
+            {
+              "vocabId": "v-kitchen"
+            }
+          ]
+        },
+        {
           "id": "d038-listen-01",
           "type": "listen_choose",
           "instruction": {
             "th": "ฟังแล้วตอบว่าใครทำอาหารเย็น ไวยากรณ์ใหม่ ประโยคปฏิเสธ Present Simple: I/you/we/they + do not (don't) + กริยา; he/she/it หรือชื่อคนเดียว + does not (doesn't) + กริยาเดิม (ไม่เติม -s: He does not cook)"
           },
-          "audioText": "Rose cooks dinner in the kitchen. Dan does not cook. He eats dinner with Leo. Leo does not like vegetables. He likes potatoes.",
+          "audioText": "Rose cooks dinner in the kitchen. Dan doesn't cook. He eats dinner with Leo. Leo doesn't like vegetables. He likes potatoes.",
           "question": {
             "en": "Who cooks dinner?",
             "th": "ใครทำอาหารเย็น"
@@ -138,7 +165,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าแนนกินเนื้อไหม"
           },
-          "audioText": "I am Nan. I have lunch at school. I do not eat meat. I like vegetables and salad.",
+          "audioText": "I am Nan. I have lunch at school. I don't eat meat. I like vegetables and salad. Dinner is my big meal. I eat dinner at home or in a restaurant.",
           "question": {
             "en": "Does Nan eat meat?",
             "th": "แนนกินเนื้อสัตว์ไหม"
@@ -155,7 +182,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "He does not like vegetables. He likes potatoes."
+          "audioText": "I eat breakfast at home. Rose cooks dinner in the kitchen."
         }
       ]
     },
@@ -174,13 +201,13 @@
           },
           "lines": [
             "I eat breakfast at home.",
-            "We eat dinner in a restaurant.",
-            "Rose cooks dinner in the kitchen.",
-            "Dan does not cook.",
-            "I do not like potatoes.",
-            "She likes salad and vegetables.",
             "I have lunch at school.",
-            "It is a big meal."
+            "We have dinner in the kitchen.",
+            "Rose cooks dinner. Dan doesn't cook.",
+            "Rose likes salad and vegetables.",
+            "I don't like vegetables. I like potatoes.",
+            "On my birthday we eat dinner in a restaurant.",
+            "It is a big meal. Dinner is my favourite meal."
           ]
         },
         {
@@ -199,10 +226,10 @@
           "id": "d038-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ระวัง /dʒ/ ใน vegetable คอสั่น ไม่ใช่ 'เวจ' แบบ 'จ' และหลัง does ไม่เติม -s ที่กริยา (like)"
+            "th": "ฟังแล้วพูดตาม ระวัง /dʒ/ ใน vegetable คอสั่น ไม่ใช่ 'เวจ' แบบ 'จ' และหลัง doesn't ไม่เติม -s ที่กริยา (like)"
           },
-          "text": "He does not like vegetables.",
-          "ipa": "/hiː dʌz nɑːt laɪk ˈvedʒtəblz/",
+          "text": "He doesn't like vegetables.",
+          "ipa": "/hiː ˈdʌzənt laɪk ˈvedʒtəblz/",
           "phonemes": [
             "jh"
           ]
@@ -220,9 +247,9 @@
           "id": "d038-read-01",
           "type": "read_passage",
           "instruction": {
-            "th": "อ่านแล้วตอบคำถาม (does not = doesn't: ไม่ทำ/ไม่ชอบ สำหรับ he, she และชื่อคนเดียว)"
+            "th": "อ่านแล้วตอบคำถาม (does not = doesn't: ไม่ทำ/ไม่ชอบ สำหรับ he, she และชื่อคนเดียว; Leo's birthday = วันเกิดของลีโอ)"
           },
-          "text": "Rose cooks dinner at home. She cooks rice, chicken and vegetables. Dan does not cook. He eats a big meal and drinks coffee. Leo does not like vegetables. He likes potatoes. Rose and Dan like salad. The family has dinner in the kitchen.",
+          "text": "Rose cooks dinner at home. She cooks rice, chicken and vegetables. Dan does not cook. He eats a big meal and drinks coffee. Leo does not like vegetables. He likes potatoes. Rose and Dan like salad. The family has breakfast and dinner in the kitchen. On Leo's birthday they have lunch in a restaurant. It is a big meal.",
           "questions": [
             {
               "question": {
@@ -248,12 +275,12 @@
             },
             {
               "question": {
-                "en": "What does Leo like?",
-                "th": "ลีโอชอบอะไร"
+                "en": "Where do they have lunch on Leo's birthday?",
+                "th": "พวกเขากินอาหารกลางวันที่ไหนในวันเกิดของลีโอ"
               },
               "choices": [
-                "Potatoes",
-                "Salad"
+                "In a restaurant",
+                "At home"
               ],
               "answer": 0
             }
@@ -305,30 +332,12 @@
           ]
         },
         {
-          "id": "d038-write-04",
+          "id": "d038-vocab-02",
           "type": "vocab_match",
           "instruction": {
             "th": "จับคู่คำกับความหมายภาษาไทย"
           },
           "pairs": [
-            {
-              "vocabId": "v-breakfast"
-            },
-            {
-              "vocabId": "v-lunch"
-            },
-            {
-              "vocabId": "v-dinner"
-            },
-            {
-              "vocabId": "v-meal"
-            },
-            {
-              "vocabId": "v-restaurant"
-            },
-            {
-              "vocabId": "v-kitchen"
-            },
             {
               "vocabId": "v-cook"
             },

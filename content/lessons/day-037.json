@@ -116,12 +116,39 @@
       },
       "exercises": [
         {
+          "id": "d037-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-coffee"
+            },
+            {
+              "vocabId": "v-juice"
+            },
+            {
+              "vocabId": "v-sugar"
+            },
+            {
+              "vocabId": "v-salt"
+            },
+            {
+              "vocabId": "v-cheese"
+            },
+            {
+              "vocabId": "v-cake"
+            }
+          ]
+        },
+        {
           "id": "d037-listen-01",
           "type": "listen_choose",
           "instruction": {
             "th": "ฟังแล้วตอบว่าอาหารโปรดของลีโอคืออะไร (Leo's = ของลีโอ)"
           },
-          "audioText": "Hi! I am Leo. My favourite food is pizza. I like cheese and chocolate cake. My father drinks coffee. My mother drinks tea.",
+          "audioText": "Hi! I am Leo. My favourite food is pizza. I like cheese and chocolate cake. My father drinks coffee with sugar. My mother drinks tea. She likes soup with some salt.",
           "question": {
             "en": "What is Leo's favourite food?",
             "th": "อาหารโปรดของลีโอคืออะไร"
@@ -139,7 +166,7 @@
           "instruction": {
             "th": "ฟังบทสนทนา Yes/No: Do ใช้กับ I/you/we/they และ Does ใช้กับ he/she/it (หลัง does กริยาไม่เติม -s) ตอบสั้น ๆ ได้ว่า Yes, I do. / No, I don't. (don't = do not) แล้วตอบว่าโรสดื่มอะไร"
           },
-          "audioText": "Nan: Do you like coffee, Rose? Rose: No, I don't. I drink tea. Nan: Do you like cake? Rose: Yes, I do. It is sweet.",
+          "audioText": "Nan: Do you like coffee, Rose? Rose: No, I don't. I drink tea. Nan: Do you like juice? Rose: Yes, I do. Orange juice is sweet. Nan: Do you like cake? Rose: Yes, I do. I like chocolate cake.",
           "question": {
             "en": "What does Rose drink?",
             "th": "โรสดื่มอะไร"
@@ -157,7 +184,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "Do you like soup? Yes, I do."
+          "audioText": "Do you like cheese sandwiches? Yes, I do."
         }
       ]
     },
@@ -176,13 +203,15 @@
           },
           "lines": [
             "Do you like coffee?",
-            "Yes, I do. I drink coffee.",
-            "Do you like sugar? No, I don't.",
-            "Does she like chocolate cake? Yes, she does. It is sweet.",
-            "I like cheese pizza.",
-            "Pizza is my favourite food.",
-            "The soup is hot. I like some salt in my soup.",
-            "I drink orange juice."
+            "Yes, I do. I like coffee with sugar.",
+            "Do you like juice?",
+            "Yes, I do. I like orange juice.",
+            "Do you like cheese sandwiches?",
+            "Yes, I do. Cheese pizza is my favourite food.",
+            "Does she like chocolate cake?",
+            "Yes, she does. It is sweet.",
+            "Does he like soup?",
+            "Yes, he does. The soup is hot. I like salt in my soup."
           ]
         },
         {
@@ -225,7 +254,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (Leo's birthday = วันเกิดของลีโอ)"
           },
-          "text": "It is Leo's birthday! He is nine. Rose has a big chocolate cake. It is sweet. Leo likes it. Dan has a cheese sandwich and a cup of coffee. He likes some sugar in his coffee. Nan drinks coffee too. Rose drinks tea. Pizza is Leo's favourite food.",
+          "text": "It is Leo's birthday! He is nine. Rose has a big chocolate cake. It is sweet. Leo likes it. Dan has a cheese sandwich and a cup of coffee. He likes sugar in his coffee. Nan drinks coffee too. Rose drinks tea. Leo drinks orange juice. Rose has some soup. She likes salt in her soup. Pizza is Leo's favourite food.",
           "questions": [
             {
               "question": {
@@ -300,7 +329,7 @@
           "id": "d037-write-03",
           "type": "translate_th_en",
           "instruction": {
-            "th": "แปลเป็นภาษาอังกฤษ"
+            "th": "แปลเป็นภาษาอังกฤษ (เธอ = she)"
           },
           "th": "เธอชอบเค้กช็อกโกแลตไหม",
           "accept": [
@@ -308,27 +337,12 @@
           ]
         },
         {
-          "id": "d037-write-04",
+          "id": "d037-vocab-02",
           "type": "vocab_match",
           "instruction": {
             "th": "จับคู่คำกับความหมายภาษาไทย"
           },
           "pairs": [
-            {
-              "vocabId": "v-coffee"
-            },
-            {
-              "vocabId": "v-juice"
-            },
-            {
-              "vocabId": "v-sugar"
-            },
-            {
-              "vocabId": "v-cheese"
-            },
-            {
-              "vocabId": "v-cake"
-            },
             {
               "vocabId": "v-pizza"
             },
@@ -340,6 +354,9 @@
             },
             {
               "vocabId": "v-chocolate"
+            },
+            {
+              "vocabId": "v-favourite"
             },
             {
               "vocabId": "v-sweet"

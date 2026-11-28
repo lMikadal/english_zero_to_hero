@@ -115,12 +115,36 @@
       },
       "exercises": [
         {
+          "id": "d039-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-go"
+            },
+            {
+              "vocabId": "v-buy"
+            },
+            {
+              "vocabId": "v-need"
+            },
+            {
+              "vocabId": "v-want"
+            },
+            {
+              "vocabId": "v-pay"
+            }
+          ]
+        },
+        {
           "id": "d039-listen-01",
           "type": "listen_choose",
           "instruction": {
             "th": "ฟังแล้วตอบว่าโรสซื้ออะไร ไวยากรณ์ใหม่: กริยาที่ลงท้าย -o, -s, -sh, -ch, -x เติม -es (go → goes, do → does, wash → washes) ส่วน buy, pay, take เติม -s ธรรมดา (buys, pays, takes)"
           },
-          "audioText": "Rose goes to the market. She buys fruit and vegetables. She pays eighty baht. She goes home with the bag.",
+          "audioText": "Rose takes the bus to the market. She buys fruit and vegetables. She pays eighty baht and goes home.",
           "question": {
             "en": "What does Rose buy?",
             "th": "โรสซื้ออะไร"
@@ -137,7 +161,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่านมราคาเท่าไร คำถาม What/Where + do/does + ประธาน + กริยาเดิม (What do you need? What does she want?)"
           },
-          "audioText": "Man: What do you need? Rose: I need some milk and bread. How much is the milk? Man: The price is forty baht.",
+          "audioText": "I need some milk. I ask the man, \"What is the price of the milk?\" He says, \"It is forty baht.\" I want two.",
           "question": {
             "en": "What is the price of the milk?",
             "th": "นมราคาเท่าไร"
@@ -173,16 +197,14 @@
             "th": "พูดตามทันทีทีละประโยค"
           },
           "lines": [
-            "I go to the market.",
-            "She goes to the market.",
-            "What do you need?",
-            "I need some milk.",
-            "I want some bread.",
-            "What is the price?",
-            "He takes the bus to the market.",
-            "I pay sixty baht.",
-            "Give the money to the man.",
-            "Ask the man."
+            "Hello! I need some milk and some bread.",
+            "The milk is forty baht and the bread is thirty baht.",
+            "I want some bananas too. I ask the price.",
+            "The bananas are twenty baht.",
+            "I buy the milk, the bread and the bananas.",
+            "I pay ninety baht. I give you a hundred baht.",
+            "Take the bag and ten baht. Thank you!",
+            "Thank you. I go home."
           ]
         },
         {
@@ -202,12 +224,12 @@
           "id": "d039-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม คำถามที่ขึ้นต้นด้วย What เสียงลงท้ายประโยค (↘) และหลัง does ไม่เติม -s ที่ want"
+            "th": "ฟังแล้วพูดตาม คำถามที่ขึ้นต้นด้วย What เสียงลงท้ายประโยค (↘) หลัง does ไม่เติม -s ที่ want และ /dʒ/ ใน juice สั่นคอ"
           },
-          "text": "What does he want?",
-          "ipa": "/wʌt dʌz hiː wɑːnt/",
+          "text": "What juice does he want?",
+          "ipa": "/wʌt dʒuːs dʌz hiː wɑːnt/",
           "phonemes": [
-            "y"
+            "jh"
           ]
         }
       ]
@@ -223,18 +245,18 @@
           "id": "d039-read-01",
           "type": "read_passage",
           "instruction": {
-            "th": "อ่านแล้วตอบคำถาม (goes, buys, wants, asks, says, gives, pays, takes: กริยาของ she เติม -s หรือ -es)"
+            "th": "อ่านแล้วตอบคำถาม (goes, buys, wants, asks, says, gives, pays, takes: กริยาของ she เติม -s หรือ -es; says ออกเสียง /sez/ 'เซซ')"
           },
-          "text": "Nan goes to the market in Bangkok. She buys bread and bananas. She wants some milk too. She asks the man, \"What is the price of the milk?\" The man says, \"The price is forty baht.\" Nan gives the man fifty baht. She pays and takes the bag.",
+          "text": "Nan goes to the market in Bangkok. She needs some milk, some bread and some bananas. She asks the man, \"What is the price of the milk?\" The man says, \"It is forty baht.\" Nan buys the milk, the bread and the bananas. She pays ninety baht. She gives the man a hundred baht. He gives her ten baht. Nan takes the bag and goes home.",
           "questions": [
             {
               "question": {
-                "en": "What does Nan want?",
-                "th": "แนนอยากได้อะไร"
+                "en": "What does Nan need?",
+                "th": "แนนต้องใช้อะไร"
               },
               "choices": [
-                "Milk",
-                "Cheese"
+                "Milk, bread and bananas",
+                "Chicken and rice"
               ],
               "answer": 0
             },
@@ -245,7 +267,7 @@
               },
               "choices": [
                 "Forty baht",
-                "Fifty baht"
+                "Ninety baht"
               ],
               "answer": 0
             },
@@ -310,27 +332,12 @@
           ]
         },
         {
-          "id": "d039-write-04",
+          "id": "d039-vocab-02",
           "type": "vocab_match",
           "instruction": {
             "th": "จับคู่คำกับความหมายภาษาไทย"
           },
           "pairs": [
-            {
-              "vocabId": "v-go"
-            },
-            {
-              "vocabId": "v-buy"
-            },
-            {
-              "vocabId": "v-need"
-            },
-            {
-              "vocabId": "v-want"
-            },
-            {
-              "vocabId": "v-pay"
-            },
             {
               "vocabId": "v-price"
             },
