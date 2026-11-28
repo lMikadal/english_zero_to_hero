@@ -96,7 +96,11 @@ audio:       ; @echo "make $@: not implemented yet (PR 7: audio-tts)" >&2; exit 
 # stage-down, which names the project ezh_stage itself (scripts/prod/prod-scripts.test.ts enforces this).
 PROD_ENV ?= .env.prod
 PROD_PROJECT ?= ezh_prod
-PROD := $(COMPOSE) -p $(PROD_PROJECT) -f docker-compose.prod.yml --env-file $(PROD_ENV)
+# The image tag and the backup folder come from the project name, so the stage stack can never replace the image that the
+# next prod-up runs, nor prune the real backups: ezh_prod -> ezh-prod-app:latest + backups/, ezh_stage -> ezh-stage-app:latest + backups-stage/
+PROD_IMAGE = ezh-$(subst _,-,$(patsubst ezh_%,%,$(PROD_PROJECT)))-app:latest
+PROD_BACKUPS = backups$(if $(filter ezh_prod,$(PROD_PROJECT)),,-$(patsubst ezh_%,%,$(PROD_PROJECT)))
+PROD := env PROD_IMAGE=$(PROD_IMAGE) $(COMPOSE) -p $(PROD_PROJECT) -f docker-compose.prod.yml --env-file $(PROD_ENV)
 # every value is read by the same parser the scripts use: scripts/prod/env-get.sh
 prod_var = $(shell sh scripts/prod/env-get.sh '$(PROD_ENV)' $(1) '$(2)')
 PROD_DB = $(call prod_var,POSTGRES_DB,english_zero_to_hero)
@@ -104,7 +108,7 @@ PROD_USER = $(call prod_var,POSTGRES_USER,ezh)
 PROD_PORT = $(call prod_var,APP_PORT,3100)
 PROD_BIND = $(call prod_var,APP_BIND,127.0.0.1)
 PROD_KEEP = $(call prod_var,BACKUP_KEEP,14)
-PROD_SCRIPT_ENV = COMPOSE_CMD='$(PROD)' DB_NAME='$(PROD_DB)' DB_USER='$(PROD_USER)' BACKUP_DIR=backups KEEP='$(PROD_KEEP)'
+PROD_SCRIPT_ENV = COMPOSE_CMD='$(PROD)' DB_NAME='$(PROD_DB)' DB_USER='$(PROD_USER)' BACKUP_DIR=$(PROD_BACKUPS) APP_BIND='$(PROD_BIND)' APP_PORT='$(PROD_PORT)' KEEP='$(PROD_KEEP)'
 
 prod: prod-init prod-build prod-up ## Production, one command: create .env.prod if missing, build the image, start it
 
@@ -125,7 +129,7 @@ prod-build: prod-check ## Build the production image (run after git pull)
 prod-up: prod-check ## Start production (backup if migrations are pending, then migrations, then the app)
 	@MODE=if-pending $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
 	$(PROD) up -d --wait
-	@echo "production is up: http://$(PROD_BIND):$(PROD_PORT)"
+	@echo "$(if $(filter ezh_prod,$(PROD_PROJECT)),production,stage ($(PROD_PROJECT))) is up: http://$(PROD_BIND):$(PROD_PORT)"
 
 prod-update: prod-check ## After git pull: backup (if data exists), build, start. THE way to update
 	@MODE=always $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh

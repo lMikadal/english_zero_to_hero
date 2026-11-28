@@ -36,16 +36,20 @@ work=$(mktemp -d "${TMPDIR:-/tmp}/ezh-restore.XXXXXX")
 stopped=""
 cleanup() {
   rc=$?
-  trap - EXIT
+  trap - EXIT INT TERM
   if [ -n "$stopped" ]; then
     # the normal start path: postgres, then migrations, then the app
     # shellcheck disable=SC2086
-    $COMPOSE_CMD up -d --wait || echo "WARNING: could not start the app again. Run: make prod-up" >&2
+    if ! $COMPOSE_CMD up -d --wait; then
+      echo "WARNING: could not start the app again. Run: make prod-up (เปิดแอปกลับไม่สำเร็จ ให้สั่ง make prod-up)" >&2
+      [ "$rc" -ne 0 ] || rc=1
+    fi
   fi
   rm -rf "$work"
   exit "$rc"
 }
 trap cleanup EXIT
+trap 'exit 130' INT TERM
 
 # a private copy: nothing that happens to backups/ (pruning, a mistake) can pull the file away from under us
 cp "$file" "$work/in.dump"
@@ -57,14 +61,18 @@ if [ "$dumpdb" != "$DB_NAME" ] && [ "${ALLOW_OTHER_DB:-}" != 1 ]; then
   fail "this dump comes from database \"${dumpdb:-unknown}\", not \"$DB_NAME\". ไฟล์นี้เป็นของฐานข้อมูลอื่น. If you are sure, add ALLOW_OTHER_DB=1"
 fi
 
-# a dump from a NEWER version of the app has tables this code does not know: refuse unless told otherwise
+# a dump from a NEWER version of the app has tables this code does not know: refuse unless told otherwise.
+# Every step below writes to a file first and checks its own exit status (a pipeline only reports its last command, which
+# once hid a failing pg_restore). pg_restore needs `-f -` to print to stdout (pg >= 12).
 # shellcheck disable=SC2086
-dumpmax=$($COMPOSE_CMD exec -T postgres pg_restore --data-only -n drizzle -t __drizzle_migrations < "$work/in.dump" \
-  | awk '/^COPY /{c=1;next} /^\\\.$/{c=0} c{ if ($3+0>m) m=$3+0 } END{printf "%.0f", m}') || dumpmax=0
+$COMPOSE_CMD exec -T postgres pg_restore --data-only -n drizzle -t __drizzle_migrations -f - < "$work/in.dump" > "$work/migrations.sql" \
+  || fail "cannot read the migration list inside $file. ไฟล์ backup อ่านรายการ migration ไม่ได้"
+dumpmax=$(awk '/^COPY /{c=1;next} /^\\\.$/{c=0} c{ if ($3+0>m) m=$3+0 } END{printf "%.0f", m}' "$work/migrations.sql")
 # shellcheck disable=SC2086
-journalmax=$($COMPOSE_CMD run --rm --no-deps -T --entrypoint cat migrate /app/migrations/meta/_journal.json \
-  | grep -o '"when": *[0-9]*' | grep -o '[0-9]*$' | sort -n | tail -n 1) || journalmax=""
-[ -n "$journalmax" ] || fail "cannot read the migration list of the app image. Build it first: make prod-build"
+$COMPOSE_CMD run --rm --no-deps -T --entrypoint cat migrate /app/migrations/meta/_journal.json > "$work/journal.json" \
+  || fail "cannot read the migration list of the app image. Build it first: make prod-build (ยังไม่ได้ build image)"
+journalmax=$(grep -o '"when": *[0-9]*' "$work/journal.json" | grep -o '[0-9]*$' | sort -n | tail -n 1)
+[ -n "$journalmax" ] || fail "the migration list of the app image is empty or unreadable"
 if [ "${dumpmax:-0}" -gt "$journalmax" ] && [ "${ALLOW_NEWER:-}" != 1 ]; then
   fail "this backup was made by a NEWER version of the app (it has migrations this version does not know). Update first: git pull && make prod-update. backup นี้มาจากแอปเวอร์ชันที่ใหม่กว่า ให้อัปเดตแอปก่อน. To restore anyway: ALLOW_NEWER=1"
 fi
@@ -90,4 +98,9 @@ $COMPOSE_CMD exec -T postgres pg_restore --no-owner -f - --no-acl < "$work/in.du
   | $COMPOSE_CMD exec -T postgres psql -U "$DB_USER" -d "$DB_NAME" --single-transaction -v ON_ERROR_STOP=1 -q > /dev/null \
   || fail "the restore failed and was rolled back: the data is unchanged (ข้อมูลเดิมไม่เปลี่ยน). Safety backup: $safety"
 
-echo "Restore finished. Starting the app (pending migrations run first) ..."
+echo "Data restored. Starting the app (pending migrations run first) ..."
+stopped=""
+# shellcheck disable=SC2086
+$COMPOSE_CMD up -d --wait \
+  || fail "the data was restored but the app did not start (see: make prod-logs). ข้อมูลกู้คืนแล้ว แต่แอปเปิดไม่ขึ้น. Safety backup: $safety"
+echo "restore เสร็จ แอปเปิดแล้วที่ http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3100} (restore finished)"

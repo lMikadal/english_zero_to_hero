@@ -443,6 +443,7 @@ describe("restore.sh", () => {
     expect(run("restore.sh", [dump(), DB], base(cmd)).code).toBe(0);
     const c = calls(log).find((x) => x.includes("pg_restore --data-only"))!;
     expect(c).toMatch(/ -f -(\s|$)/);
+    fs.writeFileSync(log, "");
     const r = run("restore.sh", [dump(), DB], base(cmd, { FAKE_FAIL: "pg_restore --data-only" }));
     expect(r.code).not.toBe(0);
     expect(calls(log).some((x) => x.includes("stop app"))).toBe(false);
@@ -590,10 +591,11 @@ describe("Makefile guards", () => {
   });
 
   it("S5: the 'is up' message says stage for the stage stack", () => {
-    expect(makefile).toMatch(/production is up|stage is up/);
+    expect(makefile).toMatch(/is up: http/);
     expect(makefile).toContain("stage");
     const up = makefile.slice(makefile.indexOf("prod-up:"), makefile.indexOf("prod-update:"));
     expect(up).not.toMatch(/echo "production is up/);
+    expect(up).toMatch(/stage/);
   });
 
   const hasMake = spawnSync("make", ["--version"]).status === 0;
@@ -615,10 +617,10 @@ describe("Makefile guards", () => {
   });
 
   it("M2 (text check, runs without make): the image tag and the backup folder are derived from the project name", () => {
-    expect(makefile).toMatch(/^PROD_IMAGE\s*[:?]?=.*ezh-prod-app:latest/m);
+    expect(makefile).toMatch(/^PROD_IMAGE\s*[:?]?=.*PROD_PROJECT.*-app:latest/m);
     expect(makefile).toMatch(/^PROD\s*:?=.*PROD_IMAGE=\$\(PROD_IMAGE\)/m);
     expect(makefile).toMatch(/BACKUP_DIR=\$\(PROD_BACKUPS\)/);
-    expect(makefile).toMatch(/^PROD_BACKUPS\s*[:?]?=.*backups-/m);
+    expect(makefile).toMatch(/^PROD_BACKUPS\s*[:?]?=.*PROD_PROJECT/m);
   });
 
   it("M2: backups-stage/ is git-ignored", () => {

@@ -15,10 +15,16 @@ printf %s "$keep" | grep -Eq '^[1-9][0-9]*$' || keep=""
 
 mkdir -p "$dir"
 chmod 700 "$dir"
-stamp=$(date +%Y%m%d-%H%M%S)
 suffix=""
 [ -z "${LABEL:-}" ] || suffix="-$LABEL"
-file="$dir/ezh-$DB_NAME-$stamp$suffix.dump"
+# UTC, so a time zone change cannot reorder the names. A name that exists is never overwritten: wait for the next second.
+tries=0
+while :; do
+  file="$dir/ezh-$DB_NAME-$(date -u +%Y%m%d-%H%M%S)$suffix.dump"
+  [ ! -e "$file" ] && break
+  tries=$((tries + 1)); [ "$tries" -lt 5 ] || { echo "ERROR: $file already exists" >&2; exit 1; }
+  sleep 1
+done
 tmp="$file.partial"
 trap 'rm -f "$tmp"' EXIT
 
@@ -29,5 +35,7 @@ $COMPOSE_CMD exec -T postgres pg_dump -U "$DB_USER" -d "$DB_NAME" --format=custo
 mv "$tmp" "$file"
 trap - EXIT
 
-[ "${PRUNE:-1}" = 0 ] || sh "$(dirname "$0")/prune-backups.sh" "$dir" "$DB_NAME" "$keep"
+# the new file is passed to the pruner so it can never delete it; nothing is reported unless it is really there
+[ "${PRUNE:-1}" = 0 ] || sh "$(dirname "$0")/prune-backups.sh" "$dir" "$DB_NAME" "$keep" "$file"
+[ -s "$file" ] || { echo "ERROR: $file is missing or empty after pruning" >&2; exit 1; }
 echo "$file"

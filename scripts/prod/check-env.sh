@@ -10,6 +10,15 @@ get() { sh "$here/env-get.sh" "$file" "$@"; }
 
 [ -f "$file" ] || fail "$file does not exist. Create it with: make prod-init  (ยังไม่มีไฟล์ $file ให้สั่ง make prod-init)"
 
+# compose and the make/sh parser must read the file the same way: no `export KEY=...` (make would ignore the line,
+# compose would honour it) and no `KEY=value # comment` (compose strips the comment, the shell parser would not)
+if tr -d '\r' < "$file" | grep -Eq '^[[:space:]]*export[[:space:]]'; then
+  fail "$file contains a line starting with 'export'. Write plain KEY=value lines (บรรทัดที่ขึ้นต้นด้วย export ไม่รองรับ)"
+fi
+if tr -d '\r' < "$file" | grep -Eq '^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=.*[[:space:]]#'; then
+  fail "$file has a value followed by an inline '# comment'. Put comments on their own line (ห้ามเขียน comment ต่อท้ายค่า)"
+fi
+
 pw=$(get POSTGRES_PASSWORD)
 [ -n "$pw" ] || fail "POSTGRES_PASSWORD is not set in $file (make prod-init writes a random one)"
 case "$pw" in
@@ -39,6 +48,7 @@ esac
 port=$(get APP_PORT 3100)
 case "$port" in ''|*[!0-9]*) fail "APP_PORT=$port in $file must be a number" ;; esac
 bind=$(get APP_BIND 127.0.0.1)
+case "$bind" in 0.0.0.0) fail "APP_BIND=0.0.0.0 opens the app (which has no login) to every network the machine is on. Use 127.0.0.1 or your Tailscale address 100.x.y.z (ห้ามเปิดให้ทุกเครือข่าย)" ;; esac
 case "$bind" in ''|*[!0-9.]*) fail "APP_BIND=$bind in $file must be an IPv4 address such as 127.0.0.1" ;; esac
 
 keep=$(get BACKUP_KEEP 14)
