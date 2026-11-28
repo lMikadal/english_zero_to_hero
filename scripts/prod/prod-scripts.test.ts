@@ -265,6 +265,23 @@ describe("backup.sh", () => {
     expect(Math.abs(Number(m[2]) - utcHour) % 24 <= 1 || Math.abs(Number(m[2]) - utcHour) >= 23).toBe(true);
   });
 
+  it("warns (stderr) when backups with time stamps in the FUTURE exist, and still succeeds", () => {
+    const { cmd } = fakeCompose();
+    const backups = path.join(tmp, "backups");
+    fs.mkdirSync(backups);
+    fs.writeFileSync(path.join(backups, name("29990101-000000")), "x");
+    const r = run("backup.sh", [], base(cmd, { KEEP: "3" }));
+    expect(r.code).toBe(0);
+    expect(r.err).toMatch(/clock/i);
+    expect(r.err).toContain(name("29990101-000000"));
+    expect(r.err).toMatch(/[ก-๙]/);
+  });
+
+  it("does not warn when no backup is from the future", () => {
+    const { cmd } = fakeCompose();
+    expect(run("backup.sh", [], base(cmd)).err).toBe("");
+  });
+
   it("does not prune at all when PRUNE=0", () => {
     const { cmd } = fakeCompose();
     const backups = path.join(tmp, "backups");
@@ -570,7 +587,7 @@ describe("Makefile guards", () => {
   it("C6: no target passes -v / --volumes (or removes a volume) for the production project", () => {
     const bad = makefile.split("\n").filter((l) => {
       const touchesVolumes = /(\s-v\b|--volumes|volume\s+(rm|prune)|system\s+prune)/.test(l) && !/^\s*#/.test(l);
-      return touchesVolumes && !l.includes("-p ezh_stage") && !l.includes("-v /app/.next");
+      return touchesVolumes && !l.includes("-p ezh_stage") && !l.includes("-p ezh_ci") && !l.includes("-v /app/.next");
     });
     expect(bad).toEqual([]);
   });
@@ -625,5 +642,133 @@ describe("Makefile guards", () => {
 
   it("M2: backups-stage/ is git-ignored", () => {
     expect(fs.readFileSync(path.join(repoRoot, ".gitignore"), "utf8")).toMatch(/^backups-stage\/$/m);
+  });
+});
+
+describe("roundtrip.sh (only ever for stage or ci, never the real app)", () => {
+  /** a fake `docker compose` that logs and answers the few queries the script makes, and a fake `make` */
+  function setup(opts: { failBackup?: number } = {}) {
+    const log = path.join(tmp, "rt.log");
+    const bin = path.join(tmp, "fakebin");
+    fs.mkdirSync(bin);
+    fs.writeFileSync(
+      path.join(bin, "compose"),
+      `#!/bin/sh
+echo "COMPOSE $*" >> "${log}"
+case "$*" in
+  *"select current"*) echo "\${FAKE_MARKER:-42}" ;;
+  *"count(*)"*) echo 5 ;;
+esac
+exit 0
+`,
+      { mode: 0o755 },
+    );
+    fs.writeFileSync(
+      path.join(bin, "make"),
+      `#!/bin/sh
+echo "MAKE $*" >> "${log}"
+n=$(grep -c '^MAKE -s [a-z]*-backup$' "${log}" || true)
+case "$*" in
+  *-backup) [ "$n" = "${opts.failBackup ?? 0}" ] && { echo "backup failed" >&2; exit 1; }
+            f="${tmp}/dump-$n.dump"; echo x > "$f"; echo "$f"; exit 0 ;;
+  *-restore*) echo "ERROR: this backup was made by a NEWER version of the app" >&2; exit 1 ;;
+esac
+exit 0
+`,
+      { mode: 0o755 },
+    );
+    return { log, bin, cmd: path.join(bin, "compose") };
+  }
+  const env = (s: ReturnType<typeof setup>, extra: Record<string, string> = {}) => ({
+    PATH: `${s.bin}:${process.env.PATH ?? ""}`,
+    COMPOSE_CMD: `${s.cmd} -p ezh_stage -f docker-compose.prod.yml`,
+    DB_NAME: "english_zero_to_hero_stage",
+    DB_USER: "ezh",
+    BASE_URL: "http://127.0.0.1:3190",
+    ...extra,
+  });
+  const logged = (log: string) => (fs.existsSync(log) ? fs.readFileSync(log, "utf8") : "");
+
+  it.each([
+    ["prod", {}],
+    ["ezh_prod", {}],
+    ["PROD", {}],
+    ["", {}],
+    ["stage ", {}],
+    ["stage;prod", {}],
+    ["../prod", {}],
+    ["stage", { COMPOSE_CMD: "docker compose -p ezh_prod -f docker-compose.prod.yml --env-file .env.prod" }],
+    ["stage", { DB_NAME: "english_zero_to_hero" }],
+    ["ci", { DB_NAME: "english_zero_to_hero_stage" }],
+    ["stage", { COMPOSE_CMD: "docker compose -p ezh_stage_x -f docker-compose.prod.yml" }],
+    ["stage", { I_AM_THROWAWAY: "1", DB_NAME: "english_zero_to_hero" }],
+  ])("refuses target %j with %j and touches nothing", (target, extra) => {
+    const s = setup();
+    const r = run("roundtrip.sh", [target], env(s, extra));
+    expect(r.code).not.toBe(0);
+    expect(logged(s.log)).toBe("");
+    expect(r.err).not.toContain("I_AM_THROWAWAY");
+  });
+
+  it("the script has no override variable and no hint to set one", () => {
+    expect(fs.readFileSync(script("roundtrip.sh"), "utf8")).not.toContain("I_AM_THROWAWAY");
+  });
+
+  it("happy path (stage): marker written, refusal must say NEWER, marker deleted at the end", () => {
+    const s = setup();
+    // the fake make's restore always refuses with NEWER, so only the refusal part can pass here
+    const r = run("roundtrip.sh", ["stage"], env(s, { FAKE_MARKER: "7" }));
+    expect(r.out + r.err).toMatch(/refused|NEWER/);
+    expect(logged(s.log)).toMatch(/delete from "user" where id = 'roundtrip-marker'/);
+  });
+
+  it("when backup #2 fails the future migration row and the marker user are still deleted", () => {
+    const s = setup({ failBackup: 1 });
+    const r = run("roundtrip.sh", ["stage"], env(s));
+    expect(r.code).not.toBe(0);
+    const l = logged(s.log);
+    expect(l).toMatch(/insert into drizzle\.__drizzle_migrations/);
+    const futureDel = l.lastIndexOf("delete from drizzle.__drizzle_migrations where hash = 'future'");
+    expect(futureDel).toBeGreaterThan(l.indexOf("insert into drizzle.__drizzle_migrations"));
+    expect(l).toMatch(/delete from "user" where id = 'roundtrip-marker'/);
+  });
+
+  it("when backup #1 fails the script stops (the failure is not swallowed by a pipe)", () => {
+    const s = setup({ failBackup: 0 });
+    const r = run("roundtrip.sh", ["stage"], env(s));
+    expect(r.code).not.toBe(0);
+    expect(logged(s.log)).not.toMatch(/insert into drizzle\.__drizzle_migrations/);
+  });
+
+  it("a restore that fails WITHOUT the word NEWER is not accepted as the refusal", () => {
+    const s = setup();
+    fs.appendFileSync(path.join(s.bin, "make"), "");
+    const mk = fs.readFileSync(path.join(s.bin, "make"), "utf8").replace("NEWER version", "something else");
+    fs.writeFileSync(path.join(s.bin, "make"), mk);
+    const r = run("roundtrip.sh", ["stage"], env(s, { FAKE_MARKER: "7" }));
+    expect(r.code).not.toBe(0);
+    expect(r.err).toMatch(/NEWER/);
+  });
+});
+
+describe("Makefile: ci stack and stage cleanup", () => {
+  const makefile = fs.readFileSync(path.join(repoRoot, "Makefile"), "utf8");
+  it("has ci-* targets on their own project, and roundtrip is only reachable with a stage/ci project", () => {
+    expect(makefile).toMatch(/^ci-init:/m);
+    expect(makefile).toMatch(/^ci-down:/m);
+    expect(makefile).toMatch(/PROD_ENV=\.env\.ci PROD_PROJECT=ezh_ci/);
+    expect(makefile).toMatch(/scripts\/prod\/roundtrip\.sh '\$\(patsubst ezh_%,%,\$\(PROD_PROJECT\)\)'/);
+  });
+  it("stage-down also removes backups-stage/", () => {
+    const down = makefile.slice(makefile.indexOf("stage-down:"), makefile.indexOf("stage-%:"));
+    expect(down).toContain("backups-stage");
+  });
+  it("ci.yml uses the ci project, never ezh_prod, and no longer sets I_AM_THROWAWAY", () => {
+    const ci = fs.readFileSync(path.join(repoRoot, ".github/workflows/ci.yml"), "utf8");
+    const job = ci.slice(ci.indexOf("prod-image:"));
+    expect(job).toContain("ezh-ci-app:latest");
+    expect(job).toContain("make ci-roundtrip");
+    expect(job).not.toContain("ezh_prod");
+    expect(job).not.toContain("I_AM_THROWAWAY");
   });
 });
