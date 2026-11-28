@@ -600,7 +600,7 @@ describe("Makefile guards", () => {
 
   const hasMake = spawnSync("make", ["--version"]).status === 0;
   const dry = (target: string) =>
-    spawnSync("make", ["-n", "-C", repoRoot, target, "FILE=x", "CONFIRM=y"], { encoding: "utf8", env: { PATH: process.env.PATH ?? "" } }).stdout;
+    spawnSync("make", ["-n", "-C", repoRoot, target, "FILE=x", "CONFIRM=y"], { encoding: "utf8", env: { PATH: process.env.PATH ?? "" } as unknown as NodeJS.ProcessEnv }).stdout;
 
   it.skipIf(!hasMake)("M2: stage and prod resolve to different images", () => {
     const prod = dry("prod-build").match(/PROD_IMAGE=(\S+)/)?.[1];
