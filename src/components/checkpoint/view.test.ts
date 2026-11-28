@@ -33,10 +33,21 @@ describe("checkpoint view helpers", () => {
     expect([0.699, 0.6999999, 0.7, 0.7000001, 0.9999, 1, 0, 0.29, 0.58, 0.07].map(percentShown)).toEqual([69, 69, 70, 70, 99, 100, 0, 29, 58, 7]);
   });
 
-  it("explains a rejected completion: the generic text and a fresh start for 400/409 whatever the reason", () => {
+  it("explains a rejected completion: the generic text and a fresh start for 400/409, for not_completable, for no reason and for an unknown one", () => {
     const generic = { text: "บันทึกผลไม่ได้ ไม่มีคำตอบของรอบนี้บนเซิร์ฟเวอร์ ลองทำใหม่", restart: true };
     expect(rejectedMessage(409)).toEqual(generic);
     expect(rejectedMessage(400)).toEqual(generic);
+    expect(rejectedMessage(409, "not_completable")).toEqual(generic);
+    expect(rejectedMessage(400, "invalid_body")).toEqual(generic);
     expect(rejectedMessage(409, "something_the_server_adds_later")).toEqual(generic);
+  });
+
+  it("409 retake_tomorrow (a second sitting saved on the same local day, D4): the retake line and no fresh start", () => {
+    expect(rejectedMessage(409, "retake_tomorrow")).toEqual({ text: "สอบอีกครั้งได้ตั้งแต่พรุ่งนี้", restart: false });
+  });
+
+  it("carries the server's reason from the sink's rejected result to the screen", () => {
+    expect(completionOf({ status: "rejected", code: 409, error: "retake_tomorrow" })).toEqual({ kind: "rejected", code: 409, error: "retake_tomorrow" });
+    expect(completionOf({ status: "rejected", code: 409 })).toEqual({ kind: "rejected", code: 409 });
   });
 });

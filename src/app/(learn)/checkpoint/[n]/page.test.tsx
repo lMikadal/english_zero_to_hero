@@ -19,10 +19,13 @@ const q = vi.hoisted(() => ({
   practised: new Set<string>(),
   streak: { current: 4, longest: 6 },
   fail: false,
+  /** When the SERVER stored each sitting (created_at); defaults to completedAt. */
+  savedAt: new Map<string, Date>(),
   asked: [] as unknown[][],
 }));
 vi.mock("@/db/queries/checkpoints", () => ({
   listCheckpointResults: async () => { if (q.fail) throw new Error("db down"); return q.results; },
+  checkpointSavedAts: async () => (q.results as StoredCheckpointResult[]).map((r) => ({ afterDay: r.afterDay, savedAt: q.savedAt.get(r.id) ?? r.completedAt })),
   findOpenSitting: async () => q.open,
   practisedSince: async (...args: unknown[]) => { q.asked.push(args); return q.practised; },
 }));
@@ -51,7 +54,7 @@ describe("checkpoint page (plan 3.2 item 17, in this order)", () => {
   beforeEach(() => {
     file.value = checkpointFixture;
     dayStatus.mockResolvedValue("done");
-    q.results = []; q.open = null; q.practised = new Set(); q.fail = false; q.asked = [];
+    q.results = []; q.open = null; q.practised = new Set(); q.fail = false; q.asked = []; q.savedAt = new Map();
   });
 
   it.each(["45", "030", "0", "abc", "1.5", "30.0", "-30", "390", "3000", "", " 30", "+30", "00030", "300x"])("calls notFound for /checkpoint/%j", async (n) => {
@@ -138,5 +141,24 @@ describe("checkpoint page (plan 3.2 item 17, in this order)", () => {
     expect(q.asked[0][3]).toEqual(done);
     expect(screen.getByRole("link", { name: "ออกเสียง · วันที่ 1 ฝึกแล้ว" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "ออกเสียง · วันที่ 2" })).toBeInTheDocument();
+  });
+
+  it("'taken today' is the server's notion (when the sitting was SAVED), not the completedAt the client claimed", async () => {
+    // claimed completion today, but stored days ago: the retake rule (server) allows a new sitting, so the page must too
+    const old = stored({ completedAt: new Date() });
+    q.results = [old];
+    q.savedAt.set(old.id, new Date(Date.now() - 86_400_000 * 3));
+    await show();
+    expect(screen.getByRole("button", { name: "สอบอีกครั้ง" })).toBeInTheDocument();
+    expect(screen.queryByText("สอบอีกครั้งได้ตั้งแต่พรุ่งนี้")).toBeNull();
+  });
+
+  it("and the other way: claimed long ago but stored today means the server will refuse a retake, so the page shows the result", async () => {
+    const r = stored({ completedAt: new Date(Date.now() - 86_400_000 * 3) });
+    q.results = [r];
+    q.savedAt.set(r.id, new Date());
+    await show();
+    expect(screen.getByText("สอบอีกครั้งได้ตั้งแต่พรุ่งนี้")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /สอบอีกครั้ง|เริ่มแบบทดสอบ/ })).toBeNull();
   });
 });

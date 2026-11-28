@@ -167,4 +167,22 @@ describe("CheckpointResult (plan 3.6, items 36-41)", () => {
     await userEvent.click(screen.getByRole("button", { name: "เริ่มทำใหม่" }));
     expect(props.onRestart).toHaveBeenCalledTimes(1);
   });
+
+  it("409 retake_tomorrow: says the retake is for tomorrow, offers only กลับหน้าแรก as the primary action and no fresh start", () => {
+    const { container } = show({ kind: "rejected", code: 409, error: "retake_tomorrow" });
+    expect(screen.getByRole("alert")).toHaveTextContent("สอบอีกครั้งได้ตั้งแต่พรุ่งนี้");
+    expect(screen.queryByRole("button", { name: "เริ่มทำใหม่" })).toBeNull();
+    const home = screen.getByRole("link", { name: "กลับหน้าแรก" });
+    expect(home).toHaveAttribute("href", "/");
+    expect(home.className).toMatch(/bg-accent/);
+    expect(container.querySelectorAll("a, button")).toHaveLength(1);
+  });
+
+  it("409 not_completable and an unknown reason keep the fresh start", () => {
+    for (const error of ["not_completable", "whatever"]) {
+      const v = show({ kind: "rejected", code: 409, error });
+      expect(screen.getByRole("button", { name: "เริ่มทำใหม่" })).toBeInTheDocument();
+      v.unmount();
+    }
+  });
 });

@@ -156,6 +156,17 @@ describe("CheckpointPlayer", () => {
     expect(props.onRestart).toHaveBeenCalledTimes(1);
   });
 
+  it("409 retake_tomorrow: the retake message, no fresh start, no second completion call, the same session", async () => {
+    const { props, sink, sent } = setup({}, { status: "rejected", code: 409, error: "retake_tomorrow" });
+    await playAll(0);
+    await screen.findByText("สอบอีกครั้งได้ตั้งแต่พรุ่งนี้");
+    expect(screen.queryByRole("button", { name: "เริ่มทำใหม่" })).toBeNull();
+    expect(screen.getByRole("link", { name: "กลับหน้าแรก" })).toBeInTheDocument();
+    expect(sink.completeCheckpoint).toHaveBeenCalledTimes(1);
+    expect(props.onRestart).not.toHaveBeenCalled();
+    expect(new Set(sent.map((a) => a.sessionId))).toEqual(new Set([SESSION]));
+  });
+
   it("never grades on the device: the player does not import the grader and does not branch on a grade", () => {
     const code = fs.readFileSync(path.resolve(import.meta.dirname, "CheckpointPlayer.tsx"), "utf8");
     expect(code).not.toMatch(/gradeExercise|answers\/grade|isRetryable|correctAnswerText|\.correct\b/);
