@@ -124,14 +124,14 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าใครอายุเก้าขวบ"
           },
-          "audioText": "Ann is my friend. She is nine. Ben is my friend, too. He is seven.",
+          "audioText": "Nok is my friend. She is nine. Jim is my friend, too. He is ten.",
           "question": {
             "en": "Who is nine?",
             "th": "ใครอายุเก้าขวบ"
           },
           "choices": [
-            "Ann",
-            "Ben"
+            "Nok",
+            "Jim"
           ],
           "answer": 0
         },
@@ -164,11 +164,11 @@
             "th": "พูดตามทันทีทีละประโยค"
           },
           "lines": [
-            "How old are you, Ben?",
-            "I am nine. And you?",
-            "I am ten.",
-            "This is my friend, Ann. She is eight.",
-            "He is nine. She is eight."
+            "How old are you, Jim?",
+            "I am ten. And you?",
+            "I am nine.",
+            "This is my friend, Nok. She is nine.",
+            "He is ten. She is nine."
           ]
         },
         {
@@ -198,8 +198,8 @@
     {
       "skill": "reading",
       "title": {
-        "en": "Ann and Ben at school",
-        "th": "แอนกับเบนที่โรงเรียน"
+        "en": "Nok and Jim at school",
+        "th": "นกกับจิมที่โรงเรียน"
       },
       "exercises": [
         {
@@ -208,12 +208,12 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "This is my school. It is big.\nThis is my friend, Ann. She is nine.\nThis is my friend, Ben. He is ten.\nAnn is in my school. Ben is in my school, too.",
+          "text": "This is my school. It is big.\nThis is my friend, Nok. She is nine.\nThis is my friend, Jim. He is ten.\nNok is in my school. Jim is in my school, too.",
           "questions": [
             {
               "question": {
-                "en": "How old is Ben?",
-                "th": "เบนอายุเท่าไร"
+                "en": "How old is Jim?",
+                "th": "จิมอายุเท่าไร"
               },
               "choices": [
                 "Nine",
@@ -227,8 +227,8 @@
                 "th": "ใครอายุเก้าขวบ"
               },
               "choices": [
-                "Ann",
-                "Ben"
+                "Nok",
+                "Jim"
               ],
               "answer": 0
             },
@@ -275,7 +275,7 @@
           "instruction": {
             "th": "เติม He หรือ She"
           },
-          "text": "Ann is ten. ___ is my friend. Ben is nine. ___ is my friend, too.",
+          "text": "Nok is nine. ___ is my friend. Jim is ten. ___ is my friend, too.",
           "answer": [
             "She",
             "He"

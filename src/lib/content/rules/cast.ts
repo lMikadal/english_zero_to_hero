@@ -2,9 +2,10 @@
 // Detected, in learner-facing English and in the examples of vocab entries (read on the day the word is taught):
 //   "Ann is thirteen" / "Ann's 13" / "Ben is 14 years old"          (a PROPER_NAMES name, is or 's, a number 1-120)
 //   "I am Ann ... I am nineteen" / "My name is Sam. I'm 12"         (only when the text has exactly ONE speaker name)
+//   "This is my friend, Ann. She is eight."                         (he/she + number right after a sentence with exactly one name)
 // Warning, not error: two people can share a name, and a different week may legitimately change a character.
 // NOT detected (also in docs/FINDINGS.md): ages written another way ("Ann has a birthday: she is ..."), "How old is
-// Ann? She is ten" (needs a pronoun reference), ages across weeks, a name that is not in PROPER_NAMES, birth years,
+// Ann? She is ten" (a question in between), "They are ten", ages across weeks, a name that is not in PROPER_NAMES, birth years,
 // two speakers in one text.
 import type { Problem } from "../loader";
 import { NUMBER_WORDS } from "@/lib/answers/equivalents";
@@ -23,6 +24,8 @@ const NAME = `(${[...PROPER_NAMES].join("|")})`;
 const TAIL = String.raw`(?:\s+years?\s+old)?(?=\s*(?:[.!?,;]|$)|\s+(?:and|but)\b)`;
 const THIRD = new RegExp(String.raw`\b${NAME}(?:\s+is|'s)\s+(${NUM})${TAIL}`, "g");
 const SPEAKER = new RegExp(String.raw`\b(?:I am|I'm|My name is|My name's)\s+${NAME}\b`, "g");
+const NAME_G = new RegExp(String.raw`\b${NAME}\b`, "g");
+const PRONOUN_AGE = new RegExp(String.raw`^(?:He|She)(?: is|'s)\s+(${NUM})${TAIL}`);
 const FIRST = new RegExp(String.raw`\b(?:I am|I'm)\s+(${NUM})${TAIL}`, "g");
 
 function value(num: string): number | undefined {
@@ -42,6 +45,14 @@ export function ageClaims(text: string): AgeClaim[] {
     const age = value(m[2]);
     if (age !== undefined) out.push({ name: m[1], age, sentence: m[0].replace(/\s+years?\s+old$/, "") });
   }
+  // "This is my friend, Ann. She is eight.": a he/she age belongs to the one name in the sentence before it
+  const sentences = norm.split(/(?<=[.!?])\s+|\n+/);
+  sentences.forEach((sentence, i) => {
+    const m = i > 0 ? PRONOUN_AGE.exec(sentence.trim()) : null;
+    const names = new Set([...(sentences[i - 1] ?? "").matchAll(NAME_G)].map((n) => n[1]));
+    const age = m ? value(m[1]) : undefined;
+    if (m && age !== undefined && names.size === 1) out.push({ name: [...names][0], age, sentence: `${[...names][0]} ... ${sentence.trim().replace(/[.!?]$/, "")}` });
+  });
   const speakers = new Set([...norm.matchAll(SPEAKER)].map((m) => m[1]));
   if (speakers.size === 1) {
     for (const m of norm.matchAll(FIRST)) {

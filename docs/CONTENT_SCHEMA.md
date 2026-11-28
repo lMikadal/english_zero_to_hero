@@ -155,6 +155,18 @@ WARN content/lessons/day-021.json [d021-pron-02]: the text names /ð/ in a list 
 ERROR content/lessons/day-018.json [d018-pron-02]: this pronunciation section teaches more than one sound (/θ/ and /ð/), but this minimal_pair has no "phonemes", so it would be tagged only "th" (the first phoneme_intro's code) and a miss on the other sound is counted against the wrong one. Add "phonemes": [...] with the code(s) of the sound(s) it practises, the same codes as phoneme_intro.phoneme.
 ```
 
+### `cast-consistency` (warning): ตัวละครเดียวกันอายุเท่าเดิมตลอดสัปดาห์
+ภายในสัปดาห์เดียวกัน (วัน 7k+1 ถึง 7k+7) ชื่อเดียวกัน (ต้องอยู่ใน `PROPER_NAMES`) ต้องมีอายุเดียวกัน ถ้าพบสองอายุ ตัวตรวจ **เตือน (warning)** หนึ่งข้อต่อชื่อ ระบุทั้งสองตำแหน่งและอายุ (warning ไม่ทำให้ check ล้ม แต่ขึ้นใน job summary ของ CI) ใช้ warning เพราะคนสองคนอาจใช้ชื่อเดียวกันได้ ถ้าเป็นคนละคนให้เปลี่ยนชื่อคนใดคนหนึ่ง ตัวตรวจอ่านรูปเหล่านี้ในข้อความอังกฤษที่ผู้เรียนเห็นและ `examples` ของคำ (นับที่วันที่สอนคำนั้น):
+- `Ann is thirteen` / `Ann's 13` / `Ben is 14 years old` (ชื่อ + is/'s + เลข 1–120 ที่ตามด้วยจบประโยค, `years old`, and หรือ but)
+- `I am Ann ... I am nineteen` / `My name is Sam. I'm 12` เฉพาะเมื่อข้อความนั้นมีชื่อผู้พูดเพียงชื่อเดียว
+- `This is my friend, Ann. She is eight.` (`He/She is N` ที่ตามหลังประโยคที่มีชื่อเพียงชื่อเดียว)
+
+**ตรวจไม่ได้** (ผู้เขียนต้องระวังเอง): อายุที่เขียนแบบอื่น (`Ann has ... birthday`, ปีเกิด), `How old is Ann?` + คำตอบที่อยู่คนละประโยค, `They are ten`, ข้อความที่มีผู้พูดสองคน (`Ann: I am ten` / `Ben: I am nine` ในบทสนทนา), ชื่อที่ไม่อยู่ใน `PROPER_NAMES`, และข้ามสัปดาห์ (สัปดาห์ใหม่เปลี่ยนตัวละครได้)
+
+```
+WARN content/lessons/day-010.json [d010-listen-02]: "Ann" has two different ages in days 8-14: 10 in content/lessons/day-009.json [d009-write-02] text ("Ann is ten") but 15 in content/lessons/day-010.json [d010-listen-02] audioText ("Ann is fifteen"). Within one week a character keeps one age: change one of them (or use another name if these are two different people).
+```
+
 ### `arrange-words`: ชื่อเฉพาะต้องตรงกับที่ UI แสดง
 UI (`tile-label.ts`) แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กทั้งหมด ยกเว้น `I` และคำที่ขึ้นต้นตัวใหญ่ *กลางประโยค* ใน `answer` หรือ `accept` กฎจึงบังคับว่า
 - คำขึ้นต้นตัวใหญ่กลางประโยค (ไม่ใช่ `I`) ต้องอยู่ใน `PROPER_NAMES` (`allowlists.ts`)
