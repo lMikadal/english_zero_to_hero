@@ -182,7 +182,7 @@ jobs:
       # A Next.js upgrade that silently breaks the peer stamp (src/lib/access/peer-stamp.ts) would either lock everyone out
       # (host request without X-Forwarded-For -> 403) or let forged headers in. Both fail this step, so it is noticed.
       - name: Device allow-list is enforced (listed 200, unlisted 403 on pages/API/static, forged peer header 403)
-        run: PROBE_EXEC="docker compose -p ezh_ci -f docker-compose.prod.yml --env-file .env.ci exec -T postgres" sh scripts/prod/access-check.sh http://127.0.0.1:3195 "$(sh scripts/prod/env-get.sh .env.ci ALLOWED_IPS)"
+        run: PROBE_GATEWAY=172.30.30.1 PROBE_EXEC="docker compose -p ezh_ci -f docker-compose.prod.yml --env-file .env.ci exec -T postgres" sh scripts/prod/access-check.sh http://127.0.0.1:3195 "$(sh scripts/prod/env-get.sh .env.ci ALLOWED_IPS)"
 
       # backup -> change -> restore with the real make targets and a marker row, so a restore that does nothing (or a
       # refusal that does not happen) fails the job; the pg_dump / pg_restore flags run on every PR

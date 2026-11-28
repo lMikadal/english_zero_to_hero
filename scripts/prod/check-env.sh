@@ -58,3 +58,10 @@ printf %s "$keep" | grep -Eq '^[1-9][0-9]*$' || fail "BACKUP_KEEP=$keep in $file
 # (an invalid value would otherwise show up as "every page answers 500"). Empty = feature off.
 sh "$here/allowed-ips.sh" "$(get ALLOWED_IPS)" ALLOWED_IPS || fail "ALLOWED_IPS in $file is not valid (see above). Example: ALLOWED_IPS=100.101.102.103, 100.88.5.7  (ค่า ALLOWED_IPS ไม่ถูกต้อง)"
 sh "$here/allowed-ips.sh" "$(get TRUSTED_PROXIES)" TRUSTED_PROXIES || fail "TRUSTED_PROXIES in $file is not valid (see above)"
+
+# docker's userland proxy opens the connection to the app from the network gateway, which the app must trust (that is where the
+# published port arrives from with tailscale serve). With any other APP_BIND that hides the real client: every other machine
+# would look like "this machine". So the allow-list is only allowed together with the loopback bind.
+if [ -n "$(printf '%s' "$(get ALLOWED_IPS)" | tr -d ' ,')" ] && [ "$bind" != "127.0.0.1" ]; then
+  fail "ALLOWED_IPS works only with APP_BIND=127.0.0.1 + tailscale serve (found APP_BIND=$bind in $file): with another bind other machines would be treated as this machine (ใช้ ALLOWED_IPS ได้เฉพาะกับ tailscale serve)"
+fi

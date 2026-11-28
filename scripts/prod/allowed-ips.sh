@@ -79,6 +79,8 @@ function check(entry,   slash, addr, pfx, haspfx, ver, val, max, mapped, i, bits
   pfx = pfx + 0
   if (mapped) { if (pfx < 96) bad(entry, "an IPv4-mapped range needs a prefix of at least 96"); pfx -= 96 }
   if (pfx > max) bad(entry, "prefix length too large")
+  if (pfx == 0) bad(entry, "this range matches every address, which is the same as having no allow-list")
+  if (pfx < (ver == 4 ? 8 : 16)) printf "WARNING: %s: the range \"%s\" is very broad (/%d of IPv%d) and lets in a very large number of devices\n", name, entry, pfx, ver > "/dev/stderr"
   if (ver == 4) {
     if (val % pow2(32 - pfx) != 0) bad(entry, "host bits are set; write the network address")
   } else {

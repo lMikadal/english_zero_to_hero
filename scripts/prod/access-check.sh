@@ -57,16 +57,32 @@ else
   for p in / /api/health /_next/static/chunks/access-check.js; do
     expect 403 "unlisted address $unlisted on $p must be refused" "$p" -H "X-Forwarded-For: $unlisted"
   done
-  expect 403 "a forged X-Ezh-Peer header must not be believed" /api/health -H "X-Forwarded-For: $unlisted" -H "X-Ezh-Peer: 127.0.0.1"
+  # the x-ezh-* headers are stamped by the server and must never be believed from outside. These two would turn the request
+  # into an allowed one if the app trusted them (an unlisted address cannot get 403 "either way" here)
+  expect 403 "a forged EMPTY X-Ezh-Xff must not turn an unlisted address into this machine" /api/health -H "X-Forwarded-For: $unlisted" -H "X-Ezh-Xff;"
+  expect 403 "a forged X-Ezh-Xff naming a listed address must not be believed" /api/health -H "X-Forwarded-For: $unlisted" -H "X-Ezh-Xff: $first"
 fi
+# a proxy header without a usable address is never "this machine" (fail safe if tailscale serve ever omitted the address)
+expect 403 "an empty X-Forwarded-For must be refused" /api/health -H "X-Forwarded-For;"
+expect 403 "X-Forwarded-Host without an address must be refused" /api/health -H "X-Forwarded-Host: example.test"
 
 if [ -n "${PROBE_EXEC:-}" ]; then
-  # shellcheck disable=SC2086
-  out=$($PROBE_EXEC wget -S -O /dev/null --header="X-Forwarded-For: $first" "${PROBE_URL:-http://app:3000/api/health}" 2>&1 || true)
-  case "$out" in
-    *403*) echo "access: another container forging X-Forwarded-For $first was refused (403)" ;;
-    *) fail "another container on the network forging X-Forwarded-For $first was not refused: $out" ;;
-  esac
+  url="${PROBE_URL:-http://app:3000/api/health}"
+  probe() { # <what> <header>...: run from another container, must be refused with 403
+    what="$1"; shift
+    # shellcheck disable=SC2086
+    out=$($PROBE_EXEC wget -S -O /dev/null "$@" "$url" 2>&1 || true)
+    case "$out" in
+      *"HTTP/1.1 403"*) echo "access: another container $what was refused (403)" ;;
+      *) fail "another container on the network $what was not refused: $out" ;;
+    esac
+  }
+  probe "forging X-Forwarded-For $first" --header="X-Forwarded-For: $first"
+  if [ -n "${PROBE_GATEWAY:-}" ]; then
+    probe "forging X-Ezh-Peer $PROBE_GATEWAY with an empty X-Ezh-Xff" --header="X-Ezh-Peer: $PROBE_GATEWAY" --header="X-Ezh-Xff:"
+  else
+    fail "PROBE_GATEWAY is not set, so the forged X-Ezh-Peer probe cannot be built"
+  fi
 fi
 
 if [ "$failed" = 0 ]; then echo "access ok: the allow-list is enforced ($base)"; else exit 1; fi

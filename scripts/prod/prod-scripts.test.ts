@@ -884,7 +884,7 @@ printf 200
     expect(r.code).toBe(0);
     expect(r.out).toMatch(/access ok/);
     const log = fs.readFileSync(path.join(tmp, "curl.log"), "utf8");
-    for (const p of ["/api/health", "/_next/static/", "xff=[192.0.2.1]", "xff=[100.101.102.103]", "peer=[127.0.0.1]"]) expect(log).toContain(p);
+    for (const p of ["/api/health", "/_next/static/", "xff=[192.0.2.1]", "xff=[100.101.102.103]"]) expect(log).toContain(p);
     expect(log).toMatch(/127\.0\.0\.1:3100\/ xff=\[192\.0\.2\.1\]/);
   });
   it("prints the list it enforces", () => {
@@ -1106,8 +1106,8 @@ esac
     expect(check).toBeGreaterThan(-1);
     expect(upd.slice(check, check + 200)).toMatch(/\bcheck\b/);
     expect(upd.indexOf("pre-update.sh")).toBeGreaterThan(check);
-    expect(upd.indexOf("prod-build")).toBeGreaterThan(upd.indexOf("pre-update.sh"));
-    expect(upd.indexOf("prod-up")).toBeGreaterThan(upd.indexOf("prod-build"));
+    expect(upd.indexOf("--no-print-directory prod-build")).toBeGreaterThan(upd.indexOf("pre-update.sh"));
+    expect(upd.indexOf("--no-print-directory prod-up")).toBeGreaterThan(upd.indexOf("--no-print-directory prod-build"));
     expect(upd.match(/net-fix\.sh/g)).toHaveLength(1); // the real move is the one inside prod-up, after the build
     const up = mk.slice(mk.indexOf("prod-up:"), mk.indexOf("prod-update:"));
     expect(up).toContain("net-fix.sh");

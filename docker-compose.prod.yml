@@ -18,6 +18,9 @@ services:
     # Docker stopped. It does NOT start anything at boot: Docker itself is not enabled at boot. `make prod-down` removes
     # the containers, so they stay off until the next `make prod-up`.
     restart: unless-stopped
+    # no raw packets: another container on the project network could otherwise ARP-spoof the gateway the app trusts
+    cap_drop:
+      - NET_RAW
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-ezh}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run make prod-init}

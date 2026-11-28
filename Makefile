@@ -139,7 +139,8 @@ prod-up: prod-check ## Start production (backup if migrations are pending, then 
 	@sh scripts/prod/access-check.sh --note '$(PROD_ALLOWED)'
 
 prod-update: prod-check ## After git pull: backup (if data exists), build, start. THE way to update
-	@COMPOSE_CMD='$(PROD)' sh scripts/prod/net-fix.sh $(PROD_PROJECT)_default $(PROD_NET_PREFIX)
+	@# only LOOK for a subnet clash first (stops nothing); the one-time network move itself happens inside prod-up, after backup and build
+	@COMPOSE_CMD='$(PROD)' sh scripts/prod/net-fix.sh $(PROD_PROJECT)_default $(PROD_NET_PREFIX) check
 	@MODE=always $(PROD_SCRIPT_ENV) sh scripts/prod/pre-update.sh
 	@$(MAKE) --no-print-directory prod-build PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
 	@$(MAKE) --no-print-directory prod-up SKIP=1 PROD_ENV='$(PROD_ENV)' PROD_PROJECT='$(PROD_PROJECT)'
@@ -153,7 +154,7 @@ prod-logs: ## Follow production logs
 prod-status: ## Is production running and healthy?
 	$(PROD) ps -a
 	@curl -fsS --max-time 5 http://$(PROD_BIND):$(PROD_PORT)/api/health && echo " <- /api/health" || echo "app did not answer on $(PROD_BIND):$(PROD_PORT)"
-	@PROBE_EXEC='$(PROD) exec -T postgres' sh scripts/prod/access-check.sh http://$(PROD_BIND):$(PROD_PORT) '$(PROD_ALLOWED)'
+	@PROBE_EXEC='$(PROD) exec -T postgres' PROBE_GATEWAY='$(PROD_NET_PREFIX).1' sh scripts/prod/access-check.sh http://$(PROD_BIND):$(PROD_PORT) '$(PROD_ALLOWED)'
 
 prod-migrate: prod-check ## Apply pending database migrations by hand (prod-up already does this)
 	$(PROD) up -d --wait postgres
