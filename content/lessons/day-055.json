@@ -106,7 +106,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าโรสมีอะไรวันนี้ (Rose's = ของโรส)"
           },
-          "audioText": "Rose wakes up at six o'clock. She leaves home at seven o'clock. The bus takes half an hour. School starts at eight o'clock. Today Rose is busy: she has a lesson and a meeting. Now it is half past three. School finishes now. Tomorrow is Saturday. Rose goes shopping.",
+          "audioText": "Rose wakes up at six o'clock. She leaves home at seven o'clock. The bus takes half an hour. School starts at eight o'clock. Today Rose is busy: she has a lesson and a meeting. Now it is half past three. School finishes now. Tomorrow is Saturday. On Saturday Rose goes shopping.",
           "question": {
             "en": "What does Rose have today?",
             "th": "วันนี้โรสมีอะไร"
@@ -123,7 +123,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าแดนมีแผนอะไรสัปดาห์หน้า"
           },
-          "audioText": "Dan has a meeting on Monday at nine o'clock in his office. His office is near the bank. The bank opens at nine o'clock too. Next week Dan has a plan. On Sunday he swims. He is ready.",
+          "audioText": "Dan has a meeting on Monday at nine o'clock in his office. His office is near the bank. The bank opens at nine o'clock too. In August Dan has free time. In November he buys a new car. On Sunday he swims. It is his favourite sport.",
           "question": {
             "en": "What does Dan do on Sunday?",
             "th": "แดนทำอะไรวันอาทิตย์"
@@ -159,10 +159,10 @@
           },
           "lines": [
             "I get up at six o'clock.",
-            "My train takes one hour.",
+            "My train takes an hour.",
             "On Tuesday I have a lesson.",
             "On Wednesday I have a dance class.",
-            "On Thursday I'm busy.",
+            "On Thursday I'm busy. I have a plan.",
             "The calendar is on the wall.",
             "My birthday is in June.",
             "A year has twelve months."
@@ -196,7 +196,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Leo wakes up at half past six. He leaves home at a quarter past seven and walks to school. School starts at eight o'clock. On Tuesday he has a lesson. On Friday he has an exam. On Saturday he plays football. On Sunday he calls Mali. His birthday is in May. In summer he swims.",
+          "text": "Leo wakes up at half past six. He leaves home at a quarter past seven and walks to school. School starts at eight o'clock. On Tuesday he has a lesson. On Friday he has an exam. On Saturday he plays football. On Sunday he calls Mali. His birthday is in May. In July he has a swimming class. In September he has a new class at school. The family has a holiday in October and visits Mali in December. In summer he swims.",
           "questions": [
             {
               "question": {

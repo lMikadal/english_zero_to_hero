@@ -119,7 +119,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "ถามและบอกเวลา: What time is it?",
-          "bodyTh": "ใช้ถามและบอกเวลา: ถามว่า What time is it? ตอบว่า It is + เวลา ถ้าตรงชั่วโมงใช้ o'clock (It is seven o'clock.) ถ้าครึ่งชั่วโมงใช้ half past (It is half past seven.) ผิดบ่อย: It is seven clock ✗ → It is seven o'clock ✓ และ seven half ✗ → half past seven ✓",
+          "bodyTh": "ใช้ถามและบอกเวลา: What time is it? ตอบ It is + เวลา ตรงชั่วโมงใช้ o'clock (seven o'clock) past = เลยมา (ten past seven = 7:10, half past seven = 7:30) to = อีก…จะถึง (a quarter to eight = 7:45) อเมริกันมักพูดตัวเลขตรง ๆ ว่า seven thirty ผิดบ่อย: seven clock ✗ → seven o'clock ✓ และ seven half ✗ → half past seven ✓",
           "examples": [
             {
               "en": "What time is it?",
@@ -134,8 +134,8 @@
               "th": "เจ็ดโมงครึ่ง"
             },
             {
-              "en": "It is ten past eight.",
-              "th": "แปดโมงสิบ"
+              "en": "It is a quarter to eight.",
+              "th": "เจ็ดโมงสี่สิบห้า"
             }
           ],
           "structures": [
@@ -151,16 +151,16 @@
               "seven o'clock"
             ],
             [
+              "7:10",
+              "ten past seven"
+            ],
+            [
               "7:15",
               "a quarter past seven"
             ],
             [
               "7:30",
               "half past seven"
-            ],
-            [
-              "7:10",
-              "ten past seven"
             ],
             [
               "7:45",
@@ -172,9 +172,9 @@
           "id": "d050-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าโรงเรียนเริ่มกี่โมง"
+            "th": "ฟังแล้วตอบว่าโรงเรียนเริ่มกี่โมง (half an hour: h ใน hour ไม่ออกเสียง จึงใช้ an)"
           },
-          "audioText": "I am Rose. I wake up at six o'clock. I leave home at seven o'clock. The bus takes half an hour. School starts at eight o'clock. It finishes at half past three.",
+          "audioText": "I am Rose. I wake up at six o'clock. I leave home at seven o'clock. The bus takes half an hour. School starts at eight o'clock. It finishes at half past three. Today is a school day. Tomorrow is a school day too.",
           "question": {
             "en": "What time does school start?",
             "th": "โรงเรียนเริ่มกี่โมง"
@@ -212,7 +212,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าตอนนี้กี่โมง"
           },
-          "audioText": "Nan: What time is it now, Leo? Leo: It is a quarter past seven. Nan: Is it late? Leo: No. School starts at eight o'clock. I leave home now. Nan: My train takes one hour. Today I leave at half past six. Tomorrow I leave at half past six too.",
+          "audioText": "Nan: What time is it now, Leo? Leo: It is a quarter past seven. Nan: Is it late? Leo: No. School starts at eight o'clock. I leave home now. Nan: My train takes an hour. I leave home at half past six every day.",
           "question": {
             "en": "What time is it now?",
             "th": "ตอนนี้กี่โมง"
@@ -230,7 +230,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "It is six o'clock. Rose wakes up now."
+          "audioText": "It is six o'clock. Rose wakes up at six every day."
         }
       ]
     },
@@ -255,7 +255,7 @@
             "School starts at eight o'clock.",
             "It finishes at half past three.",
             "Today I'm tired.",
-            "Tomorrow I wake up early."
+            "I'm free tomorrow."
           ]
         },
         {
@@ -286,7 +286,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Dan gets up at half past six. He leaves home at seven o'clock. He drives to work. It takes half an hour. He arrives at half past seven. He always arrives early. He finishes work at six o'clock. He often finishes at seven. Today he is tired. Tomorrow he has free time.",
+          "text": "Dan gets up at half past six. He leaves home at seven o'clock. He drives to work. It takes half an hour. He arrives at half past seven. He always arrives early. He finishes work at six o'clock. He often finishes at seven. Today he is tired. He is free tomorrow.",
           "questions": [
             {
               "question": {
@@ -370,8 +370,21 @@
             "It is half past seven now",
             "It's half past seven now",
             "Now it is half past seven",
-            "Now it's half past seven"
-          ]
+            "Now it's half past seven",
+            "It is seven thirty",
+            "It's seven thirty",
+            "It is seven thirty now",
+            "It's seven thirty now",
+            "Now it is seven thirty",
+            "Now it's seven thirty",
+            "It is 7:30",
+            "It's 7:30",
+            "It is 7.30",
+            "It's 7.30",
+            "It is 7:30 now",
+            "It's 7:30 now"
+          ],
+          "strict": true
         },
         {
           "id": "d050-vocab-02",

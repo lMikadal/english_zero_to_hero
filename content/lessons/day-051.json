@@ -49,7 +49,7 @@
           },
           "phoneme": "iz",
           "ipa": "/ɪz/",
-          "tipTh": "คำที่ลงท้ายด้วยเสียง s, z, ʃ, tʃ (watch, wash, bus, dance) เติม -es แล้วออกเสียงเป็นพยางค์เพิ่มอีกหนึ่งพยางค์ /ɪz/ คนไทยมักไม่ออกเสียงท้าย (watches เป็น 'วอช') ให้นับพยางค์: WATCH-es สองพยางค์ ต่างจาก cats ที่ยังมีพยางค์เดียว",
+          "tipTh": "คำที่ลงท้ายด้วยเสียง s, z, ʃ, tʃ, dʒ (watch, wash, bus, dance) เติม -s หรือ -es แล้วออกเสียงเป็นพยางค์เพิ่มอีกหนึ่งพยางค์ /ɪz/ คนไทยมักไม่ออกเสียงท้าย (watches เป็น 'วอช') ให้นับพยางค์: WATCH-es สองพยางค์ ต่างจาก cats ที่ยังมีพยางค์เดียว",
           "examples": [
             "watches",
             "washes",
@@ -97,7 +97,7 @@
             "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
           },
           "titleTh": "at / on / in กับเวลา",
-          "bodyTh": "ใช้บอกว่าเหตุการณ์เกิดเมื่อไร: at กับเวลาบนนาฬิกา (at seven o'clock) on กับวัน (on Monday) in กับช่วงของวัน เดือน ปี ฤดู (in the morning, in May) ผิดบ่อย: in Monday ✗ → on Monday ✓ และ at the morning ✗ → in the morning ✓ ไม่ต้องใช้ on กับ today, tomorrow, every day",
+          "bodyTh": "ใช้บอกว่าเหตุการณ์เกิดเมื่อไร: at กับเวลาบนนาฬิกา (at seven o'clock) on กับวัน (on Monday) in กับช่วงของวัน เดือน ปี ฤดู (in the morning, in May) แต่ at night ผิดบ่อย: in Monday ✗ → on Monday ✓ ชื่อวันและเดือนขึ้นต้นด้วยตัวพิมพ์ใหญ่เสมอ (Monday, May)",
           "examples": [
             {
               "en": "I wake up at six o'clock.",
@@ -223,7 +223,7 @@
           "id": "d051-speak-01",
           "type": "shadowing",
           "instruction": {
-            "th": "พูดตามทันทีทีละประโยค"
+            "th": "พูดตามทันทีทีละประโยค (Wednesday ออกเสียง /ˈwenzdeɪ/ ตัว d ตัวแรกไม่ออกเสียง; Tuesday อเมริกัน /ˈtuːz-/ อังกฤษ /ˈtjuːz-/; Thursday ขึ้นต้น /θ/)"
           },
           "lines": [
             "I go to school on Monday, Tuesday, Wednesday, Thursday and Friday.",
@@ -311,13 +311,20 @@
       "exercises": [
         {
           "id": "d051-write-01",
-          "type": "fill_blank",
+          "type": "arrange_words",
           "instruction": {
-            "th": "เติมคำบุพบท (วันจันทร์)"
+            "th": "เรียงคำให้เป็นประโยค"
           },
-          "text": "I go to school ___ Monday.",
-          "answer": [
-            "on"
+          "words": [
+            "play",
+            "I",
+            "football",
+            "on",
+            "Saturday"
+          ],
+          "answer": "I play football on Saturday",
+          "accept": [
+            "On Saturday I play football"
           ]
         },
         {
@@ -326,10 +333,12 @@
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
           },
-          "th": "ฉันเล่นฟุตบอลวันเสาร์",
+          "th": "ฉันโทรหาคุณยายวันอาทิตย์",
           "accept": [
-            "I play football on Saturday",
-            "On Saturday I play football"
+            "I call my grandmother on Sunday",
+            "On Sunday I call my grandmother",
+            "I call my grandmother on Sundays",
+            "On Sundays I call my grandmother"
           ]
         },
         {
@@ -341,7 +350,9 @@
           "th": "แนนมีคลาสเต้นรำวันพุธ",
           "accept": [
             "Nan has a dance class on Wednesday",
-            "On Wednesday Nan has a dance class"
+            "On Wednesday Nan has a dance class",
+            "Nan has a dance class on Wednesdays",
+            "On Wednesdays Nan has a dance class"
           ]
         },
         {

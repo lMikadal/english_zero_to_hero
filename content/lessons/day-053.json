@@ -51,7 +51,7 @@
           },
           "phoneme": "id",
           "ipa": "/ɪd/",
-          "tipTh": "คำกริยาที่ลงท้ายด้วย t หรือ d (want, need, start, visit) เติม -ed แล้วออกเสียงเป็นพยางค์เพิ่ม /ɪd/ (wanted = WANT-id สองพยางค์) คนไทยมักตัดทิ้ง (wanted เป็น 'วอนท์') ให้นับพยางค์ให้ครบ วันนี้ฝึกคำเดี่ยวก่อน ยังไม่ต้องสร้างประโยคอดีต",
+          "tipTh": "คำกริยาที่ลงท้ายด้วย t หรือ d (want, need, start, visit) เติม -ed แล้วออกเสียงเป็นพยางค์เพิ่ม /ɪd/ (wanted = WANT-id สองพยางค์) คนไทยมักตัดทิ้ง (wanted เป็น 'วอนท์') ให้นับพยางค์ให้ครบ (-ed บอกว่าเกิดขึ้นแล้วในอดีต เช่น wanted = ต้องการแล้ว จะเรียนวิธีใช้ภายหลัง) วันนี้ฝึกคำเดี่ยวก่อน",
           "examples": [
             "wanted",
             "needed",
@@ -100,14 +100,14 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าครอบครัวทำอะไรในเดือนธันวาคม"
           },
-          "audioText": "Hi! I am Leo. I go to school in July, August, September and November. We have a holiday in October. In December we visit my grandmother Mali in Chiang Mai.",
+          "audioText": "Hi! I am Leo. In July I have a swimming class. In August my father has free time. In September I have a new class at school. In October we have a holiday. In November my father buys a new car. In December we visit my grandmother Mali in Chiang Mai.",
           "question": {
             "en": "What does the family do in December?",
             "th": "ครอบครัวทำอะไรในเดือนธันวาคม"
           },
           "choices": [
             "They visit Mali",
-            "They go to school"
+            "They buy a new car"
           ],
           "answer": 0
         },
@@ -179,14 +179,15 @@
             "th": "พูดตามทันทีทีละประโยค"
           },
           "lines": [
-            "I go to school in July and August.",
-            "I go to school in September and November.",
+            "In July I have a swimming class.",
+            "In August my father has free time.",
+            "In September I have a new class at school.",
             "In October we have a holiday.",
+            "In November my father buys a new car.",
             "In December we visit my grandmother Mali.",
             "A year has four seasons.",
             "Spring, summer, autumn and winter.",
-            "Winter is cold in England.",
-            "I like autumn."
+            "Winter is cold in England."
           ]
         },
         {
@@ -229,7 +230,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "A year has twelve months. In England a year has four seasons: spring, summer, autumn and winter. Winter is cold. In Thailand it is hot in March, April and May. Leo goes to school in July, August, September and November. The family has a holiday in October. In December the family visits Mali in Chiang Mai.",
+          "text": "A year has twelve months. In England a year has four seasons: spring, summer, autumn and winter. Winter is cold. In Thailand it is hot in March, April and May. In July Leo has a swimming class. In August Dan has free time. In September Leo has a new class at school. The family has a holiday in October. In November Dan buys a new car. In December the family visits Mali in Chiang Mai.",
           "questions": [
             {
               "question": {
@@ -292,13 +293,20 @@
         },
         {
           "id": "d053-write-02",
-          "type": "translate_th_en",
+          "type": "arrange_words",
           "instruction": {
-            "th": "แปลเป็นภาษาอังกฤษ"
+            "th": "เรียงคำให้เป็นประโยค"
           },
-          "th": "เรามีวันหยุดพักผ่อนในเดือนตุลาคม",
+          "words": [
+            "have",
+            "We",
+            "a",
+            "holiday",
+            "in",
+            "October"
+          ],
+          "answer": "We have a holiday in October",
           "accept": [
-            "We have a holiday in October",
             "In October we have a holiday"
           ]
         },
@@ -308,9 +316,10 @@
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
           },
-          "th": "ฉันชอบฤดูหนาว",
+          "th": "พ่อของฉันซื้อรถคันใหม่ในเดือนพฤศจิกายน",
           "accept": [
-            "I like winter"
+            "My father buys a new car in November",
+            "In November my father buys a new car"
           ]
         },
         {

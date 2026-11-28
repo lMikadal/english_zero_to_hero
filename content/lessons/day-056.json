@@ -82,7 +82,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าโรงเรียนเริ่มเดือนอะไร"
           },
-          "audioText": "I am Rose. School starts in May. April is very hot. In July, August, September and November Leo goes to school. A year has four seasons in England: spring, summer, autumn and winter. Winter is cold. I like spring.",
+          "audioText": "I am Rose. School starts in May. April is very hot. In July Leo has a swimming class. In September he has a new class at school. A year has four seasons in England: spring, summer, autumn and winter. Winter is cold. I like spring.",
           "question": {
             "en": "When does school start?",
             "th": "โรงเรียนเริ่มเดือนอะไร"
@@ -124,7 +124,7 @@
             "What do you do on Saturday and Sunday?",
             "I watch a film. I'm free tomorrow.",
             "What month is your birthday in?",
-            "It's in June. Thank you!"
+            "It's in June."
           ]
         },
         {

@@ -51,7 +51,7 @@
           },
           "phoneme": "t",
           "ipa": "/t/ /d/",
-          "tipTh": "คำกริยาเติม -ed (ที่จะได้ใช้ในอดีตกาลภายหลัง) ออกเสียงท้ายเป็น /t/ หลังเสียงที่ไม่สั่นคอ (walked, looked) และเป็น /d/ หลังเสียงที่สั่นคอ (played, called) คนไทยมักไม่ออกเสียงท้าย (played เป็น 'เพลย์') วันนี้ฝึกแยกเสียงท้ายเท่านั้น ยังไม่ต้องสร้างประโยคอดีต",
+          "tipTh": "คำกริยาเติม -ed (ที่จะได้ใช้ในอดีตกาลภายหลัง) ออกเสียงท้ายเป็น /t/ หลังเสียงที่ไม่สั่นคอ (walked, looked) และเป็น /d/ หลังเสียงที่สั่นคอ (played, called) คนไทยมักไม่ออกเสียงท้าย (played เป็น 'เพลย์') (-ed บอกว่าเกิดขึ้นแล้วในอดีต เช่น walked = เดินไปแล้ว จะเรียนวิธีใช้ภายหลัง) วันนี้ฝึกแยกเสียงท้ายเท่านั้น",
           "examples": [
             "walked",
             "looked",
@@ -196,7 +196,7 @@
           "id": "d052-speak-01",
           "type": "shadowing",
           "instruction": {
-            "th": "พูดตามทันทีทีละประโยค (Dan's birthday = วันเกิดของแดน)"
+            "th": "พูดตามทันทีทีละประโยค (Dan's birthday = วันเกิดของแดน; February: เน้นพยางค์แรก FEB-ru-a-ry ออกเสียง r ตัวแรกให้ชัด)"
           },
           "lines": [
             "This is our birthday calendar.",
@@ -314,13 +314,20 @@
         },
         {
           "id": "d052-write-02",
-          "type": "translate_th_en",
+          "type": "arrange_words",
           "instruction": {
-            "th": "แปลเป็นภาษาอังกฤษ"
+            "th": "เรียงคำให้เป็นประโยค"
           },
-          "th": "วันเกิดของลีโออยู่ในเดือนพฤษภาคม",
+          "words": [
+            "is",
+            "My",
+            "birthday",
+            "in",
+            "May"
+          ],
+          "answer": "My birthday is in May",
           "accept": [
-            "Leo's birthday is in May"
+            "Is my birthday in May"
           ]
         },
         {
@@ -332,7 +339,9 @@
           "th": "ฉันว่ายน้ำในฤดูร้อน",
           "accept": [
             "I swim in summer",
-            "In summer I swim"
+            "In summer I swim",
+            "I swim in the summer",
+            "In the summer I swim"
           ]
         },
         {

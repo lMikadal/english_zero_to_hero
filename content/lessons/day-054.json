@@ -115,7 +115,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าแดนมีประชุมวันไหน"
           },
-          "audioText": "I am Dan. I am a doctor. My office is near the bank. I have a meeting on Monday at nine o'clock. I am busy on Monday. Next week I have a plan: on Friday I am free.",
+          "audioText": "I am Dan. I am a doctor. My office is near the bank. I have a meeting on Monday at nine o'clock. I am busy on Monday. On Friday I am free.",
           "question": {
             "en": "When does Dan have a meeting?",
             "th": "แดนมีประชุมวันไหน"
@@ -153,7 +153,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าลีโอมีสอบวันไหน"
           },
-          "audioText": "I am Leo. I have a lesson on Tuesday. I have an exam on Friday. Next week I am busy. Today I am ready.",
+          "audioText": "I am Leo. I have a lesson on Tuesday. I have an exam on Friday. Next week I am busy. Today I study at my desk.",
           "question": {
             "en": "What does Leo have on Friday?",
             "th": "ลีโอมีอะไรวันศุกร์"
@@ -194,18 +194,18 @@
             "The bank opens at nine o'clock.",
             "Leo has an exam on Friday.",
             "He's ready.",
-            "Next week I have a plan.",
-            "My plan is a film on Saturday evening."
+            "I have a plan.",
+            "On Saturday evening we watch a film."
           ]
         },
         {
           "id": "d054-speak-02",
           "type": "speak_answer",
           "instruction": {
-            "th": "บอกแผนของคุณวันเสาร์ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+            "th": "บอกว่าคุณมีแผนไหม และวันเสาร์ทำอะไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
           },
-          "prompt": "What is your plan on Saturday?",
-          "sampleAnswer": "My plan is a film on Saturday.",
+          "prompt": "Do you have a plan? What do you do on Saturday?",
+          "sampleAnswer": "Yes, I have a plan. On Saturday I watch a film.",
           "keywords": [
             "plan",
             "Saturday"
@@ -217,8 +217,8 @@
           "instruction": {
             "th": "ฟังแล้วพูดตาม ระวัง /kst/ ใน next ท้ายคำ (เน็กซ์ท) ไม่ตัดทิ้ง"
           },
-          "text": "Are you ready? The next lesson is now.",
-          "ipa": "/ɑːr juː ˈredi ðə nekst ˈlesn ɪz naʊ/",
+          "text": "Are you ready? The next lesson starts now.",
+          "ipa": "/ɑːr juː ˈredi ðə nekst ˈlesn stɑːrts naʊ/",
           "phonemes": [
             "s"
           ]
