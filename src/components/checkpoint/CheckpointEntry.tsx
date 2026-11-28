@@ -30,10 +30,14 @@ export function HomeCheckpointCard({ afterDay }: { afterDay: number }) {
 export function HomeCheckpointLink({ note }: { note: { afterDay: number; status: "not_taken" | "not_passed" } | null }) {
   if (note === null) return null;
   const k = checkpointNumber(note.afterDay);
-  const text = note.status === "not_taken" ? `แบบทดสอบครั้งที่ ${k} · ยังไม่ได้สอบ` : `แบบทดสอบครั้งที่ ${k} · ยังไม่ผ่าน ดูผลและฝึกซ่อม`;
+  // "ดูผลและฝึกซ่อม" stays on one line so Thai never breaks it into an orphan "ซ่อม" at 360px
+  const text = note.status === "not_taken" ? `แบบทดสอบครั้งที่ ${k} · ยังไม่ได้สอบ` : `แบบทดสอบครั้งที่ ${k} · ยังไม่ผ่าน `;
   return (
     <Link href={`/checkpoint/${note.afterDay}`} className="flex min-h-12 items-center justify-between gap-3 rounded-xl border border-line bg-card px-4 text-[15px] font-medium text-fg">
-      <span>{text}</span>
+      <span>
+        {text}
+        {note.status === "not_passed" ? <span className="whitespace-nowrap">ดูผลและฝึกซ่อม</span> : null}
+      </span>
       {CHEVRON}
     </Link>
   );
