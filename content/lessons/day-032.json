@@ -1,0 +1,334 @@
+{
+  "day": 32,
+  "phase": 1,
+  "week": 5,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "I am cold and hungry! Animals and feelings",
+    "th": "I am cold and hungry! สัตว์และความรู้สึก"
+  },
+  "objectives": [
+    {
+      "en": "Say how you feel and talk about animals: I am cold, a bird has two legs",
+      "th": "บอกความรู้สึกและพูดถึงสัตว์: I am cold, a bird has two legs"
+    },
+    {
+      "en": "Hear and say the final sounds /l/ and /n/: tell–ten, mean–meal, pain–pale, will–win",
+      "th": "ฟังและออกเสียง /l/ กับ /n/ ท้ายคำ: tell–ten, mean–meal, pain–pale, will–win"
+    },
+    {
+      "en": "Use cold, warm, hungry and tired with am, is and are",
+      "th": "ใช้ cold, warm, hungry, tired กับ am, is, are ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-animal",
+    "v-bird",
+    "v-cold",
+    "v-warm",
+    "v-hungry",
+    "v-tired"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final /l/ and /n/",
+        "th": "เสียง /l/ และ /n/ ท้ายคำ"
+      },
+      "exercises": [
+        {
+          "id": "d032-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "l",
+          "ipa": "/l/ /n/",
+          "tipTh": "คนไทยมักเปลี่ยน /l/ ท้ายคำเป็น 'น' (ball เป็น 'บอน', animal เป็น 'แอนิเมิน') เพราะตัวสะกดแม่กนของไทย (น ญ ณ ร ล ฬ) ออกเสียงเป็น น ทั้งหมด /l/ ใน animal, small และ tall ให้ปลายลิ้นแตะเหงือกหลังฟันบนแล้วค้างไว้ ลมออกทางข้างลิ้น ส่วน /n/ ใน ten และ one ลิ้นแตะเหงือกเหมือนกัน แต่ลมออกทางจมูก ลองปิดจมูกดู ถ้าเสียงเปลี่ยนแสดงว่าเป็น /n/",
+          "examples": [
+            "animal",
+            "small",
+            "tall",
+            "school"
+          ]
+        },
+        {
+          "id": "d032-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "tell",
+              "b": "ten",
+              "answer": "a"
+            },
+            {
+              "a": "mean",
+              "b": "meal",
+              "answer": "b"
+            },
+            {
+              "a": "pain",
+              "b": "pale",
+              "answer": "a"
+            },
+            {
+              "a": "will",
+              "b": "win",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "l",
+            "n"
+          ]
+        },
+        {
+          "id": "d032-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ little และ animal ให้ปลายลิ้นแตะเหงือกแล้วค้างไว้ ไม่ใช่ 'ลิตเติ้น' หรือ 'แอนิเมิน'"
+          },
+          "text": "The little animal is cold and tired.",
+          "ipa": "/ðə ˈlɪtl ˈænɪml ɪz koʊld ænd ˈtaɪərd/",
+          "phonemes": [
+            "l",
+            "n"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: how do you feel?",
+        "th": "ฟัง: รู้สึกอย่างไร"
+      },
+      "exercises": [
+        {
+          "id": "d032-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอะไรเย็น"
+          },
+          "audioText": "I am Leo. My hands are cold. My feet are cold too. I am hungry.",
+          "question": {
+            "en": "What is cold?",
+            "th": "อะไรเย็น"
+          },
+          "choices": [
+            "His hands and feet",
+            "His head and face",
+            "His back"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d032-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่านกมีกี่ขา"
+          },
+          "audioText": "This is a bird. It is a little yellow bird. It has two legs and a small head.",
+          "question": {
+            "en": "How many legs?",
+            "th": "นกมีกี่ขา"
+          },
+          "choices": [
+            "Two",
+            "Four"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d032-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The animal is hungry and tired."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "How do you feel?",
+        "th": "คุณรู้สึกอย่างไร"
+      },
+      "exercises": [
+        {
+          "id": "d032-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I am cold.",
+            "My hands are cold.",
+            "I am hungry.",
+            "He is tired.",
+            "A bird has two legs.",
+            "A cat is an animal."
+          ]
+        },
+        {
+          "id": "d032-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าตอนนี้คุณหิวหรือเหนื่อยไหม และรู้สึกอุ่นหรือหนาว ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Are you hungry? Are you tired? Are you warm or cold?",
+          "sampleAnswer": "I am not hungry. I am tired. I am warm.",
+          "keywords": [
+            "am"
+          ]
+        },
+        {
+          "id": "d032-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม an ออกเสียงเบา ๆ แล้วต่อเสียง n เข้ากับ animal เป็น 'อะแนนิเมิล' และ /l/ ท้าย animal ให้ลิ้นแตะเหงือก"
+          },
+          "text": "A bird is an animal.",
+          "ipa": "/ə bɜːrd ɪz ən ˈænɪml/",
+          "phonemes": [
+            "l"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My dog",
+        "th": "หมาของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d032-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Leo. This is my dog. It is brown and white. It is a little dog. It has four legs and two ears. My dog is hungry and tired. A dog is an animal. I love my dog.",
+          "questions": [
+            {
+              "question": {
+                "en": "What colour is the dog?",
+                "th": "หมาสีอะไร"
+              },
+              "choices": [
+                "Brown and white",
+                "Black and white"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How many legs?",
+                "th": "หมามีกี่ขา"
+              },
+              "choices": [
+                "Four",
+                "Two"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who is hungry?",
+                "th": "ใครหิว"
+              },
+              "choices": [
+                "The dog",
+                "Leo"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: feelings and animals",
+        "th": "เขียน: ความรู้สึกและสัตว์"
+      },
+      "exercises": [
+        {
+          "id": "d032-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "The",
+            "bird",
+            "small"
+          ],
+          "answer": "The bird is small",
+          "accept": [
+            "Is the bird small"
+          ]
+        },
+        {
+          "id": "d032-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (นกเป็นสัตว์ชนิดหนึ่ง)"
+          },
+          "text": "A bird is an ___.",
+          "answer": [
+            "animal"
+          ]
+        },
+        {
+          "id": "d032-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันหิวและเหนื่อย",
+          "accept": [
+            "I am hungry and tired"
+          ]
+        },
+        {
+          "id": "d032-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-animal"
+            },
+            {
+              "vocabId": "v-bird"
+            },
+            {
+              "vocabId": "v-cold"
+            },
+            {
+              "vocabId": "v-warm"
+            },
+            {
+              "vocabId": "v-hungry"
+            },
+            {
+              "vocabId": "v-tired"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

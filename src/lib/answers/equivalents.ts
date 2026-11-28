@@ -7,6 +7,7 @@
 //   'd except before like/love, Name+'s, ordinals, 101+, "zero", 3:30.
 // Rule is documented in docs/CONTENT_SCHEMA.md ("การเทียบคำตอบ"). Input must already be normalised
 // (lower case, straight apostrophe, punctuation removed).
+import { foldSpelling } from "./spelling";
 
 /**
  * [contracted, full]. Keys are whole tokens. The 's forms are ambiguous (is / has) and are handled in canonicalAnswer:
@@ -163,7 +164,7 @@ export function canonicalAnswer(normalised: string): string {
     } else if (t === "let's" || (CONTRACTED.has(t) && !t.endsWith("'s"))) {
       out.push(...CONTRACTED.get(t)!.split(" "));
     } else {
-      out.push(...(numberTokens(t) ?? [t]));
+      out.push(...(numberTokens(t) ?? [foldSpelling(t)]));
     }
   });
   return out.join(" ");

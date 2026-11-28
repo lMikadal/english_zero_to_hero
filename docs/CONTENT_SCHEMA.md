@@ -61,6 +61,8 @@
 | 21–99: `21`=`twenty-one`=`twenty one` | `a 100` (ไม่เท่ากับ `100`), `110` (ไม่เท่ากับ `ten`) |
 | `its` ≠ `it's`, `his` ≠ `he's` (ไม่แตะ) | |
 
+8. (เฉพาะตอนเทียบ) **สะกดแบบอังกฤษ/อเมริกันพับเป็นคำเดียวกัน** (`src/lib/answers/spelling.ts`): `colour`=`color`, `grey`=`gray`, `favourite`=`favorite`, `centre`=`center`, `mum`=`mom`, `neighbour`, `travelling`/`traveling`, `practise`/`practice`, `organise`/`organize`, `pyjamas`/`pajamas`, `jewellery`/`jewelry`, `aeroplane`/`airplane` ... รวมรูปผันที่มีจริง (`colours`, `coloured`) ใช้ **ตารางปิดของคู่คำ** ไม่ใช้กฎต่อท้าย (`-our`→`-or` จะทำให้ `four`/`hour`/`your` กลายเป็นคำอื่น) และไม่ใส่คู่ที่อีกฝั่งเป็นคนละคำ (`check`/`cheque`, `story`/`storey`, `whisky`/`whiskey`) ผู้เขียนเขียนรูปเดียวพอ ไม่ต้องใส่อีกสะกดใน `accept` ปิดได้ด้วย `strict: true` ข้อควรรู้: `practise` (กริยา) กับ `practice` (นาม) ถูกพับเป็นคำเดียวกัน
+
 **`strict: true`** (ไม่บังคับ) ใช้ได้กับ `dictation`, `translate_th_en`, `fill_blank` ปิดการพับ เหลือเพียงตัวพิมพ์เล็กใหญ่/เครื่องหมาย/ช่องว่าง ตัวอย่างข้อที่ต้องใช้: คำตอบของ `fill_blank` ที่เป็นคำย่อหรือตัวเลข (`answer: ["ten"]`) **ต้องตั้ง `strict` ให้ชัด** (`true` = รับ `ten` เท่านั้น, `false` = รับ `10` ด้วย) กฎ `answer-forms` บังคับ
 
 ตัวอย่าง: `"B, U, S"` กับ `"b u s"` ตรงกัน, `"Nice to meet you…"` ตรงกับ `"Nice to meet you."`, `"He's 10"` ตรงกับ `"He is ten"` แต่ `"B-U-S"` ไม่ตรงกับ `"B U S"` (ขีดกลางไม่ถูกลบ) และ `"Its a door"` ไม่ตรงกับ `"It's a door"`
@@ -107,6 +109,17 @@
 ```
 ERROR content/lessons/day-009.json [d009-speak-02]: uses words not taught by day 9: "count" in prompt. Teach the word earlier, rewrite the text, or (names, function words) add it to src/lib/content/rules/allowlists.ts.
 ERROR content/vocab/oxford-3000/a1.json [v-fine]: examples[1] "My dog is fine." uses words not taught by day 2 (the day v-fine is first taught): "dog". ...
+```
+
+### `cast-props` (warning): ของของตัวละครมีสีเดียวตลอดสัปดาห์
+ภายในสัปดาห์เดียวกัน เจ้าของคนเดียวกัน + สิ่งของเดียวกันต้องมีสีเดียวกัน ถ้าพบสองสี **เตือน (warning)** ระบุทั้งสองตำแหน่ง (ใช้ warning เพราะตัวละครซื้อของใหม่ได้ เช่น แนนซื้อกระเป๋าสีชมพูวัน 26) สีมาจากรายการปิด `COLOUR_WORDS` (คำสีในคลังคำ; `grey`=`gray`) รูปที่อ่านได้แน่:
+- `Nan's umbrella is orange` · `Nan has a green umbrella` (รวมรายการ `a red bag, a blue pen and an orange umbrella`)
+- `I am Nan. I have a green umbrella` / `My bag is brown` / `My pink bag is new` เมื่อข้อความมีผู้พูดชื่อเดียว (`I am Nan`) หรือใช้ป้ายบทสนทนา `Nan: My bag is pink.`
+
+**ตรวจไม่ได้:** `I have an umbrella. It is orange.`, `Her/His bag is brown` (ต้องอ้างถึงสรรพนาม), นามพหูพจน์ที่ไม่มีเจ้าของ (`The chairs are white`), นามที่มี adjective คั่น (`Nan's big bag is red`), ของของ `we`
+
+```
+WARN content/lessons/day-028.json [d028-read-01]: "Nan"'s umbrella has two colours in days 22-28: orange in content/lessons/day-023.json [d023-read-01] text ("Nan's umbrella is orange") but green in content/lessons/day-028.json [d028-read-01] text ("I have a green umbrella"). Within one week a character's thing keeps its colour: change one of them (or use another noun or name if these are different things).
 ```
 
 ### `grammar-not-yet`: รูปคำที่ต้องใช้ไวยากรณ์ที่ยังไม่สอน
@@ -224,6 +237,26 @@ ERROR content/lessons/day-021.json [d021-write-02]: answer "ten" is a contractio
 - เขียนความเป็นเจ้าของด้วย `has` / `has got` ห้ามเขียนเป็น `'s` (`He's two cars` ผิด): ตัวตรวจเตือน (warning) เมื่อ `he's`/`she's` ตามด้วย no/many/a lot of/เลข 2-10 + คำนามในคลังคำ ที่ไม่ใช่หน่วยเวลา
 - ท้ายประโยคย่อย (`Yes, he is.`) และสรรพนามเดี่ยวหลัง `is` (`Where is he?`) ไม่ต้องมีรูปย่อ
 
+### `thai-names`: ชื่อตัวละครเขียนเป็นภาษาไทยแบบเดียวทุกบท
+`THAI_NAMES` ใน `src/lib/content/rules/allowlists.ts` เก็บการสะกดภาษาไทยของ **ทุกคน** ใน `PROPER_NAMES` (สถานที่ไม่ต้องมี) **ชื่อใหม่ต้องเพิ่มที่นี่ในวันที่เริ่มใช้** (เช่น `Mali: "มาลี"`) แล้วเขียนแบบเดียวกันทุกบท
+- ชื่อที่อยู่ในข้อความอังกฤษของบท แต่ยังไม่มีใน `THAI_NAMES` เป็น **warning**: `add the Thai spelling of "Kate" to THAI_NAMES in src/lib/content/rules/allowlists.ts ...`
+- ในข้อความไทยของบทนั้น (ทุกช่อง ยกเว้น `tipTh` ที่อธิบายเสียง) คำที่ต่างจากการสะกดที่ลงทะเบียนไว้ **1 ตัวอักษร** (2 ตัวสำหรับการสะกดที่ยาว 5 ตัวอักษรขึ้นไป; สระบนและวรรณยุกต์ไม่นับเป็นตัวอักษร) เช่น `ลีโอว` แทน `ลีโอ`, `นัน` แทน `แนน`, `เคธ` แทน `เคท` เป็น **warning** (ไม่ใช่ error): ชื่อ 3–4 ตัวอักษรอยู่ห่างคำสามัญได้ทั้งนั้น (`แดง`~`แดน`, `เจ็ด`~`เจน`, `จริง`~`จิม`) ตัวตรวจจึงบอกได้แค่ว่า "อาจสะกดผิด"
+- **คำที่รู้จักไม่ถูกรายงาน:** คำใน `COMMON_THAI_WORDS` (`allowlists.ts`, มือเขียน) และส่วนหนึ่งของคำแปลไทย (`th`) ของคลังคำทั้งหมด (สร้างตอนรัน; ไม่รวมประโยคตัวอย่างเพราะมีชื่ออยู่ในนั้น) ถ้าตัวตรวจเตือนคำสามัญ ให้เพิ่มคำนั้นใน `COMMON_THAI_WORDS` (ห้ามเพิ่มเพื่อซ่อนชื่อที่สะกดผิด) เทสต์ `thai-names.precision.test.ts` ต้องไม่พบการรายงานในประโยคสั่งงาน/คำถามระดับ A1 กว่า 60 ประโยคเมื่อทุกชื่ออยู่ในบท
+- ภาษาไทยไม่มีช่องว่าง ตัวตรวจจึงตั้งใจให้แคบ: คำที่เข้าข่ายต้องอยู่ระหว่าง (ต้นข้อความ หรือ `ของ/กับ/และ/คือ/ว่า/ถาม/ชื่อ...`) กับ (ท้ายข้อความ หรือ `อายุ/อยู่/เป็น/สี/ราคา/เท่า...`), มีตัวอักษรเหมือนกันตามลำดับอย่างน้อยความยาว−1 และไม่ใช่การสะกดของชื่ออื่น (`แอน` ห่างจาก `แนน` 1 ตัว)
+- ชื่อที่การสะกดไทยเป็นคำสามัญอยู่แล้ว (`Mai`=ไหม, `Nok`=นก, `Lek`=เล็ก, `Fon`=ฝน; รายการ `THAI_NAME_IS_A_WORD`) ไม่ถูกตรวจการสะกดผิด
+- **ตรวจไม่ได้:** การสะกดผิดที่อยู่ติดคำที่ไม่อยู่ในรายการ `BEFORE`/`AFTER` ใน `thai-names.ts`, ชื่อที่สะกดถูกแต่สลับคน, ชื่อไทยในบทที่ไม่มีชื่ออังกฤษคู่กัน
+
+```
+WARN content/lessons/day-027.json [d027-listen-01]: "ลูกบอลของลีโอวอยู่ที่ไหน" writes "ลีโอว", which may be a misspelling of the name "Leo" (its Thai spelling is "ลีโอ", THAI_NAMES in src/lib/content/rules/allowlists.ts). Write "ลีโอ" everywhere; if "ลีโอว" is an ordinary word, add it to COMMON_THAI_WORDS (same file) so it is not reported again.
+```
+
+### `vocab-spelling`: หัวคำที่มีสะกดสองแบบต้องบอกอีกแบบใน `forms`
+หัวคำ (คำเดียว) ที่อยู่ในตารางอังกฤษ/อเมริกัน (`spelling.ts`) ต้องมีสะกดอีกแบบใน `forms`: `usSpelling` สำหรับหัวคำแบบอังกฤษ (`colour` → `"usSpelling": "color"`) หรือ `ukSpelling` สำหรับหัวคำแบบอเมริกัน เป็น **error** เพราะตารางเป็นตัวตัดสิน ไม่มีดุลยพินิจ (ค่าผิดหรือใช้คีย์ผิดฝั่งก็ error) หัวคำหลายคำไม่ถูกตรวจ และหัวคำฝั่งอเมริกันที่เป็นคำถูกต้องของอังกฤษอีกความหมายหนึ่งด้วย (`practice` นาม, `tire` กริยา, `license` กริยา, `program` ซอฟต์แวร์, `meter` อุปกรณ์; `isSenseDependent` ใน `spelling.ts`) ไม่ถูกบังคับ เพราะ entry อาจหมายถึงอีกความหมาย (ฝั่งอังกฤษ `tyre`/`licence`/`programme`/`metre`/`practise` ยังถูกบังคับ)
+
+```
+ERROR content/vocab/oxford-3000/a1.json [v-colour]: "colour" is a UK spelling in the UK/US table (src/lib/answers/spelling.ts), but forms has no usSpelling. Add "usSpelling": "color" to its forms (and remove "ukSpelling" if it is there).
+```
+
 ### `vocab-forms`: adjective ต้องลงรูปเปรียบเทียบ
 adjective ทุกคำใน `forms` ต้องมี `comparative` และ `superlative` (ให้ `taught-words` รู้ว่า `bigger` คือ `big`) หรือ `"gradable": "no"` ถ้าเทียบไม่ได้ (`dead`)
 
@@ -251,7 +284,7 @@ ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.
 | `topics` | `string[]` | อย่างน้อย 1 หมวด ตามรายการใน VOCABULARY.md |
 | `examples` | `{ en, th }[]` | ประโยคตัวอย่าง (เขียนเอง) อย่างน้อย 1 ประโยค |
 | `collocations` | `string[]?` | กลุ่มคำที่มักใช้ด้วยกัน |
-| `forms` | `object?` | รูปผัน เช่น `plural`, `past`, `pastParticiple`, `comparative`, `superlative` |
+| `forms` | `object?` | รูปผัน เช่น `plural`, `past`, `pastParticiple`, `comparative`, `superlative`; สะกดอีกแบบ `usSpelling` (หัวคำเป็นอังกฤษ: `colour` → `"color"`) หรือ `ukSpelling` (หัวคำเป็นอเมริกัน: `mom` → `"mum"`) ซึ่งนับเป็นรูปของคำนี้ใน `taught-words` เหมือน `plural`; `gradable: "no"` เป็นเครื่องหมาย ไม่ใช่รูปคำ UI ของแฟลชการ์ดไม่แสดง `forms` |
 
 ```json
 { "id": "v-meet", "word": "meet", "pos": "verb",
