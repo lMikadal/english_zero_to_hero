@@ -16,6 +16,7 @@ import {
   type AttemptInput,
   type AttemptResult,
   type CheckpointSkillResult,
+  type CompleteCheckpointError,
   type CompleteCheckpointResponse,
   type CompleteLessonResponse,
   type CompletePracticeResponse,
@@ -366,5 +367,11 @@ describe("completeCheckpointRequestSchema", () => {
       streak: { current: number; longest: number };
       nextDay: number | null;
     }>();
+  });
+});
+
+describe("CompleteCheckpointError", () => {
+  it("names every error body POST /api/checkpoints/complete answers, including retake_tomorrow (D4)", () => {
+    expectTypeOf<CompleteCheckpointError>().toEqualTypeOf<"invalid_body" | "not_completable" | "retake_tomorrow">();
   });
 });
