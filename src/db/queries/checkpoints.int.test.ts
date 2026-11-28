@@ -6,11 +6,13 @@ import { cleanDatabase, connectTestDb } from "@/db/test-utils";
 import { attempts, checkpointResults, progress, user, type AttemptSource } from "@/db/schema";
 import type { Checkpoint } from "@/lib/content/checkpoint-schema";
 import { checkpointFixture } from "@/lib/answers/test-content";
+import { sittingSavedToday } from "@/lib/checkpoints/retake";
 import { seedLocal } from "@/lib/server/test-helpers";
 import {
   findOpenSitting,
   getCheckpointGate,
   getCheckpointOverview,
+  checkpointSavedAts,
   getCheckpointResult,
   hasEarlierAnswer,
   insertCheckpointResult,
@@ -34,7 +36,9 @@ async function attempt(over: Partial<typeof attempts.$inferInsert> & { exerciseI
   return row;
 }
 async function result(over: Partial<typeof checkpointResults.$inferInsert> = {}) {
-  const row = { id: randomUUID(), userId, afterDay: 30, score: 0.5, skills: [], startedAt: at(HOUR), completedAt: at(0), ...over };
+  const completedAt = over.completedAt ?? at(0);
+  // createdAt is when the server stored the sitting (D4 reads it, not the client's completedAt); by default it is the same moment
+  const row = { id: randomUUID(), userId, afterDay: 30, score: 0.5, skills: [], startedAt: at(HOUR), completedAt, createdAt: completedAt, ...over };
   await db.insert(checkpointResults).values(row);
   return row;
 }
@@ -332,5 +336,33 @@ describe("getCheckpointOverview", () => {
     await otherUser();
     await result({ userId: "other" });
     expect((await getCheckpointOverview(db, userId, withFile(30), NOW))[0].status).toBe("not_taken");
+  });
+});
+
+describe("checkpointSavedAts and the retake rule shared with getCheckpointOverview", () => {
+  it("lists when the server stored each sitting of the user, optionally of one checkpoint", async () => {
+    await result({ afterDay: 30, createdAt: at(5 * HOUR), completedAt: at(6 * HOUR), startedAt: at(7 * HOUR) });
+    await result({ afterDay: 60, createdAt: at(HOUR) });
+    await otherUser();
+    await result({ userId: "other", createdAt: at(0) });
+    expect((await checkpointSavedAts(db, userId)).map((r) => [r.afterDay, r.savedAt.getTime()])).toEqual([[30, at(5 * HOUR).getTime()], [60, at(HOUR).getTime()]]);
+    expect((await checkpointSavedAts(db, userId, 60)).map((r) => r.afterDay)).toEqual([60]);
+  });
+
+  it("overview.completedToday is the same answer as sittingSavedToday over those times, for every hour of two days", async () => {
+    await doneDay(30);
+    const saved = new Date("2026-11-27T20:00:00Z"); // 03:00 on the 28th in Bangkok
+    await result({ createdAt: saved, completedAt: saved, startedAt: new Date(saved.getTime() - HOUR) });
+    for (let h = 0; h < 48; h++) {
+      const now = new Date(Date.parse("2026-11-27T12:00:00Z") + h * HOUR);
+      const [entry] = await getCheckpointOverview(db, userId, withFile(30), now);
+      expect(entry.completedToday, now.toISOString()).toBe(sittingSavedToday([saved], now, "Asia/Bangkok"));
+    }
+  });
+
+  it("completedToday follows when the server stored the sitting, not the completedAt the client claimed", async () => {
+    await doneDay(30);
+    await result({ completedAt: new Date("2026-11-01T10:00:00Z"), startedAt: new Date("2026-11-01T09:00:00Z"), createdAt: NOW });
+    expect((await getCheckpointOverview(db, userId, withFile(30), NOW))[0].completedToday).toBe(true);
   });
 });

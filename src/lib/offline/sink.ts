@@ -20,7 +20,8 @@ import type { CompleteReviewRequest, CompleteReviewResponse, ReviewInput } from 
 export type CompleteResult<R = CompleteLessonResponse> =
   | { status: "done"; response: R }
   | { status: "queued" }
-  | { status: "rejected"; code: 400 | 409 };
+  /** `error` is the server's `{ error }` code of the 400 or 409 when it sent a readable one (e.g. `retake_tomorrow`). */
+  | { status: "rejected"; code: 400 | 409; error?: string };
 
 /**
  * Strict first-in first-out. Batches never cross a `completeLesson` boundary: attempts queued after a completion
