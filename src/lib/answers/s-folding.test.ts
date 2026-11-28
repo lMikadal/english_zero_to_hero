@@ -39,7 +39,7 @@ describe("property: no word after 's can be folded into 'is' unless it is provab
     "asked", "helped", "walked", "talked", "washed", "cooked", "visited", "started", "finished", "arrived", "stopped", "planned", "worked", "played",
     "liked", "loved", "moved", "named", "called", "turned", "tried", "carried", "married", "fed", "wed", "shed", "bled", "fled", "sped", "led"];
   const words = [...new Set([...PARTICIPLES, ...EDS])];
-  for (const adverb of ["", "never ", "already ", "just ", "not ", "also ", "really "]) {
+  for (const adverb of ["", "never ", "already ", "just ", "not ", "also ", "really ", "very ", "not very ", "very much ", "so ", "too ", "quite "]) {
     it(`"He is ${adverb}<w> my pen" is wrong for "He's ${adverb}<w> my pen" (${words.length} words)`, () => {
       const bad = words.filter((w) => matchesAny(`He is ${adverb}${w} my pen`, [`He's ${adverb}${w} my pen`]));
       expect(bad).toEqual([]);
@@ -80,6 +80,49 @@ describe("round 4 allow-list groups: weather, days/months, nationalities, object
   it("that + pronoun is not folded, 'half' is not added", () => { expect(matchesAny("That is mine", ["That's mine"])).toBe(false); expect(matchesAny("It is half", ["It's half"])).toBe(false); });
 });
 
+describe("'very' is transparent like 'not' (it can never precede a perfect-tense participle); really/so/too/quite are not", () => {
+  it.each([
+    ["She is very happy", "She's very happy"], ["It is very big", "It's very big"], ["He is not very happy", "He's not very happy"],
+    ["That is very good", "That's very good"], ["My name is very long", "My name's very long"], ["He is very tall", "He's very tall"],
+    ["He is very reading", "He's very reading"], ["It is very sunny", "It's very sunny"],
+  ])("%s = %s", (a, b) => {
+    expect(matchesAny(a, [b]), a).toBe(true);
+    expect(matchesAny(b, [a]), b).toBe(true);
+  });
+  it("a participle after 'very' is checked exactly as after 'not': not folded", () => {
+    const words = [...new Set([...PARTICIPLES, "tired", "interested", "worried", "finished", "opened", "used", "died"])];
+    const folded = words.filter((w) => sReading(["he's", "very", w], 0) !== null);
+    expect(folded).toEqual([]);
+    const wrong = words.filter((w) => matchesAny(`He is very ${w}`, [`He's very ${w}`]) || matchesAny(`He has very ${w}`, [`He's very ${w}`]));
+    expect(wrong).toEqual([]);
+  });
+  it("'He's very tired' is adjectival, but it is not provable here: not folded, the author lists both forms (same as 'not')", () => {
+    expect(matchesAny("He is very tired", ["He's very tired"])).toBe(false);
+    expect(matchesAny("He is not tired", ["He's not tired"])).toBe(false);
+  });
+  it("'very much' can hide a perfect (He's very much done it): not folded", () => {
+    expect(matchesAny("He is very much done it", ["He's very much done it"])).toBe(false);
+    expect(matchesAny("He is very much been here", ["He's very much been here"])).toBe(false);
+    expect(sReading(["he's", "very", "much", "been"], 0)).toBeNull();
+    expect(sReading(["he's", "very", "much", "a", "teacher"], 0)).toBeNull();
+  });
+  it("really / so / too / quite are NOT transparent: 'He's really done it' is a perfect", () => {
+    for (const adv of ["really", "so", "too", "quite"]) {
+      expect(sReading(["he's", adv, "happy"], 0), adv).toBeNull();
+      expect(matchesAny(`He is ${adv} happy`, [`He's ${adv} happy`]), adv).toBe(false);
+    }
+    expect(matchesAny("He is really done it", ["He's really done it"])).toBe(false);
+  });
+  it("'very' alone, doubled or in the wrong place is not folded", () => {
+    expect(sReading(["he's", "very"], 0)).toBeNull();
+    expect(sReading(["he's", "very", "very", "happy"], 0)).toBeNull();
+    expect(sReading(["he's", "very", "not", "happy"], 0)).toBeNull();
+  });
+  it("the other direction is still not over-accepted: 'has very' is not 'is very'", () => {
+    expect(matchesAny("He has very happy", ["He's very happy"])).toBe(false);
+  });
+});
+
 describe("sReading: the one predicate", () => {
   const read = (s: string) => sReading(s.split(" "), s.split(" ").findIndex((t) => t.endsWith("'s")));
   it("is / has / not folded", () => {
@@ -90,6 +133,9 @@ describe("sReading: the one predicate", () => {
     expect(read("he's never been here")).toBeNull();
     expect(read("he's gone")).toBeNull();
     expect(read("he's")).toBeNull();
+    expect(read("he's very happy")).toBe("is");
+    expect(read("he's not very happy")).toBe("is");
+    expect(read("he's very tired")).toBeNull();
   });
 });
 
