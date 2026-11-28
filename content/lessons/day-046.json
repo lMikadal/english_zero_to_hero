@@ -1,0 +1,373 @@
+{
+  "day": 46,
+  "phase": 1,
+  "week": 7,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "After school! before, after, then",
+    "th": "After school! เล่าลำดับก่อนและหลัง"
+  },
+  "objectives": [
+    {
+      "en": "Say what you do after school and before dinner: after, before, then",
+      "th": "บอกว่าทำอะไรหลังเลิกเรียนและก่อนอาหารเย็นด้วย after, before, then"
+    },
+    {
+      "en": "Talk about free-time activities: play football, swim, talk, call, write",
+      "th": "พูดถึงกิจกรรมยามว่างได้: play football, swim, talk, call, write"
+    },
+    {
+      "en": "Say the final clusters /sk/ and /st/: desk–deck, best–bet, west–wet, list–lit",
+      "th": "ออกเสียงตัวควบท้ายคำ /sk/ /st/ ได้: desk–deck, best–bet, west–wet, list–lit"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-study",
+    "v-play",
+    "v-game",
+    "v-football",
+    "v-swim",
+    "v-talk",
+    "v-call",
+    "v-write",
+    "v-after",
+    "v-before",
+    "v-then",
+    "v-desk"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final clusters /sk/, /st/",
+        "th": "ตัวควบท้ายคำ /sk/ /st/"
+      },
+      "exercises": [
+        {
+          "id": "d046-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "sk",
+          "ipa": "/sk/ /st/",
+          "tipTh": "คนไทยมักทิ้งเสียงท้ายที่ควบกัน (desk เป็น 'เด็ก', best เป็น 'เบส') หรือเติมสระ (desk เป็น 'เด็สก์กึ') ให้ออก /s/ แล้วต่อ /k/ หรือ /t/ ทันทีโดยไม่มีสระ /sk/ ใน desk และ ask: ลมไหล 'ส์' แล้วปิดเสียงด้วย 'ก' สั้น ๆ อย่าลืมเสียง /k/ ท้ายคำ",
+          "examples": [
+            "desk",
+            "ask",
+            "best",
+            "first"
+          ]
+        },
+        {
+          "id": "d046-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "desk",
+              "b": "deck",
+              "answer": "a"
+            },
+            {
+              "a": "bet",
+              "b": "best",
+              "answer": "b"
+            },
+            {
+              "a": "wet",
+              "b": "west",
+              "answer": "b"
+            },
+            {
+              "a": "lit",
+              "b": "list",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "sk",
+            "st"
+          ]
+        },
+        {
+          "id": "d046-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /sk/ ท้ายคำ desk ต้องมีเสียง /k/ ปิดท้าย ไม่ใช่ 'เด็ส' และ /st/ ใน study ไม่เติมสระ"
+          },
+          "text": "I study at my desk after lunch.",
+          "ipa": "/aɪ ˈstʌdi æt maɪ desk ˈæftər lʌntʃ/",
+          "phonemes": [
+            "sk",
+            "st"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: after school",
+        "th": "ฟัง: หลังเลิกเรียน"
+      },
+      "exercises": [
+        {
+          "id": "d046-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอทำอะไรก่อนอาหารเย็น"
+          },
+          "audioText": "Hi! I am Leo. After school I play football with my friends. Sometimes I swim. Then I go home. I study at my desk. Before dinner I call my grandmother. We talk. After dinner I play a game.",
+          "question": {
+            "en": "What does Leo do before dinner?",
+            "th": "ลีโอทำอะไรก่อนอาหารเย็น"
+          },
+          "choices": [
+            "He calls his grandmother",
+            "He plays football"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d046-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-study"
+            },
+            {
+              "vocabId": "v-play"
+            },
+            {
+              "vocabId": "v-game"
+            },
+            {
+              "vocabId": "v-football"
+            },
+            {
+              "vocabId": "v-swim"
+            },
+            {
+              "vocabId": "v-talk"
+            }
+          ]
+        },
+        {
+          "id": "d046-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสทำอะไรหลังเลิกเรียน"
+          },
+          "audioText": "Rose is a teacher. After school she writes at her desk. She often talks to Nan. Then she goes home and cooks dinner. After dinner she sometimes watches TV. Before bed she has some tea.",
+          "question": {
+            "en": "What does Rose do after school?",
+            "th": "โรสทำอะไรหลังเลิกเรียน"
+          },
+          "choices": [
+            "She writes at her desk",
+            "She plays football"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d046-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "After school I study at my desk. Then I call my friend."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "What do you do after school?",
+        "th": "คุณทำอะไรหลังเลิกเรียน"
+      },
+      "exercises": [
+        {
+          "id": "d046-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "After school I play football with my friends.",
+            "Sometimes I swim.",
+            "Then I go home and study at my desk.",
+            "I write in my book.",
+            "Before dinner I call my grandmother.",
+            "We talk. She lives in Chiang Mai.",
+            "After dinner I play a game."
+          ]
+        },
+        {
+          "id": "d046-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอะไรหลังเลิกเรียนหรือหลังเลิกงาน ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you do after school or work?",
+          "sampleAnswer": "After work I play football. Then I go home. Before dinner I study at my desk.",
+          "keywords": [
+            "after",
+            "before"
+          ]
+        },
+        {
+          "id": "d046-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ออก before ให้เน้นพยางค์หลัง (beFORE) และ /d/ ใน dinner ต้องสั่นคอ"
+          },
+          "text": "Before dinner I call my friend.",
+          "ipa": "/bɪˈfɔːr ˈdɪnər aɪ kɔːl maɪ frend/",
+          "phonemes": [
+            "d"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Leo after school",
+        "th": "ลีโอหลังเลิกเรียน"
+      },
+      "exercises": [
+        {
+          "id": "d046-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (studies: study → studies เปลี่ยน y เป็น ies กับ he / she)"
+          },
+          "text": "Leo plays football with his friends after school. Sometimes he swims. Then he goes home and studies at his desk. Before dinner he calls his grandmother, Mali. They talk. After dinner Leo writes a little in his book and plays a game.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Leo do before dinner?",
+                "th": "ลีโอทำอะไรก่อนอาหารเย็น"
+              },
+              "choices": [
+                "He calls Mali",
+                "He plays football"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who does Leo talk to?",
+                "th": "ลีโอคุยกับใคร"
+              },
+              "choices": [
+                "Mali",
+                "Rose"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where does Leo study?",
+                "th": "ลีโอเรียนที่ไหน"
+              },
+              "choices": [
+                "At his desk",
+                "At the market"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: after and before",
+        "th": "เขียน: after และ before"
+      },
+      "exercises": [
+        {
+          "id": "d046-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "plays",
+            "My",
+            "son",
+            "football",
+            "after",
+            "school"
+          ],
+          "answer": "My son plays football after school",
+          "accept": [
+            "After school my son plays football"
+          ]
+        },
+        {
+          "id": "d046-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (ก่อน)"
+          },
+          "text": "___ dinner I call my grandmother.",
+          "answer": [
+            "Before"
+          ]
+        },
+        {
+          "id": "d046-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "หลังอาหารเย็นฉันเล่นเกม",
+          "accept": [
+            "After dinner I play a game",
+            "I play a game after dinner",
+            "After dinner I play games",
+            "I play games after dinner"
+          ]
+        },
+        {
+          "id": "d046-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-call"
+            },
+            {
+              "vocabId": "v-write"
+            },
+            {
+              "vocabId": "v-after"
+            },
+            {
+              "vocabId": "v-before"
+            },
+            {
+              "vocabId": "v-then"
+            },
+            {
+              "vocabId": "v-desk"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
