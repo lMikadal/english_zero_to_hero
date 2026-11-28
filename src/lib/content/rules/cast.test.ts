@@ -33,6 +33,12 @@ describe("ageClaims", () => {
     expect(ageClaims("It is a pen. She is nine.")).toEqual([]);
     expect(ageClaims("This is my friend, Ann. She is happy.")).toEqual([]);
   });
+  it("a possessive name is not the person the next 'He is N' talks about (Dan's father is seventy, not Dan)", () => {
+    expect(ageClaims("This is Ray. He is Dan's father. He is seventy.").map((c) => [c.name, c.age])).toEqual([]);
+    expect(ageClaims("This is Ann's brother. He is nine.").map((c) => [c.name, c.age])).toEqual([]);
+    expect(ageClaims("This is Ray, Dan's father. He is seventy.").map((c) => [c.name, c.age])).toEqual([["Ray", 70]]);
+  });
+
   it("strips dialogue speaker labels, so 'Mai: This is the boy, Tom. He is ten.' reads Tom (not two names)", () => {
     expect(ageClaims("Mai: This is the boy, Tom. He is ten.").map((c) => [c.name, c.age])).toEqual([["Tom", 10]]);
     expect(ageClaims("Mai: Hi!\nBen: Hello, Mai.\nMai: This is my friend, Ann. She is nine.").map((c) => [c.name, c.age])).toEqual([["Ann", 9]]);
