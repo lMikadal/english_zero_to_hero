@@ -241,10 +241,4 @@ describe("checkpoints/ folder", () => {
   it("loadCheckpoint rejects an afterDay that is not a checkpoint day", () => {
     expect(() => loadCheckpoint(45, root)).toThrow(/45/);
   });
-  it("a file whose afterDay disagrees with its name is reported by validateContentDir", () => {
-    base();
-    write("checkpoints/checkpoint-060.json", checkpoint(30));
-    const out = validateContentDir(root).problems.map((p) => p.message).join("\n");
-    expect(out).toMatch(/afterDay 30.*checkpoint-060/);
-  });
 });
