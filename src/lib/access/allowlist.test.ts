@@ -91,11 +91,11 @@ describe("createAllowList: matching", () => {
     }
   });
   it("/0 and /32 /128 edges", () => {
-    expect(createAllowList("0.0.0.0/0").isAllowed("9.9.9.9")).toBe(true);
-    expect(createAllowList("0.0.0.0/0").isAllowed("::1")).toBe(false);
+    expect(createAllowList("0.0.0.0/1").isAllowed("9.9.9.9")).toBe(true);
+    expect(createAllowList("0.0.0.0/1").isAllowed("::1")).toBe(false);
     expect(createAllowList("1.2.3.4/32").isAllowed("1.2.3.5")).toBe(false);
     expect(createAllowList("::1/128").isAllowed("::1")).toBe(true);
-    expect(createAllowList("::/0").isAllowed("fd7a::1")).toBe(true);
+    expect(createAllowList("8000::/1").isAllowed("8123::1")).toBe(true);
   });
   it("an IPv4-mapped entry means the IPv4 address", () => {
     expect(createAllowList("::ffff:1.2.3.4").isAllowed("1.2.3.4")).toBe(true);
@@ -133,9 +133,17 @@ describe("createAllowList: strict validation (never silently allow)", () => {
 
 // The same table is run by the shell validator behind check-env.sh (scripts/prod/prod-scripts.test.ts): the two cannot drift.
 describe("shared valid/invalid table (allowlist-cases.json)", () => {
-  const table = JSON.parse(readFileSync(path.join(import.meta.dirname, "allowlist-cases.json"), "utf8")) as { valid: string[]; invalid: string[] };
+  const table = JSON.parse(readFileSync(path.join(import.meta.dirname, "allowlist-cases.json"), "utf8")) as { valid: string[]; invalid: string[]; valid_with_warning: string[] };
   it.each(table.valid)("accepts %j", (raw) => {
     expect(() => createAllowList(raw)).not.toThrow();
+  });
+  it.each(table.valid_with_warning)("accepts %j but warns that it is very broad", (raw) => {
+    const list = createAllowList(raw);
+    expect(list.enabled).toBe(true);
+    expect(list.warnings.join(" ")).toMatch(/broad/);
+  });
+  it("a normal list has no warnings", () => {
+    expect(createAllowList("100.101.102.103, 100.64.0.0/10, fd7a:115c:a1e0::/48").warnings).toEqual([]);
   });
   it.each(table.invalid)("rejects %j", (raw) => {
     expect(() => createAllowList(raw)).toThrow(AllowListError);

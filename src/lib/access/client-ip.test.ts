@@ -4,7 +4,7 @@ import { createAllowList } from "./allowlist";
 import { DEFAULT_TRUSTED_PROXIES, resolveClient } from "./client-ip";
 
 const trusted = createAllowList(DEFAULT_TRUSTED_PROXIES);
-const resolve = (peer: string | null, forwardedFor: string | null) => resolveClient({ peer, forwardedFor, trusted });
+const resolve = (peer: string | null, forwardedFor: string | null, proxyHeaders = false) => resolveClient({ peer, forwardedFor, proxyHeaders, trusted });
 
 describe("resolveClient", () => {
   it("a peer that is not a trusted proxy is judged by its own address; forwarded headers are ignored (anti-spoofing)", () => {
@@ -36,5 +36,16 @@ describe("resolveClient", () => {
     expect(resolve(null, "100.101.102.103")).toEqual({ kind: "unknown" });
     expect(resolve("", null)).toEqual({ kind: "unknown" });
     expect(resolve("not-an-ip", null)).toEqual({ kind: "unknown" });
+  });
+  it("S2: a trusted peer is 'this machine' only when the request carries NO proxy headers at all", () => {
+    expect(resolve("172.18.0.1", null, true)).toEqual({ kind: "unknown" });
+    expect(resolve("127.0.0.1", "", true)).toEqual({ kind: "unknown" });
+    expect(resolve("127.0.0.1", "  ", true)).toEqual({ kind: "unknown" });
+  });
+  it("S2: a usable forwarded address still decides, whatever other proxy headers are present", () => {
+    expect(resolve("172.18.0.1", "100.101.102.103", true)).toEqual({ kind: "ip", ip: "100.101.102.103" });
+  });
+  it("S2: proxy headers from a non-proxy peer change nothing (it is judged by its own address)", () => {
+    expect(resolve("203.0.113.9", null, true)).toEqual({ kind: "ip", ip: "203.0.113.9" });
   });
 });

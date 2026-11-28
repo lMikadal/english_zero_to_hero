@@ -12,14 +12,14 @@ beforeAll(async () => {
   installPeerStamp(); // idempotent: a second install must not double-wrap
   server = http.createServer((req, res) => {
     res.setHeader("content-type", "application/json");
-    res.end(JSON.stringify({ peer: req.headers["x-ezh-peer"], xff: req.headers["x-ezh-xff"], rawXff: req.headers["x-forwarded-for"], count: req.rawHeaders.filter((h) => h.toLowerCase().startsWith("x-ezh-")).length }));
+    res.end(JSON.stringify({ proxy: req.headers["x-ezh-proxy"], peer: req.headers["x-ezh-peer"], xff: req.headers["x-ezh-xff"], rawXff: req.headers["x-forwarded-for"], count: req.rawHeaders.filter((h) => h.toLowerCase().startsWith("x-ezh-")).length }));
   });
   await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
   port = (server.address() as AddressInfo).port;
 });
 afterAll(() => new Promise<void>((r) => server.close(() => r())));
 
-const get = async (headers: Record<string, string> = {}) => (await fetch(`http://127.0.0.1:${port}/`, { headers })).json() as Promise<{ peer: string; xff: string; rawXff?: string; count: number }>;
+const get = async (headers: Record<string, string> = {}) => (await fetch(`http://127.0.0.1:${port}/`, { headers })).json() as Promise<{ proxy: string; peer: string; xff: string; rawXff?: string; count: number }>;
 
 describe("installPeerStamp", () => {
   it("stamps the TCP peer address on every request", async () => {
@@ -36,5 +36,14 @@ describe("installPeerStamp", () => {
   });
   it("leaves x-forwarded-for itself alone", async () => {
     expect((await get({ "x-forwarded-for": "1.2.3.4" })).rawXff).toBe("1.2.3.4");
+  });
+  it("S2: records which proxy headers the client request carried (empty when none), so 'no headers' can be told from 'headers without an address'", async () => {
+    expect((await get()).proxy).toBe("");
+    expect((await get({ "x-forwarded-host": "x" })).proxy).toBe("x-forwarded-host");
+    expect((await get({ "x-forwarded-for": "" })).proxy).toBe("x-forwarded-for");
+    expect((await get({ "x-forwarded-proto": "https", "tailscale-user-login": "a@b", forwarded: "for=1.2.3.4", "x-real-ip": "1.2.3.4" })).proxy.split(",").sort()).toEqual(["forwarded", "tailscale-user-login", "x-forwarded-proto", "x-real-ip"]);
+  });
+  it("S2: a client-supplied x-ezh-proxy is discarded", async () => {
+    expect((await get({ "x-ezh-proxy": "" })).proxy).toBe("");
   });
 });

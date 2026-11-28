@@ -1,5 +1,5 @@
 {
-  "_comment": "Whole ALLOWED_IPS values. ONE table for two validators that must agree: the app (allowlist.ts, tested in allowlist.test.ts) and scripts/prod/allowed-ips.sh used by check-env.sh (tested in scripts/prod/prod-scripts.test.ts). Separators: comma and space only (an env file line has no newline). Add a case here and both suites run it.",
+  "_comment": "Whole ALLOWED_IPS values. ONE table for two validators that must agree: the app (allowlist.ts, tested in allowlist.test.ts) and scripts/prod/allowed-ips.sh used by check-env.sh (tested in scripts/prod/prod-scripts.test.ts). Separators: comma and space only (an env file line has no newline). Add a case here and both suites run it. valid_with_warning: accepted, but the validators print a warning (broader than /8 for IPv4, /16 for IPv6). Match-everything ranges (/0) are invalid.",
   "valid": [
     "",
     "   ",
@@ -12,8 +12,6 @@
     "FD7A:115C:A1E0:0:0:0:0:1",
     "::1",
     "::",
-    "::/0",
-    "0.0.0.0/0",
     "1.2.3.4/32",
     "::1/128",
     "2001:db8::1.2.3.4",
@@ -66,6 +64,17 @@
     "1.2.3.4%eth0",
     "٣.٣.٣.٣",
     "'100.101.102.103'",
-    "100.101.102.103 #home"
+    "100.101.102.103 #home",
+    "0.0.0.0/0",
+    "::/0",
+    "::ffff:0:0/96",
+    "0.0.0.0/0, 100.101.102.103",
+    "::ffff:0.0.0.0/96"
+  ],
+  "valid_with_warning": [
+    "128.0.0.0/1",
+    "0.0.0.0/7",
+    "8000::/1",
+    "fd00::/8"
   ]
 }

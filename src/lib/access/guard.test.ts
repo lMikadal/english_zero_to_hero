@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { checkAccess, createDenyLogger, forbiddenHtml } from "./guard";
+import { checkAccess, createDenyLogger, forbiddenHtml, validateAccessEnv } from "./guard";
 
 const h = (o: Record<string, string>) => new Headers(o);
 const on = { ALLOWED_IPS: "100.101.102.103, 100.64.0.0/10" };
@@ -13,6 +13,11 @@ describe("checkAccess", () => {
   it("on: host-local request (trusted peer, no forwarded header) is allowed", () => {
     expect(checkAccess(h({ "x-ezh-peer": "172.18.0.1" }), on)).toEqual({ allowed: true });
     expect(checkAccess(h({ "x-ezh-peer": "::ffff:127.0.0.1", "x-ezh-xff": "" }), on)).toEqual({ allowed: true });
+  });
+  it("S2: proxy headers present but no usable forwarded address -> denied, shown as unknown", () => {
+    expect(checkAccess(h({ "x-ezh-peer": "172.18.0.1", "x-ezh-proxy": "x-forwarded-for", "x-ezh-xff": "" }), on)).toEqual({ allowed: false, ip: null });
+    expect(checkAccess(h({ "x-ezh-peer": "127.0.0.1", "x-ezh-proxy": "x-forwarded-host" }), on)).toEqual({ allowed: false, ip: null });
+    expect(checkAccess(h({ "x-ezh-peer": "172.18.0.1", "x-ezh-proxy": "x-forwarded-host,x-forwarded-for", "x-ezh-xff": "100.101.102.103" }), on)).toEqual({ allowed: true });
   });
   it("on: tailnet request through the trusted proxy is judged by the forwarded address", () => {
     expect(checkAccess(h({ "x-ezh-peer": "172.18.0.1", "x-ezh-xff": "100.101.102.103" }), on)).toEqual({ allowed: true });
@@ -40,6 +45,18 @@ describe("checkAccess", () => {
   it("a malformed ALLOWED_IPS or TRUSTED_PROXIES throws instead of allowing", () => {
     expect(() => checkAccess(h({}), { ALLOWED_IPS: "100.101.102.103, nope" })).toThrow(/nope/);
     expect(() => checkAccess(h({}), { ...on, TRUSTED_PROXIES: "bad" })).toThrow(/bad/);
+  });
+});
+
+describe("warnings", () => {
+  it("validateAccessEnv reports very broad ranges without failing", () => {
+    const warnings = validateAccessEnv({ ALLOWED_IPS: "128.0.0.0/1" });
+    expect(warnings.join(" ")).toMatch(/broad/);
+    expect(validateAccessEnv({ ALLOWED_IPS: "100.101.102.103" })).toEqual([]);
+  });
+  it("match-everything ranges are refused", () => {
+    expect(() => validateAccessEnv({ ALLOWED_IPS: "0.0.0.0/0" })).toThrow();
+    expect(() => checkAccess(new Headers(), { ALLOWED_IPS: "::/0" })).toThrow();
   });
 });
 
