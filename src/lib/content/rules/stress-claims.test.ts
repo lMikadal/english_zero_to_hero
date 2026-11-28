@@ -2,9 +2,10 @@
 import { describe, expect, it } from "vitest";
 import type { Exercise } from "../schema";
 import { buildContext } from "./context";
-import { checkStressClaims, primaryStressIndex, stressClaims } from "./stress-claims";
+import { checkStressClaims, primaryStressIndex, stressClaims as stressClaimsRaw } from "./stress-claims";
 import { data, exId, lessonFile, vocabFile, vocabItem } from "./test-support";
 
+const stressClaims = (t: string) => stressClaimsRaw(t).map(({ word, index }) => ({ word, index }));
 const w = (word: string, us: string, uk = us) => ({ ...vocabItem({ id: `v-${word}`, word }), ipa: { us, uk } });
 const repeat = (th: string): Exercise => ({ id: exId(1, "pron"), type: "repeat_after_me", instruction: { th }, text: "Hello." });
 const BANK = [w("weekend", "/ˈwiːkend/", "/ˌwiːkˈend/"), w("banana", "/bəˈnænə/"), w("thirteen", "/ˌθɜːrˈtiːn/", "/ˌθɜːˈtiːn/")];
@@ -35,7 +36,7 @@ describe("stress-claims (warning): a stress claim must agree with the vocab IPA"
     const out = run("ออกเสียง WEEKend ให้เน้นพยางค์แรก");
     expect(out).toHaveLength(1);
     expect(out[0]).toMatchObject({ rule: "stress-claims", severity: "warning", file: "content/lessons/day-001.json", id: "d001-pron-01" });
-    for (const t of ['"weekend"', "US", "UK", "WEEKend", "weekEND", "both"]) expect(out[0].message).toContain(t);
+    for (const t of ['"weekend"', "US", "UK", "WEEKend", "/ˈwiːkend/", "/ˌwiːkˈend/", "syllable 1", "syllable 2", "both"]) expect(out[0].message).toContain(t);
   });
   it("accepts a claim that names both stress patterns when US and UK differ", () => {
     expect(run("weekend สำเนียงอเมริกัน WEEKend สำเนียงอังกฤษ weekEND")).toEqual([]);
