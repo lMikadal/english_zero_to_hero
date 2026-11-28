@@ -9,6 +9,7 @@ import { ArrangeWords } from "./ArrangeWords";
 import { Dictation } from "./Dictation";
 import { FillBlank } from "./FillBlank";
 import { FreeWrite } from "./FreeWrite";
+import { GrammarNote } from "./GrammarNote";
 import { ListenChoose } from "./ListenChoose";
 import { MinimalPair } from "./MinimalPair";
 import { PhonemeIntro } from "./PhonemeIntro";
@@ -22,7 +23,7 @@ import { VocabMatch } from "./VocabMatch";
 
 export const REGISTERED_TYPES = [
   "phoneme_intro", "minimal_pair", "listen_choose", "dictation", "repeat_after_me", "shadowing", "speak_answer",
-  "read_passage", "arrange_words", "fill_blank", "translate_th_en", "free_write", "vocab_match",
+  "read_passage", "arrange_words", "fill_blank", "translate_th_en", "free_write", "vocab_match", "grammar_note",
 ] as const satisfies readonly ExerciseType[];
 
 export const isRegistered = (type: ExerciseType): boolean => (REGISTERED_TYPES as readonly string[]).includes(type);
@@ -49,6 +50,7 @@ export function renderExercise(exercise: Exercise, h: ExerciseHandlers): ReactNo
     case "translate_th_en": return <TranslateThEn exercise={exercise} {...h} />;
     case "free_write": return <FreeWrite exercise={exercise} {...h} />;
     case "vocab_match": return <VocabMatch exercise={exercise} {...h} />;
+    case "grammar_note": return <GrammarNote exercise={exercise} {...h} />;
     default: return null;
   }
 }

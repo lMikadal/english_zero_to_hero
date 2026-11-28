@@ -22,7 +22,7 @@ type Case = {
 const text = (t: string): AttemptAnswer => ({ kind: "text", text: t });
 
 // one case per exercise type that appears in days 1-7 (phoneme_intro is covered separately)
-const cases: Record<Exclude<ExerciseType, "phoneme_intro" | "roleplay" | "spell_word" | "use_in_sentence">, Case> = {
+const cases: Record<Exclude<ExerciseType, "phoneme_intro" | "grammar_note" | "roleplay" | "spell_word" | "use_in_sentence">, Case> = {
   listen_choose: {
     id: "d001-listen-01", right: { kind: "choice", selected: 0 }, wrong: { kind: "choice", selected: 2 }, otherKind: text("Sam"),
     wrongGrade: { correct: false, score: 0 },
@@ -79,13 +79,20 @@ describe("gradeExercise on real days 1-7 content", () => {
   it("covers every type that appears in days 1-7", () => {
     const types = new Set(allExercises().map((e) => e.exercise.type));
     expect([...types].filter((t) => t !== "phoneme_intro" && !(t in cases))).toEqual([]);
-    expect([...types].sort()).toEqual([...SUPPORTED_TYPES].sort());
-    expect(SUPPORTED_TYPES).toHaveLength(13);
+    expect([...types].sort()).toEqual([...SUPPORTED_TYPES].filter((t) => t !== "grammar_note").sort());
+    expect(SUPPORTED_TYPES).toHaveLength(14);
   });
 
   it("phoneme_intro has no attempt row: it is unsupported for grading", () => {
-    expect(UNGRADED_TYPES).toEqual(["phoneme_intro"]);
+    expect(UNGRADED_TYPES).toEqual(["phoneme_intro", "grammar_note"]);
     expect(gradeExercise(get("d001-pron-01"), ok)).toEqual({ error: "unsupported" });
+  });
+
+  it("grammar_note is a teaching card like phoneme_intro: no attempt, no grade, no retry", () => {
+    const note = { id: "d036-read-01", type: "grammar_note", instruction: { th: "ก" }, titleTh: "ก", bodyTh: "ก", examples: [{ en: "I like tea.", th: "ก" }], structures: ["third-person-s"] } as Exercise;
+    expect(UNGRADED_TYPES).toContain("grammar_note");
+    expect(gradeExercise(note, ok)).toEqual({ error: "unsupported" });
+    expect(isRetryable("grammar_note")).toBe(false);
   });
 
   it("roleplay, spell_word and use_in_sentence are unsupported", () => {

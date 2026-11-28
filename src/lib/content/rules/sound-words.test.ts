@@ -77,9 +77,11 @@ describe("sound-words: every listed word that has a vocab entry must contain the
     expect(out[0].message).toContain('"sixteen"');
     expect(out[0].message).toContain('"this"');
   });
-  it("accepts when US or UK IPA contains the sound as a whole phoneme", () => {
+  it("accepts when both accents contain the sound as a whole phoneme; one accent only is a warning", () => {
     expect(check([repeat("ระวัง /v/ ใน five, seven และ seventeen")])).toEqual([]);
-    expect(check([repeat("Watch /r/ in water", "Watch /r/ in water")], [word("water", "/ˈwɔːtər/", "/ˈwɔːtə/")])).toEqual([]);
+    expect(check([repeat("Watch /r/ in water", "Watch /r/ in water")], [word("water", "/ˈwɔːtər/", "/ˈwɔːtər/")])).toEqual([]);
+    const out = check([repeat("Watch /r/ in water", "Watch /r/ in water")], [word("water", "/ˈwɔːtər/", "/ˈwɔːtə/")]);
+    expect(out.map((p) => p.severity)).toEqual(["warning", "warning"]); // th and en text, one warning each
   });
   it("uses whole phonemes: /ɪ/ is not in 'five' (aɪ), /t/ is not in a tʃ word", () => {
     expect(check([repeat("ระวัง /ɪ/ ใน five")])).toHaveLength(1);
@@ -97,4 +99,28 @@ describe("sound-words: every listed word that has a vocab entry must contain the
     expect(check([intro("ฟังเสียง", "ระวัง /v/ ใน sixteen")])).toHaveLength(1);
   });
   it("a text without a claim is not checked", () => expect(check([repeat("ฟังแล้วพูดตาม")])).toEqual([]));
+});
+
+describe("sound-words: the sound must be in BOTH the US and the UK IPA", () => {
+  const bank = [word("sandwich", "/ˈsænwɪtʃ/", "/ˈsænwɪdʒ/"), word("water", "/ˈwɔːtər/", "/ˈwɔːtə/"), word("sixteen", "/ˌsɪksˈtiːn/")];
+  it("warns, naming the accent where it is missing, when only one accent has it", () => {
+    const out = check([repeat("ระวังเสียง /tʃ/ ใน sandwich")], bank);
+    expect(out).toHaveLength(1);
+    expect(out[0].severity).toBe("warning");
+    expect(out[0].message).toContain('"sandwich"');
+    expect(out[0].message).toContain("UK");
+    expect(out[0].message).toContain("/ˈsænwɪdʒ/");
+    expect(out[0].message).toContain("US");
+  });
+  it("names the US when it is the US that lacks it", () => {
+    const out = check([repeat("ระวังเสียง /dʒ/ ใน sandwich")], bank);
+    expect(out[0].severity).toBe("warning");
+    expect(out[0].message).toMatch(/only in the UK IPA/);
+  });
+  it("keeps the ERROR when the sound is in neither accent, and is quiet when both have it", () => {
+    const out = check([repeat("ระวังเสียง /v/ ใน sixteen")], bank);
+    expect(out).toHaveLength(1);
+    expect(out[0].severity).toBeUndefined();
+    expect(check([repeat("ระวังเสียง /t/ ใน water")], bank)).toEqual([]);
+  });
 });

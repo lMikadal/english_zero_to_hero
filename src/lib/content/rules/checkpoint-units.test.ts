@@ -1,53 +1,57 @@
 // @vitest-environment node
-// Plan 3.1 item 6: the rules that look at learner-facing text run on a checkpoint as a unit of day afterDay.
+// Checkpoint files are "units" of text: the text rules (phrase-lint, the phoneme tag sound check) read them too, while the
+// lesson-only rules (grammar notes, new-word load) must stay silent on them.
 import { describe, expect, it } from "vitest";
+import { checkpointFixture } from "@/lib/answers/test-content";
 import type { Exercise } from "../schema";
-import { checkAnswerForms } from "./answer-forms";
-import { checkArrangeQuestion } from "./arrange-question";
-import { checkArrangeWords } from "./arrange-words";
-import { cpOf } from "./checkpoint-test-support";
+import { checkpointFile, baseSections, baseLessons, baseVocab, cpId, section, world } from "./checkpoint-test-support";
 import { buildContext } from "./context";
-import { checkPronunciation } from "./pronunciation";
-import { checkSoundWords } from "./sound-words";
-import { checkThaiNames } from "./thai-names";
-import { data, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
+import { checkGrammarNote, checkGrammarNoteRequired } from "./grammar-note";
+import { checkPhonemeTagSounds } from "./phoneme-tags";
+import { checkPhraseLint } from "./phrase-lint";
+import { checkNewWordsPerDay, checkVocabMatch, checkWeekRecycle, checkWordExposure } from "./word-load";
+import { instruction } from "./test-support";
 
-const FILE = "content/checkpoints/checkpoint-030.json";
-const BANK = [
-  { ...vocabItem({ id: "v-water", word: "water" }), ipa: { us: "/ˈwɔːtər/", uk: "/ˈwɔːtə(r)/" } },
-  vocabItem({ id: "v-baby", word: "baby" }), vocabItem({ id: "v-happy", word: "happy", pos: "adjective" }),
-];
-const ctx = (ex: Exercise) => buildContext({ ...data([lessonFile(1, [], [{ id: "d001-listen-01", type: "dictation", instruction, audioText: "Hi." }])], [vocabFile(BANK)]), checkpoints: [cpOf([ex])] });
+const say = (id: string, text: string, extra: Record<string, unknown> = {}): Exercise => ({ id, type: "repeat_after_me", instruction, text, ...extra }) as Exercise;
+const withExtra = (ex: Exercise, skill: "speaking" | "pronunciation" = "speaking") => {
+  const sections = baseSections().map((s) => (s.skill === skill ? { ...s, exercises: [...s.exercises, ex] } : s));
+  return buildContext(world({ checkpoints: [checkpointFile({ sections })] }));
+};
 
-describe("rules that must run on checkpoints", () => {
-  it("pronunciation: ipa with a different number of words than the text", () => {
-    const out = checkPronunciation(ctx({ id: "c030-pron-01", type: "repeat_after_me", instruction, text: "Hello big cat.", ipa: "/x/" }));
+describe("text rules run on checkpoint units", () => {
+  it("phrase-lint warns on a phrasing in a checkpoint file", () => {
+    const out = checkPhraseLint(withExtra(say(cpId("speak", 9), "I order a coffee, please.")));
     expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ rule: "pronunciation", file: FILE, id: "c030-pron-01" });
+    expect(out[0]).toMatchObject({ rule: "phrase-lint", severity: "warning", file: "content/checkpoints/checkpoint-030.json", id: cpId("speak", 9) });
   });
-  it("sound-words: a sound claimed for a word that does not have it", () => {
-    const out = checkSoundWords(ctx({ id: "c030-pron-01", type: "repeat_after_me", instruction: { th: "ก", en: "Watch /v/ in water" }, text: "Water." }));
-    expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ rule: "sound-words", file: FILE, id: "c030-pron-01" });
+  it("the phoneme tag sound check reads a checkpoint item tagged with a code whose sound it lacks", () => {
+    const bad = say(cpId("pron", 9), "A cat.", { ipa: "/ə kæt/", phonemes: ["ae"] });
+    const intro: Exercise = { id: "d001-pron-09", type: "phoneme_intro", instruction, phoneme: "y", ipa: "/j/", tipTh: "ก", examples: ["yes"] };
+    const lessons = baseLessons();
+    lessons[0].lesson.sections[0].exercises.push(intro);
+    const sections = baseSections().map((s) => (s.skill === "pronunciation" ? { ...s, exercises: [...s.exercises, say(cpId("pron", 9), "A cat.", { ipa: "/ə kæt/", phonemes: ["y"] })] } : s));
+    const out = checkPhonemeTagSounds(buildContext(world({ lessons, checkpoints: [checkpointFile({ sections })] })));
+    const mine = out.filter((p) => p.id === cpId("pron", 9)); // the fixture's other items have placeholder IPA and trip it too
+    expect(mine.map((p) => p.file)).toEqual(["content/checkpoints/checkpoint-030.json"]);
+    expect(mine[0].message).toContain("/j/");
+    expect(bad.type).toBe("repeat_after_me");
   });
-  it("arrange-words: a name that would be shown in lower case", () => {
-    const out = checkArrangeWords(ctx({ id: "c030-write-01", type: "arrange_words", instruction, words: ["is", "Sam", "my", "friend"], answer: "Sam is my friend" }));
-    expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ rule: "arrange-words", file: FILE, id: "c030-write-01" });
+});
+
+describe("lesson-only rules stay silent on a checkpoint", () => {
+  const ctx = buildContext({ ...world(), checkpoints: [checkpointFile(), { file: "content/checkpoints/checkpoint-030.json", checkpoint: checkpointFixture }].slice(0, 1) });
+  const fixtureCtx = buildContext({ lessons: baseLessons(), vocab: baseVocab(), checkpoints: [{ file: "content/checkpoints/checkpoint-030.json", checkpoint: checkpointFixture }] });
+  it.each([
+    ["grammar-note", checkGrammarNote], ["grammar-note-required", checkGrammarNoteRequired], ["word-exposure", (c: typeof ctx) => checkWordExposure(c, 1)],
+    ["week-recycle", (c: typeof ctx) => checkWeekRecycle(c, 1)], ["vocab-match", (c: typeof ctx) => checkVocabMatch(c, 1)], ["new-words-per-day", (c: typeof ctx) => checkNewWordsPerDay(c, 1)],
+  ])("%s reports nothing for a checkpoint", (_name, rule) => {
+    expect(rule(ctx).filter((p) => p.file.includes("checkpoint"))).toEqual([]);
+    expect(rule(fixtureCtx).filter((p) => p.file.includes("checkpoint"))).toEqual([]);
   });
-  it("arrange-question: a statement whose yes/no question is not accepted", () => {
-    const out = checkArrangeQuestion(ctx({ id: "c030-write-01", type: "arrange_words", instruction, words: ["My", "baby", "is", "very", "happy"], answer: "My baby is very happy" }));
-    expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ rule: "arrange-question", file: FILE, id: "c030-write-01" });
-  });
-  it("answer-forms: an ambiguous contraction without its full form", () => {
-    const out = checkAnswerForms(ctx({ id: "c030-write-01", type: "translate_th_en", instruction, th: "ก", accept: ["He's tired"] }));
-    expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ rule: "answer-forms", file: FILE, id: "c030-write-01" });
-  });
-  it("thai-names: a Thai name misspelt next to its English name", () => {
-    const out = checkThaiNames(ctx({ id: "c030-read-01", type: "translate_th_en", instruction, th: "นันอยู่ที่ไหน", accept: ["Where is Nan"] }));
-    expect(out.length).toBeGreaterThan(0);
-    expect(out[0]).toMatchObject({ rule: "thai-names", file: FILE, id: "c030-read-01", severity: "warning" });
+  it("a grammar_note planted in a checkpoint is the checkpoint rule's business (banned), not these", () => {
+    const note: Exercise = { id: cpId("write", 9), type: "grammar_note", instruction, titleTh: "ก", bodyTh: "ก", examples: [{ en: "Hello cat.", th: "ก" }], structures: ["nope"] };
+    const sections = baseSections().map((s) => (s.skill === "writing" ? { ...s, exercises: [note, ...s.exercises] } : s));
+    expect(checkGrammarNote(buildContext(world({ checkpoints: [checkpointFile({ sections })] })))).toEqual([]);
+    expect(section("writing", 0, []).skill).toBe("writing");
   });
 });

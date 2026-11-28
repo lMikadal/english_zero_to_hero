@@ -19,9 +19,9 @@ const week1: Lesson[] = [1, 2, 3, 4, 5, 6, 7].map((d) => {
 });
 
 describe("registry", () => {
-  it("registers all 13 types used in week 1", () => {
+  it("registers the 13 types used in week 1 and the grammar_note card", () => {
     expect([...REGISTERED_TYPES].sort()).toEqual([...SUPPORTED_TYPES].sort());
-    expect(REGISTERED_TYPES).toHaveLength(13);
+    expect(REGISTERED_TYPES).toHaveLength(14);
   });
 
   it("only registers types the contract can grade", () => {

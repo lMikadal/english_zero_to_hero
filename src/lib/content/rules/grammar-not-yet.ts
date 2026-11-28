@@ -23,7 +23,22 @@ export const GRAMMAR_NOT_YET_RULE = "grammar-not-yet";
 /** Present Simple week (docs/CURRICULUM.md: week 6 = days 36-42). */
 export const THIRD_PERSON_S_DAY = 36;
 
+/**
+ * The grammar structures a grammar_note can explain (`structures` ids) and the first day each is allowed. Every gate below
+ * names one of them. Add an id here when a new gate is added; rule "grammar-note" rejects any other id in a note.
+ */
+export const GRAMMAR_STRUCTURES: Readonly<Record<string, { day: number; what: string }>> = {
+  has: { day: 29, what: 'has: the third-person form of "have"' },
+  "third-person-s": { day: THIRD_PERSON_S_DAY, what: "the Present Simple -s of he / she / it (likes, lives, works)" },
+  "es-ending": { day: THIRD_PERSON_S_DAY, what: "the Present Simple -es / -ies of he / she / it (goes, watches, studies)" },
+  "do-does-question": { day: THIRD_PERSON_S_DAY, what: 'Present Simple questions with does ("What does she do?")' },
+  "do-not": { day: THIRD_PERSON_S_DAY, what: 'negative do-support ("do not" / "don\'t")' },
+  but: { day: THIRD_PERSON_S_DAY, what: 'the linking word "but"' },
+};
+
 export type GrammarGate = {
+  /** The structure (a key of GRAMMAR_STRUCTURES) this form belongs to. */
+  structure: string;
   /** First lesson day on which the form may be used. */
   day: number;
   /** What the form is, for the message. */
@@ -37,15 +52,15 @@ export type GrammarGate = {
 const THIRD_PERSON_FIX = `Rewrite the sentence with I / you / we / they and the base verb (for example "They live in Bangkok"), or explain the form in the \`glossary\` of a read_passage.`;
 
 export const GRAMMAR_NOT_BEFORE: Readonly<Record<string, GrammarGate>> = {
-  has: { day: 29, what: 'the third-person form of "have" ("has")', fix: `Use "have" with I / you / we / they (for example "I have a sister"), or explain "has" in the \`glossary\` of a read_passage.` },
-  does: { day: THIRD_PERSON_S_DAY, what: 'the Present Simple form "does"', fix: `Use "do" with I / you / we / they (for example "How do you spell it?"), or explain "does" in the \`glossary\` of a read_passage.` },
-  goes: { day: THIRD_PERSON_S_DAY, what: 'the third-person -s form of "go"', fix: THIRD_PERSON_FIX },
+  has: { structure: "has", day: 29, what: 'the third-person form of "have" ("has")', fix: `Use "have" with I / you / we / they (for example "I have a sister"), or explain "has" in the \`glossary\` of a read_passage.` },
+  does: { structure: "do-does-question", day: THIRD_PERSON_S_DAY, what: 'the Present Simple form "does"', fix: `Use "do" with I / you / we / they (for example "How do you spell it?"), or explain "does" in the \`glossary\` of a read_passage.` },
+  goes: { structure: "es-ending", day: THIRD_PERSON_S_DAY, what: 'the third-person -s form of "go"', fix: THIRD_PERSON_FIX },
   "do not": {
-    day: THIRD_PERSON_S_DAY, what: 'negative do-support ("do not" / "don\'t"): Present Simple negatives (questions such as "Do you ...?" are allowed earlier)',
+    structure: "do-not", day: THIRD_PERSON_S_DAY, what: 'negative do-support ("do not" / "don\'t"): Present Simple negatives (questions such as "Do you ...?" are allowed earlier)',
     fix: `Use "am not" / "is not" / "are not" (for example "I am not a doctor"), or explain the form in the \`glossary\` of a read_passage.`,
   },
   but: {
-    day: THIRD_PERSON_S_DAY, severity: "warning", what: 'the linking word "but" (the curriculum does not give its day: 36 is a placeholder, ask the curriculum owner)',
+    structure: "but", day: THIRD_PERSON_S_DAY, severity: "warning", what: 'the linking word "but" (the curriculum does not give its day: 36 is a placeholder, ask the curriculum owner)',
     fix: `Use two short sentences, or explain "but" in the \`glossary\` of a read_passage.`,
   },
 };
@@ -74,7 +89,7 @@ function gates(ctx: RuleContext): Map<string, GrammarGate & { base?: string }> {
     if (item.pos !== "verb" || ["be", "have", "do"].includes(base) || nouns.has(base)) continue;
     const form = thirdPersonS(base);
     if (NOT_A_VERB_FORM.has(form) || ALWAYS_ALLOWED.has(form) || bankWords.has(form)) continue; // a word in its own right
-    if (!out.has(form)) out.set(form, { day: THIRD_PERSON_S_DAY, base, what: `the third-person -s form of "${base}"`, fix: THIRD_PERSON_FIX });
+    if (!out.has(form)) out.set(form, { structure: /(s|x|z|ch|sh|o)$|[^aeiou]y$/.test(base) ? "es-ending" : "third-person-s", day: THIRD_PERSON_S_DAY, base, what: `the third-person -s form of "${base}"`, fix: THIRD_PERSON_FIX });
   }
   return out;
 }
@@ -93,19 +108,28 @@ export function checkedEnglish(ex: Exercise): LearnerField[] {
   }
 }
 
-/** The forms of `text` used before their day, in reading order, once each. */
-function early(text: string, day: number, gate: Map<string, GrammarGate & { base?: string }>, allowed: ReadonlySet<string>): string[] {
+type Gates = Map<string, GrammarGate & { base?: string }>;
+
+/** The gated forms `text` uses, in reading order, once each (whatever the day). */
+export function usedForms(text: string, gate: Gates, allowed: ReadonlySet<string> = new Set(), allowedStructures: ReadonlySet<string> = new Set()): string[] {
   const tokens = tokenize(text);
   const found: string[] = [];
   tokens.forEach((word, i) => {
     const t = word === "do" && tokens[i + 1] === "not" ? "do not" : word; // the one two-word gate
     const g = gate.get(t);
-    if (!g || g.day <= day || allowed.has(t) || found.includes(t)) return;
+    if (!g || allowed.has(t) || allowedStructures.has(g.structure) || found.includes(t)) return;
     if (g.base !== undefined && i > 0 && NOUN_CONTEXT.has(tokens[i - 1])) return;
     found.push(t);
   });
   return found;
 }
+
+/** The forms of `text` used before their day. */
+function early(text: string, day: number, gate: Gates, allowed: ReadonlySet<string>, allowedStructures: ReadonlySet<string>): string[] {
+  return usedForms(text, gate, allowed, allowedStructures).filter((f) => gate.get(f)!.day > day);
+}
+
+export { gates as grammarGates };
 
 export function checkGrammarNotYet(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
@@ -122,7 +146,7 @@ export function checkGrammarNotYet(ctx: RuleContext): Problem[] {
   for (const [id, { day }] of ctx.taughtIn) {
     const entry = ctx.bank.get(id);
     entry?.item.examples.forEach((ex, i) => {
-      const forms = early(ex.en, day, gate, new Set());
+      const forms = early(ex.en, day, gate, new Set(), new Set());
       if (forms.length) report(entry.file, id, day, `examples[${i}] "${ex.en}"`, forms);
     });
   }
@@ -130,9 +154,10 @@ export function checkGrammarNotYet(ctx: RuleContext): Problem[] {
     for (const section of sections) {
       for (const ex of section.exercises) {
         const glossed = new Set(glossedWords(ex).flatMap(tokenize));
+        const noteStructures = new Set(ex.type === "grammar_note" ? ex.structures : []); // a note may show the form it explains
         for (const f of checkedEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
-          const forms = early(f.text, day, gate, glossed);
+          const forms = early(f.text, day, gate, glossed, noteStructures);
           if (forms.length) report(file, ex.id, day, `${f.field} "${f.text}"`, forms);
         }
       }

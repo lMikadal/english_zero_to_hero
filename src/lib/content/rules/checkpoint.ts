@@ -112,8 +112,11 @@ function checkOne(ctx: RuleContext, { file, checkpoint: cp }: LoadedCheckpoint):
 
   // reviewDays (item 9)
   function checkReviewDays(section: CheckpointSection) {
+    const listed = new Set<number>();
     for (const day of section.reviewDays) {
       const at = `section "${section.skill}" reviewDays`;
+      if (listed.has(day)) { err(`${at}: day ${day} is listed twice; list each day once`); continue; }
+      listed.add(day);
       const lesson = lessonByDay.get(day);
       if (day > A) err(`${at}: day ${day} is after day ${A}; the remedial replay may only use finished days (<= ${A})`);
       else if (!lesson) err(`${at}: day ${day} has no lesson file, so the replay link would be broken`);

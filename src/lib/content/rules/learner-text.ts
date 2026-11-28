@@ -35,6 +35,12 @@ export function learnerEnglish(ex: Exercise): LearnerField[] {
     // the Thai instruction restates the task, so the English prompt is a bilingual task statement
     case "free_write":
     case "use_in_sentence": return [{ field: "prompt", text: ex.prompt, bilingual: true }];
+    // the English of a grammar card: the examples, and every table cell that has no Thai letter
+    case "grammar_note":
+      return [
+        ...ex.examples.map((e, i) => ({ field: `examples[${i}].en`, text: e.en })),
+        ...(ex.table ?? []).flatMap((row, r) => row.flatMap((cell, c) => (/[\u0E00-\u0E7F]/.test(cell) ? [] : [{ field: `table[${r}][${c}]`, text: cell }]))),
+      ];
     case "vocab_match":
     case "spell_word": return [];
   }

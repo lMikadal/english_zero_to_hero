@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import type { Exercise } from "../schema";
 import { buildContext } from "./context";
-import { checkPhonemeTags } from "./phoneme-tags";
+import { checkPhonemeTagSounds, checkPhonemeTags } from "./phoneme-tags";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const intro = (phoneme: string, ipa: string, n = 1): Exercise => ({
@@ -52,5 +52,41 @@ describe("phoneme-tags: a pronunciation section that teaches more than one sound
   it("does not flag sections without a phoneme_intro, or other sections", () => {
     expect(check([pair(2), repeat(3)])).toEqual([]);
     expect(check([intro("th", "/θ/ /ð/"), pair(2)], "speaking")).toEqual([]);
+  });
+});
+
+describe("phoneme-tag-sounds: an item's IPA must contain at least one of the sounds its tags stand for", () => {
+  const introY = (): Exercise => ({ id: exId(1, "pron", 1), type: "phoneme_intro", instruction, phoneme: "y", ipa: "/j/", tipTh: "ทิป", examples: ["yes"] });
+  const introV = (): Exercise => ({ id: exId(1, "pron", 4), type: "phoneme_intro", instruction, phoneme: "v", ipa: "/v/", tipTh: "ทิป", examples: ["very"] });
+  const rep = (n: number, text: string, ipa: string | undefined, phonemes: string[]): Exercise => ({ id: exId(1, "pron", n), type: "repeat_after_me", instruction, text, ...(ipa ? { ipa } : {}), phonemes });
+  const bankWord = (w: string, ipa: string) => ({ ...vocabItem({ id: `v-${w}`, word: w }), ipa: { us: ipa, uk: ipa } });
+  const run = (exs: Exercise[], items = [vocabItem({ id: "v-cat" })]) => {
+    const file = lessonFile(1, [], exs);
+    return checkPhonemeTagSounds(buildContext(data([file], [vocabFile(items)])));
+  };
+  it("flags an item tagged y whose ipa has no /j/ (the incident), naming the tag, the sound and the ipa", () => {
+    const out = run([introY(), rep(2, "A big cat.", "/ə bɪɡ kæt/", ["y"])]);
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ rule: "phoneme-tags", file: "content/lessons/day-001.json", id: "d001-pron-02" });
+    expect(out[0].severity).toBeUndefined();
+    for (const t of ['"y"', "/j/", "/ə bɪɡ kæt/", "phonemes"]) expect(out[0].message).toContain(t);
+  });
+  it("passes when one of the tagged sounds is there (a contrast v/w needs only one of them)", () => {
+    expect(run([introY(), rep(2, "Yes, a cat.", "/jes ə kæt/", ["y"])])).toEqual([]);
+    expect(run([introV(), introY(), rep(2, "Very big.", "/ˈveri bɪɡ/", ["v", "y"])])).toEqual([]);
+  });
+  it("looks the words up in the vocab bank when the item has no ipa, but only judges when every word is known", () => {
+    const items = [bankWord("big", "/bɪɡ/"), bankWord("cat", "/kæt/")];
+    expect(run([introY(), rep(2, "A big cat", undefined, ["y"])], [...items, bankWord("a", "/ə/")])).toHaveLength(1);
+    expect(run([introY(), rep(2, "A big dog", undefined, ["y"])], items)).toEqual([]);
+  });
+  it("checks minimal_pair words through the bank", () => {
+    const mp: Exercise = { id: exId(1, "pron", 3), type: "minimal_pair", instruction, pairs: [{ a: "big", b: "bag", answer: "a" }], phonemes: ["y"] };
+    expect(run([introY(), mp], [bankWord("big", "/bɪɡ/"), bankWord("bag", "/bæɡ/")])).toHaveLength(1);
+    expect(run([introY(), mp], [bankWord("big", "/jɪɡ/"), bankWord("bag", "/bæɡ/")])).toEqual([]);
+  });
+  it("skips a tag no phoneme_intro defines (nothing to compare with) and untagged items", () => {
+    expect(run([rep(2, "A big cat.", "/ə bɪɡ kæt/", ["zz"])])).toEqual([]);
+    expect(run([introY(), { id: exId(1, "pron", 5), type: "repeat_after_me", instruction, text: "A cat.", ipa: "/ə kæt/" } as Exercise])).toEqual([]);
   });
 });
