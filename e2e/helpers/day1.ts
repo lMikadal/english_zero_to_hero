@@ -78,6 +78,7 @@ async function checkAndNext(page: Page) {
 export async function playStep(page: Page, ex: Ex) {
   switch (ex.type) {
     case "phoneme_intro":
+    case "grammar_note": // teaching cards: no answer, "ถัดไป" is there from the start
       await page.getByRole("button", { name: "ถัดไป" }).click();
       return;
     case "minimal_pair": {
