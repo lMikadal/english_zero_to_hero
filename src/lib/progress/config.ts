@@ -35,6 +35,8 @@ export const MIN_RETEST_GRADED_ATTEMPTS = 5;
 
 // 4. CEFR
 export const CHECKPOINT_PASS_SCORE = 0.7;
+/** A sitting that was left open can be resumed this long after its first answer (docs/plans/checkpoint-plan.md D8). */
+export const CHECKPOINT_RESUME_HOURS = 24;
 export const CEFR_REQUIREMENTS = [
   { level: "A1", checkpointDay: 60, minKnownWords: 400 },
   { level: "A2", checkpointDay: 150, minKnownWords: 1200 },

@@ -111,6 +111,7 @@ describe("LessonPlayer in practice mode", () => {
       sendAttempt: vi.fn((a: AttemptInput) => { sent.push(a); }),
       completeLesson: vi.fn(async () => ({ status: "queued" as const })),
       completePractice,
+      completeCheckpoint: async () => ({ status: "queued" as const }),
       sendReview: () => {},
       completeReview: async () => ({ status: "queued" as const }),
       pendingCount: () => pending,

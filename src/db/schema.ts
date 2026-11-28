@@ -17,6 +17,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import type { CheckpointSkillResult } from "@/lib/attempts/contract"; // type-only: erased, the DB layer takes no runtime import from lib/
 import { user } from "./auth-schema";
 
 export * from "./auth-schema";
@@ -34,8 +35,10 @@ export const ACCENTS = ["us", "uk"] as const;
 export const PROGRESS_STATUSES = ["not_started", "in_progress", "done"] as const;
 export const SRS_DIRECTIONS = ["en_th", "th_en", "listen_spell", "speak"] as const;
 export const SKILLS = ["pronunciation", "listening", "speaking", "reading", "writing", "vocabulary"] as const;
-export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint", "practice"] as const;
-export const ACTIVITY_SOURCES = ["lesson", "practice", "review"] as const;
+// checkpoint = the first answer a learner ever gives to a checkpoint exercise; checkpoint_retake = every later answer to it
+// (a second sitting, or a sitting that was dropped and started again). Which of the two is stored is decided by the server.
+export const ATTEMPT_SOURCES = ["lesson", "drill", "retest", "checkpoint", "practice", "checkpoint_retake"] as const;
+export const ACTIVITY_SOURCES = ["lesson", "practice", "review", "checkpoint"] as const;
 export type Accent = (typeof ACCENTS)[number];
 export type ProgressStatus = (typeof PROGRESS_STATUSES)[number];
 export type SrsDirection = (typeof SRS_DIRECTIONS)[number];
@@ -121,6 +124,29 @@ export const attempts = pgTable(
     check("attempts_source_valid", inList(t.source, ATTEMPT_SOURCES)),
     check("attempts_duration_nonneg", sql`${t.durationMs} >= 0`),
     check("attempts_attempt_no_range", sql`${t.attemptNo} BETWEEN 1 AND 2`),
+  ],
+);
+
+// One row per finished sitting of a monthly checkpoint (docs/plans/checkpoint-plan.md 4.2). The score is frozen at
+// completion, so editing the exam file later never changes an old result. `passed` is not stored: isCheckpointPass(score).
+export const checkpointResults = pgTable(
+  "checkpoint_results",
+  {
+    // the sitting's sessionId, generated on the client, so completing twice cannot write twice
+    id: uuid("id").primaryKey(),
+    userId: userId(),
+    afterDay: integer("after_day").notNull(),
+    score: doublePrecision("score").notNull(),
+    skills: jsonb("skills").$type<CheckpointSkillResult[]>().notNull(),
+    startedAt: tstz("started_at").notNull(),
+    completedAt: tstz("completed_at").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("checkpoint_results_user_after_day_idx").on(t.userId, t.afterDay, t.completedAt),
+    check("checkpoint_results_after_day_valid", sql`${t.afterDay} BETWEEN 30 AND 360 AND ${t.afterDay} % 30 = 0`),
+    check("checkpoint_results_score_range", sql`${t.score} BETWEEN 0 AND 1`),
+    check("checkpoint_results_times", sql`${t.completedAt} >= ${t.startedAt}`),
   ],
 );
 
