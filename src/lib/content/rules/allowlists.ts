@@ -58,6 +58,35 @@ export const PROPER_NAMES: readonly string[] = [
   "Sam", "Ann", "Ben", "Mai", "Tom", "Nok", "Max", "Jen", "Jim", "Lek", "Jack", "Pim", "Kate", "Lisa", "Fon", "Rose", "Dan", "Leo", "Mali", "Ray", "Nan", "Thailand", "Bangkok", "England", "Japan", "Chiang",
 ];
 
+/**
+ * One Thai spelling per character name (rule "thai-names"). Add the Thai spelling of every new person in PROPER_NAMES here
+ * the day the name is first used; every lesson must then write the name exactly this way. Places are not listed.
+ */
+export const THAI_NAMES: Readonly<Record<string, string>> = {
+  Sam: "แซม", Ann: "แอน", Ben: "เบน", Mai: "ไหม", Tom: "ทอม", Nok: "นก", Max: "แม็กซ์", Jen: "เจน", Jim: "จิม", Lek: "เล็ก", Jack: "แจ็ค", Pim: "พิม",
+  Kate: "เคท", Lisa: "ลิซ่า", Fon: "ฝน", Rose: "โรส", Dan: "แดน", Leo: "ลีโอ", Mali: "มาลี", Ray: "เรย์", Nan: "แนน",
+};
+
+/** Names that are not people (no Thai spelling is required). */
+export const PLACE_NAMES: readonly string[] = ["Thailand", "Bangkok", "England", "Japan", "Chiang"];
+
+/**
+ * People whose Thai spelling is also an everyday Thai word (ไหม = the question particle, นก = bird, เล็ก = small, ฝน = rain):
+ * a near-variant of them cannot be told from another word, so only the other names are checked for misspellings.
+ */
+export const THAI_NAME_IS_A_WORD: readonly string[] = ["Mai", "Nok", "Lek", "Fon"];
+
+/**
+ * Everyday Thai words (and particles) that stand where a name can stand and are one edit from a name (แดง "red" ~ แดน, เจ็ด "seven" ~ เจน,
+ * จริง "true" ~ จิม ...). Rule "thai-names" never reports one of these as a misspelled name; it also never reports a word that
+ * occurs in the Thai of the vocab bank. Add a word here when the rule reports a real word, never to hide a misspelled name.
+ */
+export const COMMON_THAI_WORDS: readonly string[] = [
+  "แดง", "แดด", "ดิน", "แปด", "เจ็ด", "เป็น", "จริง", "เคย", "เทา", "แม่", "ทอง", "เรียน", "แอบ", "แซง", "โรง", "มาลัย", "เบาะ", "จิ้ม",
+  "เบา", "เน้น", "เช่น", "เติม", "แทน", "แหวน", "เล่น", "เห็น", "เย็น", "เว้น", "เดิน", "เด็ก", "เจอ", "เพิ่ม", "เกิน", "เกม", "แจก", "แจ้ง", "แถม", "แก่", "แต่ง",
+  "ทอด", "นอน", "นัก", "นั่ง", "พิมพ์", "พิเศษ", "ลีลา", "ลิง", "ลิ้น", "โรค", "มาก", "มาด", "มารยาท", "จิตใจ",
+];
+
 /** Every single letter is allowed: the alphabet and spelling exercises (B, U, S). */
 export const LETTERS: readonly string[] = "abcdefghijklmnopqrstuvwxyz".split("");
 
