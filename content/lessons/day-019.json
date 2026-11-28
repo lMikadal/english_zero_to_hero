@@ -5,8 +5,8 @@
   "type": "lesson",
   "cefr": "preA1",
   "title": {
-    "en": "How many? Who lives here? /v/ and /w/",
-    "th": "How many? ใครอาศัยอยู่ที่นี่? เสียง /v/ และ /w/"
+    "en": "How many? Where do they live? /v/ and /w/",
+    "th": "How many? พวกเขาอาศัยอยู่ที่ไหน? เสียง /v/ และ /w/"
   },
   "objectives": [
     {
@@ -14,8 +14,8 @@
       "th": "ถามและตอบ 'How many…?' เกี่ยวกับจำนวนคนในครอบครัวได้"
     },
     {
-      "en": "Tell /v/ and /w/ apart (very – wary, vet – wet)",
-      "th": "แยกเสียง /v/ กับ /w/ ได้ (vet กับ wet)"
+      "en": "Tell /v/ and /w/ apart (vet – wet, viper – wiper)",
+      "th": "แยกเสียง /v/ กับ /w/ ได้ (vet กับ wet, viper กับ wiper)"
     },
     {
       "en": "Say where family members live and say number 19",
@@ -78,6 +78,10 @@
               "b": "wiper",
               "answer": "a"
             }
+          ],
+          "phonemes": [
+            "v",
+            "w"
           ]
         },
         {
@@ -87,7 +91,11 @@
             "th": "ฟังแล้วพูดตาม แยก /w/ ใน we กับ /v/ ใน live และ very ให้ชัด"
           },
           "text": "We live in a very small house.",
-          "ipa": "/wiː lɪv ɪn ə ˈveri smɔːl haʊs/"
+          "ipa": "/wiː lɪv ɪn ə ˈveri smɔːl haʊs/",
+          "phonemes": [
+            "v",
+            "w"
+          ]
         }
       ]
     },
@@ -122,7 +130,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าลูกสาวอายุเท่าไร"
           },
-          "audioText": "How many children do you have? I have three, two sons and a daughter. My daughter is nineteen. She is young, but my sons are small.",
+          "audioText": "I have three children, two sons and a daughter. My daughter is nineteen. My sons are very young.",
           "question": {
             "en": "How old is the daughter?",
             "th": "ลูกสาวอายุเท่าไร"
@@ -161,7 +169,7 @@
             "How many children do you have?",
             "I have two children.",
             "My aunt is young.",
-            "My uncle lives in Bangkok.",
+            "My uncle and aunt live in Bangkok.",
             "We live in a small house."
           ]
         },
@@ -181,7 +189,7 @@
           "id": "d019-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ระวัง /v/ ใน live (ฟันบนแตะริมล่าง ไม่ใช่ 'ลิว')"
+            "th": "ฟังแล้วพูดตาม ระวัง /v/ ใน live (ฟันบนแตะริมล่าง ไม่ใช่ 'ลิฟ' หรือ 'ลิว')"
           },
           "text": "How many people live in your house?",
           "ipa": "/haʊ ˈmeni ˈpiːpl lɪv ɪn jɔːr haʊs/"
@@ -201,18 +209,18 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Ann. I am nineteen. I live in Bangkok with my family. We live in a small house. I have a mother, a father and a brother. My brother is very young. He is eleven. My uncle and aunt live in Chiang Mai. Their house is big. They have many friends.",
+          "text": "Hello! I am Mai. I am nineteen. I live in Bangkok with my family. We live in a small house. I have a mother, a father and a brother. My brother is very young. He is eleven. My uncle and aunt live in Chiang Mai. Their house is big. They have many friends.",
           "questions": [
             {
               "question": {
-                "en": "Where do Ann and her family live?",
-                "th": "แอนกับครอบครัวอาศัยอยู่ที่ไหน"
+                "en": "How old is Mai?",
+                "th": "ไหมอายุเท่าไร"
               },
               "choices": [
-                "Bangkok",
-                "Chiang Mai"
+                "Eleven",
+                "Nineteen"
               ],
-              "answer": 0
+              "answer": 1
             },
             {
               "question": {
@@ -227,16 +235,19 @@
             },
             {
               "question": {
-                "en": "Who lives in Chiang Mai?",
-                "th": "ใครอาศัยอยู่ที่เชียงใหม่"
+                "en": "Where do her uncle and aunt live?",
+                "th": "ลุงกับป้าของเธออาศัยอยู่ที่ไหน"
               },
               "choices": [
-                "Her mother and father",
-                "Her aunt and uncle"
+                "Bangkok",
+                "Chiang Mai"
               ],
               "answer": 1
             }
-          ]
+          ],
+          "glossary": {
+            "their": "ของพวกเขา"
+          }
         }
       ]
     },
@@ -280,9 +291,9 @@
           "instruction": {
             "th": "แปลเป็นภาษาอังกฤษ"
           },
-          "th": "ลุงของฉันอาศัยอยู่ที่กรุงเทพฯ",
+          "th": "ลุงกับป้าของฉันอาศัยอยู่ที่กรุงเทพฯ",
           "accept": [
-            "My uncle lives in Bangkok"
+            "My uncle and aunt live in Bangkok"
           ]
         },
         {

@@ -110,7 +110,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าใครอายุสิบสาม"
           },
-          "audioText": "Ann is eighteen. Her brother is thirteen. Her sister is fifteen.",
+          "audioText": "Lisa is eighteen. Her brother is thirteen. Her sister is fifteen.",
           "question": {
             "en": "Who is thirteen?",
             "th": "ใครอายุสิบสาม"
@@ -118,7 +118,7 @@
           "choices": [
             "Her sister",
             "Her brother",
-            "Ann"
+            "Lisa"
           ],
           "answer": 1
         },
@@ -128,7 +128,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าใครเป็นทารก"
           },
-          "audioText": "Hello! I am Mai. I have a husband, Ben, and two children. Our son is twelve. Our daughter is a baby. We live in a house in Bangkok.",
+          "audioText": "Hello! I am Kate. My husband is Sam. We have two children. Our son is twelve. Our daughter is a baby. We live in a house in Bangkok.",
           "question": {
             "en": "Who is the baby?",
             "th": "ใครเป็นทารก"
@@ -214,8 +214,8 @@
             },
             {
               "question": {
-                "en": "What is her mother?",
-                "th": "แม่ของเธอทำอาชีพอะไร"
+                "en": "Is her mother a teacher or a doctor?",
+                "th": "แม่ของเธอเป็นครูหรือหมอ"
               },
               "choices": [
                 "A teacher",
@@ -276,7 +276,7 @@
           "id": "d020-write-02",
           "type": "fill_blank",
           "instruction": {
-            "th": "เติมคำที่หายไป (ช่องที่สองคือคำว่า 'ลูก ๆ' ที่ไม่ระบุเพศ)"
+            "th": "เติมคำที่หายไป (ช่องที่สองคือคำว่า 'ลูก ๆ' ที่ไม่ระบุเพศ; their = ของพวกเขา)"
           },
           "text": "My mother and father are my ___. My brother and I are their ___.",
           "answer": [
@@ -297,7 +297,10 @@
             "very",
             "nice"
           ],
-          "answer": "Those people are very nice"
+          "answer": "Those people are very nice",
+          "accept": [
+            "Are those people very nice"
+          ]
         },
         {
           "id": "d020-write-04",

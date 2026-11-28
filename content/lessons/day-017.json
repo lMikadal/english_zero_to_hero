@@ -31,7 +31,8 @@
     "v-love",
     "v-very",
     "v-sixteen",
-    "v-seventeen"
+    "v-seventeen",
+    "v-have"
   ],
   "sections": [
     {
@@ -182,7 +183,7 @@
           "id": "d017-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ระวังเสียง /v/ ใน five, seven, sixteen และ seventeen"
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /v/ ใน five, seven และ seventeen"
           },
           "text": "Five, seven, sixteen, seventeen!",
           "ipa": "/faɪv ˈsevn ˌsɪksˈtiːn ˌsevnˈtiːn/"
@@ -202,7 +203,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Mai. I have a husband, Ben. We have two children, a son and a daughter. Our son is seventeen. Our daughter is sixteen. We love our children. We are very happy.",
+          "text": "Hello! I am Ann. My husband is Tom. We have two children, a son and a daughter. Our son is seventeen. Our daughter is sixteen. We love our children. We are very happy.",
           "questions": [
             {
               "question": {
@@ -217,8 +218,8 @@
             },
             {
               "question": {
-                "en": "Who is Ben?",
-                "th": "เบนเป็นใคร"
+                "en": "Who is Tom?",
+                "th": "ทอมเป็นใคร"
               },
               "choices": [
                 "Her husband",
@@ -237,7 +238,10 @@
               ],
               "answer": 0
             }
-          ]
+          ],
+          "glossary": {
+            "our": "ของพวกเรา"
+          }
         }
       ]
     },
@@ -261,7 +265,10 @@
             "happy",
             "baby"
           ],
-          "answer": "My baby is very happy"
+          "answer": "My baby is very happy",
+          "accept": [
+            "Is my baby very happy"
+          ]
         },
         {
           "id": "d017-write-02",

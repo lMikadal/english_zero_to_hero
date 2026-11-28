@@ -31,7 +31,8 @@
     "v-birthday",
     "v-eleven",
     "v-twelve",
-    "v-thirteen"
+    "v-thirteen",
+    "v-this"
   ],
   "sections": [
     {
@@ -108,7 +109,7 @@
           "id": "d015-listen-01",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าแอนเป็นใครของทอม"
+            "th": "ฟังแล้วตอบว่าแอนเป็นอะไรกับทอม"
           },
           "audioText": "This is Tom. This is his wife, Ann. They are happy.",
           "question": {
@@ -209,12 +210,12 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Nok. This is my family. This is my husband, Ben. He is a doctor. This is my sister, Mai. She is thirteen. It is her birthday! Happy birthday, Mai!",
+          "text": "Hello! I am Lek. This is my family. This is my husband, Jack. He is a doctor. This is my sister, Pim. She is thirteen. It is her birthday! Happy birthday, Pim!",
           "questions": [
             {
               "question": {
-                "en": "Who is Ben?",
-                "th": "เบนเป็นใคร"
+                "en": "Who is Jack?",
+                "th": "แจ็คเป็นใคร"
               },
               "choices": [
                 "Her husband",
@@ -224,8 +225,8 @@
             },
             {
               "question": {
-                "en": "How old is Mai?",
-                "th": "ไหมอายุเท่าไร"
+                "en": "How old is Pim?",
+                "th": "พิมอายุเท่าไร"
               },
               "choices": [
                 "Twelve",
@@ -235,8 +236,8 @@
             },
             {
               "question": {
-                "en": "What is Ben?",
-                "th": "เบนทำอาชีพอะไร"
+                "en": "Is Jack a doctor or a teacher?",
+                "th": "แจ็คเป็นหมอหรือครู"
               },
               "choices": [
                 "A doctor",
@@ -267,7 +268,10 @@
             "This",
             "sister"
           ],
-          "answer": "This is my sister"
+          "answer": "This is my sister",
+          "accept": [
+            "Is this my sister"
+          ]
         },
         {
           "id": "d015-write-02",

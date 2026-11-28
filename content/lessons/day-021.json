@@ -81,12 +81,12 @@
           "id": "d021-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าพี่ชายอายุเท่าไร ระวัง fourteen กับ nineteen"
+            "th": "ฟังแล้วตอบว่าพี่ชายหรือน้องชายอายุเท่าไร ระวังเลขที่ลงท้ายด้วย -teen"
           },
-          "audioText": "I have a big family. I have a brother, two sisters, an uncle and an aunt. My brother is nineteen. My sisters are fourteen and sixteen.",
+          "audioText": "I have a big family. I have a brother and two sisters. My brother is nineteen. My sisters are fourteen and sixteen.",
           "question": {
             "en": "How old is her brother?",
-            "th": "พี่ชายของเธออายุเท่าไร"
+            "th": "พี่ชายหรือน้องชายของเธออายุเท่าไร"
           },
           "choices": [
             "Fourteen",
@@ -123,11 +123,11 @@
             "Yes, it is. This is my father and that is my mother.",
             "Who is that man?",
             "That man is my uncle. That woman is my aunt.",
-            "How old is your brother?",
-            "He is eleven. And you?",
+            "And who is that boy?",
+            "That is my brother. He is eleven.",
             "I have a sister. She is nineteen.",
-            "We love our family.",
-            "Thank you. Goodbye!"
+            "Your family is very nice!",
+            "Thank you! Goodbye!"
           ]
         },
         {
@@ -159,7 +159,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Nok. I am nineteen and I live in Bangkok. This is my family. This is my father. He is a doctor. That is my mother. She is a teacher. These are my brother and sister. My brother is fifteen. My sister is a baby. She is very small. Those are my uncle and aunt. They live in Chiang Mai. We love our family. We are very happy.",
+          "text": "Hello! I am Fon. I am nineteen and I live in Bangkok. This is my family. This is my father. He is a doctor. That is my mother. She is a teacher. These are my brother and sister. My brother is fifteen. My sister is a baby. She is very small. Those are my uncle and aunt. They live in Chiang Mai. We love our family. We are very happy.",
           "questions": [
             {
               "question": {
@@ -174,7 +174,7 @@
             },
             {
               "question": {
-                "en": "Who is a baby?",
+                "en": "Who is the baby?",
                 "th": "ใครเป็นทารก"
               },
               "choices": [
@@ -195,7 +195,10 @@
               ],
               "answer": 1
             }
-          ]
+          ],
+          "glossary": {
+            "our": "ของพวกเรา"
+          }
         }
       ]
     },

@@ -14,8 +14,8 @@
       "th": "ใช้ these และ those กับคนหรือสิ่งของมากกว่าหนึ่งได้"
     },
     {
-      "en": "Tell /θ/ and /ð/ apart, and tell them from /s/, /z/ and /d/",
-      "th": "แยกเสียง /θ/ กับ /ð/ ได้ และแยกจาก /s/, /z/, /d/ ได้"
+      "en": "Tell /θ/ and /ð/ apart, and tell them from /s/, /f/ and /d/",
+      "th": "แยกเสียง /θ/ กับ /ð/ ได้ และแยกจาก /s/, /f/, /d/ ได้"
     },
     {
       "en": "Talk about men, women, people and grandparents",
@@ -79,6 +79,10 @@
               "b": "fin",
               "answer": "a"
             }
+          ],
+          "phonemes": [
+            "th",
+            "dh"
           ]
         },
         {
@@ -88,7 +92,10 @@
             "th": "ฟังแล้วพูดตาม ระวังเสียง /ð/ ใน those, grandmother และ grandfather"
           },
           "text": "Those are my grandmother and grandfather.",
-          "ipa": "/ðoʊz ɑːr maɪ ˈɡrænmʌðər ænd ˈɡrænfɑːðər/"
+          "ipa": "/ðoʊz ɑːr maɪ ˈɡrænmʌðər ænd ˈɡrænfɑːðər/",
+          "phonemes": [
+            "dh"
+          ]
         }
       ]
     },
@@ -193,8 +200,8 @@
     {
       "skill": "reading",
       "title": {
-        "en": "Max and his family",
-        "th": "แม็กซ์กับครอบครัว"
+        "en": "A family",
+        "th": "ครอบครัวหนึ่ง"
       },
       "exercises": [
         {
@@ -203,7 +210,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Hello! I am Max. This is my family. This woman is my mother. This man is my father. That woman is my grandmother. That man is my grandfather. My brother is eighteen. He is a student. We are very happy.",
+          "text": "Hello! This is my family. This woman is my mother. This man is my father. That woman is my grandmother. That man is my grandfather. My brother is eighteen. He is a student. We are very happy.",
           "questions": [
             {
               "question": {
@@ -211,8 +218,8 @@
                 "th": "ผู้หญิงคนนี้คือใคร"
               },
               "choices": [
-                "His mother",
-                "His grandmother"
+                "My mother",
+                "My grandmother"
               ],
               "answer": 0
             },
@@ -222,15 +229,15 @@
                 "th": "ผู้ชายคนนั้นคือใคร"
               },
               "choices": [
-                "His father",
-                "His grandfather"
+                "My father",
+                "My grandfather"
               ],
               "answer": 1
             },
             {
               "question": {
-                "en": "How old is his brother?",
-                "th": "พี่ชายหรือน้องชายของเขาอายุเท่าไร"
+                "en": "How old is the brother?",
+                "th": "พี่ชายหรือน้องชายอายุเท่าไร"
               },
               "choices": [
                 "Seventeen",
@@ -261,7 +268,10 @@
             "my",
             "parents"
           ],
-          "answer": "These are my parents"
+          "answer": "These are my parents",
+          "accept": [
+            "Are these my parents"
+          ]
         },
         {
           "id": "d018-write-02",
@@ -283,7 +293,8 @@
           },
           "th": "ผู้หญิงคนนั้นคือยายของฉัน",
           "accept": [
-            "That woman is my grandmother"
+            "That woman is my grandmother",
+            "The woman is my grandmother"
           ]
         },
         {
