@@ -150,37 +150,36 @@ jobs:
 
       - uses: docker/setup-buildx-action@v3
 
-      # `load: true` + the tag docker-compose.prod.yml expects (ezh-prod-app:latest): `make prod-up` then starts it without rebuilding
+      # The job runs the production stack as the throwaway project `ezh_ci` (own image tag, database, port, backups-ci/),
+      # never as the real project: the round trip below writes marker rows and replaces data, which must be impossible for the
+      # real app. `load: true` + the tag the Makefile derives for project ezh_ci: `make ci-up` then starts it without rebuilding
       - name: Build the production image
         uses: docker/build-push-action@v6
         with:
           context: .
           target: prod
           load: true
-          tags: ezh-prod-app:latest
+          tags: ezh-ci-app:latest
           cache-from: type=gha,scope=prod-image
           cache-to: type=gha,scope=prod-image,mode=max
 
       - name: Start the production stack (migrations run first)
         run: |
-          make prod-init
-          make prod-up
+          make ci-init
+          make ci-up
 
       - name: Smoke test
-        run: sh scripts/prod/smoke.sh http://127.0.0.1:3100
+        run: sh scripts/prod/smoke.sh http://127.0.0.1:3195
 
       # backup -> change -> restore with the real make targets and a marker row, so a restore that does nothing (or a
       # refusal that does not happen) fails the job; the pg_dump / pg_restore flags run on every PR
       - name: Backup, change, restore round trip (with marker)
-        run: |
-          COMPOSE_CMD="docker compose -p ezh_prod -f docker-compose.prod.yml --env-file .env.prod" \
-          DB_NAME=english_zero_to_hero DB_USER=ezh BASE_URL=http://127.0.0.1:3100 I_AM_THROWAWAY=1 \
-          sh scripts/prod/roundtrip.sh prod
+        run: make ci-roundtrip
 
       - name: Production logs (on failure)
         if: failure()
-        run: docker compose -p ezh_prod -f docker-compose.prod.yml --env-file .env.prod logs --no-color --tail=200 || true
+        run: docker compose -p ezh_ci -f docker-compose.prod.yml --env-file .env.ci logs --no-color --tail=200 || true
 
       - name: Tear down
         if: always()
-        run: docker compose -p ezh_prod -f docker-compose.prod.yml --env-file .env.prod down -v || true
+        run: make ci-down || true

@@ -656,7 +656,7 @@ describe("roundtrip.sh (only ever for stage or ci, never the real app)", () => {
       `#!/bin/sh
 echo "COMPOSE $*" >> "${log}"
 case "$*" in
-  *"select current"*) echo "\${FAKE_MARKER:-42}" ;;
+  *"select current"*) if grep -q "set current = 7" "${log}"; then echo 7; else echo 42; fi ;;
   *"count(*)"*) echo 5 ;;
 esac
 exit 0
@@ -684,7 +684,7 @@ exit 0
     COMPOSE_CMD: `${s.cmd} -p ezh_stage -f docker-compose.prod.yml`,
     DB_NAME: "english_zero_to_hero_stage",
     DB_USER: "ezh",
-    BASE_URL: "http://127.0.0.1:3190",
+    APP_PORT: "3190",
     ...extra,
   });
   const logged = (log: string) => (fs.existsSync(log) ? fs.readFileSync(log, "utf8") : "");
@@ -723,7 +723,7 @@ exit 0
   });
 
   it("when backup #2 fails the future migration row and the marker user are still deleted", () => {
-    const s = setup({ failBackup: 1 });
+    const s = setup({ failBackup: 2 });
     const r = run("roundtrip.sh", ["stage"], env(s));
     expect(r.code).not.toBe(0);
     const l = logged(s.log);
@@ -734,7 +734,7 @@ exit 0
   });
 
   it("when backup #1 fails the script stops (the failure is not swallowed by a pipe)", () => {
-    const s = setup({ failBackup: 0 });
+    const s = setup({ failBackup: 1 });
     const r = run("roundtrip.sh", ["stage"], env(s));
     expect(r.code).not.toBe(0);
     expect(logged(s.log)).not.toMatch(/insert into drizzle\.__drizzle_migrations/);

@@ -159,15 +159,35 @@ prod-restore: prod-check ## Restore backups/<file> (needs FILE=... CONFIRM=<data
 prod-backup-verify: prod-check ## Is a backup restorable? FILE=backups/<file>; tries it in a scratch database, real data untouched
 	@$(PROD_SCRIPT_ENV) sh scripts/prod/verify.sh '$(FILE)'
 
-# ---- Stage: a throwaway copy of the production stack for trying things (never the real data) ----------------------
-# stage-<anything> = prod-<anything> with PROD_ENV=.env.stage PROD_PROJECT=ezh_stage, e.g. stage-build, stage-up,
-# stage-status, stage-backup, stage-restore FILE=... CONFIRM=english_zero_to_hero_stage, stage-update, stage-logs.
+# ---- Stage and ci: throwaway copies of the production stack (never the real data) ---------------------------------
+# stage-<anything> / ci-<anything> = prod-<anything> with their own env file, compose project, image and backup folder:
+#   stage: .env.stage, project ezh_stage, image ezh-stage-app, backups-stage/, database english_zero_to_hero_stage, port 3190
+#   ci:    .env.ci,    project ezh_ci,    image ezh-ci-app,    backups-ci/,    database english_zero_to_hero_ci,    port 3195
+# e.g. stage-build, stage-up, stage-status, stage-backup, stage-restore FILE=... CONFIRM=english_zero_to_hero_stage,
+# stage-update, stage-logs, stage-roundtrip (a real backup/restore round trip with a marker row).
 stage-init: ## Create .env.stage (own password, database english_zero_to_hero_stage, port 3190)
 	@$(MAKE) --no-print-directory prod-init PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
 	@sed -i -e 's/^POSTGRES_DB=.*/POSTGRES_DB=english_zero_to_hero_stage/' -e 's/^APP_PORT=.*/APP_PORT=3190/' .env.stage
 
-stage-down: ## Remove the stage stack AND its volume (only ever the project ezh_stage)
+ci-init: ## Create .env.ci for the CI job (database english_zero_to_hero_ci, port 3195)
+	@$(MAKE) --no-print-directory prod-init PROD_ENV=.env.ci PROD_PROJECT=ezh_ci
+	@sed -i -e 's/^POSTGRES_DB=.*/POSTGRES_DB=english_zero_to_hero_ci/' -e 's/^APP_PORT=.*/APP_PORT=3195/' .env.ci
+
+stage-down: ## Remove the stage stack AND its volume and backups-stage/ (only ever the project ezh_stage)
 	$(COMPOSE) -p ezh_stage -f docker-compose.prod.yml --env-file .env.stage down -v --remove-orphans
+	@rm -f backups-stage/*.dump backups-stage/*.partial; rmdir backups-stage 2>/dev/null || true
+
+ci-down: ## Remove the ci stack AND its volume and backups-ci/ (only ever the project ezh_ci)
+	$(COMPOSE) -p ezh_ci -f docker-compose.prod.yml --env-file .env.ci down -v --remove-orphans
+	@rm -f backups-ci/*.dump backups-ci/*.partial; rmdir backups-ci 2>/dev/null || true
 
 stage-%:
 	@$(MAKE) --no-print-directory prod-$* PROD_ENV=.env.stage PROD_PROJECT=ezh_stage
+
+ci-%:
+	@$(MAKE) --no-print-directory prod-$* PROD_ENV=.env.ci PROD_PROJECT=ezh_ci
+
+# Internal, reached only as stage-roundtrip / ci-roundtrip. For the real app (make prod-roundtrip) the script gets the
+# target "prod" and refuses before it touches anything: scripts/prod/roundtrip.sh has no switch to allow it.
+prod-roundtrip: prod-check
+	@$(PROD_SCRIPT_ENV) sh scripts/prod/roundtrip.sh '$(patsubst ezh_%,%,$(PROD_PROJECT))'

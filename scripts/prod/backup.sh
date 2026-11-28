@@ -35,6 +35,22 @@ $COMPOSE_CMD exec -T postgres pg_dump -U "$DB_USER" -d "$DB_NAME" --format=custo
 mv "$tmp" "$file"
 trap - EXIT
 
+# backups whose time stamp is later than now: the clock was behind (or the time zone changed) when they were made, and
+# names decide the order, so every new backup would look "older" than them. Tell the operator.
+now=$(basename "$file" | sed -n 's/^ezh-.*-\([0-9]\{8\}-[0-9]\{6\}\)\(-[a-z-]*\)\{0,1\}\.dump$/\1/p')
+future=$(ls -1 "$dir" 2>/dev/null | grep -E "^ezh-$DB_NAME-[0-9]{8}-[0-9]{6}(-[a-z-]+)?\.dump\$" | while IFS= read -r f; do
+  st=$(printf '%s' "$f" | sed -n "s/^ezh-$DB_NAME-\([0-9]\{8\}-[0-9]\{6\}\).*/\1/p")
+  [ "$st" \> "$now" ] && echo "$f"
+done || true)
+if [ -n "$future" ]; then
+  {
+    echo "WARNING: these backups are dated in the FUTURE (the clock was wrong when they were made):"
+    printf '  %s\n' $future
+    echo "Check the computer's clock, then move these files out of $dir so they do not confuse pruning."
+    echo "คำเตือน: มี backup ที่ลงวันที่ในอนาคต (นาฬิกาเครื่องเคยผิด) ให้ตรวจนาฬิกา แล้วย้ายไฟล์เหล่านี้ออกจาก $dir"
+  } >&2
+fi
+
 # the new file is passed to the pruner so it can never delete it; nothing is reported unless it is really there
 [ "${PRUNE:-1}" = 0 ] || sh "$(dirname "$0")/prune-backups.sh" "$dir" "$DB_NAME" "$keep" "$file"
 [ -s "$file" ] || { echo "ERROR: $file is missing or empty after pruning" >&2; exit 1; }
