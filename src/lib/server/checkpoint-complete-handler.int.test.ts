@@ -117,12 +117,17 @@ describe("item 30: the score is scoreCheckpoint over this sitting's first answer
     expect(body.result.best).toBeCloseTo(1, 12);
   });
 
-  it("when an exercise was answered twice in the sitting the OLDEST answer counts", async () => {
-    const right = cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { sessionId: S1, createdAt: sec(100) });
-    const wrongEarlier = cpItem("c030-listen-01", CP_WRONG["c030-listen-01"], { sessionId: S1, createdAt: sec(200) });
-    await handlePostAttempts({ attempts: [right, wrongEarlier] }, { db, userId, now: NOW, content });
+  it("a back-dated second answer cannot fix a wrong one: it is rejected and the score reflects the first answer (forgery probe)", async () => {
+    const wrong = Object.entries(CP_WRONG).map(([id, a], i) => cpItem(id, a, { sessionId: S1, createdAt: sec(300 - i) }));
+    await handlePostAttempts({ attempts: wrong }, { db, userId, now: NOW, content });
+    const fixes = Object.entries(CP_RIGHT).map(([id, a], i) => cpItem(id, a, { sessionId: S1, createdAt: sec(900 - i) }));
+    const r = await handlePostAttempts({ attempts: fixes }, { db, userId, now: NOW, content });
+    const results = (r.body as { results: { status: string; reason?: string }[] }).results;
+    const graded = Object.keys(CP_WRONG);
+    expect(fixes.map((f, i) => [f.exerciseId, results[i].status]).filter(([id]) => graded.includes(id as string)).every(([, st]) => st === "rejected")).toBe(true);
     const body = ok(await complete(req()));
-    expect(body.result.skills.find((s) => s.skill === "listening")).toMatchObject({ score: 0, answered: 1 });
+    expect(body.result.score).toBe(0);
+    expect(body.result.passed).toBe(false);
   });
 
   it("attempts of another sitting, lesson attempts and answers kept as retakes of this sitting are handled: only this session counts", async () => {

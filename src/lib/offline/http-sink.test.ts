@@ -935,3 +935,13 @@ describe("createHttpSink: completeCheckpoint", () => {
     expect(t.sink.pendingCount()).toBe(1);
   });
 });
+
+describe("createHttpSink: checkpoint attempt results carry no grade", () => {
+  it("a 200 whose results are only { id, status } settles the attempts (created, duplicate, rejected already_answered)", async () => {
+    const t = setup([{ status: 200, body: { results: [{ id: uuid(1), status: "created" }, { id: uuid(2), status: "duplicate" }, { id: uuid(3), status: "rejected", reason: "already_answered" }] } }]);
+    for (const n of [1, 2, 3]) t.sink.sendAttempt({ ...attempt(n), exerciseId: "c030-listen-01", source: "checkpoint" });
+    await Promise.resolve();
+    await vi.waitFor(() => expect(t.sink.pendingCount()).toBe(0));
+    expect(t.calls).toHaveLength(1);
+  });
+});

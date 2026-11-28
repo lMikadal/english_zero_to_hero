@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { asc, eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { attempts, checkpointResults, profiles, progress } from "@/db/schema";
-import { cleanDatabase, connectTestDb } from "@/db/test-utils";
+import { cleanDatabase, connectTestDb, pgErrorCode } from "@/db/test-utils";
 import { handlePostAttempts } from "./attempts-handler";
 import { ANSWERS, attemptItem, checkpointContent, CP_RIGHT, CP_SESSION, CP_WRONG, cpItem, finishDay, NOW, seedLocal } from "./test-helpers";
 
@@ -40,13 +40,8 @@ describe("a checkpoint attempt is stored from the checkpoint file (item 24)", ()
     const listen = cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"]);
     const res = await post([pron, vocab, listen]);
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({
-      results: [
-        { id: pron.id, status: "created", correct: false, score: 0, items: [false, false, false] },
-        { id: vocab.id, status: "created", correct: true, score: 1, items: [true, true, true, true, true] },
-        { id: listen.id, status: "created", correct: true, score: 1 },
-      ],
-    });
+    // D5: nothing about right or wrong goes back to the client during the test, so the answer carries no grade
+    expect(res.body).toEqual({ results: [{ id: pron.id, status: "created" }, { id: vocab.id, status: "created" }, { id: listen.id, status: "created" }] });
     const stored = Object.fromEntries((await rows()).map((r) => [r.exerciseId, r]));
     expect(stored["c030-pron-01"]).toMatchObject({ userId, day: 30, skill: "pronunciation", exerciseType: "minimal_pair", source: "checkpoint", attemptNo: 1, sessionId: CP_SESSION, correct: false, score: 0 });
     expect(stored["c030-pron-01"].tags).toEqual(["phoneme:ae", "phoneme:eh"]);
@@ -74,7 +69,8 @@ describe("a checkpoint attempt is stored from the checkpoint file (item 24)", ()
 
   it("a self-rated speaking exercise is stored with score null", async () => {
     await blockedAfterDay30();
-    expect(statuses(await post([cpItem("c030-speak-01", CP_RIGHT["c030-speak-01"])]))[0]).toMatchObject({ status: "created", correct: true, score: null });
+    expect(statuses(await post([cpItem("c030-speak-01", CP_RIGHT["c030-speak-01"])]))[0]).toEqual({ id: expect.any(String), status: "created" });
+    expect((await rows())[0]).toMatchObject({ correct: true, score: null });
   });
 });
 
@@ -171,10 +167,13 @@ describe("the server decides checkpoint or checkpoint_retake (item 27, D11)", ()
     expect((await rows()).map((r) => r.source)).toEqual(["checkpoint", "checkpoint_retake"]);
   });
 
-  it("two answers of one exercise in one request: one checkpoint and one checkpoint_retake", async () => {
+  it("a retake in a NEW session is allowed and stored as checkpoint_retake (a second sitting)", async () => {
     await blockedAfterDay30();
-    await post([cpItem("c030-listen-01", CP_WRONG["c030-listen-01"]), cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"])]);
-    expect((await rows()).map((r) => r.source).sort()).toEqual(["checkpoint", "checkpoint_retake"]);
+    const first = cpItem("c030-listen-01", CP_WRONG["c030-listen-01"]);
+    const second = cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { sessionId: randomUUID() });
+    expect(statuses(await post([first])).map((r) => r.status)).toEqual(["created"]);
+    expect(statuses(await post([second])).map((r) => r.status)).toEqual(["created"]);
+    expect((await rows()).map((r) => r.source)).toEqual(["checkpoint", "checkpoint_retake"]);
   });
 
   it("sending the same attempt id again is a duplicate and changes nothing (also when it was stored as a retake)", async () => {
@@ -197,5 +196,86 @@ describe("a checkpoint attempt never touches progress (item 28)", () => {
     await post([cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { sessionId: randomUUID() })]);
     expect(await db.select().from(progress).orderBy(asc(progress.day))).toEqual(before);
     expect(await rows()).toHaveLength(17);
+  });
+});
+
+describe("one answer per exercise per sitting: a client cannot fix an answer by sending a second one", () => {
+  const sec = (s: number) => new Date(NOW.getTime() - s * 1000).toISOString();
+
+  it("a second answer to the same exercise in the same session is rejected already_answered, even back-dated, and the first stays", async () => {
+    await blockedAfterDay30();
+    const first = cpItem("c030-listen-01", CP_WRONG["c030-listen-01"], { createdAt: sec(300) });
+    const fix = cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { createdAt: sec(900) });
+    expect(statuses(await post([first])).map((r) => r.status)).toEqual(["created"]);
+    expect(statuses(await post([fix]))).toEqual([{ id: fix.id, status: "rejected", reason: "already_answered" }]);
+    const stored = await rows();
+    expect(stored).toHaveLength(1);
+    expect(stored[0]).toMatchObject({ id: first.id, source: "checkpoint", correct: false, score: 0 });
+  });
+
+  it("the same holds whatever source the second answer claims", async () => {
+    await blockedAfterDay30();
+    await post([cpItem("c030-listen-01", CP_WRONG["c030-listen-01"])]);
+    for (const source of ["checkpoint", "checkpoint_retake"] as const) {
+      expect(statuses(await post([cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { source, createdAt: sec(900) })]))[0]).toMatchObject({ status: "rejected", reason: "already_answered" });
+    }
+    expect(await rows()).toHaveLength(1);
+  });
+
+  it("two answers to one exercise in one batch: the first in REQUEST order is stored, in both id orders", async () => {
+    await blockedAfterDay30();
+    const low = "00000000-0000-4000-8000-000000000001";
+    const high = "ffffffff-ffff-4fff-8fff-ffffffffffff";
+    for (const [firstId, secondId] of [[low, high], [high, low]]) {
+      await cleanDatabase(sql);
+      userId = await seedLocal(db, 30);
+      await blockedAfterDay30();
+      const wrong = cpItem("c030-listen-01", CP_WRONG["c030-listen-01"], { id: firstId, createdAt: sec(300) });
+      const right = cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { id: secondId, createdAt: sec(900) });
+      const out = statuses(await post([wrong, right]));
+      expect(out).toEqual([{ id: firstId, status: "created" }, { id: secondId, status: "rejected", reason: "already_answered" }]);
+      expect((await rows()).map((r) => [r.id, r.correct])).toEqual([[firstId, false]]);
+    }
+  });
+
+  it("the same attempt id sent again is still a duplicate (an offline retry), not already_answered", async () => {
+    await blockedAfterDay30();
+    const a = cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"]);
+    await post([a]);
+    expect(statuses(await post([a, a]))).toEqual([{ id: a.id, status: "duplicate" }, { id: a.id, status: "duplicate" }]);
+    expect(await rows()).toHaveLength(1);
+  });
+
+  it("another exercise of the same session is not blocked", async () => {
+    await blockedAfterDay30();
+    expect(statuses(await post([cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"]), cpItem("c030-listen-02", CP_RIGHT["c030-listen-02"])])).map((r) => r.status)).toEqual(["created", "created"]);
+  });
+
+  it("the database refuses a second checkpoint row for (user, session, exercise) even if a handler let it through (23505)", async () => {
+    await blockedAfterDay30();
+    const base = { userId, exerciseId: "c030-listen-01", day: 30, skill: "listening" as const, exerciseType: "listen_choose", correct: true, sessionId: CP_SESSION };
+    await db.insert(attempts).values({ ...base, source: "checkpoint" });
+    for (const source of ["checkpoint", "checkpoint_retake"] as const) {
+      expect(await pgErrorCode(db.insert(attempts).values({ ...base, source }))).toBe("23505");
+    }
+    // other sessions and the lesson sources are free
+    await db.insert(attempts).values({ ...base, source: "checkpoint_retake", sessionId: randomUUID() });
+    await db.insert(attempts).values({ ...base, exerciseId: "d001-listen-01", day: 1, source: "lesson" });
+    await db.insert(attempts).values({ ...base, exerciseId: "d001-listen-01", day: 1, source: "lesson" });
+  });
+});
+
+describe("lesson attempts are unchanged: they still return the grade", () => {
+  it("a d… attempt answers created with correct and score (and items), a duplicate with the stored grade, attemptNo 2 is fine", async () => {
+    const a = attemptItem("d001-pron-02", ANSWERS.minimalPairOneWrong);
+    const retry = attemptItem("d001-pron-02", ANSWERS.minimalPairRight, { attemptNo: 2 });
+    const r = await post([a, retry]);
+    expect(r.body).toEqual({
+      results: [
+        { id: a.id, status: "created", correct: false, score: 2 / 3, items: [false, true, true] },
+        { id: retry.id, status: "created", correct: true, score: 1, items: [true, true, true] },
+      ],
+    });
+    expect(statuses(await post([a]))[0]).toMatchObject({ status: "duplicate", correct: false, score: 2 / 3 });
   });
 });
