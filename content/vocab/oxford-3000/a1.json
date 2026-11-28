@@ -4783,7 +4783,7 @@
     "ipa": { "us": "/ˈsʌmtaɪmz/", "uk": "/ˈsʌmtaɪmz/" },
     "th": "บางครั้ง",
     "topics": ["time_dates"],
-    "examples": [{ "en": "I sometimes eat pizza.", "th": "บางครั้งฉันกินพิซซ่า" }, { "en": "Leo sometimes listens to music.", "th": "บางครั้งลีโอฟังเพลง" }],
+    "examples": [{ "en": "I sometimes eat pizza.", "th": "บางครั้งฉันกินพิซซ่า" }, { "en": "Leo sometimes watches TV.", "th": "บางครั้งลีโอดูทีวี" }],
     "collocations": ["sometimes late"]
   },
   {

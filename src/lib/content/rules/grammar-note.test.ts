@@ -63,8 +63,26 @@ describe("grammar-note: structure ids, placement, table", () => {
     expect(checkGrammarNote(ctxOf([lessonWith(29, [[note(29, { structures: ["has"] })]])]))).toEqual([]);
     expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36)]])]))).toEqual([]);
   });
+  it("row 1 of a table is always the header and must be written in Thai: every header cell needs a Thai letter (error)", () => {
+    const out = checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["I / you / we / they", "like"], ["he / she / it", "likes"]] })]])]));
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ rule: "grammar-note", id: "d036-read-01" });
+    expect(out[0].severity).toBeUndefined();
+    expect(out[0].message).toContain("row 1 is the header");
+    expect(out[0].message).toContain('"I / you / we / they"');
+    expect(out[0].message).toContain('"like"');
+    expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["ประธาน", "กริยา"], ["he / she / it", "likes"]] })]])]))).toEqual([]);
+    expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["ประธาน", "verb"], ["he", "likes"]] })]])]))).toHaveLength(1);
+  });
+  it("a bare dash is a legal header cell (an empty corner cell is written \"-\"): it needs no Thai letter", () => {
+    for (const dash of ["-", "—", "–", "‑"]) {
+      expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [[dash, "กริยา"], ["he / she / it", "likes"]] })]])])), dash).toEqual([]);
+    }
+    expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["-", "verb"], ["he", "likes"]] })]])]))).toHaveLength(1); // a dash does not excuse the other cell
+    expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["--x", "กริยา"], ["he", "likes"]] })]])]))).toHaveLength(1);
+  });
   it("flags table rows with different numbers of cells", () => {
-    const out = checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["a", "b"], ["c"]] })]])]));
+    const out = checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["ก", "ข"], ["c"]] })]])]));
     expect(out).toHaveLength(1);
     expect(out[0].message).toContain("row 2");
   });
