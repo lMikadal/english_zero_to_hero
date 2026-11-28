@@ -19,7 +19,7 @@ describe("HomeCheckpointCard (D10: the home card while a checkpoint blocks the n
   });
   it("says why: the next day opens once it is sat, whatever the score", () => {
     render(<HomeCheckpointCard afterDay={60} />);
-    expect(screen.getByText(/บทเรียนวันที่ 61 จะเปิด/)).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "แบบทดสอบประจำเดือน" })).toHaveTextContent("แล้วบทเรียนวันที่ 61 จะเปิดให้");
     expect(screen.getByRole("heading", { level: 2, name: "แบบทดสอบประจำเดือน ครั้งที่ 2" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "เริ่มแบบทดสอบ" })).toHaveAttribute("href", "/checkpoint/60");
   });

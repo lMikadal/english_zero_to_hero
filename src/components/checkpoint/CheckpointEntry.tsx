@@ -16,9 +16,9 @@ export function HomeCheckpointCard({ afterDay }: { afterDay: number }) {
     <section aria-label="แบบทดสอบประจำเดือน" className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-5">
       <div>
         <p className="text-sm font-medium text-muted">วันที่ 1–{afterDay}</p>
-        <h2 className="text-2xl font-bold leading-snug">แบบทดสอบประจำเดือน ครั้งที่ {k}</h2>
+        <h2 className="text-balance text-2xl font-bold leading-snug">แบบทดสอบประจำเดือน ครั้งที่ {k}</h2>
       </div>
-      <p className="text-sm leading-relaxed text-muted">ทำแบบทดสอบให้จบ ได้กี่คะแนนก็ได้ แล้วบทเรียนวันที่ {afterDay + 1} จะเปิดให้</p>
+      <p className="text-pretty text-sm leading-relaxed text-muted">ทำแบบทดสอบให้จบ ได้กี่คะแนนก็ได้ แล้ว<span className="whitespace-nowrap">บทเรียนวันที่ {afterDay + 1}</span> จะเปิดให้</p>
       <Link href={`/checkpoint/${afterDay}`} className="flex min-h-12 w-full items-center justify-center rounded-xl bg-accent px-4 text-lg font-semibold text-on-accent">
         เริ่มแบบทดสอบ
       </Link>
