@@ -1,0 +1,372 @@
+{
+  "day": 45,
+  "phase": 1,
+  "week": 7,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "To school by bus! train, road, near, far",
+    "th": "To school by bus! เดินทางไปโรงเรียน"
+  },
+  "objectives": [
+    {
+      "en": "Say how you travel and how far it is: by bus, by train, near, far",
+      "th": "บอกว่าเดินทางอย่างไรและไกลแค่ไหนได้: by bus, by train, near, far"
+    },
+    {
+      "en": "Talk about the street and the road: The bus stops near my house",
+      "th": "พูดเรื่องถนนและป้ายรถได้: The bus stops near my house"
+    },
+    {
+      "en": "Say the clusters /str/, /spr/ and /skr/: street–treat, spray–pray, scream–cream, strain–train",
+      "th": "ออกเสียงตัวควบ /str/ /spr/ /skr/ ได้: street–treat, spray–pray, scream–cream, strain–train"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-train",
+    "v-street",
+    "v-road",
+    "v-near",
+    "v-far",
+    "v-by",
+    "v-drive",
+    "v-arrive",
+    "v-stop",
+    "v-ticket",
+    "v-taxi",
+    "v-bike"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Clusters /str/, /spr/",
+        "th": "ตัวควบ /str/ /spr/"
+      },
+      "exercises": [
+        {
+          "id": "d045-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "str",
+          "ipa": "/str/ /spr/",
+          "tipTh": "ตัวควบสามตัวคือ s + พยัญชนะ + r คนไทยมักเติมสระ ('สะ-ตะ-หริท' สำหรับ street) ให้ค้างลม /s/ แล้วต่อ /t/ และ /r/ เป็นลมเดียว ไม่รัวลิ้นแบบ ร ของไทย /str/ ใน street: ลิ้นอยู่ตำแหน่ง /t/ แล้วม้วนปลายลิ้นเป็น /r/ ทันที ฝึกช้า ๆ 'ส์-ท-ริ-ท' แล้วเร็วขึ้นจนเป็นคำเดียว",
+          "examples": [
+            "street",
+            "stop",
+            "strong",
+            "spring"
+          ]
+        },
+        {
+          "id": "d045-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "street",
+              "b": "treat",
+              "answer": "a"
+            },
+            {
+              "a": "pray",
+              "b": "spray",
+              "answer": "b"
+            },
+            {
+              "a": "cream",
+              "b": "scream",
+              "answer": "b"
+            },
+            {
+              "a": "strain",
+              "b": "train",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "str",
+            "spr",
+            "skr"
+          ]
+        },
+        {
+          "id": "d045-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /st/ ใน stop และ /str/ ใน street ไม่เติมสระ 'สะ' หน้าคำ"
+          },
+          "text": "The bus stop is on the street.",
+          "ipa": "/ðə bʌs stɑːp ɪz ɑːn ðə striːt/",
+          "phonemes": [
+            "st",
+            "str"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: how do you go?",
+        "th": "ฟัง: ไปอย่างไร"
+      },
+      "exercises": [
+        {
+          "id": "d045-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสไปโรงเรียนอย่างไร"
+          },
+          "audioText": "I am Rose. I go to school by bus. The bus stop is near my house. I walk to the bus stop. The bus stops on my street. I arrive at school early.",
+          "question": {
+            "en": "How does Rose go to school?",
+            "th": "โรสไปโรงเรียนอย่างไร"
+          },
+          "choices": [
+            "By bus",
+            "By train"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d045-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-train"
+            },
+            {
+              "vocabId": "v-street"
+            },
+            {
+              "vocabId": "v-road"
+            },
+            {
+              "vocabId": "v-near"
+            },
+            {
+              "vocabId": "v-far"
+            },
+            {
+              "vocabId": "v-by"
+            }
+          ]
+        },
+        {
+          "id": "d045-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนไปโรงเรียนอย่างไร"
+          },
+          "audioText": "I am Nan. I go to school by train. My school is far from my house. I buy a ticket and take the train. A taxi is not cheap. I never take a taxi. My friend goes to school by bike.",
+          "question": {
+            "en": "How does Nan go to school?",
+            "th": "แนนไปโรงเรียนอย่างไร"
+          },
+          "choices": [
+            "By train",
+            "By taxi"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d045-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Dan drives his car on the big road."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "How do you go?",
+        "th": "คุณไปอย่างไร"
+      },
+      "exercises": [
+        {
+          "id": "d045-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "How do you go to school?",
+            "I go by train. A ticket is thirty baht.",
+            "Is your school far?",
+            "Yes, it's far. I arrive early.",
+            "My friend Rose goes by bus. The bus stop is near her house.",
+            "The bus stops on her street.",
+            "Ray goes by bike.",
+            "Dan drives on the big road.",
+            "A taxi is not cheap."
+          ]
+        },
+        {
+          "id": "d045-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณไปโรงเรียนหรือที่ทำงานอย่างไร และไกลไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "How do you go to school or work? Is it far?",
+          "sampleAnswer": "I go by bus. It is not far. I arrive early.",
+          "keywords": [
+            "by",
+            "far"
+          ]
+        },
+        {
+          "id": "d045-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม arrive /əˈraɪv/ เน้นพยางค์หลัง ท้ายคำ /v/ สั่นคอ"
+          },
+          "text": "I arrive by train and take a taxi.",
+          "ipa": "/aɪ əˈraɪv baɪ treɪn ænd teɪk ə ˈtæksi/",
+          "phonemes": [
+            "v"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Ray, Dan and the bus",
+        "th": "เรย์ แดน และรถบัส"
+      },
+      "exercises": [
+        {
+          "id": "d045-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Ray's house = บ้านของเรย์)"
+          },
+          "text": "Ray is seventy. He goes to the market by bike. The market is near his house. He stops at a shop on the street and buys fruit. Dan drives to work. The road is big. He works far from his house. He arrives early. Rose goes to school by bus. Leo walks to school. A bus ticket is ten baht.",
+          "questions": [
+            {
+              "question": {
+                "en": "How does Ray go to the market?",
+                "th": "เรย์ไปตลาดอย่างไร"
+              },
+              "choices": [
+                "By bike",
+                "By car"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How does Dan go to work?",
+                "th": "แดนไปทำงานอย่างไร"
+              },
+              "choices": [
+                "He drives",
+                "He walks"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is the market far from Ray's house?",
+                "th": "ตลาดอยู่ไกลจากบ้านของเรย์ไหม"
+              },
+              "choices": [
+                "No, it is near",
+                "Yes, it is far"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: by bus, by train",
+        "th": "เขียน: ไปโดยรถบัส รถไฟ"
+      },
+      "exercises": [
+        {
+          "id": "d045-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "goes",
+            "My",
+            "father",
+            "to",
+            "work",
+            "by",
+            "car"
+          ],
+          "answer": "My father goes to work by car"
+        },
+        {
+          "id": "d045-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำบุพบท (ไปโดยรถไฟ)"
+          },
+          "text": "I go to school ___ train.",
+          "answer": [
+            "by"
+          ]
+        },
+        {
+          "id": "d045-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ตั๋วรถไฟราคาสามสิบบาท",
+          "accept": [
+            "The train ticket is thirty baht",
+            "A train ticket is thirty baht"
+          ]
+        },
+        {
+          "id": "d045-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-drive"
+            },
+            {
+              "vocabId": "v-arrive"
+            },
+            {
+              "vocabId": "v-stop"
+            },
+            {
+              "vocabId": "v-ticket"
+            },
+            {
+              "vocabId": "v-taxi"
+            },
+            {
+              "vocabId": "v-bike"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

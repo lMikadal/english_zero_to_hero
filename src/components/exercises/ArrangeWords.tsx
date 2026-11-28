@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { comparableAnswer } from "@/lib/answers/normalize";
-import type { ExerciseProps } from "./types";
+import { shown, type ExerciseProps } from "./types";
 import { CheckButton } from "./ui/CheckButton";
 import { Instruction } from "./ui/Instruction";
 import { shuffleSeeded } from "./ui/shuffle";
@@ -11,7 +11,8 @@ import { Tile } from "./ui/Tile";
 import { capitaliseFirst, tileLabel } from "./ui/tile-label";
 import { rightWrong, toneClass } from "./ui/tone";
 
-export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arrange_words">) {
+export function ArrangeWords({ exercise, onAnswer, result, reveal = true }: ExerciseProps<"arrange_words">) {
+  const seen = shown(result, reveal);
   const [placed, setPlaced] = useState<number[]>([]); // indexes into exercise.words, in tap order
   const [submitted, setSubmitted] = useState(false);
   const locked = submitted || result !== undefined;
@@ -27,7 +28,7 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
   const label = (i: number) => tileLabel(exercise.words[i], sentences);
   const remaining = poolOrder.filter((i) => !placed.includes(i));
   const complete = placed.length === exercise.words.length;
-  const answerTone = result ? rightWrong(result.correct) : "idle";
+  const answerTone = seen ? rightWrong(seen.correct) : "idle";
 
   function check() {
     if (locked || !complete) return;
@@ -46,14 +47,14 @@ export function ArrangeWords({ exercise, onAnswer, result }: ExerciseProps<"arra
       >
         {placed.map((i, n) => (
           <li key={i}>
-            <Tile tone={result ? answerTone : "selected"} disabled={locked} onClick={() => setPlaced(placed.filter((p) => p !== i))}>
+            <Tile tone={seen ? answerTone : "selected"} disabled={locked} onClick={() => setPlaced(placed.filter((p) => p !== i))}>
               {n === 0 ? capitaliseFirst(label(i)) : label(i)}
             </Tile>
           </li>
         ))}
-        {result ? (
+        {seen ? (
           <li className={`self-center text-sm font-semibold ${answerTone === "right" ? "text-good-fg" : "text-bad-fg"}`}>
-            <Mark ok={result.correct} />
+            <Mark ok={seen.correct} />
           </li>
         ) : null}
       </ul>

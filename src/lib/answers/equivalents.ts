@@ -130,7 +130,7 @@ export const PARTICIPLES: ReadonlySet<string> = new Set((
   "hung hidden knelt laid lain led leapt lent lit mistaken overcome proven proved quit rung rode sawn sewn shone shorn slain " +
   "slit smelt sown spat spelt spilt spun stolen strung strode swollen thrust trodden upset wept withdrawn " +
   "meant learnt learned beaten sought crept used died tied lied dyed lay laid swept wept leant leapt dwelt " +
-  "forgot got saw ate took gave knew wrote spoke broke chose drove flew grew threw drew rose rang sang swam wore began did went came was were drank"
+  "forgot got saw ate took gave knew wrote spoke broke chose drove flew grew threw drew rose rang sang swam wore began did went came was were drank woke"
 ).split(" "));
 
 /** A word after 's that may be a past participle (so 's may be "has"): the table, or an -ed word of 4+ letters. */

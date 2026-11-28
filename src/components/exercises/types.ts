@@ -43,4 +43,14 @@ export type ExerciseProps<T extends ExerciseType> = {
   onAnswer(answer: AnswerFor<T>): void;
   onContinue(): void;
   result?: Grade;
+  /**
+   * Default true. `false` (the monthly checkpoint, docs/plans/checkpoint-plan.md D5): with a `result` the exercise still locks and
+   * hides its confirm button, but shows nothing about right or wrong: no colour, `Mark`, `data-state` right/wrong, `aria-invalid`,
+   * correct-answer text, and the screen is identical for a right and a wrong answer. Components read `result` only for locking
+   * and take everything shown from `shown(result, reveal)`; never read `result.correct` / `result.items` outside that.
+   */
+  reveal?: boolean;
 };
+
+/** The result a component may draw: `undefined` when the exercise is concealed (it still uses the real `result` to lock). */
+export const shown = (result: Grade | undefined, reveal: boolean): Grade | undefined => (reveal ? result : undefined);

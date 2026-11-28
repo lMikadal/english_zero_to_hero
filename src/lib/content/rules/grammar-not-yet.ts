@@ -23,6 +23,9 @@ export const GRAMMAR_NOT_YET_RULE = "grammar-not-yet";
 /** Present Simple week (docs/CURRICULUM.md: week 6 = days 36-42). */
 export const THIRD_PERSON_S_DAY = 36;
 
+/** Week 7 (docs/CURRICULUM.md: days 43-49 "daily routine, adverbs of frequency"): the frequency adverbs are taught on day 44. */
+export const FREQUENCY_ADVERB_DAY = 44;
+
 /**
  * The grammar structures a grammar_note can explain (`structures` ids) and the first day each is allowed. Every gate below
  * names one of them. Add an id here when a new gate is added; rule "grammar-note" rejects any other id in a note.
@@ -34,6 +37,7 @@ export const GRAMMAR_STRUCTURES: Readonly<Record<string, { day: number; what: st
   "do-does-question": { day: THIRD_PERSON_S_DAY, what: 'Present Simple questions with does ("What does she do?")' },
   "do-not": { day: THIRD_PERSON_S_DAY, what: 'negative do-support ("do not" / "don\'t")' },
   but: { day: THIRD_PERSON_S_DAY, what: 'the linking word "but"' },
+  "frequency-adverb": { day: FREQUENCY_ADVERB_DAY, what: "adverbs of frequency (always, usually, often, sometimes, never) and their place before the main verb / after be" },
 };
 
 export type GrammarGate = {
@@ -63,6 +67,10 @@ export const GRAMMAR_NOT_BEFORE: Readonly<Record<string, GrammarGate>> = {
     structure: "but", day: THIRD_PERSON_S_DAY, severity: "warning", what: 'the linking word "but" (the curriculum does not give its day: 36 is a placeholder, ask the curriculum owner)',
     fix: `Use two short sentences, or explain "but" in the \`glossary\` of a read_passage.`,
   },
+  ...Object.fromEntries(["always", "usually", "often", "sometimes", "never"].map((w) => [w, {
+    structure: "frequency-adverb", day: FREQUENCY_ADVERB_DAY, what: `the frequency adverb "${w}" and its word order (before the main verb, after "be")`,
+    fix: `Rewrite the sentence without "${w}" (for example "I eat rice."), or explain the word in the \`glossary\` of a read_passage.`,
+  } satisfies GrammarGate])),
 };
 
 /** Words that look like a third-person -s form but are words in their own right (interjections); never generated. */
