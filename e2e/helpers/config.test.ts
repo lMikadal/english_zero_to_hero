@@ -22,3 +22,20 @@ describe("Playwright output location", () => {
     expect(read("eslint.config.mjs")).toContain("e2e-artifacts/**");
   });
 });
+
+// e2e/zz-checkpoint.spec.ts finishes days 1-30 for the one learner all the specs share, so it must be the LAST file to run
+// (see its header). That holds only while files run one after another in alphabetical order and no file sorts after it.
+describe("spec order", () => {
+  const config = read("playwright.config.ts");
+  const specs = fs.readdirSync(path.join(process.cwd(), "e2e")).filter((f) => f.endsWith(".spec.ts")).sort();
+
+  it("runs the files one at a time, in alphabetical order", () => {
+    expect(config).toMatch(/^\s*workers:\s*1,/m);
+    expect(config).not.toMatch(/fullyParallel/);
+    expect(config).not.toMatch(/\bretries:/); // a retry would replay a spec on a learner the later specs have already moved
+  });
+
+  it("has zz-checkpoint.spec.ts as the last spec", () => {
+    expect(specs.at(-1)).toBe("zz-checkpoint.spec.ts");
+  });
+});
