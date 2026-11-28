@@ -115,10 +115,50 @@
       },
       "exercises": [
         {
+          "id": "d038-listen-04",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "ประโยคปฏิเสธ: do not / does not",
+          "bodyTh": "บอกว่า \"ไม่\" ใน Present Simple ใช้ do not กับ I, you, we, they และ does not กับ he, she, it และชื่อคนเดียว วางไว้หน้ากริยาหลัก และกริยาหลักใช้รูปเดิม ไม่เติม -s (Dan doesn't cook. ไม่ใช่ Dan doesn't cooks) ตอนพูดนิยมใช้รูปย่อ don't และ doesn't ข้อผิดพลาดที่คนไทยมักทำ: ใส่ not ตรง ๆ หลังประธาน เช่น \"He not cook\" ซึ่งต้องมี does อยู่ด้วย",
+          "table": [
+            [
+              "ประธาน",
+              "ปฏิเสธ"
+            ],
+            [
+              "I / you / we / they",
+              "don't cook"
+            ],
+            [
+              "he / she / it / ชื่อคนเดียว",
+              "doesn't cook"
+            ]
+          ],
+          "examples": [
+            {
+              "en": "I don't eat meat.",
+              "th": "ฉันไม่กินเนื้อสัตว์"
+            },
+            {
+              "en": "Dan doesn't cook.",
+              "th": "แดนไม่ทำอาหาร"
+            },
+            {
+              "en": "Leo doesn't like vegetables.",
+              "th": "ลีโอไม่ชอบผัก"
+            }
+          ],
+          "structures": [
+            "do-not"
+          ]
+        },
+        {
           "id": "d038-listen-01",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าใครทำอาหารเย็น ไวยากรณ์ใหม่ ประโยคปฏิเสธ Present Simple: I/you/we/they + do not (don't) + กริยา; he/she/it หรือชื่อคนเดียว + does not (doesn't) + กริยาเดิม (ไม่เติม -s: He does not cook)"
+            "th": "ฟังแล้วตอบว่าใครทำอาหารเย็น (doesn't = does not)"
           },
           "audioText": "Rose cooks dinner in the kitchen. Dan doesn't cook. He eats dinner with Leo. Leo doesn't like vegetables. He likes potatoes.",
           "question": {
@@ -247,7 +287,7 @@
           "id": "d038-read-01",
           "type": "read_passage",
           "instruction": {
-            "th": "อ่านแล้วตอบคำถาม (does not = doesn't: ไม่ทำ/ไม่ชอบ สำหรับ he, she และชื่อคนเดียว; Leo's birthday = วันเกิดของลีโอ)"
+            "th": "อ่านแล้วตอบคำถาม (doesn't = does not; Leo's birthday = วันเกิดของลีโอ)"
           },
           "text": "Rose cooks dinner at home. She cooks rice, chicken and vegetables. Dan does not cook. He eats a big meal and drinks coffee. Leo does not like vegetables. He likes potatoes. Rose and Dan like salad. The family has breakfast and dinner in the kitchen. On Leo's birthday they have lunch in a restaurant. It is a big meal.",
           "questions": [

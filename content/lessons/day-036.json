@@ -121,10 +121,58 @@
       },
       "exercises": [
         {
+          "id": "d036-listen-04",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "Present Simple: กริยาเติม -s เมื่อพูดถึง he / she / it",
+          "bodyTh": "Present Simple ใช้บอกสิ่งที่ทำเป็นประจำ สิ่งที่ชอบ หรือความจริง (I like rice. She eats fruit.) กับ I, you, we, they ใช้กริยาเดิม แต่กับ he, she, it และชื่อคนหรือสัตว์ตัวเดียว (Dan, my cat) ต้องเติม -s ที่กริยา: like → likes, eat → eats, drink → drinks ข้อผิดพลาดที่คนไทยมักทำ: ลืมเติม -s เพราะภาษาไทยไม่เปลี่ยนรูปกริยา และออกเสียง -s ท้ายคำไม่ชัด ให้ฝึกเปล่งเสียง /s/ ท้าย eats, drinks ให้ได้ยิน",
+          "table": [
+            [
+              "ประธาน",
+              "กริยา"
+            ],
+            [
+              "I / you / we / they",
+              "like"
+            ],
+            [
+              "he / she / it / ชื่อคนเดียว",
+              "likes"
+            ]
+          ],
+          "examples": [
+            {
+              "en": "I like rice.",
+              "th": "ฉันชอบข้าว"
+            },
+            {
+              "en": "She likes fruit.",
+              "th": "เธอชอบผลไม้"
+            },
+            {
+              "en": "We eat bread.",
+              "th": "พวกเรากินขนมปัง"
+            },
+            {
+              "en": "He eats a banana.",
+              "th": "เขากินกล้วย"
+            },
+            {
+              "en": "My son drinks milk.",
+              "th": "ลูกชายของฉันดื่มนม"
+            }
+          ],
+          "structures": [
+            "third-person-s"
+          ]
+        },
+        {
           "id": "d036-listen-01",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าใครชอบไก่ ไวยากรณ์ใหม่ Present Simple (บอกสิ่งที่ชอบหรือทำเป็นประจำ): กับ I, you, we, they ใช้กริยาเดิม (I like) แต่กับ he, she, it หรือชื่อคนเดียว ต้องเติม -s ที่กริยา (Dan likes, she eats)"
+            "th": "ฟังแล้วตอบว่าใครชอบไก่ (Dan likes: กริยาของคนเดียวเติม -s)"
           },
           "audioText": "I am Rose. I like rice and fish. My husband, Dan, likes meat and chicken. My son, Leo, likes bananas and milk.",
           "question": {
@@ -169,7 +217,7 @@
           "id": "d036-listen-02",
           "type": "listen_choose",
           "instruction": {
-            "th": "ฟังแล้วตอบว่าใครกินเนื้อสัตว์ (the dog eats: ประธานเป็นสัตว์ตัวเดียว กริยาจึงเติม -s)"
+            "th": "ฟังแล้วตอบว่าใครกินเนื้อสัตว์ (the dog eats)"
           },
           "audioText": "This is my cat. It eats fish and drinks milk. My dog eats meat. The cat and the dog like their food.",
           "question": {
@@ -254,7 +302,7 @@
           "id": "d036-read-01",
           "type": "read_passage",
           "instruction": {
-            "th": "อ่านแล้วตอบคำถาม (สังเกต likes, drinks: กริยาเติม -s เพราะประธานเป็นคนเดียว)"
+            "th": "อ่านแล้วตอบคำถาม (likes, drinks: เติม -s)"
           },
           "text": "Hi! I am Leo. I am nine. This is my family. My mother, Rose, likes rice and fish. She drinks tea. My father, Dan, likes meat and chicken. I like bananas, bread and milk. We eat some fruit too. We all like food!",
           "questions": [

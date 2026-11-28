@@ -112,6 +112,50 @@
       },
       "exercises": [
         {
+          "id": "d029-listen-04",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "have และ has: \"มี\" ของ he / she / it",
+          "bodyTh": "ภาษาอังกฤษใช้ have แปลว่า \"มี\" กับ I, you, we, they (I have two hands.) แต่ถ้าคนหรือสัตว์ที่ \"มี\" เป็น he, she, it หรือชื่อคนคนเดียว ให้เปลี่ยน have เป็น has (He has two arms. My cat has four legs.) ใช้กับสัตว์และสิ่งของได้เหมือนกัน ข้อผิดพลาดที่คนไทยมักทำ: พูดว่า \"She have\" เพราะภาษาไทยไม่เปลี่ยนรูปกริยา ให้จำว่า he / she / it ต้องเป็น has และออกเสียง has ว่า \"แฮซ\" ให้ท้ายเสียงสั่นคอ (ไม่ใช่ \"แฮส\")",
+          "table": [
+            [
+              "ประธาน",
+              "กริยา"
+            ],
+            [
+              "I / you / we / they",
+              "have"
+            ],
+            [
+              "he / she / it / ชื่อคนเดียว",
+              "has"
+            ]
+          ],
+          "examples": [
+            {
+              "en": "I have two hands.",
+              "th": "ฉันมีสองมือ"
+            },
+            {
+              "en": "He has two arms.",
+              "th": "เขามีสองแขน"
+            },
+            {
+              "en": "My cat has four legs.",
+              "th": "แมวของฉันมีสี่ขา"
+            },
+            {
+              "en": "We have two feet.",
+              "th": "พวกเรามีสองเท้า"
+            }
+          ],
+          "structures": [
+            "has"
+          ]
+        },
+        {
           "id": "d029-listen-01",
           "type": "listen_choose",
           "instruction": {
