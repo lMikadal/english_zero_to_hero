@@ -98,7 +98,7 @@ english_zero_to_hero/
 |---|---|---|
 | `app` | สร้างจาก `Dockerfile` target `dev` (Node 26 LTS + pnpm 12) | Next.js: โหมด dev มี hot reload โดย mount โค้ดเข้าไป (`node_modules` และ `.next` อยู่ใน named volume, รันเป็น uid 1000, เปิด port ที่ `127.0.0.1:3000` เท่านั้น); production ใช้ `docker-compose.prod.yml` แยก (ดูข้างล่าง) |
 | `postgres` | `postgres:17-alpine` | ฐานข้อมูล (มีฐานข้อมูลแยกสำหรับเทสต์) |
-| `e2e` | `mcr.microsoft.com/playwright` (เวอร์ชันตรงกับ `@playwright/test`) | รัน E2E test (compose profile `e2e` เปิดเฉพาะตอนสั่งเทสต์) เข้าถึงแอปที่ `http://e2e-target:3000` ในเครือข่ายของ compose (ไม่ใช้ชื่อ `app` เพราะ Chromium บังคับ https กับชื่อนี้) |
+| `e2e` | `mcr.microsoft.com/playwright` (เวอร์ชันตรงกับ `@playwright/test`) | รัน E2E test (compose profile `e2e` เปิดเฉพาะตอน `make e2e`) ใช้เครือข่ายของ host และเข้าถึง **production build** ที่ `http://127.0.0.1:3196` (stack ชั่วคราว `ezh_e2e` จาก `docker-compose.prod.yml` + `docker-compose.e2e-prod.yml` ฐานข้อมูล `english_zero_to_hero_e2e` ใหม่ทุกรอบ) ไม่ใช้ dev server |
 
 คำสั่งทั้งหมดเรียกผ่าน `make` ซึ่งไปสั่ง `docker compose` อีกที:
 
@@ -107,7 +107,7 @@ english_zero_to_hero/
 | `make up` / `make down` | เปิด / ปิดแอปโหมด dev ที่ `http://localhost:3000` |
 | `make test` | รัน unit + component + integration test (เปิด Postgres ให้เองถ้ายังไม่รัน ไม่ต้อง `make up`) |
 | `make test-unit` | รันเฉพาะ unit + component (ไม่ต้องใช้ฐานข้อมูล) |
-| `make e2e` | รัน Playwright |
+| `make e2e` | สร้างและเริ่ม production build เป็น stack ชั่วคราว `ezh_e2e` แล้วรัน Playwright กับมัน แล้วลบ stack (`E2E_BUILD=0` ข้ามการ build; `make e2e-down` ลบ stack ที่ค้าง) |
 | `make check` | lint + typecheck + test + validate ต้องผ่านก่อนเปิด PR ไม่รวม e2e |
 | `make lint` / `make typecheck` / `make logs` | ESLint / `tsc --noEmit` / ดู log ของ app |
 | `make validate` | ตรวจไฟล์ทั้งหมดใน `content/` (`pnpm content:validate`: schema + กฎข้ามไฟล์ ดู [VOCABULARY.md](VOCABULARY.md#6-กฎการตรวจ-pnpm-contentvalidate)) |
