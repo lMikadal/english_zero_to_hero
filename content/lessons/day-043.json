@@ -1,0 +1,366 @@
+{
+  "day": 43,
+  "phase": 1,
+  "week": 7,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "My morning! wake up, get up, every day",
+    "th": "My morning! ตื่นนอนและเริ่มวันใหม่"
+  },
+  "objectives": [
+    {
+      "en": "Describe your morning routine: wake up, get up, have a shower, walk to school",
+      "th": "เล่ากิจวัตรตอนเช้าของคุณได้: wake up, get up, have a shower, walk to school"
+    },
+    {
+      "en": "Say when things start and finish: early, late, every day",
+      "th": "บอกว่าอะไรเริ่มและเลิกเมื่อไรด้วย early, late, every day"
+    },
+    {
+      "en": "Say the /st/, /sk/ and /sp/ clusters: stop–top, speak–peak, star–tar, school–cool",
+      "th": "ออกเสียงตัวควบ /st/ /sk/ /sp/ ได้: stop–top, speak–peak, star–tar, school–cool"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-wake-up",
+    "v-get-up",
+    "v-sleep",
+    "v-shower",
+    "v-every",
+    "v-day",
+    "v-early",
+    "v-late",
+    "v-start",
+    "v-finish",
+    "v-walk",
+    "v-leave"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Clusters /st/, /sk/, /sp/",
+        "th": "ตัวควบ /st/ /sk/ /sp/"
+      },
+      "exercises": [
+        {
+          "id": "d043-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "st",
+          "ipa": "/st/ /sk/ /sp/",
+          "tipTh": "ภาษาไทยไม่มีตัวควบแบบ s + พยัญชนะ ที่ต้นคำ คนไทยจึงมักเติมสระ 'อะ' หน้าคำ (school เป็น 'สะกูล', start เป็น 'สะตาร์ท') ให้ค้างเสียงลม /s/ ไว้ก่อน แล้วต่อ /t/ /k/ /p/ ทันทีโดยไม่มีสระคั่น /st/ ใน start และ stand, /sk/ ใน school: ลองลากเสียง 'ส์ส์ส์' แล้วปล่อยเป็น 'ตาร์ท' หรือ 'กูล' ในลมเดียวกัน",
+          "examples": [
+            "start",
+            "stand",
+            "school",
+            "speak"
+          ]
+        },
+        {
+          "id": "d043-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "stop",
+              "b": "top",
+              "answer": "a"
+            },
+            {
+              "a": "peak",
+              "b": "speak",
+              "answer": "b"
+            },
+            {
+              "a": "star",
+              "b": "tar",
+              "answer": "a"
+            },
+            {
+              "a": "cool",
+              "b": "school",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "st",
+            "sp",
+            "sk"
+          ]
+        },
+        {
+          "id": "d043-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /sk/ ใน school ค้างเสียงลม /s/ แล้วต่อ /k/ ทันที ไม่ใช่ 'สะกูล'"
+          },
+          "text": "I wake up early and I walk to school.",
+          "ipa": "/aɪ weɪk ʌp ˈɜːrli ænd aɪ wɔːk tuː skuːl/",
+          "phonemes": [
+            "sk"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: my morning",
+        "th": "ฟัง: ตอนเช้าของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d043-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอไปโรงเรียนอย่างไร"
+          },
+          "audioText": "Hi! I am Leo. I wake up early every day. I get up and have a shower. I have breakfast at home. I leave home and walk to school.",
+          "question": {
+            "en": "How does Leo go to school?",
+            "th": "ลีโอไปโรงเรียนอย่างไร"
+          },
+          "choices": [
+            "He walks",
+            "He takes the bus"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d043-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-wake-up"
+            },
+            {
+              "vocabId": "v-get-up"
+            },
+            {
+              "vocabId": "v-sleep"
+            },
+            {
+              "vocabId": "v-shower"
+            },
+            {
+              "vocabId": "v-every"
+            },
+            {
+              "vocabId": "v-day"
+            }
+          ]
+        },
+        {
+          "id": "d043-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรงเรียนของโรสเลิกเช้าหรือดึก (Rose's school = โรงเรียนของโรส)"
+          },
+          "audioText": "I am Rose. I wake up early every day. I have a shower and cook breakfast. I leave home early. School starts early and finishes late. I am tired at night. I go to bed and sleep.",
+          "question": {
+            "en": "Does Rose's school finish early or late?",
+            "th": "โรงเรียนของโรสเลิกเช้าหรือดึก"
+          },
+          "choices": [
+            "Late",
+            "Early"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d043-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "I get up early. I have a shower every day."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Say your morning",
+        "th": "เล่าตอนเช้าของคุณ"
+      },
+      "exercises": [
+        {
+          "id": "d043-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "I wake up early every day.",
+            "I get up and have a shower.",
+            "I have breakfast at home.",
+            "I leave home and walk to school.",
+            "School starts early.",
+            "School finishes late.",
+            "I'm tired at night. I go to bed and sleep."
+          ]
+        },
+        {
+          "id": "d043-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอะไรทุกวัน และตื่นเช้าไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you do every day? Do you get up early?",
+          "sampleAnswer": "I get up early every day. I have a shower and I leave home.",
+          "keywords": [
+            "get",
+            "every"
+          ]
+        },
+        {
+          "id": "d043-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /sk/ ใน school และ /st/ ใน start ท้ายคำ starts และ finishes ต้องมีเสียง -s / -ɪz ให้ได้ยิน"
+          },
+          "text": "School starts early and finishes late.",
+          "ipa": "/skuːl stɑːrts ˈɜːrli ænd ˈfɪnɪʃɪz leɪt/",
+          "phonemes": [
+            "sk",
+            "st"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Leo's morning",
+        "th": "ตอนเช้าของลีโอ"
+      },
+      "exercises": [
+        {
+          "id": "d043-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (wakes up, gets up, leaves, walks: เติม -s กับ he / she)"
+          },
+          "text": "Leo wakes up early every day. He gets up and has a shower. He has breakfast at home. He leaves home and walks to school. School starts early. It finishes late. Leo is tired at night. He goes to bed and sleeps. Rose gets up early too.",
+          "questions": [
+            {
+              "question": {
+                "en": "How does Leo go to school?",
+                "th": "ลีโอไปโรงเรียนอย่างไร"
+              },
+              "choices": [
+                "He walks",
+                "He takes the bus"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Does school finish early or late?",
+                "th": "โรงเรียนเลิกเช้าหรือดึก"
+              },
+              "choices": [
+                "Late",
+                "Early"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who gets up early too?",
+                "th": "ใครตื่นเช้าเหมือนกัน"
+              },
+              "choices": [
+                "Rose",
+                "Dan"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: my morning",
+        "th": "เขียน: ตอนเช้าของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d043-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "wake",
+            "up",
+            "early",
+            "I"
+          ],
+          "answer": "I wake up early"
+        },
+        {
+          "id": "d043-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (ลุกจากเตียง)"
+          },
+          "text": "I get ___ and have a shower.",
+          "answer": [
+            "up"
+          ]
+        },
+        {
+          "id": "d043-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันเดินไปโรงเรียนทุกวัน",
+          "accept": [
+            "I walk to school every day"
+          ]
+        },
+        {
+          "id": "d043-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-early"
+            },
+            {
+              "vocabId": "v-late"
+            },
+            {
+              "vocabId": "v-start"
+            },
+            {
+              "vocabId": "v-finish"
+            },
+            {
+              "vocabId": "v-walk"
+            },
+            {
+              "vocabId": "v-leave"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

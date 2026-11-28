@@ -1,0 +1,337 @@
+{
+  "day": 48,
+  "phase": 1,
+  "week": 7,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 7 review: my day, how often and my weekend",
+    "th": "ทบทวนสัปดาห์ที่ 7: วันของฉัน ความถี่ และวันหยุด"
+  },
+  "objectives": [
+    {
+      "en": "Tell a whole day in order: wake up, go, arrive, after school, before dinner, then",
+      "th": "เล่าวันหนึ่งเรียงลำดับได้: wake up, go, arrive, after school, before dinner, then"
+    },
+    {
+      "en": "Use always, usually, often, sometimes, never in the right place",
+      "th": "ใช้ always, usually, often, sometimes, never ในตำแหน่งที่ถูกได้"
+    },
+    {
+      "en": "Say clusters: stop, sleep, street, desk, film",
+      "th": "ออกเสียงตัวควบ: stop, sleep, street, desk, film"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Clusters",
+        "th": "ตัวควบกล้ำ"
+      },
+      "exercises": [
+        {
+          "id": "d048-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "stop",
+              "b": "top",
+              "answer": "a"
+            },
+            {
+              "a": "sleep",
+              "b": "leap",
+              "answer": "a"
+            },
+            {
+              "a": "treat",
+              "b": "street",
+              "answer": "b"
+            },
+            {
+              "a": "deck",
+              "b": "desk",
+              "answer": "b"
+            },
+            {
+              "a": "fill",
+              "b": "film",
+              "answer": "b"
+            }
+          ],
+          "phonemes": [
+            "st",
+            "sl",
+            "str",
+            "sk",
+            "lm"
+          ]
+        },
+        {
+          "id": "d048-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /st/ ใน study, /sk/ ใน school และเสียง /k/ ท้าย desk ไม่เติมสระคั่น"
+          },
+          "text": "I study at my desk after school.",
+          "ipa": "/aɪ ˈstʌdi æt maɪ desk ˈæftər skuːl/",
+          "phonemes": [
+            "st",
+            "sk"
+          ]
+        },
+        {
+          "id": "d048-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ใน listens ตัว t ไม่ออกเสียง (ลิส-เซินซ์) และ /ʃ/ ใน she ปากห่อ"
+          },
+          "text": "She listens to music on the train.",
+          "ipa": "/ʃiː ˈlɪsnz tuː ˈmjuːzɪk ɑːn ðə treɪn/",
+          "phonemes": [
+            "sh"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d048-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสทำอะไรก่อนอาหารเย็น (Rose's = ของโรส)"
+          },
+          "audioText": "Rose wakes up early every day. She gets up and has a shower. She always has tea and never drinks coffee. She leaves home and goes to school by bus. The bus stops near her house. School starts early and finishes late. After school she writes at her desk. Then she goes home. Before dinner she calls Nan. They talk. After dinner she sometimes watches TV. Then she sleeps.",
+          "question": {
+            "en": "What does Rose do before dinner?",
+            "th": "โรสทำอะไรก่อนอาหารเย็น"
+          },
+          "choices": [
+            "She calls Nan",
+            "She watches TV"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d048-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแดนไปทำงานอย่างไร"
+          },
+          "audioText": "Dan drives to work. The road is big and the street is near his house. His work is far. He always arrives early. He often works late. He usually listens to music in the car. He never takes a taxi or a train. On the weekend he swims. It is his favourite sport.",
+          "question": {
+            "en": "How does Dan go to work?",
+            "th": "แดนไปทำงานอย่างไร"
+          },
+          "choices": [
+            "He drives",
+            "He takes the train"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d048-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "On the weekend we visit Mali. We have a good time."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d048-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Hi, Leo! How do you go to school?",
+            "I walk. My school is near.",
+            "Do you play a game after school?",
+            "Yes, I play football. Sometimes I swim.",
+            "Do you study at your desk?",
+            "Yes. Then I call my grandmother. We talk.",
+            "Do you watch TV?",
+            "Sometimes, after dinner. I never watch TV before school."
+          ]
+        },
+        {
+          "id": "d048-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอะไรทุกวัน และดูทีวีบ่อยไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you do every day? Do you often watch TV?",
+          "sampleAnswer": "I get up early every day. I usually walk to school. I sometimes watch TV.",
+          "keywords": [
+            "every",
+            "often"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d048-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Leo walks to school every day. After school he plays football and sometimes swims. Then he goes home and studies at his desk. Before dinner he calls his grandmother. After dinner he plays a game. On the weekend he has free time. He watches a film with Rose and Dan. Nan goes to school by train. She buys a ticket. A taxi is not cheap. Her school is far. She always arrives early.",
+          "questions": [
+            {
+              "question": {
+                "en": "How does Leo go to school?",
+                "th": "ลีโอไปโรงเรียนอย่างไร"
+              },
+              "choices": [
+                "He walks",
+                "He takes the train"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo do after school?",
+                "th": "ลีโอทำอะไรหลังเลิกเรียน"
+              },
+              "choices": [
+                "He plays football",
+                "He watches a film"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How does Nan go to school?",
+                "th": "แนนไปโรงเรียนอย่างไร"
+              },
+              "choices": [
+                "By train",
+                "By taxi"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d048-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-wake-up"
+            },
+            {
+              "vocabId": "v-shower"
+            },
+            {
+              "vocabId": "v-early"
+            },
+            {
+              "vocabId": "v-often"
+            },
+            {
+              "vocabId": "v-drive"
+            },
+            {
+              "vocabId": "v-desk"
+            },
+            {
+              "vocabId": "v-film"
+            },
+            {
+              "vocabId": "v-visit"
+            }
+          ]
+        },
+        {
+          "id": "d048-write-01",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมกริยา 'ลุกจากเตียง' ให้ถูกรูป (she ต้องเติม -s)"
+          },
+          "text": "She ___ up early every day.",
+          "answer": [
+            "gets"
+          ]
+        },
+        {
+          "id": "d048-write-02",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "always",
+            "My",
+            "mother",
+            "tea",
+            "has"
+          ],
+          "answer": "My mother always has tea"
+        },
+        {
+          "id": "d048-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แนนมักจะนั่งรถไฟไปโรงเรียน",
+          "accept": [
+            "Nan usually takes the train to school",
+            "Nan usually goes to school by train"
+          ]
+        },
+        {
+          "id": "d048-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันไม่เคยดื่มกาแฟ",
+          "accept": [
+            "I never drink coffee"
+          ]
+        }
+      ]
+    }
+  ]
+}

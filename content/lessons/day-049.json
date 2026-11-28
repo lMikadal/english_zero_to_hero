@@ -1,0 +1,216 @@
+{
+  "day": 49,
+  "phase": 1,
+  "week": 7,
+  "type": "challenge",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 7 challenge: tell me about your day",
+    "th": "ภารกิจสัปดาห์ที่ 7: เล่าเรื่องวันของคุณ"
+  },
+  "objectives": [
+    {
+      "en": "Understand and read short texts about daily routines and the weekend",
+      "th": "ฟังและอ่านเรื่องสั้นเกี่ยวกับกิจวัตรและวันหยุดได้"
+    },
+    {
+      "en": "Tell about your day and your weekend aloud in about 30 seconds",
+      "th": "เล่าเรื่องวันธรรมดาและวันหยุดของตัวเองด้วยเสียงประมาณ 30 วินาทีได้"
+    },
+    {
+      "en": "Write 5–6 sentences about your day with frequency words",
+      "th": "เขียน 5–6 ประโยคเกี่ยวกับวันของตัวเองโดยใช้คำบอกความถี่ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Warm up",
+        "th": "วอร์มอัป"
+      },
+      "exercises": [
+        {
+          "id": "d049-pron-01",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ใน listen ตัว t ไม่ออกเสียง (ลิ-เซิน) และเน้น WEEKend ที่พยางค์แรก"
+          },
+          "text": "I always listen to music on the weekend.",
+          "ipa": "/aɪ ˈɔːlweɪz ˈlɪsn tuː ˈmjuːzɪk ɑːn ðə ˈwiːkend/"
+        },
+        {
+          "id": "d049-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /kl/ ใน class ต้องไม่เติมสระ ('คะลาส') และ -s ท้าย sings, dances ให้ได้ยิน"
+          },
+          "text": "Nan sings and dances in a class every week.",
+          "ipa": "/næn sɪŋz ænd ˈdænsɪz ɪn ə klæs ˈevri wiːk/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen to a week",
+        "th": "ฟังเรื่องหนึ่งสัปดาห์"
+      },
+      "exercises": [
+        {
+          "id": "d049-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนไปโรงเรียนอย่างไร"
+          },
+          "audioText": "Hello! I am Nan. I wake up early every day. I get up and have a shower. I go to school by train. A ticket is thirty baht. My school is far. I arrive early. A taxi is not cheap. My friend goes by bike. On the weekend I have free time. I often watch a film and visit my friend. Every week I have a dance class. I dance and I sing.",
+          "question": {
+            "en": "How does Nan go to school?",
+            "th": "แนนไปโรงเรียนอย่างไร"
+          },
+          "choices": [
+            "By train",
+            "By bike"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d049-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสทำอะไรในวันหยุด"
+          },
+          "audioText": "Rose usually goes shopping on the weekend. She often watches a film in the evening. She sometimes plays a game with Leo. Rose never drinks coffee. She always has tea.",
+          "question": {
+            "en": "What does Rose usually do on the weekend?",
+            "th": "โรสมักทำอะไรในวันหยุด"
+          },
+          "choices": [
+            "Goes shopping",
+            "Plays football"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d049-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Before dinner Leo calls Mali. Then they talk."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Shadow and speak",
+        "th": "พูดตามและพูดเอง"
+      },
+      "exercises": [
+        {
+          "id": "d049-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละบรรทัด พยายามให้จังหวะและน้ำเสียงเหมือนต้นฉบับ"
+          },
+          "lines": [
+            "Hi, Nan! What do you do every day?",
+            "I wake up early and I get up.",
+            "I always have a shower. Then I go to school by train.",
+            "What do you do after school?",
+            "I sometimes write at my desk. Before dinner I listen to music.",
+            "And on the weekend?",
+            "I watch a film and I dance in a class every week!",
+            "I have free time. I have a good time!"
+          ]
+        },
+        {
+          "id": "d049-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "เล่าเรื่องวันธรรมดาและวันหยุดของคุณด้วยเสียงประมาณ 30 วินาที: บอกว่าตื่นแล้วทำอะไร ไปอย่างไร ทำอะไรหลังเลิกเรียนหรือเลิกงาน และวันหยุดทำอะไร"
+          },
+          "prompt": "What do you do every day? How do you go to school or work? What do you do on the weekend?",
+          "sampleAnswer": "I get up early every day. I go to work by bus. After work I study at my desk. On the weekend I often watch a film and I sometimes swim.",
+          "keywords": [
+            "every",
+            "weekend"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read about a family",
+        "th": "อ่านเรื่องครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d049-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Dan is a doctor. He always drinks coffee in the morning. He drives to work and often arrives early. His work finishes late. On the weekend he swims. It is his favourite sport. Leo plays football every week. Nan has a dance class every week. She sings and dances. Rose has free time on the weekend. She likes shopping and the family often watches a film. They have a good time.",
+          "questions": [
+            {
+              "question": {
+                "en": "What does Dan do on the weekend?",
+                "th": "แดนทำอะไรในวันหยุด"
+              },
+              "choices": [
+                "He swims",
+                "He sings"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Nan do every week?",
+                "th": "แนนทำอะไรทุกสัปดาห์"
+              },
+              "choices": [
+                "She has a dance class",
+                "She plays football"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does the family often do?",
+                "th": "ครอบครัวมักทำอะไร"
+              },
+              "choices": [
+                "Watch a film",
+                "Play football"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write about your day",
+        "th": "เขียนเกี่ยวกับวันของคุณ"
+      },
+      "exercises": [
+        {
+          "id": "d049-write-01",
+          "type": "free_write",
+          "instruction": {
+            "th": "เขียน 5–6 ประโยคเกี่ยวกับวันของคุณ: ตื่นและออกจากบ้านอย่างไร ไปโรงเรียนหรือที่ทำงานอย่างไร หลังเลิกเรียนทำอะไร และวันหยุดทำอะไร ใช้คำบอกความถี่ always, usually, often, sometimes, never อย่างน้อยสองคำ"
+          },
+          "prompt": "Write 5–6 sentences about your day. How do you go to school or work? What do you do after school? What do you do on the weekend? Use always, usually, often, sometimes or never.",
+          "minWords": 20
+        }
+      ]
+    }
+  ]
+}

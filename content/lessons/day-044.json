@@ -1,0 +1,411 @@
+{
+  "day": 44,
+  "phase": 1,
+  "week": 7,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "How often? always, usually, often, sometimes, never",
+    "th": "How often? คำบอกความถี่"
+  },
+  "objectives": [
+    {
+      "en": "Say how often you do things: always, usually, often, sometimes, never",
+      "th": "บอกว่าทำอะไรบ่อยแค่ไหนด้วย always, usually, often, sometimes, never ได้"
+    },
+    {
+      "en": "Put the frequency word in the right place: I always have tea, She is never late",
+      "th": "วางคำบอกความถี่ให้ถูกที่: I always have tea, She is never late"
+    },
+    {
+      "en": "Say the clusters /sl/, /sm/, /sn/: sleep–leap, small–mall, slow–low, snow–no",
+      "th": "ออกเสียงตัวควบ /sl/ /sm/ /sn/ ได้: sleep–leap, small–mall, slow–low, snow–no"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-always",
+    "v-usually",
+    "v-often",
+    "v-sometimes",
+    "v-never",
+    "v-watch",
+    "v-tv",
+    "v-listen",
+    "v-music"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Clusters /sl/, /sm/, /sn/",
+        "th": "ตัวควบ /sl/ /sm/ /sn/"
+      },
+      "exercises": [
+        {
+          "id": "d044-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "sl",
+          "ipa": "/sl/ /sm/ /sn/",
+          "tipTh": "คนไทยมักเติมสระ 'อะ' หลัง s (sleep เป็น 'สะลีป', small เป็น 'สะมอล') หรือทิ้ง s ไป (small เป็น 'มอล') ให้ค้างเสียงลม /s/ แล้วต่อ /l/ /m/ /n/ ทันที /sl/ ใน sleep, /sm/ ใน small: ลากเสียง 'ส์ส์' แล้วเปลี่ยนเป็น 'ลีป' หรือ 'มอล' โดยลมไม่ขาดช่วง",
+          "examples": [
+            "sleep",
+            "small",
+            "sweet",
+            "snow"
+          ]
+        },
+        {
+          "id": "d044-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "sleep",
+              "b": "leap",
+              "answer": "a"
+            },
+            {
+              "a": "mall",
+              "b": "small",
+              "answer": "b"
+            },
+            {
+              "a": "low",
+              "b": "slow",
+              "answer": "b"
+            },
+            {
+              "a": "snow",
+              "b": "no",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "sl",
+            "sm",
+            "sn"
+          ]
+        },
+        {
+          "id": "d044-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /sm/ ใน small ค้างเสียงลม /s/ แล้วต่อ /m/ ทันที ไม่ใช่ 'สะมอล' หรือ 'มอล'"
+          },
+          "text": "Sometimes I watch TV in a small room.",
+          "ipa": "/ˈsʌmtaɪmz aɪ wɑːtʃ ˌtiːˈviː ɪn ə smɔːl ruːm/",
+          "phonemes": [
+            "sm"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: how often?",
+        "th": "ฟัง: บ่อยแค่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d044-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "คำบอกความถี่: always, usually, often, sometimes, never",
+          "bodyTh": "คำบอกความถี่ตอบคำถามว่า \"บ่อยแค่ไหน\" (How often…?) เรียงจากมากไปน้อย: always (ทุกครั้ง) → usually (ส่วนใหญ่) → often (บ่อย ๆ) → sometimes (บางครั้ง) → never (ไม่เคยเลย) ตำแหน่งในประโยค: วางไว้หน้ากริยาหลัก (I always have tea. She often watches TV.) แต่ถ้ากริยาคือ be (am / is / are) วางไว้หลัง be (She is never late.) ข้อผิดพลาดที่คนไทยมักทำ: วางไว้ท้ายประโยคตามลำดับคำไทย (\"I watch TV always\") และใช้ never ร่วมกับ don't (\"I don't never…\") ซึ่งผิดเพราะ never มีความหมายปฏิเสธอยู่แล้ว คำถามใช้ How often + do/does + ประธาน + กริยา (How often do you watch TV?) หมายเหตุ: sometimes ยังวางต้นประโยคได้ (Sometimes I watch TV.)",
+          "examples": [
+            {
+              "en": "I always have tea.",
+              "th": "ฉันดื่มชาเสมอ"
+            },
+            {
+              "en": "She is never late.",
+              "th": "เธอไม่เคยมาสาย"
+            },
+            {
+              "en": "Dan never cooks.",
+              "th": "แดนไม่เคยทำอาหาร"
+            },
+            {
+              "en": "How often do you watch TV?",
+              "th": "คุณดูทีวีบ่อยแค่ไหน"
+            },
+            {
+              "en": "I sometimes listen to music.",
+              "th": "บางครั้งฉันฟังเพลง"
+            }
+          ],
+          "structures": [
+            "frequency-adverb"
+          ],
+          "table": [
+            [
+              "คำ",
+              "ความหมาย",
+              "ตัวอย่าง"
+            ],
+            [
+              "always",
+              "ทุกครั้ง",
+              "I always have tea."
+            ],
+            [
+              "usually",
+              "ส่วนใหญ่",
+              "I usually walk to school."
+            ],
+            [
+              "often",
+              "บ่อย ๆ",
+              "I often watch TV."
+            ],
+            [
+              "sometimes",
+              "บางครั้ง",
+              "I sometimes listen to music."
+            ],
+            [
+              "never",
+              "ไม่เคยเลย",
+              "I never drink coffee."
+            ]
+          ]
+        },
+        {
+          "id": "d044-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแดนไม่เคยทำอะไร"
+          },
+          "audioText": "I am Dan. I am a doctor. I always drink coffee in the morning. I often work late. I never cook. I usually listen to music in the car. I sometimes watch TV in the evening.",
+          "question": {
+            "en": "What does Dan never do?",
+            "th": "แดนไม่เคยทำอะไร"
+          },
+          "choices": [
+            "Cook",
+            "Drink coffee"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d044-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-always"
+            },
+            {
+              "vocabId": "v-usually"
+            },
+            {
+              "vocabId": "v-often"
+            },
+            {
+              "vocabId": "v-sometimes"
+            },
+            {
+              "vocabId": "v-never"
+            }
+          ]
+        },
+        {
+          "id": "d044-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอดูทีวีบ่อยแค่ไหน (How often does Leo watch TV?)"
+          },
+          "audioText": "Nan: How often do you watch TV, Leo? Leo: I sometimes watch TV in the evening. Nan: Do you listen to music? Leo: Yes, I often listen to music. Nan: Do you drink coffee? Leo: No, I never drink coffee.",
+          "question": {
+            "en": "How often does Leo watch TV?",
+            "th": "ลีโอดูทีวีบ่อยแค่ไหน"
+          },
+          "choices": [
+            "Sometimes",
+            "Always"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d044-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Rose always has tea. She never drinks coffee."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "How often do you…?",
+        "th": "คุณ…บ่อยแค่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d044-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "How often do you watch TV?",
+            "I sometimes watch TV in the evening.",
+            "Do you listen to music?",
+            "Yes, I always listen to music.",
+            "I usually listen to music in the morning.",
+            "Do you drink coffee?",
+            "No, I never drink coffee.",
+            "I often drink tea."
+          ]
+        },
+        {
+          "id": "d044-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณดูทีวีบ่อยแค่ไหนและฟังเพลงบ่อยแค่ไหน ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "How often do you watch TV? Do you listen to music?",
+          "sampleAnswer": "I often watch TV. I always listen to music.",
+          "keywords": [
+            "often",
+            "always"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Habits",
+        "th": "กิจวัตรของแต่ละคน"
+      },
+      "exercises": [
+        {
+          "id": "d044-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (คำบอกความถี่วางหน้ากริยาหลัก: She often watches TV)"
+          },
+          "text": "Rose always has tea in the morning. She never drinks coffee. She usually listens to music in the morning. She sometimes watches TV in the evening. Dan always drinks coffee. He often works late. He never cooks. Leo often watches TV. He sometimes listens to music. He never drinks coffee.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who always drinks coffee?",
+                "th": "ใครดื่มกาแฟเสมอ"
+              },
+              "choices": [
+                "Dan",
+                "Rose",
+                "Leo"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "How often does Dan cook?",
+                "th": "แดนทำอาหารบ่อยแค่ไหน"
+              },
+              "choices": [
+                "Never",
+                "Often"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Rose usually do in the morning?",
+                "th": "โรสมักทำอะไรตอนเช้า"
+              },
+              "choices": [
+                "Listen to music",
+                "Watch TV"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: how often",
+        "th": "เขียน: บ่อยแค่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d044-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "always",
+            "My",
+            "father",
+            "coffee",
+            "drinks"
+          ],
+          "answer": "My father always drinks coffee"
+        },
+        {
+          "id": "d044-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำบอกความถี่ (ไม่เคยเลย)"
+          },
+          "text": "I ___ drink coffee.",
+          "answer": [
+            "never"
+          ]
+        },
+        {
+          "id": "d044-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันดูทีวีบ่อย ๆ",
+          "accept": [
+            "I often watch TV",
+            "I watch TV often"
+          ]
+        },
+        {
+          "id": "d044-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-watch"
+            },
+            {
+              "vocabId": "v-tv"
+            },
+            {
+              "vocabId": "v-listen"
+            },
+            {
+              "vocabId": "v-music"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

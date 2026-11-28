@@ -1,0 +1,359 @@
+{
+  "day": 47,
+  "phase": 1,
+  "week": 7,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "My weekend! free time, film, sport, class",
+    "th": "My weekend! เวลาว่างวันหยุด"
+  },
+  "objectives": [
+    {
+      "en": "Talk about your weekend and free time: watch a film, go shopping, play a sport",
+      "th": "พูดถึงวันหยุดและเวลาว่างได้: watch a film, go shopping, play a sport"
+    },
+    {
+      "en": "Say how often you do things: every week, on the weekend, sometimes, often",
+      "th": "บอกความถี่ของกิจกรรมได้: every week, on the weekend, sometimes, often"
+    },
+    {
+      "en": "Say the final clusters /lm/ and /lk/: film–fill, milk–mill, help–hell",
+      "th": "ออกเสียงตัวควบท้ายคำ /lm/ /lk/ ได้: film–fill, milk–mill, help–hell"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-week",
+    "v-weekend",
+    "v-time",
+    "v-free",
+    "v-film",
+    "v-sing",
+    "v-dance",
+    "v-visit",
+    "v-shopping",
+    "v-sport",
+    "v-class"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Final clusters /lm/, /lk/",
+        "th": "ตัวควบท้ายคำ /lm/ /lk/"
+      },
+      "exercises": [
+        {
+          "id": "d047-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "lm",
+          "ipa": "/lm/ /lk/",
+          "tipTh": "คนไทยมักทิ้งเสียง /l/ หรือเปลี่ยนเป็น 'น' (film เป็น 'ฟิม', milk เป็น 'มิก') ให้ปลายลิ้นแตะเหงือกเพื่อออก /l/ ก่อน แล้วปิดริมฝีปากเป็น /m/ (film) หรือยกโคนลิ้นเป็น /k/ (milk) /lm/ ใน film, /lk/ ใน milk: ลิ้นไม่ต้องกลับลงก่อน ออก 'ลม' เป็นลมเดียว",
+          "examples": [
+            "film",
+            "milk",
+            "help",
+            "golf"
+          ]
+        },
+        {
+          "id": "d047-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "fill",
+              "b": "film",
+              "answer": "b"
+            },
+            {
+              "a": "mill",
+              "b": "milk",
+              "answer": "b"
+            },
+            {
+              "a": "help",
+              "b": "hell",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "lm",
+            "lk",
+            "lp"
+          ]
+        },
+        {
+          "id": "d047-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /lm/ ใน film และ /lk/ ใน milk ต้องมี /l/ ก่อนเสียงท้าย ไม่ใช่ 'ฟิม' หรือ 'มิก'"
+          },
+          "text": "We watch a film and drink milk.",
+          "ipa": "/wiː wɑːtʃ ə fɪlm ænd drɪŋk mɪlk/",
+          "phonemes": [
+            "lm",
+            "lk"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: the weekend",
+        "th": "ฟัง: วันหยุด"
+      },
+      "exercises": [
+        {
+          "id": "d047-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลีโอเล่นกีฬาอะไรทุกสัปดาห์"
+          },
+          "audioText": "Hi! I am Leo. On the weekend I have free time. I play football every week. It is my favourite sport. Sometimes I watch a film with Rose and Dan. I sometimes visit my grandmother Mali in Chiang Mai.",
+          "question": {
+            "en": "What sport does Leo play every week?",
+            "th": "ลีโอเล่นกีฬาอะไรทุกสัปดาห์"
+          },
+          "choices": [
+            "Football",
+            "Swimming"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d047-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-week"
+            },
+            {
+              "vocabId": "v-weekend"
+            },
+            {
+              "vocabId": "v-time"
+            },
+            {
+              "vocabId": "v-free"
+            },
+            {
+              "vocabId": "v-film"
+            },
+            {
+              "vocabId": "v-sing"
+            }
+          ]
+        },
+        {
+          "id": "d047-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนไปคลาสอะไรทุกสัปดาห์"
+          },
+          "audioText": "I am Nan. I have a dance class every week. I dance and sing in the class. I never go shopping on the weekend. I often watch a film at home.",
+          "question": {
+            "en": "What class does Nan have every week?",
+            "th": "แนนมีคลาสอะไรทุกสัปดาห์"
+          },
+          "choices": [
+            "A dance class",
+            "A music class"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d047-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "We sometimes watch a film on the weekend."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Free time",
+        "th": "เวลาว่าง"
+      },
+      "exercises": [
+        {
+          "id": "d047-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "What do you do in your free time?",
+            "I often watch a film on the weekend.",
+            "I usually go shopping.",
+            "Do you play a sport?",
+            "Yes, I swim every week.",
+            "I sing and dance in a class.",
+            "Sometimes I visit my grandmother.",
+            "I have a good time!"
+          ]
+        },
+        {
+          "id": "d047-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอะไรในเวลาว่างวันหยุดสุดสัปดาห์ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you do on the weekend? Do you play a sport?",
+          "sampleAnswer": "I often watch a film. I swim every week.",
+          "keywords": [
+            "weekend",
+            "week"
+          ]
+        },
+        {
+          "id": "d047-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ออก weekend ให้เน้นพยางค์แรก (WEEKend) และ /fr/ ใน free ไม่ใช่ 'ฟี' หรือ 'ฟรี' แบบเสียงเดียว"
+          },
+          "text": "I have free time every weekend.",
+          "ipa": "/aɪ hæv friː taɪm ˈevri ˈwiːkend/",
+          "phonemes": [
+            "fr"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "The weekend",
+        "th": "วันหยุดสุดสัปดาห์"
+      },
+      "exercises": [
+        {
+          "id": "d047-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (goes shopping, swims, visits: กริยาเติม -s / -es กับ he / she)"
+          },
+          "text": "On the weekend Rose and Dan have free time. Rose usually goes shopping at the market. Dan often swims. It is his favourite sport. Leo plays football every week and sometimes visits his grandmother, Mali. Nan has a dance class every week. She dances and sings in the class. In the evening the family watches a film. They have a good time.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who goes shopping?",
+                "th": "ใครไปซื้อของ"
+              },
+              "choices": [
+                "Rose",
+                "Dan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Dan do?",
+                "th": "แดนทำอะไร"
+              },
+              "choices": [
+                "He swims",
+                "He sings"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where does Nan dance?",
+                "th": "แนนเต้นที่ไหน"
+              },
+              "choices": [
+                "In a class",
+                "At the market"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: my weekend",
+        "th": "เขียน: วันหยุดของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d047-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "watch",
+            "We",
+            "a",
+            "film",
+            "sometimes"
+          ],
+          "answer": "We sometimes watch a film"
+        },
+        {
+          "id": "d047-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (ว่าง)"
+          },
+          "text": "I have ___ time on the weekend.",
+          "answer": [
+            "free"
+          ]
+        },
+        {
+          "id": "d047-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันร้องเพลงและเต้นรำทุกสัปดาห์",
+          "accept": [
+            "I sing and dance every week"
+          ]
+        },
+        {
+          "id": "d047-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-dance"
+            },
+            {
+              "vocabId": "v-visit"
+            },
+            {
+              "vocabId": "v-shopping"
+            },
+            {
+              "vocabId": "v-sport"
+            },
+            {
+              "vocabId": "v-class"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

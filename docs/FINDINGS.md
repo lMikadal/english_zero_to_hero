@@ -73,3 +73,8 @@ Rules added: `arrange-question`, `sound-words`, `phoneme-tags`, `cast-consistenc
 - **Open for the E2E work:** `e2e/helpers/day1.ts` `playStep` has no `grammar_note` case. Add one (read the card, press ถัดไป, no answer) before an E2E plays a day that has a note.
 - **grammar_note per section:** one card per section, each first in its section; a structure may appear in only one card of a lesson, and not before its curriculum day (`GRAMMAR_STRUCTURES[id].day`).
 - **word-exposure now counts only** what the learner hears, reads as passage or dialogue text, says or writes. Question texts, answer choices, sound drills and grammar_note examples no longer count. Week 6 gaps found by that stricter count are listed in the PR description, not fixed here.
+
+## Week 7 review: Oxford level doubt and the new gate
+
+- Words of week 7 labelled A1 from memory whose level is doubtful: `usually` (A2?), `shower`, `arrive`, `drive`, `leave`, `visit`, `ticket`, `taxi`, `bike`, `desk`, `shopping`, `weekend`, `class`, `swim`. Verify against the official Oxford 3000 list when the owner supplies it (same note as week 6).
+- New gate `frequency-adverb` (day 44: always, usually, often, sometimes, never) in `GRAMMAR_STRUCTURES` / `GRAMMAR_NOT_BEFORE`. It only knows the five words, not the word order (`I watch TV always` is not detected) and not `How often`.
