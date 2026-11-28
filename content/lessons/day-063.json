@@ -65,7 +65,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่ามาลีทำอะไรในสวน"
           },
-          "audioText": "I am Mali. I live in Chiang Mai. In December the weather is cold. I wear a coat and my yellow jacket. My garden is small. I paint pictures in the garden. It is fun. The family visits me in December.",
+          "audioText": "I am Mali. I live in Chiang Mai. In December the weather is cold. I wear a coat and my yellow jacket. My garden is small. I paint pictures in the garden. It is fun. My family visits in December.",
           "question": {
             "en": "What does Mali do in the garden?",
             "th": "มาลีทำอะไรในสวน"
@@ -157,7 +157,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม (Rose's house = บ้านของโรส)"
           },
-          "text": "Rose's house is white and the door is green. The kitchen and the sofa are downstairs. Leo's bedroom is upstairs. The family has a small garden. Today is rainy and the road is wet. Rose wears a blue dress and takes an umbrella. Dan wears a white coat at work. Leo wears a green shirt and black shoes. In the evening the family goes to the cinema.",
+          "text": "Rose's house is white and the door is green. The kitchen and the sofa are downstairs. Leo's bedroom is upstairs. The family has a small garden. Today is rainy. The rain is cold, a cloud is big and the road is wet. Rose wears a blue dress and takes an umbrella. Dan wears a white coat at work. Leo wears a green shirt and black shoes. In the evening the family goes to the cinema.",
           "questions": [
             {
               "question": {
