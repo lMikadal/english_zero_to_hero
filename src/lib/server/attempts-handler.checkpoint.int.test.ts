@@ -169,7 +169,7 @@ describe("the server decides checkpoint or checkpoint_retake (item 27, D11)", ()
 
   it("a retake in a NEW session is allowed and stored as checkpoint_retake (a second sitting)", async () => {
     await blockedAfterDay30();
-    const first = cpItem("c030-listen-01", CP_WRONG["c030-listen-01"]);
+    const first = cpItem("c030-listen-01", CP_WRONG["c030-listen-01"], { createdAt: new Date(NOW.getTime() - 300_000).toISOString() });
     const second = cpItem("c030-listen-01", CP_RIGHT["c030-listen-01"], { sessionId: randomUUID() });
     expect(statuses(await post([first])).map((r) => r.status)).toEqual(["created"]);
     expect(statuses(await post([second])).map((r) => r.status)).toEqual(["created"]);

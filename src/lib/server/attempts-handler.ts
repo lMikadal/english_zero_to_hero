@@ -1,6 +1,6 @@
 // POST /api/attempts: parse -> look up in content -> grade -> store, all on the server (docs/ARCHITECTURE.md 5.1).
 // One bad item never fails the batch: it is answered `rejected` and the rest is stored.
-import { getCheckpointGate, hasEarlierAnswer } from "@/db/queries/checkpoints";
+import { answeredInSitting, getCheckpointGate, hasEarlierAnswer } from "@/db/queries/checkpoints";
 import { getDayStatus } from "@/db/queries/practice";
 import { findStoredGrade, getProfileShared, insertAttempt, markInProgress, refreshDoneScore } from "@/db/queries/attempts";
 import { isDataError, withTransactionRetry } from "@/db/queries/tx";
@@ -92,9 +92,12 @@ export async function handlePostAttempts(body: unknown, { db, userId, now, conte
     work.push({ index, a, day, container, found, tags: deriveTags(container, found.exercise, found.section, words) });
   });
 
-  // Rows are written in id order whatever the request order, so two batches with the same ids can never wait on each
+  // Lesson rows are written in id order whatever the request order, so two batches with the same ids can never wait on each
   // other in a cycle (deadlock). Results go back in request order. Array.sort is stable: a repeated id keeps its order.
-  const ordered = [...work].sort((x, y) => (x.a.id < y.a.id ? -1 : x.a.id > y.a.id ? 1 : 0));
+  // Checkpoint rows go first, in REQUEST order: when one exercise appears twice in a batch the first one sent is the answer
+  // that counts, never the one with the smaller id (a deadlock between two such batches is retried by withTransactionRetry).
+  const byId = (x: Prepared, y: Prepared) => (x.a.id < y.a.id ? -1 : x.a.id > y.a.id ? 1 : 0);
+  const ordered = [...work.filter((w) => isCheckpointId(w.a.exerciseId)), ...work.filter((w) => !isCheckpointId(w.a.exerciseId)).sort(byId)];
 
   const results = await withTransactionRetry(db, async (tx) => {
     const out = [...fixed];
@@ -131,7 +134,12 @@ export async function handlePostAttempts(body: unknown, { db, userId, now, conte
         // a savepoint per item: a database error in one item rolls back only that item
         out[w.index] = await tx.transaction(async (sp) => {
           // D11: the first answer a learner ever gives to a checkpoint exercise is `checkpoint`, every later one `checkpoint_retake`
-          const source = isCheckpointId(a.exerciseId) ? ((await hasEarlierAnswer(sp, userId, a.exerciseId, a.id)) ? "checkpoint_retake" : "checkpoint") : a.source;
+          const checkpoint = isCheckpointId(a.exerciseId);
+          // One answer per exercise per sitting: a second one (any attempt id, any client time) is refused, so it can never
+          // replace the first. The same attempt id is a retry and falls through to `duplicate`. The partial unique index
+          // attempts_checkpoint_one_answer_idx is the backstop.
+          if (checkpoint && (await answeredInSitting(sp, userId, a.sessionId, a.exerciseId, a.id))) return { id: a.id, status: "rejected" as const, reason: "already_answered" as const };
+          const source = checkpoint ? ((await hasEarlierAnswer(sp, userId, a.exerciseId, a.id)) ? "checkpoint_retake" : "checkpoint") : a.source;
           const created = await insertAttempt(sp, {
             id: a.id,
             userId,
@@ -149,8 +157,10 @@ export async function handlePostAttempts(body: unknown, { db, userId, now, conte
             attemptNo: a.attemptNo,
             createdAt,
           });
-          if (created) return { id: a.id, status: "created" as const, ...grade };
+          // a checkpoint answer is acknowledged without its grade (D5)
+          if (created) return checkpoint ? { id: a.id, status: "created" as const } : { id: a.id, status: "created" as const, ...grade };
           // the id exists: report what was stored, never the grade of this (possibly different) payload
+          if (checkpoint) return { id: a.id, status: "duplicate" as const };
           return { id: a.id, status: "duplicate" as const, ...(await findStoredGrade(sp, userId, a.id)) };
         });
         if (out[w.index]!.status === "created" && hasRole(a.source, "touchesProgress")) {

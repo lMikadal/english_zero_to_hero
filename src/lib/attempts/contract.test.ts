@@ -224,9 +224,6 @@ describe("response types", () => {
     void checkpointCreated;
     const already: AttemptResult = { id: uuid, status: "rejected", reason: "already_answered" };
     void already;
-    // @ts-expect-error a created lesson result cannot carry a half grade
-    const halfGrade: AttemptResult = { id: uuid, status: "created", correct: true };
-    void halfGrade;
     const dup: AttemptResult = { id: uuid, status: "duplicate" };
     void dup;
     // @ts-expect-error rejected without a reason
