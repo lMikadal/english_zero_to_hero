@@ -6320,8 +6320,8 @@
     "ipa": { "us": "/weɪt/", "uk": "/weɪt/" },
     "th": "รอ",
     "topics": ["daily_routine"],
-    "examples": [{ "en": "Please wait here.", "th": "กรุณารอที่นี่" }, { "en": "Dan waits at the station.", "th": "แดนรออยู่ที่สถานี" }],
-    "collocations": ["wait here"]
+    "examples": [{ "en": "Please wait, Leo.", "th": "กรุณารอก่อนนะ ลีโอ" }, { "en": "Dan waits at the station.", "th": "แดนรออยู่ที่สถานี" }],
+    "collocations": ["wait at the station"]
   },
   {
     "id": "v-help",
