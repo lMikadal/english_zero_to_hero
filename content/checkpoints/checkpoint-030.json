@@ -85,19 +85,19 @@
           },
           "pairs": [
             {
-              "a": "hot",
-              "b": "heart",
-              "answer": "b"
-            },
-            {
               "a": "hut",
               "b": "hot",
               "answer": "b"
             },
             {
-              "a": "pot",
-              "b": "part",
+              "a": "cart",
+              "b": "cut",
               "answer": "a"
+            },
+            {
+              "a": "much",
+              "b": "march",
+              "answer": "b"
             }
           ],
           "phonemes": [
@@ -303,6 +303,34 @@
             "g",
             "k"
           ]
+        },
+        {
+          "id": "c030-pron-11",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "bed",
+              "b": "bet",
+              "answer": "a"
+            },
+            {
+              "a": "bat",
+              "b": "bad",
+              "answer": "b"
+            },
+            {
+              "a": "seat",
+              "b": "seed",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "d",
+            "t"
+          ]
         }
       ]
     },
@@ -464,7 +492,7 @@
             "th": "ตอบคำถามด้วยเสียง ตอบตามจริงหรือแต่งเรื่องก็ได้ (ไม่นับคะแนน)"
           },
           "prompt": "What is your name? Where are you from? How old are you?",
-          "sampleAnswer": "My name is Jim. I am from Japan. I am ten.",
+          "sampleAnswer": "My name is Sam. I am from Thailand. I am twenty.",
           "keywords": [
             "name",
             "from"
@@ -477,7 +505,7 @@
             "th": "ตอบคำถามด้วยเสียง ตอบตามจริงหรือแต่งเรื่องก็ได้ (ไม่นับคะแนน)"
           },
           "prompt": "Who is in your family? What colour is your mother's hair?",
-          "sampleAnswer": "My family is small. I have a sister and a father. My mother has short black hair.",
+          "sampleAnswer": "I have a mother, a father and a sister. My mother has short black hair.",
           "keywords": [
             "have",
             "hair"
