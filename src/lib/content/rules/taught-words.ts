@@ -73,19 +73,19 @@ export function checkTaughtWords(ctx: RuleContext): Problem[] {
     });
   }
 
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, day, sections } of ctx.units) {
+    for (const section of sections) {
       for (const ex of section.exercises) {
         const glossed = new Set(glossedWords(ex).flatMap(tokenize));
         const found: string[] = [];
         const allBad: string[] = [];
         for (const f of learnerEnglish(ex)) {
           if (f.drill || f.bilingual) continue;
-          const bad = unknown(f.text, lesson.day, firstDay, glossed);
+          const bad = unknown(f.text, day, firstDay, glossed);
           if (bad.length) { found.push(`${quoted(bad)} in ${f.field}`); allBad.push(...bad); }
         }
         if (found.length) {
-          problems.push({ rule: TAUGHT_WORDS_RULE, file, id: ex.id, message: `uses words not taught by day ${lesson.day}: ${found.join("; ")}. ${FIX}${hint(allBad)}` });
+          problems.push({ rule: TAUGHT_WORDS_RULE, file, id: ex.id, message: `uses words not taught by day ${day}: ${found.join("; ")}. ${FIX}${hint(allBad)}` });
         }
       }
     }

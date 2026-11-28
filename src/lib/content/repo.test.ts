@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getLesson, getTaughtWords, getVocabEntry, getVocabLookup, vocabReader } from "./repo";
+import { getCheckpoint, getLesson, getTaughtWords, getVocabEntry, getVocabLookup, vocabReader } from "./repo";
 
 const tmp: string[] = [];
 afterEach(() => {
@@ -130,5 +130,41 @@ describe("getTaughtWords is in teaching order (day, then position in lesson.voca
     const ids = [...getTaughtWords(2).keys()];
     expect(ids.slice(0, 5)).toEqual([...(getLesson(1)?.vocab ?? [])]);
     expect(ids.slice(5)).toEqual([...(getLesson(2)?.vocab ?? [])]);
+  });
+});
+
+describe("getCheckpoint", () => {
+  const mk = () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "repo-"));
+    tmp.push(root);
+    return root;
+  };
+  const bi = { en: "Hello", th: "สวัสดี" };
+  const valid = {
+    afterDay: 30, cefr: "preA1", title: bi, estimatedMinutes: 30,
+    sections: [{ skill: "listening", title: bi, weight: 100, reviewDays: [1],
+      exercises: [{ id: "c030-listen-01", type: "dictation", instruction: { th: "ก" }, audioText: "Hello." }] }],
+  };
+  it("returns null when there is no file, even when the folder is missing (the repo has none yet)", () => {
+    expect(getCheckpoint(30, mk())).toBeNull();
+    expect(getCheckpoint(30)).toBeNull(); // the real content/ has no checkpoints/ in this PR
+  });
+  it("returns null for days that are not checkpoint days", () => {
+    expect(getCheckpoint(0)).toBeNull();
+    expect(getCheckpoint(31)).toBeNull();
+    expect(getCheckpoint(390)).toBeNull();
+    expect(getCheckpoint(30.5)).toBeNull();
+  });
+  it("returns the parsed checkpoint", () => {
+    const root = mk();
+    fs.mkdirSync(path.join(root, "checkpoints"));
+    fs.writeFileSync(path.join(root, "checkpoints", "checkpoint-030.json"), JSON.stringify(valid));
+    expect(getCheckpoint(30, root)?.sections[0].weight).toBe(100);
+  });
+  it("throws for a file that exists but is invalid (never serves a broken test)", () => {
+    const root = mk();
+    fs.mkdirSync(path.join(root, "checkpoints"));
+    fs.writeFileSync(path.join(root, "checkpoints", "checkpoint-030.json"), "{}");
+    expect(() => getCheckpoint(30, root)).toThrow();
   });
 });

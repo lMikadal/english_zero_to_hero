@@ -9,7 +9,7 @@
 | `day` | number | 1–365 ต้องตรงกับชื่อไฟล์ |
 | `phase` | 1–4 | |
 | `week` | number | 1–53 |
-| `type` | `lesson` \| `review` \| `challenge` \| `checkpoint` | `checkpoint` เป็นของเดิม (legacy): สอบรายเดือนอยู่ที่ `content/checkpoints/` ด้วย schema ของตัวเอง (ดู `docs/plans/checkpoint-plan.md` ซึ่งกำลังทำอยู่) ไม่แก้ `schema.ts` |
+| `type` | `lesson` \| `review` \| `challenge` | วัน 30, 60, … เป็นบทเรียนปกติ แบบทดสอบประจำเดือนเป็นไฟล์แยกใน `content/checkpoints/` (ดูหัวข้อ Checkpoint) ค่า `checkpoint` ถูกเอาออกแล้ว |
 | `cefr` | `preA1` \| `A1` \| `A2` \| `B1` \| `B2` \| `C1` | `C1` ใช้ในเฟส 4 ที่สอนคำ Oxford 5000 |
 | `title` | `{ en, th }` | |
 | `objectives` | `{ en, th }[]` | สิ่งที่ผู้เรียนทำได้หลังจบบท |
@@ -24,8 +24,8 @@
 - `cefr` ของบทเรียนรับ `C1` ด้วย (เฟส 4 สอนคำ Oxford 5000 ระดับ C1)
 - **ข้อความทุกช่อง** ต้องไม่ว่าง ไม่เป็นช่องว่างล้วน และไม่มีช่องว่างหน้า/หลังข้อความ (รวม `accept`, `answer`, `words`, `choices`)
 - **ทุกช่อง `th`** (`title.th`, `objectives[].th`, `instruction.th`, `question.th`, `tipTh`, `translate_th_en.th`, `glossary` (ค่า), `th` และ `examples[].th` ของคำศัพท์) ต้องมีตัวอักษรไทยอย่างน้อย 1 ตัว (U+0E00–U+0E7F)
-- `objectives` และ `sections` ต้องมีอย่างน้อย 1 รายการ; `vocab` เป็น array ว่างได้ (วัน review / checkpoint); `exercises` ในแต่ละ section ต้องมีอย่างน้อย 1
-- `id` ของ exercise ต้องตรง `^d\d{3}-[a-z]+-\d{2}$` ส่วน `<skill>` ต้องเป็นหนึ่งใน `pron` `listen` `speak` `read` `write` `vocab` (ไม่บังคับให้ตรงกับ `skill` ของ section)
+- `objectives` และ `sections` ต้องมีอย่างน้อย 1 รายการ; `vocab` เป็น array ว่างได้ (วัน review / challenge); `exercises` ในแต่ละ section ต้องมีอย่างน้อย 1
+- `id` ของ exercise ต้องตรง `^[dc]\d{3}-<skill>-\d{2}$`: `d` = บทเรียน (`dXXX`, XXX = วัน), `c` = แบบทดสอบ (`cXXX`, XXX = `afterDay`) ตัวตรวจบังคับว่าไฟล์บทเรียนมีแต่ `d` ของวันตัวเอง และไฟล์แบบทดสอบมีแต่ `c` ของ `afterDay` ตัวเอง ส่วน `<skill>` ต้องเป็นหนึ่งใน `pron` `listen` `speak` `read` `write` `vocab` (ไม่บังคับให้ตรงกับ `skill` ของ section)
 - `instruction` = `{ th, en? }`; `th` จำเป็น
 - `question` ของ `listen_choose` และ `read_passage.questions[]` เป็น `{ en, th }`; `choices` เป็น `string[]` อย่างน้อย 2 ตัว; `answer` เป็นเลข index (เริ่มที่ 0) ของ `choices`
 - `minimal_pair.pairs[].answer` เป็น `"a"` หรือ `"b"`
@@ -82,15 +82,16 @@
 
 เกินกว่าที่ schema ตรวจได้ในไฟล์เดียว (รันด้วย `make validate`):
 - `day` ตรงกับชื่อไฟล์ `day-XXX.json`
-- exercise ID ไม่ซ้ำทั้ง repo และเลข `XXX` ใน ID เท่ากับ `day` ของบทนั้น
+- exercise ID ไม่ซ้ำทั้ง repo (บทเรียนและแบบทดสอบใช้แผนที่เดียวกัน) และเลข `XXX` ใน ID เท่ากับ `day` ของบทนั้น; ID ในไฟล์บทเรียนต้องขึ้นต้น `d` (ขึ้นต้น `c` = ผิด)
 - `listen_choose.answer` และ `read_passage.questions[].answer` เป็น index ที่มีอยู่ใน `choices`
 - `arrange_words.answer` ใช้คำใน `words` ครบและไม่เกิน (นับซ้ำด้วย แยกคำด้วยช่องว่าง เทียบตรงตัว รวมตัวพิมพ์ใหญ่และเครื่องหมายวรรคตอน)
 - `fill_blank`: ช่องว่างคือ `___` (underscore 3 ตัวพอดี) ห้ามมี underscore ยาวอย่างอื่น และจำนวนช่องเท่ากับจำนวน `answer`
 - `arrange_words`: เทียบ token ของ `answer` (แยกด้วยช่องว่าง) กับ token ของ `words` (ป้ายที่มีหลายคำ เช่น `"New York"` ถูกแยกเป็น 2 token) และ `answer` ต้องเว้นวรรคเดียวระหว่างคำ
 - `choices` ของ `listen_choose` และ `read_passage.questions[]` ห้ามซ้ำ (เทียบแบบตัดช่องว่าง ไม่สนตัวพิมพ์); `minimal_pair` ต้องมี `a` ไม่เท่ากับ `b`; `vocab_match` ห้ามมี `vocabId` ซ้ำ
-- `week` = `ceil(day / 7)`; `phase`: 1 = วัน 1–60, 2 = 61–150, 3 = 151–270, 4 = 271–365; `type: "checkpoint"` ใช้ได้เฉพาะวันที่ `day % 30 === 0`
+- `week` = `ceil(day / 7)`; `phase`: 1 = วัน 1–60, 2 = 61–150, 3 = 151–270, 4 = 271–365
 - exercise `vocab_match` / `spell_word` / `use_in_sentence` อ้างได้เฉพาะคำที่ถูกสอนเป็นคำใหม่ (อยู่ใน `vocab`) ในบทเดียวกันหรือวันก่อนหน้า
 - ไฟล์ใน `content/lessons/` ต้องเป็นไฟล์ปกติชื่อ `day-XXX.json` เท่านั้น (ไม่มีโฟลเดอร์ย่อย ไฟล์ `.bak` หรือไฟล์อื่น), ไฟล์ใน `content/vocab/` ต้องเป็น `.json` เท่านั้น, ต้องมีโฟลเดอร์ `lessons/` และ `vocab/` และมีบทเรียนกับคำศัพท์อย่างน้อยอย่างละ 1
+- ไฟล์ใน `content/checkpoints/` (ไม่มีโฟลเดอร์นี้หรือโฟลเดอร์ว่างได้ ไม่ใช่ error) ต้องเป็นไฟล์ปกติชื่อ `checkpoint-XXX.json` เท่านั้น และผ่านกฎกลุ่ม `checkpoint` ด้านล่าง
 - ไฟล์คำศัพท์ตรวจทีละคำ: คำที่ผิดจะถูกรายงานด้วยชื่อไฟล์ ลำดับ และ id ส่วนคำอื่นในไฟล์ยังถูกใช้ตรวจต่อ
 - รันกับสำเนาอื่นได้ด้วย `pnpm content:validate <dir>` (ค่าเริ่มต้น `./content`)
 - กฎเรื่องคำศัพท์ทั้งหมดอยู่ที่ [VOCABULARY.md หัวข้อ 6](VOCABULARY.md#6-กฎการตรวจ-pnpm-contentvalidate)
@@ -266,8 +267,46 @@ ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.
 
 เมื่อ `taught-words` พบคำที่ดูเหมือนรูปผันของคำที่สอนแล้ว (เช่น `bigger`, `hopping`) ข้อความจะบอกให้เติมรูปนั้นใน `forms` ของ entry ไม่ใช่ใส่ allowlist
 
+### `checkpoint`: แบบทดสอบประจำเดือน
+
+กฎที่อ่านข้อความของผู้เรียน (`taught-words`, `grammar-not-yet`, `pronunciation`, `sound-words`, `arrange-words`, `arrange-question`, `answer-forms`, `thai-names`) มองแบบทดสอบเป็นข้อความของ "วัน `afterDay`" (`ctx.units` ใน `rules/context.ts`) จึงใช้ได้เฉพาะคำและไวยากรณ์ที่สอนถึงวัน A ส่วน `cast-consistency`/`cast-props` (ดูตามสัปดาห์) และ `vocab-used` (ไม่มีคำใหม่) ไม่รันกับแบบทดสอบ กฎของกลุ่ม `checkpoint` เอง (`rules/checkpoint.ts`) คือ:
+- ชื่อไฟล์ `checkpoint-XXX.json` ตรงกับ `afterDay`; ต้องมี `content/lessons/day-<A>.json` (ไม่งั้นไม่มีทางปลดล็อกแบบทดสอบ)
+- ID ของทุกข้อเป็น `cXXX-<skill>-NN` โดย XXX = `afterDay` (`d…` ในไฟล์แบบทดสอบ = error)
+- หนึ่งทักษะมีได้หนึ่ง section; `weight` รวมทุก section = 100
+- section ที่ `weight > 0`: มีอย่างน้อย 3 ข้อ และทุกข้อเป็นชนิดตรวจอัตโนมัติ (`minimal_pair`, `listen_choose`, `dictation`, `read_passage`, `arrange_words`, `fill_blank`, `translate_th_en`, `vocab_match`); section ที่ `weight = 0`: ทุกข้อเป็นชนิดประเมินตัวเอง (`repeat_after_me`, `shadowing`, `speak_answer`) ห้ามปนกัน
+- ห้ามทุกที่: `phoneme_intro`, `free_write`, `roleplay`, `spell_word`, `use_in_sentence`
+- ไม่มีคำใหม่: ไม่มีช่อง `vocab` (schema ปฏิเสธ), `read_passage` ห้ามมี `glossary` (ช่องทางเดียวที่ `taught-words` ยอมให้ใช้คำที่ยังไม่สอน), `vocab_match` อ้างได้เฉพาะคำที่สอนในวัน ≤ A
+- ทุก `minimal_pair` และทุกข้อใน section `pronunciation` ต้องมี `phonemes` (แบบทดสอบไม่มี `phoneme_intro` ให้ยืมรหัสเสียง) และทุกรหัสต้องเคยปรากฏในบทวัน ≤ A (กันพิมพ์ผิด)
+- `reviewDays` ทุกวัน ≤ A, มีไฟล์บท และบทนั้นมี section ของทักษะเดียวกัน (ลิงก์ฝึกซ่อมจึงไม่พัง)
+- warning (ไม่ทำให้ check ล้ม): เสียงที่ `phoneme_intro` สอนในวัน A−29..A แต่ไม่มีข้อไหนของแบบทดสอบติดแท็ก; ข้อที่ข้อความหลัก (`audioText`, `text`, `answer`, `th`) ซ้ำกับข้อในบทวัน ≤ A (เทียบแบบไม่สนตัวพิมพ์/วรรคตอน); `estimatedMinutes` นอก 20–45
+
 ### รายงานใน CI
 `make validate` เขียนรายงาน (จำนวนและ warning) ลง `.content-validate-summary.md` และ CI ต่อท้ายไฟล์นี้ใน job summary ของ GitHub เพื่อให้ผู้ตรวจ PR เห็น warning (warning ไม่ทำให้ check ล้ม) เมื่อรันนอก CI ตั้งตัวแปร `CONTENT_VALIDATE_SUMMARY=<ไฟล์>` หรือ `GITHUB_STEP_SUMMARY` ได้เอง
+
+## Checkpoint
+
+แบบทดสอบประจำเดือน ทำหลังจบวัน A = 30, 60, … 360 (หนึ่งไฟล์ต่อครั้ง) อยู่ที่ `content/checkpoints/checkpoint-XXX.json` (XXX = A สามหลัก) schema อยู่ที่ `src/lib/content/checkpoint-schema.ts` และใช้ exercise type เดิม (ไม่มี type ใหม่) แผนทั้งหมดอยู่ที่ [plans/checkpoint-plan.md](plans/checkpoint-plan.md)
+
+| field | type | หมายเหตุ |
+|---|---|---|
+| `afterDay` | number | 30, 60, … 360 ต้องตรงกับชื่อไฟล์ |
+| `cefr` | `preA1` \| `A1` … | |
+| `title` | `{ en, th }` | |
+| `estimatedMinutes` | number | |
+| `sections` | `CheckpointSection[]` | อย่างน้อย 1 |
+
+`CheckpointSection` = `Section` (ด้านล่าง) บวก (ยัง strict เหมือนเดิม: key เกินผิด):
+
+| field | type | หมายเหตุ |
+|---|---|---|
+| `weight` | จำนวนเต็ม 0–100 | สัดส่วนของคะแนนรวม; รวมทุก section = 100; `0` = แสดงแต่ไม่นับคะแนน (ส่วนพูดที่ผู้เรียนประเมินตัวเอง) |
+| `reviewDays` | จำนวนเต็ม 1–365 จำนวน 1–4 ค่า | วันที่เรียนจบแล้วซึ่ง section ทักษะเดียวกันถูกเสนอเป็นการเล่นซ้ำเพื่อฝึกซ่อม |
+
+ข้อสังเกต:
+- ไม่มีช่อง `vocab`, `day`, `phase`, `week`, `objectives` แบบทดสอบไม่สอนคำใหม่และไม่ใช่วันเรียน
+- ID `cXXX-<skill>-NN` ห้ามเปลี่ยนความหมายของ ID เดิมหลังมีคนสอบแล้ว (ผลเก่าถูกตรึง แต่รอบสอบที่ทำค้างไว้ถามตาม ID ในไฟล์รุ่นใหม่; แผน R5) แก้ข้อสอบให้เพิ่ม ID ใหม่แทน
+- ห้ามใส่ไฟล์จริงใน `content/checkpoints/` จนกว่าหน้าจอทำแบบทดสอบจะ merge แล้ว (แผน ข้อ 5 PR 7): มีไฟล์ = server ล็อกวัน A+1 จนกว่าจะสอบจบ
+- ตัวอย่างเล็กที่ผ่านกฎทั้งหมดอยู่ที่ `checkpointFixture` ใน `src/lib/answers/test-content.ts` (ใช้ในเทสต์เท่านั้น)
 
 ## VocabItem
 
@@ -305,7 +344,7 @@ ERROR content/vocab/oxford-3000/a1.json [v-tall]: adjective "tall" has no forms.
 
 ## Exercise types
 
-ทุก exercise ต้องมี `id` ที่ไม่ซ้ำกันทั้ง repo (รูปแบบ `dXXX-<skill>-NN`), `type` และ `instruction: { th, en? }`
+ทุก exercise ต้องมี `id` ที่ไม่ซ้ำกันทั้ง repo (รูปแบบ `dXXX-<skill>-NN` ในบทเรียน, `cXXX-<skill>-NN` ในแบบทดสอบ), `type` และ `instruction: { th, en? }`
 
 | type | field เพิ่มเติม | ทำอะไร |
 |---|---|---|

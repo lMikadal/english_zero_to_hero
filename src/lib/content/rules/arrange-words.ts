@@ -17,8 +17,8 @@ const NAMES = new Set(PROPER_NAMES);
 
 export function checkArrangeWords(ctx: RuleContext): Problem[] {
   const problems: Problem[] = [];
-  for (const { file, lesson } of ctx.lessons) {
-    for (const section of lesson.sections) {
+  for (const { file, sections } of ctx.units) {
+    for (const section of sections) {
       for (const ex of section.exercises) {
         if (ex.type !== "arrange_words") continue;
         const sentences = [ex.answer, ...(ex.accept ?? [])];

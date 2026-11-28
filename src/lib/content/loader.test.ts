@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { ContentError, loadAllLessons, loadLesson, loadVocabBank, readContent } from "./loader";
+import { ContentError, loadAllLessons, loadCheckpoint, loadLesson, loadVocabBank, readContent } from "./loader";
 import { validateContentDir } from "./validate";
 
 const bi = { en: "Hello", th: "สวัสดี" };
@@ -168,5 +168,89 @@ describe("validateContentDir", () => {
     write("lessons/day-002.json", "oops");
     const r = validateContentDir(root);
     expect(r.problems.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe("checkpoints/ folder", () => {
+  const checkpoint = (afterDay = 30) => ({
+    afterDay, cefr: "preA1", title: bi, estimatedMinutes: 30,
+    sections: [{
+      skill: "listening", title: bi, weight: 100, reviewDays: [1],
+      exercises: [{ id: `c${String(afterDay).padStart(3, "0")}-listen-01`, type: "dictation", instruction: { th: "ก" }, audioText: "Hello." }],
+    }],
+  });
+  const base = () => {
+    write("lessons/day-001.json", lesson(1));
+    write("vocab/oxford-3000/a1.json", [word]);
+  };
+
+  it("a missing checkpoints/ folder is not a problem and gives no checkpoints", () => {
+    base();
+    const r = readContent(root);
+    expect(r.problems).toEqual([]);
+    expect(r.checkpoints ?? []).toEqual([]);
+  });
+  it("an empty checkpoints/ folder is not a problem either", () => {
+    base();
+    fs.mkdirSync(path.join(root, "checkpoints"));
+    expect(readContent(root).problems).toEqual([]);
+  });
+  it("loads checkpoint-XXX.json files, sorted by name, with the display path", () => {
+    base();
+    write("checkpoints/checkpoint-060.json", checkpoint(60));
+    write("checkpoints/checkpoint-030.json", checkpoint(30));
+    const r = readContent(root);
+    expect(r.problems).toEqual([]);
+    expect(r.checkpoints?.map((c) => [c.file, c.checkpoint.afterDay])).toEqual([
+      ["content/checkpoints/checkpoint-030.json", 30], ["content/checkpoints/checkpoint-060.json", 60],
+    ]);
+  });
+  it.each(["checkpoint-30.json", "Checkpoint-030.json", "checkpoint-030.json.bak", "day-030.json", "notes.txt", "checkpoint-030.jsonc"])(
+    "reports a wrongly named entry %s", (name) => {
+      base();
+      write(`checkpoints/${name}`, checkpoint());
+      const r = readContent(root);
+      expect(r.problems).toEqual([{ file: `content/checkpoints/${name}`, message: expect.stringContaining("checkpoint-XXX.json") }]);
+      expect(r.checkpoints ?? []).toEqual([]);
+    },
+  );
+  it("reports a directory inside checkpoints/", () => {
+    base();
+    fs.mkdirSync(path.join(root, "checkpoints", "checkpoint-030.json"), { recursive: true });
+    expect(readContent(root).problems.map((p) => p.message).join("\n")).toContain("checkpoint-XXX.json");
+  });
+  it("names the file and the JSON path when the schema fails (key typo, afterDay 31, bad JSON)", () => {
+    base();
+    const typo = checkpoint(30);
+    (typo.sections[0] as Record<string, unknown>).wieght = 1;
+    write("checkpoints/checkpoint-030.json", typo);
+    write("checkpoints/checkpoint-060.json", { ...checkpoint(60), afterDay: 61 });
+    write("checkpoints/checkpoint-090.json", "{ nope");
+    const out = readContent(root).problems.map((p) => `${p.file}: ${p.message}`).join("\n");
+    expect(out).toMatch(/checkpoint-030\.json: sections\[0\].*wieght/);
+    expect(out).toMatch(/checkpoint-060\.json: afterDay/);
+    expect(out).toMatch(/checkpoint-090\.json: cannot read as JSON/);
+  });
+  it("loadCheckpoint returns the parsed file, throws ContentError when invalid, and for a missing file", () => {
+    write("checkpoints/checkpoint-030.json", checkpoint(30));
+    write("checkpoints/checkpoint-060.json", { ...checkpoint(60), weight: 1 });
+    expect(loadCheckpoint(30, root).afterDay).toBe(30);
+    expect(() => loadCheckpoint(60, root)).toThrow(ContentError);
+    expect(() => loadCheckpoint(90, root)).toThrow(/checkpoint-090\.json.*file not found/s);
+  });
+  it("loadCheckpoint rejects an afterDay that is not a checkpoint day", () => {
+    expect(() => loadCheckpoint(45, root)).toThrow(/45/);
+  });
+  it("a file whose afterDay disagrees with its name is reported by validateContentDir", () => {
+    base();
+    write("checkpoints/checkpoint-060.json", checkpoint(30));
+    const out = validateContentDir(root).problems.map((p) => p.message).join("\n");
+    expect(out).toMatch(/afterDay 30 does not match file name checkpoint-060/);
+  });
+  it("validateContentDir is clean with the folder missing and with it empty", () => {
+    base();
+    expect(validateContentDir(root).problems.filter((p) => p.severity !== "warning")).toEqual([]);
+    fs.mkdirSync(path.join(root, "checkpoints"));
+    expect(validateContentDir(root).problems.filter((p) => p.severity !== "warning")).toEqual([]);
   });
 });

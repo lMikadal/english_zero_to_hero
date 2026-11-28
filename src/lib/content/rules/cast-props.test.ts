@@ -6,6 +6,7 @@ import { COLOUR_WORDS, checkCastProps, propClaims } from "./cast-props";
 import { buildContext } from "./context";
 import path from "node:path";
 import { readContent } from "../loader";
+import { cpOf } from "./checkpoint-test-support";
 import { data, exId, instruction, lessonFile, vocabFile, vocabItem } from "./test-support";
 
 const claims = (t: string) => propClaims(t).map((c) => [c.owner, c.noun, c.colour]);
@@ -86,5 +87,13 @@ describe("COLOUR_WORDS and the real vocab bank", () => {
     const { vocab } = readContent(path.resolve(import.meta.dirname, "../../../../content"));
     const heads = new Set(vocab.flatMap(({ items }) => items.map((i) => i.word.toLowerCase())));
     expect(COLOUR_WORDS.filter((c) => c !== "gray" && !heads.has(c))).toEqual([]);
+  });
+});
+
+describe("checkCastProps does not look at checkpoints (they span weeks)", () => {
+  it("a checkpoint colour that disagrees with a lesson of its week is not reported (the same two texts as lessons are)", () => {
+    expect(check(lessons([29, "Ann has a red bag."], [30, "Ann has a blue bag."]))).not.toEqual([]);
+    const cp = cpOf([{ ...read(30, "Ann has a blue bag."), id: "c030-read-01" }]);
+    expect(checkCastProps(buildContext({ ...data(lessons([29, "Ann has a red bag."]), [vocabFile(bank)]), checkpoints: [cp] }))).toEqual([]);
   });
 });
