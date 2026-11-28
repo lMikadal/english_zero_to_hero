@@ -14,7 +14,9 @@ export function CompletionScreen({
 }: { day: number; result: Completion | null; localScore: number | null; onRetry(): void }) {
   const serverScore = result?.status === "done" ? result.response.progress.score : null;
   const score = serverScore ?? localScore;
-  const nextDay = result?.status === "done" && result.response.currentDay > day ? result.response.currentDay : null;
+  // A monthly checkpoint that now holds day+1 back is the way on (D10): the lesson is not offered until it is sat.
+  const checkpoint = result?.status === "done" ? result.response.pendingCheckpoint : null;
+  const nextDay = result?.status === "done" && result.response.currentDay > day && checkpoint === null ? result.response.currentDay : null;
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-16">
       <div className="flex flex-col gap-3">
@@ -46,6 +48,7 @@ export function CompletionScreen({
       )}
       <UnsavedNote />
       <div className="mt-auto flex flex-col gap-2.5 pt-3">
+        {checkpoint !== null && <Link href={`/checkpoint/${checkpoint}`} className={buttonClass("primary")}>ไปทำแบบทดสอบ</Link>}
         {nextDay !== null && <Link href={`/day/${nextDay}`} className={buttonClass("primary")}>ไปบทถัดไป</Link>}
         <Link href="/" className={buttonClass("secondary")}>กลับหน้าแรก</Link>
       </div>

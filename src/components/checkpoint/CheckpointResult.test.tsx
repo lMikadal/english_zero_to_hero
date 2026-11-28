@@ -185,4 +185,31 @@ describe("CheckpointResult (plan 3.6, items 36-41)", () => {
       v.unmount();
     }
   });
+
+  it("the ordinal in the h1 never splits from its number", () => {
+    show(shown());
+    expect(within(screen.getByRole("heading", { level: 1 })).getByText("ครั้งที่ 1").className).toMatch(/whitespace-nowrap/);
+  });
+
+  it("38: replay links are grouped by weak skill (skill order as in the result, days ascending), each group under its own heading", () => {
+    const skills = DONE_RESPONSE.result.skills.map((s) => (s.skill === "pronunciation" || s.skill === "writing" ? { ...s, score: 0.5 } : s));
+    const unsorted = { ...checkpointFixture, sections: checkpointFixture.sections.map((s) => (s.skill === "pronunciation" ? { ...s, reviewDays: [5, 1, 2] } : s)) };
+    show(shown({ skills, score: 0.6, passed: false }), { checkpoint: unsorted });
+    const groups = screen.getAllByRole("group");
+    expect(groups.map((g) => within(g).getByRole("heading", { level: 3 }).textContent)).toEqual(["ออกเสียง", "เขียน"]);
+    expect(within(groups[0]).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/day/1?skill=pronunciation", "/day/2?skill=pronunciation", "/day/5?skill=pronunciation"]);
+    expect(within(groups[0]).getAllByRole("link").map((a) => a.textContent)).toEqual(["วันที่ 1", "วันที่ 2", "วันที่ 5"]);
+    expect(within(groups[1]).getAllByRole("link")).toHaveLength(3);
+    // names stay "<skill> · day N" for assistive tech and for the ticks
+    expect(screen.getByRole("link", { name: "เขียน · วันที่ 2" })).toHaveAttribute("href", "/day/2?skill=writing");
+  });
+
+  it("38: a group's tick shows on the chip that was replayed, and the name says so", () => {
+    const skills = DONE_RESPONSE.result.skills.map((s) => (s.skill === "writing" ? { ...s, score: 0.4 } : s));
+    show(shown({ skills, score: 0.6, passed: false }), { practised: new Set(["2:writing"]) });
+    const chip = screen.getByRole("link", { name: "เขียน · วันที่ 2 ฝึกแล้ว" });
+    expect(chip).toHaveTextContent("วันที่ 2");
+    expect(chip).toHaveTextContent("✓");
+    expect(screen.getByRole("link", { name: "เขียน · วันที่ 1" })).not.toHaveTextContent("✓");
+  });
 });

@@ -429,3 +429,29 @@ describe("LessonPlayer with no audio", () => {
     expect(within(document.body).queryByText("ยังไม่รองรับ")).not.toBeInTheDocument();
   });
 });
+
+describe("LessonPlayer completion screen with a checkpoint pending (plan PR 6)", () => {
+  const withPending = (pendingCheckpoint: number | null, currentDay = 2): CompleteResult => ({
+    status: "done",
+    response: { ...(DONE as { response: CompleteLessonResponse }).response, currentDay, pendingCheckpoint },
+  });
+
+  it("pendingCheckpoint set: the one primary action is ไปทำแบบทดสอบ -> /checkpoint/A, and there is no ไปบทถัดไป", async () => {
+    setup(["d001-pron-03"], withPending(30, 31));
+    await userEvent.click(screen.getByRole("button", { name: "พูดได้" }));
+    await next();
+    const go = await screen.findByRole("link", { name: "ไปทำแบบทดสอบ" });
+    expect(go).toHaveAttribute("href", "/checkpoint/30");
+    expect(go.className).toMatch(/bg-accent/);
+    expect(screen.queryByRole("link", { name: "ไปบทถัดไป" })).toBeNull();
+    expect(screen.getByRole("link", { name: "กลับหน้าแรก" })).toHaveAttribute("href", "/");
+  });
+
+  it("no pending checkpoint (no file, broken file, D15): ไปบทถัดไป exactly as before", async () => {
+    setup(["d001-pron-03"], withPending(null, 2));
+    await userEvent.click(screen.getByRole("button", { name: "พูดได้" }));
+    await next();
+    expect(await screen.findByRole("link", { name: "ไปบทถัดไป" })).toHaveAttribute("href", "/day/2");
+    expect(screen.queryByRole("link", { name: "ไปทำแบบทดสอบ" })).toBeNull();
+  });
+});
