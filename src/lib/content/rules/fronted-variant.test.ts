@@ -37,6 +37,27 @@ describe("frontedVariants: the sentence with a frontable element first", () => {
   });
 });
 
+describe("frontedVariants never suggests a sentence with another meaning", () => {
+  it("skips an adverb after not / n't (not usually is not the same as usually not)", () => {
+    for (const s of ["I do not usually eat meat", "She does not sometimes watch TV", "We don't usually walk", "He doesn't sometimes cook"]) expect(variants(s), s).toEqual([]);
+    expect(variants("I usually do not eat meat")).toEqual(["Usually I do not eat meat"].filter(() => false)); // an adverb BEFORE the not is also skipped: and/but/not make the clause ambiguous
+  });
+  it("a trailing after/before phrase is not fronted when the verb takes an object the phrase can modify (like, love, have, want ...)", () => {
+    for (const s of ["I like the class after lunch", "She loves the game after dinner", "We have a class after lunch", "He wants a snack before bed", "They need a rest after work"]) expect(variants(s), s).toEqual([]);
+  });
+  it("but it is still fronted after an activity verb with an object: plays football, play a game, eats dinner", () => {
+    expect(variants("My son plays football after school")).toEqual(["After school my son plays football"]);
+    expect(variants("I play a game after dinner")).toEqual(["After dinner I play a game"]);
+    expect(variants("She eats dinner before bed")).toEqual(["Before bed she eats dinner"]);
+  });
+  it("keeps the capital of a name that is not in PROPER_NAMES; lowers only function words and known words", () => {
+    expect(variants("London sometimes feels cold")).toEqual(["Sometimes London feels cold"]);
+    expect(variants("Somchai walks to school every day")).toEqual(["Every day Somchai walks to school"]);
+    expect(variants("My mother sometimes cooks")).toEqual(["Sometimes my mother cooks"]);
+    expect(frontedVariants("Mothers sometimes cook", undefined, new Set(["mothers"])).map((v) => v.variant)).toEqual(["Sometimes mothers cook"]);
+  });
+});
+
 describe("fronted-variant (warning): the fronted sentence must be accepted", () => {
   it("flags the incident items, naming the exercise and the sentence to add", () => {
     const out = run(arrange("We sometimes watch a film"));

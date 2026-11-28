@@ -37,6 +37,20 @@ describe("frequencyClaims", () => {
   });
 });
 
+describe("frequencyClaims: the claim includes a following prepositional phrase, and never reads but/and as an object", () => {
+  it("keeps the phrase after the object head as the claim's tail", () => {
+    expect(frequencyClaims("Rose usually goes to school by bus.").map((c) => [c.who, c.verb, c.head, c.tail])).toEqual([["Rose", "go", "school", "by bus"]]);
+    expect(frequencyClaims("Dan often eats rice for dinner.").map((c) => [c.head, c.tail])).toEqual([["rice", "for dinner"]]);
+    expect(frequencyClaims("Dan often eats rice.").map((c) => [c.head, c.tail])).toEqual([["rice", ""]]);
+    expect(frequencyClaims("Leo often listens to music.").map((c) => [c.head, c.tail])).toEqual([["music", ""]]);
+  });
+  it("splits at but / and: one claim for each person, and 'but' is never an object", () => {
+    expect(claims("Dan never cooks but Rose always cooks.")).toEqual([["Dan", "never", "cook", ""], ["Rose", "always", "cook", ""]]);
+    expect(claims("Leo often walks and Nan sometimes drives.")).toEqual([["Leo", "often", "walk", ""], ["Nan", "sometimes", "drive", ""]]);
+    expect(claims("Dan never cooks but he often washes the plates.")).toEqual([["Dan", "never", "cook", ""]]);
+  });
+});
+
 describe("cast-facts (warning): one person, one verb, one thing, one frequency within a week", () => {
   it("warns when the same person+verb+object has two adverbs in one week, naming both places (the week-7 Leo and Dan)", () => {
     const out = check(lessons([44, "Leo often watches TV."], [47, "Leo sometimes watches TV."]));
@@ -49,6 +63,11 @@ describe("cast-facts (warning): one person, one verb, one thing, one frequency w
     expect(check(lessons([44, "Leo often watches TV."], [45, "Leo sometimes listens to music."]))).toEqual([]);
     expect(check(lessons([44, "Leo often watches TV."], [45, "Dan sometimes watches TV."]))).toEqual([]);
     expect(check(lessons([49, "Leo often watches TV."], [50, "Leo sometimes watches TV."]))).toEqual([]);
+  });
+  it("different habits are different claims: by bus vs on foot, rice vs rice for dinner", () => {
+    expect(check(lessons([44, "Rose usually goes to school by bus."], [45, "Rose sometimes goes to school on foot."]))).toEqual([]);
+    expect(check(lessons([44, "Dan often eats rice."], [45, "Dan always eats rice for dinner."]))).toEqual([]);
+    expect(check(lessons([44, "Rose usually goes to school by bus."], [45, "Rose always goes to school by bus."]))).toHaveLength(1);
   });
   it("one warning per person and fact, and he/she through a one-name sentence counts", () => {
     expect(check(lessons([44, "Dan often arrives early."], [45, "Dan usually arrives early."], [46, "Dan always arrives early."]))).toHaveLength(1);

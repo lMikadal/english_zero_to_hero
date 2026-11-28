@@ -74,6 +74,13 @@ describe("grammar-note: structure ids, placement, table", () => {
     expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["ประธาน", "กริยา"], ["he / she / it", "likes"]] })]])]))).toEqual([]);
     expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["ประธาน", "verb"], ["he", "likes"]] })]])]))).toHaveLength(1);
   });
+  it("a bare dash is a legal header cell (an empty corner cell is written \"-\"): it needs no Thai letter", () => {
+    for (const dash of ["-", "—", "–", "‑"]) {
+      expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [[dash, "กริยา"], ["he / she / it", "likes"]] })]])])), dash).toEqual([]);
+    }
+    expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["-", "verb"], ["he", "likes"]] })]])]))).toHaveLength(1); // a dash does not excuse the other cell
+    expect(checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["--x", "กริยา"], ["he", "likes"]] })]])]))).toHaveLength(1);
+  });
   it("flags table rows with different numbers of cells", () => {
     const out = checkGrammarNote(ctxOf([lessonWith(36, [[note(36, { table: [["ก", "ข"], ["c"]] })]])]));
     expect(out).toHaveLength(1);
