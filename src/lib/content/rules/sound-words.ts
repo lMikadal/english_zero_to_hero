@@ -19,6 +19,8 @@ const WORD = `${QUOTE}[A-Za-z][A-Za-z'’-]*${QUOTE}`;
 const SEPARATOR = String.raw`(?:\s*,\s*(?:and\s+|และ\s+)?|\s+และ\s+|\s+and\s+|\s+หรือ\s+|\s+or\s+)`;
 const CLAIM = new RegExp(String.raw`(?<![A-Za-z0-9])\/([^\s/฀-๿]+)\/\s*(?:ใน|in)\s+(${WORD}(?:${SEPARATOR}${WORD})*)`, "gi");
 const CONTRAST = /(?:ไม่ใช่|ไม่เหมือน|ต่างจาก|ต่างกับ|not|unlike|instead of)\s*(?:เสียง|sound)?\s*$/i;
+/** An English list ends where it says what the sound is NOT in ("/θ/ in three, not in this"). */
+const LIST_STOPS = new Set(["not", "unlike", "but"]);
 const NOT_A_WORD_LIST = new Set(["the", "a", "an", "word", "words"]);
 
 /** The "/x/ in w1, w2 and w3" claims of a text, in order. */
@@ -27,6 +29,8 @@ export function soundClaims(text: string): SoundClaim[] {
   for (const m of text.matchAll(CLAIM)) {
     if (CONTRAST.test(text.slice(0, m.index))) continue;
     const words = (m[2].match(/[A-Za-z][A-Za-z'’-]*/g) ?? []).map((w) => w.toLowerCase().replace(/’/g, "'").replace(/['-]+$/, "")).filter((w) => w !== "and" && w !== "or");
+    const stop = words.findIndex((w) => LIST_STOPS.has(w));
+    if (stop >= 0) words.splice(stop);
     if (words.length === 0 || NOT_A_WORD_LIST.has(words[0])) continue;
     out.push({ symbol: m[1], words });
   }
