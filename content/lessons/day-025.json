@@ -1,0 +1,345 @@
+{
+  "day": 25,
+  "phase": 1,
+  "week": 4,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "Where is the key? The, in, on, under",
+    "th": "Where is the key? ใช้ the, in, on, under"
+  },
+  "objectives": [
+    {
+      "en": "Say where things are with the, in, on and under: The key is under the chair",
+      "th": "บอกว่าของอยู่ที่ไหนด้วย the, in, on, under: The key is under the chair"
+    },
+    {
+      "en": "Say /z/ at the end of words: keys, chairs, is; hear ice–eyes, lose–loose, sip–zip, place–plays",
+      "th": "ออกเสียง /z/ ท้ายคำ: keys, chairs, is และฟัง ice–eyes, lose–loose, sip–zip, place–plays ให้ออก"
+    },
+    {
+      "en": "Say sixty and seventy and tell sixty from sixteen",
+      "th": "พูด sixty, seventy และแยก sixty จาก sixteen ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-room",
+    "v-floor",
+    "v-wall",
+    "v-light",
+    "v-under",
+    "v-paper",
+    "v-sixty",
+    "v-seventy"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "/z/ at the end of a word",
+        "th": "/z/ ท้ายคำ"
+      },
+      "exercises": [
+        {
+          "id": "d025-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "z",
+          "ipa": "/z/",
+          "tipTh": "วันนี้ฝึก /z/ ท้ายคำ คนไทยมักไม่ออกเสียงท้ายคำ (keys เป็น 'คี') หรือออกเป็น /s/ เบา ๆ ให้ลากเสียงสั่นคอไปจนสุดคำ: key-z, chair-z, door-z ลองวางมือที่คอแล้วพูด คอต้องสั่นจนจบเสียง คำว่า is และ his ก็ลงท้ายด้วย /z/ เสมอ ไม่ใช่ 'อิส' หรือ 'ฮิส'",
+          "examples": [
+            "keys",
+            "chairs",
+            "is",
+            "his"
+          ]
+        },
+        {
+          "id": "d025-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "ice",
+              "b": "eyes",
+              "answer": "b"
+            },
+            {
+              "a": "lose",
+              "b": "loose",
+              "answer": "a"
+            },
+            {
+              "a": "zip",
+              "b": "sip",
+              "answer": "a"
+            },
+            {
+              "a": "plays",
+              "b": "place",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "z",
+            "s"
+          ]
+        },
+        {
+          "id": "d025-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /z/ ท้ายคำ keys ต้องสั่นคอจนจบ"
+          },
+          "text": "The keys are on the floor.",
+          "ipa": "/ðə kiːz ɑːr ɑːn ðə flɔːr/",
+          "phonemes": [
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: where is it?",
+        "th": "ฟัง: อยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d025-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโทรศัพท์อยู่ที่ไหน"
+          },
+          "audioText": "Where is the key? It is on the table. And the phone? It is under the chair.",
+          "question": {
+            "en": "Where is the phone?",
+            "th": "โทรศัพท์อยู่ที่ไหน"
+          },
+          "choices": [
+            "On the table",
+            "Under the chair",
+            "In the bag"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d025-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ามาลีอายุเท่าไร ระวัง sixty กับ sixteen"
+          },
+          "audioText": "This is Ray. He is Dan's father. He is seventy. This is Mali. She is my mother. She is sixty.",
+          "question": {
+            "en": "How old is Mali?",
+            "th": "มาลีอายุเท่าไร"
+          },
+          "choices": [
+            "Sixteen",
+            "Sixty",
+            "Seventy"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d025-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "The paper is under the chair."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Where is it?",
+        "th": "อยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d025-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Where is the key?",
+            "It is on the table.",
+            "Where is the phone? It is under the paper.",
+            "The light is on the wall.",
+            "The picture is on the wall.",
+            "The floor is brown."
+          ]
+        },
+        {
+          "id": "d025-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าโทรศัพท์และกุญแจของคุณอยู่ที่ไหน ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Where is your phone? Where is your key?",
+          "sampleAnswer": "My phone is in my bag. My key is on the table.",
+          "keywords": [
+            "is"
+          ]
+        },
+        {
+          "id": "d025-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /z/ ท้ายคำ is ให้สั่นคอจนจบ และ the ให้ปลายลิ้นแตะระหว่างฟันเหมือน this ไม่ใช่ 'ดะ'"
+          },
+          "text": "The picture is on the wall.",
+          "ipa": "/ðə ˈpɪktʃər ɪz ɑːn ðə wɔːl/",
+          "phonemes": [
+            "z"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "My room",
+        "th": "ห้องของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d025-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hi! I am Leo. I am nine. This is my room. It is a small room. The walls are green. The floor is brown. The light is white. My bed is under the window. My ball is under the bed. My book is on the table. I love my room!",
+          "questions": [
+            {
+              "question": {
+                "en": "What colour are the walls?",
+                "th": "ผนังสีอะไร"
+              },
+              "choices": [
+                "Green",
+                "White"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is Leo's bed?",
+                "th": "เตียงของลีโอวอยู่ที่ไหน"
+              },
+              "choices": [
+                "Under the window",
+                "On the table"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Where is Leo's ball?",
+                "th": "ลูกบอลของลีโออยู่ที่ไหน"
+              },
+              "choices": [
+                "Under the bed",
+                "On the floor"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: where is it?",
+        "th": "เขียน: อยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d025-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "The",
+            "key",
+            "under",
+            "chair",
+            "the"
+          ],
+          "answer": "The key is under the chair",
+          "accept": [
+            "Is the key under the chair"
+          ]
+        },
+        {
+          "id": "d025-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำบุพบท (รูปภาพอยู่บนผนัง)"
+          },
+          "text": "The picture is ___ the wall.",
+          "answer": [
+            "on"
+          ]
+        },
+        {
+          "id": "d025-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แมวอยู่ใต้โต๊ะ",
+          "accept": [
+            "The cat is under the table",
+            "A cat is under the table"
+          ]
+        },
+        {
+          "id": "d025-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-room"
+            },
+            {
+              "vocabId": "v-wall"
+            },
+            {
+              "vocabId": "v-floor"
+            },
+            {
+              "vocabId": "v-light"
+            },
+            {
+              "vocabId": "v-under"
+            },
+            {
+              "vocabId": "v-paper"
+            },
+            {
+              "vocabId": "v-sixty"
+            },
+            {
+              "vocabId": "v-seventy"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

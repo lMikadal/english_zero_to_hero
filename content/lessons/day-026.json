@@ -1,0 +1,334 @@
+{
+  "day": 26,
+  "phase": 1,
+  "week": 4,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "How much is it? Prices and colours",
+    "th": "How much is it? ราคาและสี"
+  },
+  "objectives": [
+    {
+      "en": "Ask and say prices in baht: How much is the bag? It is ninety baht",
+      "th": "ถามและบอกราคาเป็นบาท: How much is the bag? It is ninety baht"
+    },
+    {
+      "en": "Hear the difference in rain–lane, lake–rake, correct–collect and ramp–lamp",
+      "th": "ฟังความต่างของ rain–lane, lake–rake, correct–collect และ ramp–lamp ได้"
+    },
+    {
+      "en": "Say the tens eighty and ninety and tell them from eighteen and nineteen",
+      "th": "พูด eighty, ninety และแยกจาก eighteen, nineteen ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-much",
+    "v-cheap",
+    "v-new",
+    "v-pink",
+    "v-grey",
+    "v-money",
+    "v-eighty",
+    "v-ninety"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "/r/ and /l/ again, and the -teen / -ty numbers",
+        "th": "/r/ กับ /l/ อีกครั้ง และเลข -teen / -ty"
+      },
+      "exercises": [
+        {
+          "id": "d026-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "rain",
+              "b": "lane",
+              "answer": "a"
+            },
+            {
+              "a": "lake",
+              "b": "rake",
+              "answer": "b"
+            },
+            {
+              "a": "correct",
+              "b": "collect",
+              "answer": "a"
+            },
+            {
+              "a": "ramp",
+              "b": "lamp",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        },
+        {
+          "id": "d026-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /r/ ใน grey และ /l/ ใน black ไม่ใส่สระแทรก"
+          },
+          "text": "The grey bag is new. The black bag is cheap.",
+          "ipa": "/ðə ɡreɪ bæɡ ɪz nuː ðə blæk bæɡ ɪz tʃiːp/",
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        },
+        {
+          "id": "d026-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม คำที่ลงท้าย -teen เน้นเสียงที่ท้ายและลากยาว (thirTEEN) ส่วน -ty เน้นที่พยางค์แรกและท้ายคำเบามาก (THIRty)"
+          },
+          "text": "Thirteen and thirty. Seventeen and seventy. Eighteen and eighty. Nineteen and ninety.",
+          "ipa": "/ˌθɜːrˈtiːn ænd ˈθɜːrti ˌsevnˈtiːn ænd ˈsevnti ˌeɪˈtiːn ænd ˈeɪti ˌnaɪnˈtiːn ænd ˈnaɪnti/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: how much?",
+        "th": "ฟัง: ราคาเท่าไร"
+      },
+      "exercises": [
+        {
+          "id": "d026-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ากระเป๋าสีชมพูราคาเท่าไร ระวัง eighty กับ eighteen"
+          },
+          "audioText": "How much is the grey bag? It is ninety baht. And the pink bag? It is eighty baht.",
+          "question": {
+            "en": "How much is the pink bag?",
+            "th": "กระเป๋าสีชมพูราคาเท่าไร"
+          },
+          "choices": [
+            "Eighty",
+            "Eighteen",
+            "Ninety"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d026-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าหมวกใบไหนราคาถูก"
+          },
+          "audioText": "This hat is new. It is not cheap. It is eighty baht. That hat is old. It is cheap. It is thirty baht.",
+          "question": {
+            "en": "What is cheap?",
+            "th": "อะไรราคาถูก"
+          },
+          "choices": [
+            "The new hat",
+            "The old hat"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d026-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "How much is the grey bag? It is ninety baht."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "In a shop",
+        "th": "ในร้านค้า"
+      },
+      "exercises": [
+        {
+          "id": "d026-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Hello! How much is this bag?",
+            "It is eighty baht.",
+            "Is it new?",
+            "Yes, it is. It is new.",
+            "And how much is the green bag?",
+            "It is thirty baht. It is very cheap!",
+            "Thank you. Goodbye!"
+          ]
+        },
+        {
+          "id": "d026-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "ถามตัวเองเกี่ยวกับกระเป๋าของคุณ แล้วตอบ ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "How much is your bag? Is it new? Is it cheap?",
+          "sampleAnswer": "My bag is new. It is not cheap.",
+          "keywords": [
+            "is"
+          ]
+        },
+        {
+          "id": "d026-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ออก much เป็น 'มัช' (/mʌtʃ/) ปากเหยียดเป็น 'ช' ท้ายคำ ไม่ใช่ 'มัด' และ baht ออกเป็น 'บาท' สั้น ๆ"
+          },
+          "text": "How much is the pink bag? It is eighty baht.",
+          "ipa": "/haʊ mʌtʃ ɪz ðə pɪŋk bæɡ ɪt ɪz ˈeɪti bɑːt/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "In a shop",
+        "th": "ในร้านค้า"
+      },
+      "exercises": [
+        {
+          "id": "d026-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Nan and Rose are in a shop in Bangkok.\nNan: How much is the grey bag?\nMan: It is ninety baht. It is new.\nNan: And the pink bag?\nMan: It is eighty baht.\nRose: The pink bag is nice. It is cheap!\nNan: Yes! I love it. I have my money in my bag.",
+          "questions": [
+            {
+              "question": {
+                "en": "How much is the grey bag?",
+                "th": "กระเป๋าสีเทาราคาเท่าไร"
+              },
+              "choices": [
+                "Eighty baht",
+                "Ninety baht",
+                "Nineteen baht"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What colour is the cheap bag?",
+                "th": "กระเป๋าใบที่ถูกกว่าสีอะไร"
+              },
+              "choices": [
+                "Grey",
+                "Pink"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Where are Nan and Rose?",
+                "th": "แนนกับโรสอยู่ที่ไหน"
+              },
+              "choices": [
+                "In a shop",
+                "In a school"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: prices",
+        "th": "เขียน: ราคา"
+      },
+      "exercises": [
+        {
+          "id": "d026-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "How",
+            "much",
+            "the",
+            "bag"
+          ],
+          "answer": "How much is the bag"
+        },
+        {
+          "id": "d026-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมตัวเลข (นับทีละสิบ) เขียนเป็นตัวอักษร"
+          },
+          "text": "Seventy, eighty, ___, one hundred.",
+          "answer": [
+            "ninety"
+          ],
+          "strict": true
+        },
+        {
+          "id": "d026-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "กระเป๋าสีชมพูใบนี้ราคาถูก",
+          "accept": [
+            "This pink bag is cheap",
+            "The pink bag is cheap"
+          ]
+        },
+        {
+          "id": "d026-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-much"
+            },
+            {
+              "vocabId": "v-cheap"
+            },
+            {
+              "vocabId": "v-new"
+            },
+            {
+              "vocabId": "v-pink"
+            },
+            {
+              "vocabId": "v-grey"
+            },
+            {
+              "vocabId": "v-money"
+            },
+            {
+              "vocabId": "v-eighty"
+            },
+            {
+              "vocabId": "v-ninety"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

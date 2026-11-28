@@ -40,22 +40,22 @@ export const USED_BEFORE_TAUGHT: Readonly<Record<string, number>> = {
   this: 14, have: 15,
   // 11-19 are first heard as the -teen pattern in the pronunciation sections of days 10-11; cards come in week 3
   eleven: 10, twelve: 14, thirteen: 13, fourteen: 14, fifteen: 11, sixteen: 10, seventeen: 10, eighteen: 10, nineteen: 10,
+  // thirty ... ninety: the -ty pattern of days 11-14 (ages, "She is thirty"); the cards come in week 4 (days 22-26)
+  thirty: 14, forty: 14, fifty: 14, sixty: 11, seventy: 11, eighty: 11, ninety: 11,
 };
 
 /**
- * Number words with no entry of their own: the tens are taught as a pattern (-teen / -ty) in the pronunciation
- * sections of days 10-11 rather than as cards.
+ * Number words with no entry of their own. Empty since week 4: thirty ... ninety have entries (days 22-26).
+ * Kept (empty) so a future number word without an entry has a place to go.
  */
-export const NUMBER_WORDS_WITHOUT_ENTRY: readonly string[] = [
-  "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
-];
+export const NUMBER_WORDS_WITHOUT_ENTRY: readonly string[] = [];
 
 /**
  * Names of people, places and brands used in the lessons. Written as they are spelled (capital first letter).
  * arrange_words checks that a capitalised mid-sentence word is in this list (UI and content must agree).
  */
 export const PROPER_NAMES: readonly string[] = [
-  "Sam", "Ann", "Ben", "Mai", "Tom", "Nok", "Max", "Jen", "Jim", "Lek", "Jack", "Pim", "Kate", "Lisa", "Fon", "Thailand", "Bangkok", "England", "Japan", "Chiang",
+  "Sam", "Ann", "Ben", "Mai", "Tom", "Nok", "Max", "Jen", "Jim", "Lek", "Jack", "Pim", "Kate", "Lisa", "Fon", "Rose", "Dan", "Leo", "Mali", "Ray", "Nan", "Thailand", "Bangkok", "England", "Japan", "Chiang",
 ];
 
 /** Every single letter is allowed: the alphabet and spelling exercises (B, U, S). */

@@ -1,0 +1,343 @@
+{
+  "day": 27,
+  "phase": 1,
+  "week": 4,
+  "type": "review",
+  "cefr": "preA1",
+  "title": {
+    "en": "Week 4 review: r, l, z, colours and things",
+    "th": "ทบทวนสัปดาห์ที่ 4: r, l, z, สีและสิ่งของ"
+  },
+  "objectives": [
+    {
+      "en": "Tell /r/ from /l/ and /z/ from /s/ in this week's words",
+      "th": "แยกเสียง /r/ กับ /l/ และ /z/ กับ /s/ ในคำของสัปดาห์นี้ได้"
+    },
+    {
+      "en": "Use a, an and the with colours and things, and say where things are",
+      "th": "ใช้ a, an, the กับสีและสิ่งของ และบอกว่าของอยู่ที่ไหนได้"
+    },
+    {
+      "en": "Say the tens thirty–ninety and ask how much something is",
+      "th": "พูดเลข thirty–ninety และถามราคาได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "r, l and z",
+        "th": "r, l และ z"
+      },
+      "exercises": [
+        {
+          "id": "d027-pron-01",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "right",
+              "b": "light",
+              "answer": "a"
+            },
+            {
+              "a": "glass",
+              "b": "grass",
+              "answer": "b"
+            },
+            {
+              "a": "rise",
+              "b": "rice",
+              "answer": "a"
+            },
+            {
+              "a": "Sue",
+              "b": "zoo",
+              "answer": "b"
+            },
+            {
+              "a": "fly",
+              "b": "fry",
+              "answer": "a"
+            },
+            {
+              "a": "peas",
+              "b": "peace",
+              "answer": "a"
+            }
+          ],
+          "phonemes": [
+            "r",
+            "l",
+            "z",
+            "s"
+          ]
+        },
+        {
+          "id": "d027-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /r/ ใน red และ /l/ ใน blue ไม่สลับกัน"
+          },
+          "text": "A red bag and a blue umbrella.",
+          "ipa": "/ə red bæɡ ænd ə bluː ʌmˈbrelə/",
+          "phonemes": [
+            "r",
+            "l"
+          ]
+        },
+        {
+          "id": "d027-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ท้ายคำ these, chairs, those ต้องสั่นคอ (/z/) ส่วน clocks ท้ายเป็น /s/ ไม่สั่นคอ"
+          },
+          "text": "These chairs are brown. Those clocks are grey.",
+          "ipa": "/ðiːz tʃerz ɑːr braʊn ðoʊz klɑːks ɑːr ɡreɪ/",
+          "phonemes": [
+            "z",
+            "s"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen and review",
+        "th": "ฟังและทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d027-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าลูกบอลของลีโออยู่ที่ไหน"
+          },
+          "audioText": "Hi! I am Leo. This is my room. The walls are green. The floor is brown. My ball is under the bed. My umbrella is on the floor.",
+          "question": {
+            "en": "Where is Leo's ball?",
+            "th": "ลูกบอลของลีโออยู่ที่ไหน"
+          },
+          "choices": [
+            "Under the bed",
+            "On the floor",
+            "In the bag"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d027-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่ากระเป๋าของโรสราคาเท่าไร ระวัง ninety กับ nineteen"
+          },
+          "audioText": "Nan's bag is pink. It is new. It is eighty baht. Rose's bag is grey. It is ninety baht.",
+          "question": {
+            "en": "How much is Rose's bag?",
+            "th": "กระเป๋าของโรสราคาเท่าไร"
+          },
+          "choices": [
+            "Eighty baht",
+            "Ninety baht",
+            "Nineteen baht"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d027-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "I have an umbrella, a key and a phone in my bag."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak and review",
+        "th": "พูดทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d027-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "What colour is the bag? It is brown.",
+            "Is it an apple? No, it is an orange.",
+            "The key is under the paper.",
+            "How much is the grey hat? It is sixty baht.",
+            "Those are my chairs. They are white."
+          ]
+        },
+        {
+          "id": "d027-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกสีของกระเป๋าและของที่อยู่ในกระเป๋า ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What colour is your bag? What do you have in your bag?",
+          "sampleAnswer": "My bag is black. I have a phone, a key and an apple.",
+          "keywords": [
+            "have",
+            "bag"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read and review",
+        "th": "อ่านทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d027-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Dan. I am thirty-two and I am a doctor. This is my family. This is my wife, Rose. She is thirty and she is a teacher. This is my son, Leo. He is nine. This is my father, Ray. He is seventy. This is our house in Bangkok. It is white. The door is green. We have a big blue car.",
+          "questions": [
+            {
+              "question": {
+                "en": "How old is Ray?",
+                "th": "เรย์อายุเท่าไร"
+              },
+              "choices": [
+                "Seventeen",
+                "Seventy"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "What colour is the door?",
+                "th": "ประตูสีอะไร"
+              },
+              "choices": [
+                "Green",
+                "White"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is Rose a doctor or a teacher?",
+                "th": "โรสเป็นหมอหรือครู"
+              },
+              "choices": [
+                "A teacher",
+                "A doctor"
+              ],
+              "answer": 0
+            }
+          ],
+          "glossary": {
+            "our": "ของพวกเรา"
+          }
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write and review",
+        "th": "เขียนทบทวน"
+      },
+      "exercises": [
+        {
+          "id": "d027-write-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-colour"
+            },
+            {
+              "vocabId": "v-umbrella"
+            },
+            {
+              "vocabId": "v-chair"
+            },
+            {
+              "vocabId": "v-floor"
+            },
+            {
+              "vocabId": "v-cheap"
+            },
+            {
+              "vocabId": "v-forty"
+            }
+          ]
+        },
+        {
+          "id": "d027-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติม a หรือ an"
+          },
+          "text": "I have ___ umbrella and ___ key.",
+          "answer": [
+            "an",
+            "a"
+          ]
+        },
+        {
+          "id": "d027-write-03",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำนำหน้านามที่ใช้กับสิ่งที่พูดถึงไปแล้ว (คำเดียวกันทั้งสองช่อง)"
+          },
+          "text": "I have a bag and an umbrella. ___ bag is red and ___ umbrella is blue.",
+          "answer": [
+            "The",
+            "the"
+          ]
+        },
+        {
+          "id": "d027-write-04",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "The",
+            "pink",
+            "bag",
+            "new"
+          ],
+          "answer": "The pink bag is new",
+          "accept": [
+            "Is the pink bag new"
+          ]
+        },
+        {
+          "id": "d027-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "นี่คือกระเป๋าสีน้ำตาลใบใหม่ของฉัน",
+          "accept": [
+            "This is my new brown bag",
+            "It is my new brown bag"
+          ]
+        }
+      ]
+    }
+  ]
+}
