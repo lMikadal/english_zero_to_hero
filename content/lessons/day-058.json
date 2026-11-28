@@ -1,0 +1,361 @@
+{
+  "day": 58,
+  "phase": 1,
+  "week": 9,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "What is the weather? rainy, sunny, cloudy",
+    "th": "What is the weather? ฝน แดด เมฆ"
+  },
+  "objectives": [
+    {
+      "en": "Talk about the weather: It is rainy, sunny, cloudy, wet, dry",
+      "th": "พูดเรื่องอากาศได้: It is rainy, sunny, cloudy, wet, dry"
+    },
+    {
+      "en": "Hear and say words with a strong second syllable: toDAY, toMORrow, baNAna, umBRELla",
+      "th": "ฟังและพูดคำที่พยางค์หลังแรง: toDAY, toMORrow, baNAna, umBRELla"
+    },
+    {
+      "en": "Say what you like and do not like: I like snow, I don't like rain",
+      "th": "บอกสิ่งที่ชอบและไม่ชอบ: I like snow, I don't like rain"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-weather",
+    "v-rain",
+    "v-rainy",
+    "v-cloud",
+    "v-cloudy",
+    "v-sunny",
+    "v-snow",
+    "v-wet",
+    "v-dry"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Word stress: the second syllable",
+        "th": "การเน้นพยางค์: พยางค์หลัง"
+      },
+      "exercises": [
+        {
+          "id": "d058-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตว่าพยางค์ไหนแรง"
+          },
+          "phoneme": "stress",
+          "ipa": "/ˈ/",
+          "tipTh": "บางคำเน้นพยางค์หลัง ไม่ใช่พยางค์แรก: toDAY, toMORrow, baNAna, umBRELla, heLLO คนไทยมักเน้นพยางค์แรกเหมือนคำไทย ('วัน-นี้') ให้ฝึกทำพยางค์แรกให้เบาสั้น (เป็น /ə/) แล้วค่อยออกเสียงพยางค์หลังให้แรงและยาว",
+          "examples": [
+            "today",
+            "tomorrow",
+            "banana",
+            "umbrella"
+          ]
+        },
+        {
+          "id": "d058-pron-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังคำนี้แล้วตอบว่าพยางค์ไหนแรงกว่า"
+          },
+          "audioText": "banana.",
+          "question": {
+            "en": "Which part of the word is stronger?",
+            "th": "ส่วนไหนของคำออกเสียงแรงกว่า"
+          },
+          "choices": [
+            "พยางค์แรก",
+            "พยางค์ที่สอง",
+            "พยางค์ที่สาม"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d058-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม today และ umbrella เน้นพยางค์หลัง ส่วน rainy เน้นพยางค์แรก"
+          },
+          "text": "Today is rainy. Take an umbrella.",
+          "ipa": "/təˈdeɪ ɪz ˈreɪni teɪk ən ʌmˈbrelə/",
+          "phonemes": [
+            "stress"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: the weather",
+        "th": "ฟัง: อากาศ"
+      },
+      "exercises": [
+        {
+          "id": "d058-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอากาศที่เชียงใหม่เป็นอย่างไร (Mali's = ของมาลี)"
+          },
+          "audioText": "It is rainy in Bangkok today. It is cloudy and the road is wet. On rainy days Leo takes an umbrella to school. In Chiang Mai it is sunny and dry. Mali's jacket is yellow.",
+          "question": {
+            "en": "What is the weather in Chiang Mai?",
+            "th": "อากาศที่เชียงใหม่เป็นอย่างไร"
+          },
+          "choices": [
+            "Sunny and dry",
+            "Rainy and wet",
+            "Cloudy and cold"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d058-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-weather"
+            },
+            {
+              "vocabId": "v-rain"
+            },
+            {
+              "vocabId": "v-rainy"
+            },
+            {
+              "vocabId": "v-cloud"
+            },
+            {
+              "vocabId": "v-cloudy"
+            }
+          ]
+        },
+        {
+          "id": "d058-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอะไรสีขาวและเย็น"
+          },
+          "audioText": "Hello! The weather in England is cloudy and cold. Snow is white and cold. The road is wet. I like sunny days.",
+          "question": {
+            "en": "What is white and cold?",
+            "th": "อะไรสีขาวและเย็น"
+          },
+          "choices": [
+            "Snow",
+            "The road",
+            "The rain"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d058-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "It is rainy today. The road is wet. The clouds are white."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "The weather today",
+        "th": "อากาศวันนี้"
+      },
+      "exercises": [
+        {
+          "id": "d058-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Hello! What is the weather today?",
+            "It is rainy today.",
+            "It is cloudy and the road is wet.",
+            "The clouds are white.",
+            "On rainy days I take my umbrella.",
+            "In December it is sunny and dry.",
+            "I don't like rain.",
+            "I like sunny days."
+          ]
+        },
+        {
+          "id": "d058-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าวันนี้อากาศเป็นอย่างไร และคุณชอบฝนไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What is the weather today? Do you like rain?",
+          "sampleAnswer": "It is sunny and dry today. I do not like rain.",
+          "keywords": [
+            "weather",
+            "rain"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "The weather in the family year",
+        "th": "อากาศตลอดปีของครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d058-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "The weather in Bangkok is hot. In July it is rainy and the road is wet. Leo takes an umbrella to school. In December the family visits Mali in Chiang Mai. It is cold and dry in Chiang Mai in December. In England it is often cloudy and the clouds are white. In winter it is cold and the snow is white.",
+          "questions": [
+            {
+              "question": {
+                "en": "What is the weather in Bangkok in July?",
+                "th": "อากาศที่กรุงเทพฯ เดือนกรกฎาคมเป็นอย่างไร"
+              },
+              "choices": [
+                "Rainy and wet",
+                "Cold and dry",
+                "Sunny and dry"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "What does Leo take to school?",
+                "th": "ลีโอเอาอะไรไปโรงเรียน"
+              },
+              "choices": [
+                "An umbrella",
+                "A jacket",
+                "A coat"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "When is it cold and dry in Chiang Mai?",
+                "th": "ที่เชียงใหม่หนาวและแห้งเมื่อไร"
+              },
+              "choices": [
+                "In December",
+                "In July",
+                "In March"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: the weather",
+        "th": "เขียน: อากาศ"
+      },
+      "exercises": [
+        {
+          "id": "d058-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "is",
+            "The",
+            "weather",
+            "cloudy",
+            "today"
+          ],
+          "answer": "The weather is cloudy today",
+          "accept": [
+            "Today the weather is cloudy",
+            "Is the weather cloudy today"
+          ]
+        },
+        {
+          "id": "d058-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (แห้ง; หิมะ)"
+          },
+          "text": "My shoes are wet. Your shoes are ___. The ___ is cold and white.",
+          "answer": [
+            "dry",
+            "snow"
+          ]
+        },
+        {
+          "id": "d058-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "วันนี้ฝนตก ถนนเปียก",
+          "accept": [
+            "Today is rainy. The road is wet",
+            "It is rainy today. The road is wet",
+            "Today it is rainy. The road is wet",
+            "It's rainy today. The road is wet",
+            "Today it's rainy. The road is wet",
+            "It is raining today. The road is wet",
+            "It's raining today. The road is wet",
+            "Today it is raining. The road is wet",
+            "Today it's raining. The road is wet",
+            "The road is wet. It is rainy today",
+            "The road is wet. Today is rainy",
+            "The road is wet. It is raining today",
+            "The road is wet. It's raining today"
+          ]
+        },
+        {
+          "id": "d058-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ฉันไม่ชอบฝน ฉันชอบวันที่แดดจ้า",
+          "accept": [
+            "I do not like rain. I like sunny days",
+            "I like sunny days. I do not like rain"
+          ]
+        },
+        {
+          "id": "d058-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-sunny"
+            },
+            {
+              "vocabId": "v-snow"
+            },
+            {
+              "vocabId": "v-wet"
+            },
+            {
+              "vocabId": "v-dry"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
