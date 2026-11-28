@@ -88,7 +88,7 @@
 | อุปกรณ์ที่อนุญาต (จำลอง `tailscale serve`) | `curl -si -H 'X-Forwarded-For: 100.101.102.103' localhost:3055/api/health` | 200 |
 | อุปกรณ์ที่ไม่อนุญาต | `curl -si -H 'X-Forwarded-For: 100.200.1.1' localhost:3055/` | 403, `text/html`, h1 "อุปกรณ์นี้ไม่ได้รับอนุญาตให้ใช้แอป", มี `100.200.1.1`; log "[access] denied ip=100.200.1.1 path=/" |
 | ทุกเส้นทางถูกบังคับ | ขอ `/_next/static/x.js`, `/api/attempts` (POST), `/ไม่มีหน้านี้` ด้วย XFF ที่ไม่อนุญาต | 403 ทั้งหมด |
-| ตั้งค่าผิด | `ALLOWED_IPS='100.101.102.103, oops'` | container ไม่สตาร์ท, log ขึ้น `invalid entry "oops"` |
+| ตั้งค่าผิด | `ALLOWED_IPS='100.101.102.103, oops'` | ทุกคำขอ 500 (รวม `/api/health`), log ขึ้น `invalid entry "oops"`, healthcheck ของ container เป็น unhealthy |
 
 เทสต์: `src/lib/access/*.test.ts` (parser/CIDR, การหา client IP, ตัวจำกัด log, peer stamp บน http server จริง), `src/proxy.test.ts` (ไม่มี matcher, ทุก path/method, fail closed, ตรวจตอนสตาร์ท) รายละเอียด: `docs/ARCHITECTURE.md` หัวข้อ 3.0.1
 

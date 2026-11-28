@@ -126,7 +126,7 @@ english_zero_to_hero/
 
 แอปไม่มี login จึงให้แอปเองตรวจ IP ของผู้เรียกเมื่อตั้ง `ALLOWED_IPS` (ไม่ตั้ง/ว่าง = ปิดฟีเจอร์ ทุกอย่างทำงานเหมือนเดิม จึงไม่กระทบ dev และ CI)
 
-- `ALLOWED_IPS`: IPv4/IPv6 และ CIDR คั่นด้วยจุลภาค/ช่องว่าง เช่น `100.101.102.103, 100.64.0.0/10, fd7a:115c:a1e0::/48` รูปแบบผิดแม้รายการเดียว (เช่น `100.64.0.1/10` ที่มี host bit, `*`, hostname, มีพอร์ต) ทำให้เซิร์ฟเวอร์ **ไม่สตาร์ท** (`src/instrumentation.ts` ตรวจตอนเริ่ม) ไม่มีทางเผลออนุญาตทุกคน
+- `ALLOWED_IPS`: IPv4/IPv6 และ CIDR คั่นด้วยจุลภาค/ช่องว่าง เช่น `100.101.102.103, 100.64.0.0/10, fd7a:115c:a1e0::/48` รูปแบบผิดแม้รายการเดียว (เช่น `100.64.0.1/10` ที่มี host bit, `*`, hostname, มีพอร์ต) ทำให้ **ทุกคำขอตอบ 500** และ log ชัดเจนว่ารายการไหนผิด (`src/instrumentation.ts` ตรวจตอนเริ่มและ `proxy.ts` ตรวจซ้ำทุกคำขอ; healthcheck จะ unhealthy) ไม่มีทางเผลออนุญาตทุกคน ควรตรวจก่อนด้วย `check-env.sh` ฝั่ง deploy
 - `TRUSTED_PROXIES` (ไม่บังคับ): เครื่องที่เชื่อ `X-Forwarded-For` ได้ ค่าเริ่มต้น `127.0.0.0/8, ::1, 172.16.0.0/12` (loopback + Docker bridge)
 - **จุดบังคับเดียว:** `src/proxy.ts` (Next 16 เรียก `proxy.ts` แทน `middleware.ts` เดิม, รันบน Node.js runtime) ไม่มี `matcher` จึงครอบทุกคำขอ: หน้า, API, `/_next/*`, ไฟล์ใน `public/`, 404 เทสต์ `src/proxy.test.ts` ล้มถ้ามีใครเพิ่ม matcher หรือสร้าง `middleware.ts`
 - **หา IP จริง:** `proxy.ts` ไม่เห็น TCP peer และ Next ใส่ `x-forwarded-for` = peer เฉพาะตอน client ไม่ส่งมาเอง (ปลอมได้) จึงมี hook ใน `src/instrumentation.ts` → `src/lib/access/peer-stamp.ts` ที่ประทับ `x-ezh-peer` (peer จริงของ socket) และ `x-ezh-xff` (XFF ตามที่ได้รับ) ก่อน Next ทำงาน และเขียนทับของที่ client ส่งมา
