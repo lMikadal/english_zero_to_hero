@@ -206,7 +206,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Mai: Hi, Ben! Are you a student?\nBen: No, I am not. I am a doctor. And you?\nMai: I am a teacher. This is my friend, Ann. She is a student.\nBen: Hello, Ann. Are you twenty?\nAnn: No, I am not. I am thirty.\nMai: This is the boy, Tom. He is ten. This is the girl, Jen. She is nine.",
+          "text": "Mai: Hi, Ben! Are you a student?\nBen: No, I am not. I am a doctor. And you?\nMai: I am a teacher. This is my friend, Ann. She is a student.\nBen: Hello, Ann. Are you thirty?\nAnn: No, I am not. I am twenty.\nMai: This is the boy, Max. He is ten. This is the girl, Jen. She is nine.",
           "questions": [
             {
               "question": {
@@ -240,7 +240,7 @@
                 "Twenty",
                 "Thirty"
               ],
-              "answer": 1
+              "answer": 0
             }
           ]
         }

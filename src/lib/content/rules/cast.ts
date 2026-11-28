@@ -38,9 +38,25 @@ function value(num: string): number | undefined {
   return ti >= 0 && ui >= 0 ? (ti + 2) * 10 + ui + 1 : undefined;
 }
 
+const LABEL = new RegExp(String.raw`^${NAME}:\s*`);
+
 export function ageClaims(text: string): AgeClaim[] {
-  const norm = text.replace(/[’‘ʼ´`]/g, "'");
+  const raw = text.replace(/[’‘ʼ´`]/g, "'");
   const out: AgeClaim[] = [];
+  // Dialogue: "Ann: No, I am not. I am thirty." The label is the speaker of that line's "I am N", and is removed
+  // before the other patterns (otherwise "Mai: This is the boy, Tom." would name two people).
+  let labelled = false;
+  const unlabelled = raw.split("\n").map((line) => {
+    const m = LABEL.exec(line);
+    if (!m) return line;
+    labelled = true;
+    for (const f of line.slice(m[0].length).matchAll(FIRST)) {
+      const age = value(f[1]);
+      if (age !== undefined) out.push({ name: m[1], age, sentence: `${m[1]}: I am ${f[1]}` });
+    }
+    return line.slice(m[0].length);
+  });
+  const norm = unlabelled.join("\n");
   for (const m of norm.matchAll(THIRD)) {
     const age = value(m[2]);
     if (age !== undefined) out.push({ name: m[1], age, sentence: m[0].replace(/\s+years?\s+old$/, "") });
@@ -54,7 +70,7 @@ export function ageClaims(text: string): AgeClaim[] {
     if (m && age !== undefined && names.size === 1) out.push({ name: [...names][0], age, sentence: `${[...names][0]} ... ${sentence.trim().replace(/[.!?]$/, "")}` });
   });
   const speakers = new Set([...norm.matchAll(SPEAKER)].map((m) => m[1]));
-  if (speakers.size === 1) {
+  if (speakers.size === 1 && !labelled) {
     for (const m of norm.matchAll(FIRST)) {
       const age = value(m[1]);
       if (age !== undefined) out.push({ name: [...speakers][0], age, sentence: `I am ${m[1]}` });
