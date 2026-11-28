@@ -29,7 +29,7 @@ function readVocabIndex(root: string): Map<string, VocabItem> {
   const index = new Map<string, VocabItem>();
   const walk = (dir: string) => {
     if (!fs.existsSync(dir)) return;
-    for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    for (const e of fs.readdirSync(/*turbopackIgnore: true*/ dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
       const abs = path.join(dir, e.name);
       if (e.isDirectory()) walk(abs);
       else if (e.isFile() && e.name.endsWith(".json")) {

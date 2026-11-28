@@ -5,6 +5,8 @@ coverage/
 .env
 .env.*
 !.env.example
+!.env.prod.example
+backups/
 *.log
 .DS_Store
 data/
@@ -13,4 +15,6 @@ test-results/
 *.tsbuildinfo
 next-env.d.ts
 .claude/worktrees/
+backups-stage/
+backups-ci/
 .content-validate-summary.md
