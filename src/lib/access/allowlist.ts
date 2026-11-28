@@ -109,6 +109,7 @@ function parseEntry(entry: string): Range {
     prefix -= 96;
   }
   if (prefix > BITS[ip.version]) return fail(`prefix length too large for IPv${ip.version}`);
+  if (prefix === 0) return fail("this range matches every address, which is the same as having no allow-list");
   const hostBits = BigInt(BITS[ip.version] - prefix);
   const network = (ip.value >> hostBits) << hostBits;
   if (network !== ip.value) return fail("host bits are set; write the network address (a typo here would silently widen or shrink access)");
@@ -118,15 +119,21 @@ function parseEntry(entry: string): Range {
 export type AllowList = {
   /** false when ALLOWED_IPS is unset/empty: the feature is off and everything is allowed */
   readonly enabled: boolean;
+  /** accepted but suspicious entries (a range broader than /8 for IPv4, /16 for IPv6) */
+  readonly warnings: readonly string[];
   isAllowed(clientIp: string | null | undefined): boolean;
 };
 
 export function createAllowList(raw: string | undefined): AllowList {
   const entries = (raw ?? "").split(/[\s,]+/).filter((e) => e !== "");
-  if (entries.length === 0) return { enabled: false, isAllowed: () => true };
+  if (entries.length === 0) return { enabled: false, warnings: [], isAllowed: () => true };
   const ranges = entries.map(parseEntry); // throws AllowListError on the first malformed entry
+  const warnings = ranges
+    .filter((r) => r.prefix < (r.version === 4 ? 8 : 16))
+    .map((r) => `ALLOWED_IPS: a range this broad (/${r.prefix} of IPv${r.version}) lets in a very large number of devices; is that what you want?`);
   return {
     enabled: true,
+    warnings,
     isAllowed(clientIp) {
       if (typeof clientIp !== "string") return false;
       const ip = parseIp(stripPort(clientIp));

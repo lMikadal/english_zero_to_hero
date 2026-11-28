@@ -1,5 +1,5 @@
 import { AllowListError, createAllowList, type AllowList } from "./allowlist";
-import { DEFAULT_TRUSTED_PROXIES, FORWARDED_HEADER, PEER_HEADER, resolveClient } from "./client-ip";
+import { DEFAULT_TRUSTED_PROXIES, FORWARDED_HEADER, PEER_HEADER, PROXY_HEADER, resolveClient } from "./client-ip";
 
 export type AccessEnv = Readonly<Record<string, string | undefined>>;
 export type Decision = { allowed: true } | { allowed: false; ip: string | null };
@@ -16,13 +16,15 @@ function list(raw: string): AllowList {
 }
 
 /** Validate the env at server start so a typo stops the server instead of silently changing who may connect. */
-export function validateAccessEnv(env: AccessEnv): void {
-  list(env.ALLOWED_IPS ?? "");
+export function validateAccessEnv(env: AccessEnv): string[] {
+  const warnings = [...list(env.ALLOWED_IPS ?? "").warnings];
   const t = env.TRUSTED_PROXIES?.trim();
   if (t) {
     const trusted = list(t);
     if (!trusted.enabled) throw new AllowListError("TRUSTED_PROXIES has no usable entry");
+    warnings.push(...trusted.warnings.map((w) => w.replace("ALLOWED_IPS", "TRUSTED_PROXIES")));
   }
+  return warnings;
 }
 
 export function checkAccess(headers: { get(name: string): string | null }, env: AccessEnv): Decision {
@@ -30,7 +32,7 @@ export function checkAccess(headers: { get(name: string): string | null }, env: 
   const trustedRaw = env.TRUSTED_PROXIES?.trim() ? env.TRUSTED_PROXIES : DEFAULT_TRUSTED_PROXIES;
   const trusted = list(trustedRaw);
   if (!allow.enabled) return { allowed: true };
-  const client = resolveClient({ peer: headers.get(PEER_HEADER), forwardedFor: headers.get(FORWARDED_HEADER), trusted });
+  const client = resolveClient({ peer: headers.get(PEER_HEADER), forwardedFor: headers.get(FORWARDED_HEADER), proxyHeaders: (headers.get(PROXY_HEADER) ?? "") !== "", trusted });
   if (client.kind === "local") return { allowed: true };
   if (client.kind === "unknown") return { allowed: false, ip: null };
   return allow.isAllowed(client.ip) ? { allowed: true } : { allowed: false, ip: client.ip };

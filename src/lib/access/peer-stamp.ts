@@ -1,12 +1,15 @@
 import http from "node:http";
-import { FORWARDED_HEADER, PEER_HEADER } from "./client-ip";
+import { FORWARDED_HEADER, PEER_HEADER, PROXY_HEADER } from "./client-ip";
 
 /**
  * Next.js does not give proxy.ts the TCP peer, and it fills x-forwarded-for with the peer only when the client sent none
  * (node_modules/next/dist/server/base-server.js). To know who really connected we stamp two headers on every incoming
  * request before Next sees it: x-ezh-peer (socket address) and x-ezh-xff (x-forwarded-for exactly as received).
- * Anything the client sent under those names is overwritten.
+ * x-ezh-proxy lists which proxy headers the client request carried (before Next adds its own). Anything the client sent under
+ * the x-ezh-* names is overwritten.
  */
+const PROXY_HEADER_NAMES = new Set(["forwarded", "x-real-ip"]);
+
 type Stamped = typeof http.Server.prototype.emit & { ezhPeerStamp?: boolean };
 
 export function installPeerStamp(): void {
@@ -16,6 +19,8 @@ export function installPeerStamp(): void {
     if (event === "request") {
       const req = args[0] as http.IncomingMessage;
       const xff = req.headers["x-forwarded-for"];
+      const names = Object.keys(req.headers).filter((n) => PROXY_HEADER_NAMES.has(n) || n.startsWith("x-forwarded-") || n.startsWith("tailscale-"));
+      req.headers[PROXY_HEADER] = names.join(",");
       req.headers[PEER_HEADER] = req.socket?.remoteAddress ?? "";
       req.headers[FORWARDED_HEADER] = Array.isArray(xff) ? xff.join(",") : (xff ?? "");
     }
