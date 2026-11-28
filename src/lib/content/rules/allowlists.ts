@@ -58,6 +58,24 @@ export const PROPER_NAMES: readonly string[] = [
   "Sam", "Ann", "Ben", "Mai", "Tom", "Nok", "Max", "Jen", "Jim", "Lek", "Jack", "Pim", "Kate", "Lisa", "Fon", "Rose", "Dan", "Leo", "Mali", "Ray", "Nan", "Thailand", "Bangkok", "England", "Japan", "Chiang",
 ];
 
+/**
+ * One Thai spelling per character name (rule "thai-names"). Add the Thai spelling of every new person in PROPER_NAMES here
+ * the day the name is first used; every lesson must then write the name exactly this way. Places are not listed.
+ */
+export const THAI_NAMES: Readonly<Record<string, string>> = {
+  Sam: "แซม", Ann: "แอน", Ben: "เบน", Mai: "ไหม", Tom: "ทอม", Nok: "นก", Max: "แม็กซ์", Jen: "เจน", Jim: "จิม", Lek: "เล็ก", Jack: "แจ็ค", Pim: "พิม",
+  Kate: "เคท", Lisa: "ลิซ่า", Fon: "ฝน", Rose: "โรส", Dan: "แดน", Leo: "ลีโอ", Mali: "มาลี", Ray: "เรย์", Nan: "แนน",
+};
+
+/** Names that are not people (no Thai spelling is required). */
+export const PLACE_NAMES: readonly string[] = ["Thailand", "Bangkok", "England", "Japan", "Chiang"];
+
+/**
+ * People whose Thai spelling is also an everyday Thai word (ไหม = the question particle, นก = bird, เล็ก = small, ฝน = rain):
+ * a near-variant of them cannot be told from another word, so only the other names are checked for misspellings.
+ */
+export const THAI_NAME_IS_A_WORD: readonly string[] = ["Mai", "Nok", "Lek", "Fon"];
+
 /** Every single letter is allowed: the alphabet and spelling exercises (B, U, S). */
 export const LETTERS: readonly string[] = "abcdefghijklmnopqrstuvwxyz".split("");
 
