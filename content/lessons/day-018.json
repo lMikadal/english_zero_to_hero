@@ -190,7 +190,7 @@
           "id": "d018-speak-03",
           "type": "repeat_after_me",
           "instruction": {
-            "th": "ฟังแล้วพูดตาม ระวัง /ð/ ใน those และ women ออกเสียงว่า 'วิมิน' (/ˈwɪmɪn/) ไม่ใช่ 'โวเมน'"
+            "th": "ฟังแล้วพูดตาม ระวัง /ð/ ใน those และออกเสียง women ว่า 'วิมิน' (/ˈwɪmɪn/) ไม่ใช่ 'โวเมน'"
           },
           "text": "Those men and women are my friends.",
           "ipa": "/ðoʊz men ænd ˈwɪmɪn ɑːr maɪ frendz/"

@@ -33,7 +33,7 @@ describe("soundClaims: '/x/ ใน w1, w2 และ w3' and '/x/ in w1, w2 and w
   it("lower-cases words, ignores quotes, ignores a symbol that is not followed by 'ใน'/'in' and a list", () => {
     expect(soundClaims("เสียง /ð/ ใน 'This', “that”")).toEqual([{ symbol: "ð", words: ["this", "that"] }]);
     expect(soundClaims("เสียง /ɔː/ ฟังดูยาว")).toEqual([]);
-    expect(soundClaims("Say /v/ in the word")).toEqual([{ symbol: "v", words: ["the", "word"] }]);
+    expect(soundClaims("Say /v/ in the word")).toEqual([]); // "in the ..." is a place, not a word list
   });
   it("skips a contrast: a sound named after 'ไม่ใช่' / 'ต่างจาก' / 'not' is a sound the word does NOT have", () => {
     expect(soundClaims("ออกเสียง /v/ ไม่ใช่ /w/ ใน five")).toEqual([]);

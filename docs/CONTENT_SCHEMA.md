@@ -134,6 +134,18 @@ ERROR content/lessons/day-010.json [d010-pron-03]: ipa "/ɪˈlevn twelv/" has 2 
 ERROR content/lessons/day-010.json [d010-speak-03]: the instruction names /ɔː/ but the item's ipa "/ˌsɪksˈtiːn .../" does not contain it. Practise the sound ...
 ```
 
+### `sound-words`: เสียงที่เอ่ยถึงต้องอยู่ในคำที่ยกมา
+เมื่อ `instruction.th`, `instruction.en` หรือ `tipTh` ของ exercise ใดเขียนว่า `/x/ ใน w1, w2 และ w3` (หรือ `/x/ in w1, w2 and w3`) ทุกคำในรายการที่มี entry ในคลังคำต้องมี `/x/` (เป็นหน่วยเสียงเต็ม เหมือนกฎ `pronunciation`) ใน IPA แบบ US หรือ UK อย่างใดอย่างหนึ่ง ถ้าไม่มี เป็น **error** (เหตุการณ์จริง: "ระวังเสียง /v/ ใน five, seven, sixteen และ seventeen" ทั้งที่ sixteen ไม่มี /v/) ถ้าคำไม่มี entry ในคลัง ตรวจไม่ได้ จึงเป็น **warning** บอกให้ผู้เขียนตรวจ IPA เอง (หรือเพิ่มคำนั้นเข้าคลัง)
+- รายการหยุดที่คำที่ไม่ใช่ตัวอักษรละติน (`/w/ ใน we กับ /v/ ใน live` อ่านเป็นสองข้อความ) และ `/v/ ใน eleven, twelve และ /θ/ ใน thirteen` อ่านเป็นสองข้อความเช่นกัน
+- ไม่นับเป็นข้อความอ้าง (ข้าม): เสียงที่เขียนหลัง `ไม่ใช่`/`ต่างจาก`/`not` (เป็นเสียงที่คำ *ไม่มี* เพื่อเทียบ) และรายการที่ขึ้นต้นด้วย `the/a/an/word`
+- คำที่เป็นรูปผันของ entry (เช่น `women` ของ `woman`) ถือว่าไม่มี entry เพราะ IPA ของรูปผันต่างจากคำฐาน: ถ้าอยากให้ตรวจได้ ให้เพิ่มเป็น entry เอง
+- ไม่ตรวจ: ชื่อเสียงที่เขียนแบบอื่น (เช่น "เสียง v" ไม่มี `/ /`), ชื่อบท/objectives, คำที่ยกมาโดยไม่มีคำว่า ใน/in ติดหลังเสียง
+
+```
+ERROR content/lessons/day-017.json [d017-speak-03]: the text names /v/ in a list of words, but the vocab bank's IPA says "sixteen" (ipa /ˌsɪksˈtiːn/) does not contain /v/. Remove that word from the list, or name the sound the word really has.
+WARN content/lessons/day-021.json [d021-pron-02]: the text names /ð/ in a list of words, but "them" has no vocab entry, so the sound could not be checked. Check the IPA yourself, or add the word to the vocab bank.
+```
+
 ### `arrange-words`: ชื่อเฉพาะต้องตรงกับที่ UI แสดง
 UI (`tile-label.ts`) แสดงแผ่นป้ายเป็นตัวพิมพ์เล็กทั้งหมด ยกเว้น `I` และคำที่ขึ้นต้นตัวใหญ่ *กลางประโยค* ใน `answer` หรือ `accept` กฎจึงบังคับว่า
 - คำขึ้นต้นตัวใหญ่กลางประโยค (ไม่ใช่ `I`) ต้องอยู่ใน `PROPER_NAMES` (`allowlists.ts`)
