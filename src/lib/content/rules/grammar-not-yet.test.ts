@@ -255,3 +255,59 @@ describe("extra accepted answers are exempt from every grammar gate; the model a
     expect(go(cp(["Ann lives here", "Ann is here"]))).toHaveLength(1);
   });
 });
+
+describe("Past Simple (week 11): was / were day 71, regular -ed day 72, did / didn't day 73; irregular past forms are week 12", () => {
+  const bank = [...BANK, verb("walk"), verb("play"), verb("stop"), verb("study"), verb("like"), verb("wait"), verb("visit"), verb("see"), verb("go"), verb("put"), verb("read"), vocabItem({ id: "v-tired", word: "tired", pos: "adjective" })];
+  const at = (day: number, t: string) => check(on(day, say(day, t)), bank);
+  it("registers the four structures with their first day", () => {
+    expect(GRAMMAR_STRUCTURES["past-be"]).toMatchObject({ day: 71 });
+    expect(GRAMMAR_STRUCTURES["past-regular"]).toMatchObject({ day: 72 });
+    expect(GRAMMAR_STRUCTURES["past-did"]).toMatchObject({ day: 73 });
+    expect(GRAMMAR_STRUCTURES["past-irregular"]).toMatchObject({ day: 78 });
+  });
+  it("was / were / wasn't / weren't are gated at day 71", () => {
+    for (const t of ["I was at home.", "We were happy.", "She wasn't here.", "They weren't busy."]) {
+      expect(at(70, t), t).toHaveLength(1);
+      expect(at(70, t)[0].message).toContain("day 71");
+      expect(at(71, t), t).toEqual([]);
+    }
+  });
+  it("the regular -ed form of every bank verb is gated at day 72 (spelling rules: stopped, played, studied, liked, waited, visited)", () => {
+    for (const t of ["We walked home.", "I played football.", "He stopped.", "She studied.", "We liked it.", "I waited.", "They visited Mali."]) {
+      expect(at(71, t), t).toHaveLength(1);
+      expect(at(71, t)[0].message).toContain("day 72");
+      expect(at(72, t), t).toEqual([]);
+    }
+  });
+  it("an adjective of the bank (tired) and the base form are not gated", () => {
+    expect(at(60, "I am tired. We walk and play.")).toEqual([]);
+  });
+  it("did / didn't are gated at day 73", () => {
+    for (const t of ["Did you walk?", "I didn't walk.", "She did not play."]) {
+      expect(at(72, t), t).toHaveLength(1);
+      expect(at(72, t)[0].message).toContain("day 73");
+      expect(at(73, t), t).toEqual([]);
+    }
+  });
+  it("irregular past forms (went, saw, bought, had, ...) are gated until day 78; put / read / left are not", () => {
+    for (const t of ["We went home.", "I saw Leo.", "She bought a bag.", "He had a cat.", "They ate rice.", "I took the bus."]) {
+      expect(at(77, t), t).toHaveLength(1);
+      expect(at(77, t)[0].message).toContain("day 78");
+      expect(at(78, t), t).toEqual([]);
+    }
+    expect(at(60, "Put it here. Turn left. I read a book.")).toEqual([]);
+  });
+  it("an extra accepted answer may use any of them; the model answer may not", () => {
+    const dict = (audioText: string, accept: string[]): Exercise => ({ id: exId(70, "listen", 2), type: "dictation", instruction, audioText, accept });
+    expect(check(on(70, dict("I walk home", ["I walked home", "I went home", "I was there", "Did you walk"])), bank)).toEqual([]);
+    expect(check(on(70, dict("I walked home", [])), bank)).toHaveLength(1);
+  });
+});
+
+describe("a bare comma list of words in repeat_after_me is a sound drill (week 8 -ed endings)", () => {
+  const bank = [...BANK, verb("walk"), verb("look"), verb("play"), verb("call")];
+  it("'Walked, looked, played, called.' is quiet on day 52, a sentence with the same forms is not", () => {
+    expect(check(on(52, say(52, "Walked, looked, played, called.")), bank)).toEqual([]);
+    expect(check(on(52, say(52, "We walked and played.")), bank)).toHaveLength(1);
+  });
+});
