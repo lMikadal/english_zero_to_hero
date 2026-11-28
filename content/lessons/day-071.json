@@ -1,0 +1,381 @@
+{
+  "day": 71,
+  "phase": 2,
+  "week": 11,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "Yesterday I was ... : was and were",
+    "th": "เมื่อวานฉัน...: was และ were"
+  },
+  "objectives": [
+    {
+      "en": "Say where you were and how you felt with was and were",
+      "th": "บอกว่าเคยอยู่ที่ไหนและรู้สึกอย่างไรด้วย was และ were ได้"
+    },
+    {
+      "en": "Use yesterday, last and ago with the past",
+      "th": "ใช้ yesterday, last และ ago กับอดีตได้"
+    },
+    {
+      "en": "Say was and were in a weak way: /wəz/ /wər/",
+      "th": "ออกเสียง was และ were แบบเบา /wəz/ /wər/ ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-yesterday",
+    "v-last",
+    "v-ago",
+    "v-sad",
+    "v-angry",
+    "v-sick",
+    "v-bored",
+    "v-great"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "Weak was and were",
+        "th": "was และ were ที่ออกเสียงเบา"
+      },
+      "exercises": [
+        {
+          "id": "d071-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "schwa",
+          "ipa": "/wəz/",
+          "tipTh": "ในประโยค was และ were ไม่เน้น ออกเสียงเบาและเร็วเป็น /wəz/ และ /wər/ (ไม่ใช่ 'วอส' 'เวอร์' เต็มเสียง) I was at home = ไอ-เวิซ-แอท-โฮม เน้นที่ home เสียง /ə/ เบาแบบเดียวกันอยู่ในคำเหล่านี้",
+          "examples": [
+            "yesterday",
+            "ago",
+            "doctor",
+            "computer"
+          ]
+        },
+        {
+          "id": "d071-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม was ออกเสียงเบา (/wəz/) เน้นที่ home และ yesterday"
+          },
+          "text": "I was at home yesterday.",
+          "ipa": "/aɪ wəz ət hoʊm ˈjestərdeɪ/",
+          "phonemes": [
+            "schwa"
+          ]
+        },
+        {
+          "id": "d071-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม were ออกเสียงเบา (/wər/)"
+          },
+          "text": "Dan and Rose were at work.",
+          "ipa": "/dæn ən roʊz wər ət wɜːrk/",
+          "phonemes": [
+            "schwa"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: yesterday",
+        "th": "ฟัง: เมื่อวาน"
+      },
+      "exercises": [
+        {
+          "id": "d071-listen-01",
+          "type": "grammar_note",
+          "instruction": {
+            "th": "อ่านการ์ดอธิบายก่อนฝึก แล้วกดถัดไป"
+          },
+          "titleTh": "อดีตของ be: was / were",
+          "bodyTh": "ใช้บอกว่าเมื่อก่อนเป็นอย่างไรหรืออยู่ที่ไหน (yesterday, last night, two days ago) I / he / she / it / ชื่อคน → was, you / we / they → were\\nปฏิเสธ: was not (wasn't), were not (weren't) คำถามย้ายไว้หน้าประธาน: Was Leo at school? Yes, he was. / No, he wasn't.\\nผิดบ่อย: Yesterday I am tired ✗ → Yesterday I was tired ✓ และ We was at home ✗ → We were at home ✓",
+          "examples": [
+            {
+              "en": "I was at home yesterday.",
+              "th": "เมื่อวานฉันอยู่บ้าน"
+            },
+            {
+              "en": "They were happy.",
+              "th": "พวกเขามีความสุข"
+            },
+            {
+              "en": "Rose was not angry.",
+              "th": "โรสไม่ได้โกรธ"
+            },
+            {
+              "en": "Was Leo at school? No, he wasn't.",
+              "th": "ลีโออยู่ที่โรงเรียนไหม ไม่อยู่"
+            }
+          ],
+          "structures": [
+            "past-be"
+          ],
+          "table": [
+            [
+              "ประธาน",
+              "be อดีต",
+              "ตัวอย่าง"
+            ],
+            [
+              "I / he / she / it",
+              "was",
+              "She was at home"
+            ],
+            [
+              "you / we / they",
+              "were",
+              "They were happy"
+            ],
+            [
+              "ชื่อคน (Leo)",
+              "was",
+              "Leo was sick"
+            ]
+          ]
+        },
+        {
+          "id": "d071-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าพ่อของลีโออยู่ที่ไหนเมื่อวาน"
+          },
+          "audioText": "Hi, I am Leo. Yesterday was a great day. I was at school in the morning. My friends were at school too. In the afternoon I was at home. My mother was in the kitchen. My father was at the hospital.",
+          "question": {
+            "en": "Where was Leo's father yesterday?",
+            "th": "เมื่อวานพ่อของลีโออยู่ที่ไหน"
+          },
+          "choices": [
+            "At the hospital",
+            "At school",
+            "At home"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d071-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-yesterday"
+            },
+            {
+              "vocabId": "v-last"
+            },
+            {
+              "vocabId": "v-ago"
+            },
+            {
+              "vocabId": "v-sad"
+            },
+            {
+              "vocabId": "v-angry"
+            },
+            {
+              "vocabId": "v-sick"
+            },
+            {
+              "vocabId": "v-bored"
+            },
+            {
+              "vocabId": "v-great"
+            }
+          ]
+        },
+        {
+          "id": "d071-listen-03",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครป่วยเมื่อวันจันทร์ที่แล้ว"
+          },
+          "audioText": "Last Monday Dan was sick. He was in bed and he was bored. Leo was sad. Rose was not angry. She was busy.",
+          "question": {
+            "en": "Who was sick last Monday?",
+            "th": "ใครป่วยเมื่อวันจันทร์ที่แล้ว"
+          },
+          "choices": [
+            "Dan",
+            "Leo",
+            "Rose"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d071-listen-04",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Two days ago I was sick. I was not at school."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: where were you?",
+        "th": "พูด: คุณอยู่ที่ไหน"
+      },
+      "exercises": [
+        {
+          "id": "d071-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "Yesterday was a great day.",
+            "I was at school yesterday.",
+            "Last night Leo was bored.",
+            "Two days ago Dan was sick.",
+            "Nan was sad last week.",
+            "Rose was not angry.",
+            "We were at the cinema last Saturday.",
+            "The film was great."
+          ]
+        },
+        {
+          "id": "d071-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าเมื่อวานคุณอยู่ที่ไหนและรู้สึกอย่างไร ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "Where were you yesterday? How were you?",
+          "sampleAnswer": "Yesterday I was at home. I was bored.",
+          "keywords": [
+            "was",
+            "yesterday"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: last week",
+        "th": "อ่าน: สัปดาห์ที่แล้ว"
+      },
+      "exercises": [
+        {
+          "id": "d071-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Last Saturday Leo and Nan were at the cinema. The film was great. Leo was happy. Two days ago Nan was sick. She was in bed. She was sad and bored. Now she is fine. Yesterday Ray's bike was slow. Ray was angry.",
+          "questions": [
+            {
+              "question": {
+                "en": "Where were Leo and Nan last Saturday?",
+                "th": "เมื่อวันเสาร์ที่แล้วลีโอกับแนนอยู่ที่ไหน"
+              },
+              "choices": [
+                "At the cinema",
+                "At school",
+                "At the market"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Was the film great?",
+                "th": "หนังยอดเยี่ยมไหม"
+              },
+              "choices": [
+                "Yes, it was",
+                "No, it was not"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who was sick two days ago?",
+                "th": "เมื่อสองวันก่อนใครป่วย"
+              },
+              "choices": [
+                "Leo",
+                "Ray",
+                "Nan"
+              ],
+              "answer": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: was and were",
+        "th": "เขียน: was และ were"
+      },
+      "exercises": [
+        {
+          "id": "d071-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "was",
+            "My",
+            "father",
+            "at",
+            "the",
+            "hospital",
+            "yesterday"
+          ],
+          "answer": "My father was at the hospital yesterday",
+          "statementOnly": true
+        },
+        {
+          "id": "d071-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (was หรือ were)"
+          },
+          "text": "Yesterday I ___ at home. We ___ at the cinema last Saturday.",
+          "answer": [
+            "was",
+            "were"
+          ]
+        },
+        {
+          "id": "d071-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เมื่อวานฉันเบื่อ",
+          "accept": [
+            "I was bored yesterday",
+            "Yesterday I was bored"
+          ]
+        },
+        {
+          "id": "d071-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "เมื่อสองวันก่อนแดนป่วย",
+          "accept": [
+            "Dan was sick two days ago",
+            "Two days ago Dan was sick"
+          ]
+        }
+      ]
+    }
+  ]
+}
