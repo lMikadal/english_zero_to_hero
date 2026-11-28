@@ -8,9 +8,9 @@ import type { Checkpoint } from "@/lib/content/checkpoint-schema";
 import { isCheckpointPass, weakSkills } from "@/lib/checkpoints/score";
 import { CHECKPOINT_PASS_SCORE } from "@/lib/progress/config";
 import { REPLAY_SKILL_LABEL_TH, replayHref } from "@/lib/practice/replay";
-import { checkpointNumber, practisedKey, type Completion, type ResultDisplay } from "./view";
+import { checkpointNumber, percentShown, practisedKey, rejectedMessage, type Completion, type ResultDisplay } from "./view";
 
-const pct = (n: number) => Math.round(n * 100);
+const pct = percentShown;
 const TEXT = "text-sm leading-relaxed text-muted";
 
 /**
@@ -23,6 +23,7 @@ export function CheckpointResult({
 }: { checkpoint: Checkpoint; completion: Completion; practised: ReadonlySet<string>; onRetry(): void; onRestart(): void }) {
   const k = checkpointNumber(checkpoint.afterDay);
   const shown = completion.kind === "shown" ? completion.display : null;
+  const rejection = completion.kind === "rejected" ? rejectedMessage(completion.code) : null;
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-14">
       <h1 className="text-2xl font-bold leading-snug text-fg">ผลแบบทดสอบ ครั้งที่ {k}</h1>
@@ -33,7 +34,7 @@ export function CheckpointResult({
       )}
       {completion.kind === "rejected" && (
         <div role="alert" className="flex flex-col gap-1.5 rounded-xl border border-bad/40 bg-bad-soft p-3.5 text-sm leading-relaxed text-bad-fg">
-          <p>บันทึกผลไม่ได้ ไม่มีคำตอบของรอบนี้บนเซิร์ฟเวอร์ ลองทำใหม่</p>
+          <p>{rejection?.text}</p>
         </div>
       )}
       {completion.kind === "error" && (
@@ -45,9 +46,9 @@ export function CheckpointResult({
         {shown && shown.nextDay !== null ? (
           <Link href={`/day/${shown.nextDay}`} className={buttonClass("primary")}>ไปบทเรียนวันที่ {shown.nextDay}</Link>
         ) : null}
-        {completion.kind === "rejected" ? <button type="button" onClick={onRestart} className={buttonClass("primary")}>เริ่มทำใหม่</button> : null}
+        {rejection?.restart ? <button type="button" onClick={onRestart} className={buttonClass("primary")}>เริ่มทำใหม่</button> : null}
         {completion.kind === "error" ? <button type="button" onClick={onRetry} className={buttonClass("primary")}>ลองอีกครั้ง</button> : null}
-        {completion.kind === "rejected" || completion.kind === "error" || completion.kind === "pending" || completion.kind === "queued" || (shown && shown.nextDay !== null) ? (
+        {(rejection ? rejection.restart : completion.kind === "error" || completion.kind === "pending" || completion.kind === "queued" || (shown && shown.nextDay !== null)) ? (
           <Link href="/" className={buttonClass("secondary")}>กลับหน้าแรก</Link>
         ) : (
           <Link href="/" className={buttonClass("primary")}>กลับหน้าแรก</Link>

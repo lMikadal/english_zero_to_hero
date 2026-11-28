@@ -6,7 +6,7 @@ import { buttonClass } from "@/components/ui/button-styles";
 import type { Checkpoint } from "@/lib/content/checkpoint-schema";
 import { CHECKPOINT_RESUME_HOURS } from "@/lib/progress/config";
 import { REPLAY_SKILL_LABEL_TH } from "@/lib/practice/replay";
-import { resumeNumber, totalExercises } from "./view";
+import { percentShown, resumeNumber, totalExercises } from "./view";
 
 const RULES = [
   "ระหว่างทำจะไม่บอกว่าถูกหรือผิด ดูผลรวมตอนจบ",
@@ -36,7 +36,7 @@ export function CheckpointIntro({
         <p className="text-pretty text-sm leading-relaxed text-muted">ไม่มีเวลาจำกัด ทำเท่าที่ทำได้ ผลนี้ช่วยให้รู้ว่าควรทบทวนส่วนไหน</p>
         {last ? (
           <p className="self-start rounded-full border border-line bg-surface px-3 py-1 text-[13px] font-medium text-fg">
-            ครั้งล่าสุด {Math.round(last.score * 100)}% · {last.passed ? "ผ่าน" : "ยังไม่ผ่าน"}
+            ครั้งล่าสุด {percentShown(last.score)}% · {last.passed ? "ผ่าน" : "ยังไม่ผ่าน"}
           </p>
         ) : null}
       </header>

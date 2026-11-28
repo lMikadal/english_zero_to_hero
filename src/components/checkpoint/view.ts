@@ -47,3 +47,21 @@ export function completionOf(r: CompleteResult<CompleteCheckpointResponse> | { s
 
 /** The key of a replay link in the set of links already practised after the sitting: "<day>:<skill>". */
 export const practisedKey = (day: number, skill: ReplaySkill): string => `${day}:${skill}`;
+
+/**
+ * A 0..1 score as the whole percent the learner reads: rounded DOWN (with a hair of tolerance for floating point, so 0.29 is
+ * 29), so a failing 0.699 never shows as the pass mark 70%. Pass or fail itself always comes from `isCheckpointPass`.
+ */
+export const percentShown = (score: number): number => Math.floor(score * 100 + 1e-9);
+
+/**
+ * What the result screen says when the server refused to complete the sitting, and what it offers. Today the sink only reports
+ * the status code, so every reason gets the generic text and a fresh start.
+ * TODO(plan D4, "retake_tomorrow"): when the server answers 409 `retake_tomorrow` for a second sitting finished on the same local
+ * day and the sink passes the reason on, add one case here: { text: "สอบอีกครั้งได้ตั้งแต่พรุ่งนี้", restart: false } (the screen
+ * then offers only "กลับหน้าแรก", no "เริ่มทำใหม่"). `reason` is deliberately a plain string: the contract type is not on main.
+ */
+export function rejectedMessage(code: 400 | 409, reason?: string): { text: string; restart: boolean } {
+  void code; void reason;
+  return { text: "บันทึกผลไม่ได้ ไม่มีคำตอบของรอบนี้บนเซิร์ฟเวอร์ ลองทำใหม่", restart: true };
+}
