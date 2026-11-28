@@ -20,9 +20,8 @@ export const FUNCTION_WORDS: readonly string[] = [
  * here. A test fails as soon as an entry exists, so this list cannot rot.
  */
 export const A1_WORDS_WITHOUT_ENTRY_YET: readonly string[] = [
-  "i", "you", "it", "this", "that", "my", "your", // pronouns and determiners of the day-1 patterns
+  "i", "you", "it", "my", "your", // pronouns and determiners of the day-1 patterns
   "what", "who", // question words
-  "have", // "I have a cat"
   "too", // "Nice to meet you, too"
 ];
 
@@ -37,14 +36,17 @@ export const USED_BEFORE_TAUGHT: Readonly<Record<string, number>> = {
   am: 7, is: 7, are: 7,
   in: 11, // v-in is taught on day 12; "Ann is in my school" (day 9), "I work in a school" (day 11)
   yes: 9, no: 9, // Yes / No answer choices in the day-3 and day-4 reading questions; v-yes, v-no are taught on day 10
+  // day-1 patterns ("This is a pen", "I have a cat"); the entries arrive with the week-3 grammar (days 15-17)
+  this: 14, have: 15,
+  // 11-19 are first heard as the -teen pattern in the pronunciation sections of days 10-11; cards come in week 3
+  eleven: 10, twelve: 14, thirteen: 13, fourteen: 14, fifteen: 11, sixteen: 10, seventeen: 10, eighteen: 10, nineteen: 10,
 };
 
 /**
- * Number words with no entry of their own: 11-19 and the tens are taught as a pattern (-teen / -ty) in the pronunciation
+ * Number words with no entry of their own: the tens are taught as a pattern (-teen / -ty) in the pronunciation
  * sections of days 10-11 rather than as cards.
  */
 export const NUMBER_WORDS_WITHOUT_ENTRY: readonly string[] = [
-  "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
   "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
 ];
 
@@ -53,7 +55,7 @@ export const NUMBER_WORDS_WITHOUT_ENTRY: readonly string[] = [
  * arrange_words checks that a capitalised mid-sentence word is in this list (UI and content must agree).
  */
 export const PROPER_NAMES: readonly string[] = [
-  "Sam", "Ann", "Ben", "Mai", "Tom", "Nok", "Max", "Jen", "Jim", "Thailand", "Bangkok", "England", "Japan", "Chiang",
+  "Sam", "Ann", "Ben", "Mai", "Tom", "Nok", "Max", "Jen", "Jim", "Lek", "Jack", "Pim", "Kate", "Lisa", "Fon", "Thailand", "Bangkok", "England", "Japan", "Chiang",
 ];
 
 /** Every single letter is allowed: the alphabet and spelling exercises (B, U, S). */
