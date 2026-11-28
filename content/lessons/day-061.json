@@ -1,0 +1,343 @@
+{
+  "day": 61,
+  "phase": 2,
+  "week": 9,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "A party! run, ride, draw, paint",
+    "th": "A party! วิ่ง ขี่ วาด และงานเลี้ยง"
+  },
+  "objectives": [
+    {
+      "en": "Talk about a party and what people do: run, ride a bike, draw, paint, take photos",
+      "th": "พูดถึงงานเลี้ยงและสิ่งที่ทำได้: run, ride a bike, draw, paint, take photos"
+    },
+    {
+      "en": "Compare with fast and slow: The train is fast, the bus is slow",
+      "th": "เปรียบเทียบด้วย fast และ slow ได้: The train is fast, the bus is slow"
+    },
+    {
+      "en": "Say the weak sound /ə/ in small words: a, to, of",
+      "th": "ออกเสียงเบา /ə/ ในคำเล็ก ๆ ได้: a, to, of"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-run",
+    "v-ride",
+    "v-fast",
+    "v-slow",
+    "v-party",
+    "v-photo",
+    "v-draw",
+    "v-paint",
+    "v-fun"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The weak sound /ə/",
+        "th": "เสียงเบา /ə/"
+      },
+      "exercises": [
+        {
+          "id": "d061-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "schwa",
+          "ipa": "/ə/",
+          "tipTh": "เสียง /ə/ คือเสียงเบาที่สุดของภาษาอังกฤษ ปากไม่ต้องเปิดชัดและสั้นมาก มักอยู่ในพยางค์ที่ไม่เน้น เช่น พยางค์แรกของ banana, today และคำเล็ก ๆ อย่าง a, to, of ที่ออกเสียงเบา คนไทยมักออกเสียงคำเล็กเต็มเสียง ('เอ', 'ทู', 'ออฟ') ทำให้ประโยคช้าและหนัก",
+          "examples": [
+            "a",
+            "banana",
+            "umbrella",
+            "today"
+          ]
+        },
+        {
+          "id": "d061-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม a และ of ออกเสียงเบามาก (/ə/ /əv/) เน้นแค่ photo กับ party"
+          },
+          "text": "A photo of a party.",
+          "ipa": "/ə ˈfoʊtoʊ əv ə ˈpɑːrti/",
+          "phonemes": [
+            "schwa"
+          ]
+        },
+        {
+          "id": "d061-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม a และ to เบาและสั้น (/ə/ /tə/) เน้นคำว่า ride, bike, park"
+          },
+          "text": "I ride a bike to the park.",
+          "ipa": "/aɪ raɪd ə baɪk tə ðə pɑːrk/",
+          "phonemes": [
+            "schwa"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: a party",
+        "th": "ฟัง: งานเลี้ยง"
+      },
+      "exercises": [
+        {
+          "id": "d061-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเพื่อน ๆ ทำอะไรในสวน"
+          },
+          "audioText": "Hi! I am Leo. My birthday is in May. Every year I have a party at home. We eat cake and drink juice. Dan and Rose take photos. My friends run and play football in the garden. It is fun!",
+          "question": {
+            "en": "What do the friends do in the garden?",
+            "th": "เพื่อน ๆ ทำอะไรในสวน"
+          },
+          "choices": [
+            "Run and play football",
+            "Draw and paint",
+            "Sing and dance"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d061-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-run"
+            },
+            {
+              "vocabId": "v-ride"
+            },
+            {
+              "vocabId": "v-fast"
+            },
+            {
+              "vocabId": "v-slow"
+            },
+            {
+              "vocabId": "v-party"
+            }
+          ]
+        },
+        {
+          "id": "d061-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครขี่จักรยาน"
+          },
+          "audioText": "Ray is seventy. He rides his bike to the market on Friday. His bike is slow. Leo's bike is fast. Mali is sixty. She paints pictures in Chiang Mai. Leo often draws pictures.",
+          "question": {
+            "en": "Who rides a bike?",
+            "th": "ใครขี่จักรยาน"
+          },
+          "choices": [
+            "Ray",
+            "Mali",
+            "Leo"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d061-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Mali paints a picture. Rose takes a photo."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "At a party",
+        "th": "ที่งานเลี้ยง"
+      },
+      "exercises": [
+        {
+          "id": "d061-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "My birthday party is in May.",
+            "We eat cake and drink juice.",
+            "Dan and Rose take photos.",
+            "My friends run in the garden.",
+            "I ride my bike. It's fast.",
+            "Ray's bike is slow.",
+            "I draw a picture. Mali paints a picture.",
+            "We have fun!"
+          ]
+        },
+        {
+          "id": "d061-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกว่าคุณทำอะไรที่งานเลี้ยง และถ่ายรูปไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What do you do at a party? Do you take photos?",
+          "sampleAnswer": "At a party I eat cake and take photos. We have fun.",
+          "keywords": [
+            "party",
+            "photo"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Leo's party",
+        "th": "งานเลี้ยงของลีโอ"
+      },
+      "exercises": [
+        {
+          "id": "d061-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม (Leo's party = งานเลี้ยงของลีโอ)"
+          },
+          "text": "Every May Leo has a party at home. Dan and Rose take photos. Leo's friends run and play football in the garden. Leo draws a picture. Ray rides his bike to the party. His bike is slow. The party is fun.",
+          "questions": [
+            {
+              "question": {
+                "en": "What do Dan and Rose do?",
+                "th": "แดนกับโรสทำอะไร"
+              },
+              "choices": [
+                "Take photos",
+                "Run in the garden",
+                "Paint a picture"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who rides a bike to the party?",
+                "th": "ใครขี่จักรยานไปงานเลี้ยง"
+              },
+              "choices": [
+                "Ray",
+                "Leo",
+                "Dan"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Is Ray's bike fast or slow?",
+                "th": "จักรยานของเรย์เร็วหรือช้า"
+              },
+              "choices": [
+                "Slow",
+                "Fast"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: at a party",
+        "th": "เขียน: ที่งานเลี้ยง"
+      },
+      "exercises": [
+        {
+          "id": "d061-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "rides",
+            "My",
+            "grandfather",
+            "his",
+            "bike"
+          ],
+          "answer": "My grandfather rides his bike"
+        },
+        {
+          "id": "d061-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (เร็ว; ช้า; วิ่ง)"
+          },
+          "text": "The train is ___. The bus is ___. Leo and his friends ___ in the garden.",
+          "answer": [
+            "fast",
+            "slow",
+            "run"
+          ]
+        },
+        {
+          "id": "d061-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "งานเลี้ยงสนุก",
+          "accept": [
+            "The party is fun",
+            "The party is very fun",
+            "The party is a lot of fun"
+          ]
+        },
+        {
+          "id": "d061-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ลีโอวาดรูปบ่อย ๆ",
+          "accept": [
+            "Leo often draws pictures",
+            "Leo often draws a picture",
+            "Leo draws pictures often",
+            "Leo draws a picture often"
+          ]
+        },
+        {
+          "id": "d061-vocab-02",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-photo"
+            },
+            {
+              "vocabId": "v-draw"
+            },
+            {
+              "vocabId": "v-paint"
+            },
+            {
+              "vocabId": "v-fun"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
