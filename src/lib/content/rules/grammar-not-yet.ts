@@ -34,6 +34,15 @@ export const TIME_PREPOSITION_DAY = 51;
 export const PRESENT_CONTINUOUS_DAY = 64;
 export const CONTINUOUS_QUESTION_DAY = 65;
 
+/** Week 11 (phase 2): was / were on day 71, regular -ed on day 72, did / didn't on day 73; irregular past forms come in week 12 (day 78). */
+export const PAST_BE_DAY = 71;
+export const PAST_REGULAR_DAY = 72;
+export const PAST_DID_DAY = 73;
+export const PAST_IRREGULAR_DAY = 78;
+
+/** Irregular Past Simple forms of bank verbs (put, cost, cut, read keep their spelling and are not listed; "left" is also the adjective). */
+export const IRREGULAR_PAST: readonly string[] = ["met", "sat", "saw", "came", "had", "stood", "said", "ate", "drank", "went", "bought", "paid", "took", "gave", "got", "slept", "drove", "swam", "wrote", "sang", "wore", "ran", "rode", "drew", "sold", "taught", "spoke", "made", "found", "woke"];
+
 /**
  * The grammar structures a grammar_note can explain (`structures` ids) and the first day each is allowed. Every gate below
  * names one of them. Add an id here when a new gate is added; rule "grammar-note" rejects any other id in a note.
@@ -49,6 +58,10 @@ export const GRAMMAR_STRUCTURES: Readonly<Record<string, { day: number; what: st
   "time-prepositions": { day: TIME_PREPOSITION_DAY, what: "at / on / in with times, days and months (at seven o'clock, on Monday, in May)" },
   "present-continuous": { day: PRESENT_CONTINUOUS_DAY, what: "the present continuous statement (am / is / are + verb-ing: She is reading)" },
   "continuous-question": { day: CONTINUOUS_QUESTION_DAY, what: "present continuous questions, short answers and negatives (What are you doing? Is he reading? No, he isn't)" },
+  "past-be": { day: PAST_BE_DAY, what: "the Past Simple of be (was / were, wasn't / weren't)" },
+  "past-regular": { day: PAST_REGULAR_DAY, what: "the regular Past Simple (-ed: walked, played, studied, stopped, visited)" },
+  "past-did": { day: PAST_DID_DAY, what: 'Past Simple questions and negatives with did / didn\'t ("Did you walk?", "I didn\'t walk")' },
+  "past-irregular": { day: PAST_IRREGULAR_DAY, what: "irregular Past Simple forms (went, had, saw, bought ...); taught from week 12" },
   "frequency-adverb": { day: FREQUENCY_ADVERB_DAY, what: "adverbs of frequency (always, usually, often, sometimes, never) and their place before the main verb / after be" },
 };
 
@@ -88,6 +101,13 @@ export const GRAMMAR_NOT_BEFORE: Readonly<Record<string, GrammarGate>> = {
     structure: "clock-time", day: CLOCK_TIME_DAY, what: 'telling the time with "o\'clock"',
     fix: `Rewrite the sentence without clock times, or explain "o'clock" in the \`glossary\` of a read_passage.`,
   },
+  was: { structure: "past-be", day: PAST_BE_DAY, what: 'the Past Simple of be ("was")', fix: `Use "am" / "is" / "are" (the present), or explain "was" in the \`glossary\` of a read_passage.` },
+  were: { structure: "past-be", day: PAST_BE_DAY, what: 'the Past Simple of be ("were")', fix: `Use "am" / "is" / "are" (the present), or explain "were" in the \`glossary\` of a read_passage.` },
+  did: { structure: "past-did", day: PAST_DID_DAY, what: 'the Past Simple helper "did" (Did you ...? / didn\'t)', fix: `Use "do" / "does" (the present), or explain "did" in the \`glossary\` of a read_passage.` },
+  ...Object.fromEntries(IRREGULAR_PAST.map((w) => [w, {
+    structure: "past-irregular", day: PAST_IRREGULAR_DAY, what: `the irregular Past Simple form "${w}" (taught from week 12)`,
+    fix: `Rewrite the sentence in the present, or with a regular verb in the past ("walked", "played"), or explain "${w}" in the \`glossary\` of a read_passage.`,
+  } satisfies GrammarGate])),
   ...Object.fromEntries(["raining", "snowing"].map((w) => [w, {
     structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, what: `the present continuous "be ${w}"`, fix: CONTINUOUS_FIX,
   } satisfies GrammarGate])),
@@ -132,6 +152,16 @@ function gates(ctx: RuleContext): Map<string, GrammarGate & { base?: string }> {
       out.set(form, { structure: "present-continuous", day: PRESENT_CONTINUOUS_DAY, afterBe: true, base, what: `the present continuous "be ${form}"`, fix: CONTINUOUS_FIX });
     }
   }
+  // the regular Past Simple: the -ed form of every verb entry (listed forms and generated ones), unless the form is a word in its own right (tired)
+  for (const { item } of ctx.bank.values()) {
+    const base = item.word.toLowerCase().split(/\s+/)[0];
+    if (item.pos !== "verb" || ["be", "have", "do"].includes(base)) continue;
+    const forms = [...surfaceForms(item), ...Object.values(item.forms ?? {}).flatMap((v) => v.toLowerCase().split("/").map((x) => x.trim().split(/\s+/)[0]))];
+    for (const form of forms) {
+      if (!/^[a-z]{3,}ed$/.test(form) || form === base || bankWords.has(form) || ALWAYS_ALLOWED.has(form) || out.has(form)) continue;
+      out.set(form, { structure: "past-regular", day: PAST_REGULAR_DAY, base, what: `the regular Past Simple form "${form}" of "${base}"`, fix: `Rewrite the sentence in the present ("I ${base}"), or explain "${form}" in the \`glossary\` of a read_passage.` });
+    }
+  }
   return out;
 }
 
@@ -140,6 +170,8 @@ const NOUN_CONTEXT = new Set(["a", "an", "the", "my", "your", "his", "her", "its
 
 /** Every English text a learner reads or hears, field by field: learnerEnglish plus the alternative accepted answers that it leaves out. */
 export function checkedEnglish(ex: Exercise): LearnerField[] {
+  // a bare comma list of words ("Walked, looked, played, called.") is a sound drill for the grammar gates, not a sentence
+  if (ex.type === "repeat_after_me" && /^[A-Za-z']+(?:, [A-Za-z']+){2,}\.?$/.test(ex.text)) return [{ field: "text", text: ex.text, drill: true }];
   const list = (name: string, xs: readonly string[], from = 0): LearnerField[] => xs.slice(from).map((text, i) => ({ field: `${name}[${i + from}]`, text }));
   switch (ex.type) {
     case "translate_th_en": return [...learnerEnglish(ex), ...list("accept", ex.accept, 1)];

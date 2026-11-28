@@ -303,3 +303,11 @@ describe("Past Simple (week 11): was / were day 71, regular -ed day 72, did / di
     expect(check(on(70, dict("I walked home", [])), bank)).toHaveLength(1);
   });
 });
+
+describe("a bare comma list of words in repeat_after_me is a sound drill (week 8 -ed endings)", () => {
+  const bank = [...BANK, verb("walk"), verb("look"), verb("play"), verb("call")];
+  it("'Walked, looked, played, called.' is quiet on day 52, a sentence with the same forms is not", () => {
+    expect(check(on(52, say(52, "Walked, looked, played, called.")), bank)).toEqual([]);
+    expect(check(on(52, say(52, "We walked and played.")), bank)).toHaveLength(1);
+  });
+});
