@@ -121,10 +121,28 @@
       },
       "exercises": [
         {
+          "id": "d036-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครชอบไก่ ไวยากรณ์ใหม่ Present Simple (บอกสิ่งที่ชอบหรือทำเป็นประจำ): กับ I, you, we, they ใช้กริยาเดิม (I like) แต่กับ he, she, it หรือชื่อคนเดียว ต้องเติม -s ที่กริยา (Dan likes, she eats)"
+          },
+          "audioText": "I am Rose. I like rice and fish. My husband, Dan, likes meat and chicken. My son, Leo, likes bananas and milk.",
+          "question": {
+            "en": "Who likes chicken?",
+            "th": "ใครชอบไก่"
+          },
+          "choices": [
+            "Rose",
+            "Dan",
+            "Leo"
+          ],
+          "answer": 1
+        },
+        {
           "id": "d036-vocab-01",
           "type": "vocab_match",
           "instruction": {
-            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
           },
           "pairs": [
             {
@@ -146,24 +164,6 @@
               "vocabId": "v-fruit"
             }
           ]
-        },
-        {
-          "id": "d036-listen-01",
-          "type": "listen_choose",
-          "instruction": {
-            "th": "ฟังแล้วตอบว่าใครชอบไก่ ไวยากรณ์ใหม่ Present Simple (บอกสิ่งที่ชอบหรือทำเป็นประจำ): กับ I, you, we, they ใช้กริยาเดิม (I like) แต่กับ he, she, it หรือชื่อคนเดียว ต้องเติม -s ที่กริยา (Dan likes, she eats)"
-          },
-          "audioText": "I am Rose. I like rice and fish. My husband, Dan, likes meat and chicken. My son, Leo, likes bananas and milk.",
-          "question": {
-            "en": "Who likes chicken?",
-            "th": "ใครชอบไก่"
-          },
-          "choices": [
-            "Rose",
-            "Dan",
-            "Leo"
-          ],
-          "answer": 1
         },
         {
           "id": "d036-listen-02",
@@ -188,7 +188,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "My son likes bread and some fruit. He drinks milk."
+          "audioText": "My son eats bread and some fruit. He drinks milk."
         }
       ]
     },
@@ -208,7 +208,7 @@
           "lines": [
             "I like rice and chicken.",
             "My son likes bread and milk.",
-            "He eats a banana and some fruit.",
+            "He eats a banana and some bread.",
             "My husband likes meat.",
             "He eats some meat and some rice.",
             "We drink some milk and some water.",

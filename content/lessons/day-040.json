@@ -118,10 +118,27 @@
       },
       "exercises": [
         {
+          "id": "d040-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสสั่งอะไร"
+          },
+          "audioText": "Nan and Rose are in a restaurant. The waiter has the menu. Nan orders a salad and a bottle of water. Rose orders soup and a cup of tea.",
+          "question": {
+            "en": "What does Rose order?",
+            "th": "โรสสั่งอะไร"
+          },
+          "choices": [
+            "Soup and tea",
+            "A salad and water"
+          ],
+          "answer": 0
+        },
+        {
           "id": "d040-vocab-01",
           "type": "vocab_match",
           "instruction": {
-            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
           },
           "pairs": [
             {
@@ -143,23 +160,6 @@
               "vocabId": "v-spoon"
             }
           ]
-        },
-        {
-          "id": "d040-listen-01",
-          "type": "listen_choose",
-          "instruction": {
-            "th": "ฟังแล้วตอบว่าโรสสั่งอะไร"
-          },
-          "audioText": "Nan and Rose are in a restaurant. The waiter has the menu. Nan orders a salad and a bottle of water. Rose orders soup and a cup of tea.",
-          "question": {
-            "en": "What does Rose order?",
-            "th": "โรสสั่งอะไร"
-          },
-          "choices": [
-            "Soup and tea",
-            "A salad and water"
-          ],
-          "answer": 0
         },
         {
           "id": "d040-listen-02",
@@ -210,7 +210,7 @@
             "A bottle of water?",
             "Yes, a bottle of water, please.",
             "A knife and a fork, please. And a spoon.",
-            "We order rice, chicken and soup.",
+            "Rice, chicken and soup. Thank you!",
             "The bill, please.",
             "The bill is ninety baht. Thank you!"
           ]

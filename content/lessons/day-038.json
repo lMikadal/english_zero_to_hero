@@ -115,10 +115,28 @@
       },
       "exercises": [
         {
+          "id": "d038-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครทำอาหารเย็น ไวยากรณ์ใหม่ ประโยคปฏิเสธ Present Simple: I/you/we/they + do not (don't) + กริยา; he/she/it หรือชื่อคนเดียว + does not (doesn't) + กริยาเดิม (ไม่เติม -s: He does not cook)"
+          },
+          "audioText": "Rose cooks dinner in the kitchen. Dan doesn't cook. He eats dinner with Leo. Leo doesn't like vegetables. He likes potatoes.",
+          "question": {
+            "en": "Who cooks dinner?",
+            "th": "ใครทำอาหารเย็น"
+          },
+          "choices": [
+            "Rose",
+            "Dan",
+            "Leo"
+          ],
+          "answer": 0
+        },
+        {
           "id": "d038-vocab-01",
           "type": "vocab_match",
           "instruction": {
-            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
           },
           "pairs": [
             {
@@ -140,24 +158,6 @@
               "vocabId": "v-kitchen"
             }
           ]
-        },
-        {
-          "id": "d038-listen-01",
-          "type": "listen_choose",
-          "instruction": {
-            "th": "ฟังแล้วตอบว่าใครทำอาหารเย็น ไวยากรณ์ใหม่ ประโยคปฏิเสธ Present Simple: I/you/we/they + do not (don't) + กริยา; he/she/it หรือชื่อคนเดียว + does not (doesn't) + กริยาเดิม (ไม่เติม -s: He does not cook)"
-          },
-          "audioText": "Rose cooks dinner in the kitchen. Dan doesn't cook. He eats dinner with Leo. Leo doesn't like vegetables. He likes potatoes.",
-          "question": {
-            "en": "Who cooks dinner?",
-            "th": "ใครทำอาหารเย็น"
-          },
-          "choices": [
-            "Rose",
-            "Dan",
-            "Leo"
-          ],
-          "answer": 0
         },
         {
           "id": "d038-listen-02",
@@ -206,7 +206,7 @@
             "Rose cooks dinner. Dan doesn't cook.",
             "Rose likes salad and vegetables.",
             "I don't like vegetables. I like potatoes.",
-            "On my birthday we eat dinner in a restaurant.",
+            "On my birthday we have lunch in a restaurant.",
             "It is a big meal. Dinner is my favourite meal."
           ]
         },

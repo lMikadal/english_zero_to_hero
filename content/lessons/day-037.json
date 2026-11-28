@@ -116,10 +116,28 @@
       },
       "exercises": [
         {
+          "id": "d037-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าอาหารโปรดของลีโอคืออะไร (Leo's = ของลีโอ)"
+          },
+          "audioText": "Hi! I am Leo. My favourite food is pizza. I like cheese and chocolate cake. My father drinks coffee with sugar. My mother drinks tea. She likes salt in her soup.",
+          "question": {
+            "en": "What is Leo's favourite food?",
+            "th": "อาหารโปรดของลีโอคืออะไร"
+          },
+          "choices": [
+            "Pizza",
+            "Cake",
+            "Soup"
+          ],
+          "answer": 0
+        },
+        {
           "id": "d037-vocab-01",
           "type": "vocab_match",
           "instruction": {
-            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
           },
           "pairs": [
             {
@@ -141,24 +159,6 @@
               "vocabId": "v-cake"
             }
           ]
-        },
-        {
-          "id": "d037-listen-01",
-          "type": "listen_choose",
-          "instruction": {
-            "th": "ฟังแล้วตอบว่าอาหารโปรดของลีโอคืออะไร (Leo's = ของลีโอ)"
-          },
-          "audioText": "Hi! I am Leo. My favourite food is pizza. I like cheese and chocolate cake. My father drinks coffee with sugar. My mother drinks tea. She likes soup with some salt.",
-          "question": {
-            "en": "What is Leo's favourite food?",
-            "th": "อาหารโปรดของลีโอคืออะไร"
-          },
-          "choices": [
-            "Pizza",
-            "Cake",
-            "Soup"
-          ],
-          "answer": 0
         },
         {
           "id": "d037-listen-02",

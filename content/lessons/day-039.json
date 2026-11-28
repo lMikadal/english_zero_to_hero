@@ -115,10 +115,27 @@
       },
       "exercises": [
         {
+          "id": "d039-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าโรสซื้ออะไร ไวยากรณ์ใหม่: กริยาที่ลงท้าย -o, -s, -sh, -ch, -x เติม -es (go → goes, do → does, wash → washes) ส่วน buy, pay, take เติม -s ธรรมดา (buys, pays, takes)"
+          },
+          "audioText": "Rose takes the bus to the market. She asks the price of the fruit. She buys fruit and vegetables. She pays eighty baht and goes home.",
+          "question": {
+            "en": "What does Rose buy?",
+            "th": "โรสซื้ออะไร"
+          },
+          "choices": [
+            "Fruit and vegetables",
+            "Meat and bread"
+          ],
+          "answer": 0
+        },
+        {
           "id": "d039-vocab-01",
           "type": "vocab_match",
           "instruction": {
-            "th": "ดูความหมายของคำใหม่ก่อนฟัง: จับคู่คำกับความหมายภาษาไทย"
+            "th": "จับคู่คำใหม่ที่เพิ่งได้ยินกับความหมาย"
           },
           "pairs": [
             {
@@ -139,29 +156,12 @@
           ]
         },
         {
-          "id": "d039-listen-01",
-          "type": "listen_choose",
-          "instruction": {
-            "th": "ฟังแล้วตอบว่าโรสซื้ออะไร ไวยากรณ์ใหม่: กริยาที่ลงท้าย -o, -s, -sh, -ch, -x เติม -es (go → goes, do → does, wash → washes) ส่วน buy, pay, take เติม -s ธรรมดา (buys, pays, takes)"
-          },
-          "audioText": "Rose takes the bus to the market. She buys fruit and vegetables. She pays eighty baht and goes home.",
-          "question": {
-            "en": "What does Rose buy?",
-            "th": "โรสซื้ออะไร"
-          },
-          "choices": [
-            "Fruit and vegetables",
-            "Meat and bread"
-          ],
-          "answer": 0
-        },
-        {
           "id": "d039-listen-02",
           "type": "listen_choose",
           "instruction": {
             "th": "ฟังแล้วตอบว่านมราคาเท่าไร คำถาม What/Where + do/does + ประธาน + กริยาเดิม (What do you need? What does she want?)"
           },
-          "audioText": "I need some milk. I ask the man, \"What is the price of the milk?\" He says, \"It is forty baht.\" I want two.",
+          "audioText": "I need some milk. I ask the man, \"What is the price of the milk?\" He says, \"It is forty baht.\" I buy the milk. I give him fifty baht.",
           "question": {
             "en": "What is the price of the milk?",
             "th": "นมราคาเท่าไร"
@@ -179,7 +179,7 @@
           "instruction": {
             "th": "ฟังแล้วพิมพ์ตาม"
           },
-          "audioText": "She goes to the market. She buys some fruit."
+          "audioText": "She goes to the market. She buys some fruit. She pays forty baht."
         }
       ]
     },
@@ -199,12 +199,12 @@
           "lines": [
             "Hello! I need some milk and some bread.",
             "The milk is forty baht and the bread is thirty baht.",
-            "I want some bananas too. I ask the price.",
+            "I want some bananas too. How much are they?",
             "The bananas are twenty baht.",
             "I buy the milk, the bread and the bananas.",
-            "I pay ninety baht. I give you a hundred baht.",
-            "Take the bag and ten baht. Thank you!",
-            "Thank you. I go home."
+            "That is ninety baht, please.",
+            "Take a hundred baht. Thank you!",
+            "Thank you. Take the bag and ten baht. Goodbye!"
           ]
         },
         {

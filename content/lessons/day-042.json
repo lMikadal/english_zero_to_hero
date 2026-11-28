@@ -129,10 +129,10 @@
             "And a salad, please.",
             "Do you want some chicken?",
             "No, thank you. I don't eat meat.",
-            "I order chicken and rice and a bowl of soup.",
+            "Chicken and rice and a bowl of soup, please.",
             "A knife, a fork and a spoon, please.",
             "The waiter gives us a plate.",
-            "The bill, please. I pay.",
+            "The bill, please.",
             "Thank you!"
           ]
         },
@@ -164,7 +164,7 @@
           "instruction": {
             "th": "อ่านแล้วตอบคำถาม"
           },
-          "text": "Nan and Rose are in a restaurant. The waiter gives Nan the menu.\nNan: I am thirsty. I want a bottle of water and a salad.\nRose: I order chicken and rice, and a bowl of soup.\nThe waiter gives Rose a plate, a spoon, a knife and a fork.\nNan: The bill, please.\nThe bill is ninety baht. Nan pays and gives the waiter a hundred baht.",
+          "text": "Nan and Rose are in a restaurant. They order lunch. The waiter gives Nan the menu.\nNan: I am thirsty. I want a bottle of water and a salad.\nRose: Chicken and rice, and a bowl of soup, please.\nThe waiter gives Rose a plate, a spoon, a knife and a fork.\nNan: The bill, please.\nThe bill is ninety baht. Nan pays and gives the waiter a hundred baht.",
           "questions": [
             {
               "question": {

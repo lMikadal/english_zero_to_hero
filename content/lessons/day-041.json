@@ -136,7 +136,7 @@
           "instruction": {
             "th": "ฟังแล้วตอบว่าโรสซื้ออะไร"
           },
-          "audioText": "Rose goes to the market. She needs vegetables, potatoes and chicken. She asks the man, \"What is the price of the chicken?\" He says, \"It is eighty baht.\" Rose buys the chicken, some bananas and some bread. She pays and takes the bag. She goes home and cooks dinner in the kitchen.",
+          "audioText": "Rose goes to the market. She needs chicken, some bananas and some bread. She asks the man, \"What is the price of the chicken?\" He says, \"It is eighty baht.\" Rose buys the chicken, some bananas and some bread. She pays and takes the bag. She goes home and cooks dinner in the kitchen.",
           "question": {
             "en": "What does Rose buy?",
             "th": "โรสซื้ออะไร"
@@ -175,9 +175,9 @@
             "I want some fruit too. What's the price?",
             "The bananas are twenty baht.",
             "I buy the bananas and the rice.",
-            "I give you a hundred baht.",
+            "That is forty baht, please.",
             "Take the bag. Thank you!",
-            "I go home and cook dinner in the kitchen.",
+            "At home I cook dinner in the kitchen.",
             "Dan doesn't cook. He drinks coffee with sugar."
           ]
         },
@@ -213,8 +213,8 @@
           "questions": [
             {
               "question": {
-                "en": "Who cooks dinner?",
-                "th": "ใครทำอาหารเย็น"
+                "en": "Who cooks lunch?",
+                "th": "ใครทำอาหารกลางวัน"
               },
               "choices": [
                 "Rose",
