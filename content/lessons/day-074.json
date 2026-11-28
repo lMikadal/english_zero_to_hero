@@ -1,0 +1,334 @@
+{
+  "day": 74,
+  "phase": 2,
+  "week": 11,
+  "type": "lesson",
+  "cefr": "A1",
+  "title": {
+    "en": "Hobbies: what did you play?",
+    "th": "งานอดิเรก: คุณเล่นอะไร"
+  },
+  "objectives": [
+    {
+      "en": "Talk about hobbies and sports you played last week",
+      "th": "พูดเรื่องงานอดิเรกและกีฬาที่เล่นเมื่อสัปดาห์ที่แล้วได้"
+    },
+    {
+      "en": "Use was, were, -ed and did in one story",
+      "th": "ใช้ was, were, -ed และ did ในเรื่องเดียวกันได้"
+    },
+    {
+      "en": "Say the ending -ed as /ɪd/ after t and d",
+      "th": "ออกเสียงท้าย -ed เป็น /ɪd/ หลัง t และ d ได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-hobby",
+    "v-tennis",
+    "v-piano",
+    "v-team",
+    "v-match",
+    "v-player",
+    "v-club"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "The ending -ed: /ɪd/",
+        "th": "เสียงท้าย -ed: /ɪd/"
+      },
+      "exercises": [
+        {
+          "id": "d074-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "id",
+          "ipa": "/ɪd/",
+          "tipTh": "กริยาที่ลงท้ายด้วย t หรือ d เติม -ed แล้วเป็นพยางค์เพิ่ม /ɪd/ (started = START-id สองพยางค์) คนไทยมักตัดทิ้ง ทำให้ started ฟังเหมือน start ซึ่งเป็นปัจจุบัน ให้นับพยางค์ให้ครบทุกครั้งที่เล่าเรื่องในอดีต",
+          "examples": [
+            "wanted",
+            "needed",
+            "started",
+            "visited"
+          ]
+        },
+        {
+          "id": "d074-pron-02",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม started มีสองพยางค์ (START-id)"
+          },
+          "text": "Leo started the match.",
+          "ipa": "/ˈliːoʊ ˈstɑːrtɪd ðə mætʃ/",
+          "phonemes": [
+            "id"
+          ]
+        },
+        {
+          "id": "d074-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม visited มีสามพยางค์ (VIS-it-id)"
+          },
+          "text": "Nan visited the club.",
+          "ipa": "/næn ˈvɪzɪtɪd ðə klʌb/",
+          "phonemes": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: hobbies",
+        "th": "ฟัง: งานอดิเรก"
+      },
+      "exercises": [
+        {
+          "id": "d074-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าใครดูการแข่งขันของลีโอ"
+          },
+          "audioText": "Last Saturday Leo's team played a match. Leo was a great player. His team was happy because the match was great. Dan and Rose watched the match.",
+          "question": {
+            "en": "Who watched Leo's match?",
+            "th": "ใครดูการแข่งขันของลีโอ"
+          },
+          "choices": [
+            "Dan and Rose",
+            "Mali",
+            "Nan"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d074-vocab-01",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-hobby"
+            },
+            {
+              "vocabId": "v-tennis"
+            },
+            {
+              "vocabId": "v-piano"
+            },
+            {
+              "vocabId": "v-team"
+            },
+            {
+              "vocabId": "v-match"
+            },
+            {
+              "vocabId": "v-player"
+            },
+            {
+              "vocabId": "v-club"
+            }
+          ]
+        },
+        {
+          "id": "d074-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าแนนเล่นอะไร"
+          },
+          "audioText": "I am Rose. My hobby is tennis. Yesterday Dan and I played tennis at a club. We enjoyed it. Then Nan played the piano. It was great.",
+          "question": {
+            "en": "What did Nan play?",
+            "th": "แนนเล่นอะไร"
+          },
+          "choices": [
+            "The piano",
+            "Tennis",
+            "Football"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "d074-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "Nan played the piano at the club."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "Speak: my hobby",
+        "th": "พูด: งานอดิเรกของฉัน"
+      },
+      "exercises": [
+        {
+          "id": "d074-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "My hobby is music.",
+            "Nan played the piano yesterday.",
+            "Dan and Rose played tennis.",
+            "Leo's team played a match.",
+            "The player was fast.",
+            "Leo plays football in a club.",
+            "The match was great.",
+            "We watched the match and we enjoyed it."
+          ]
+        },
+        {
+          "id": "d074-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "บอกงานอดิเรกของคุณ และบอกว่าสัปดาห์ที่แล้วคุณทำไหม ตอบตามจริงหรือแต่งเรื่องก็ได้"
+          },
+          "prompt": "What is your hobby? Did you do it last week?",
+          "sampleAnswer": "My hobby is football. Yes, I did. I played football last Saturday.",
+          "keywords": [
+            "hobby",
+            "did"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Read: Leo's hobby",
+        "th": "อ่าน: งานอดิเรกของลีโอ"
+      },
+      "exercises": [
+        {
+          "id": "d074-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Leo's hobby is football. He plays in a club. Last Saturday his team played a match. Leo was a great player. He jumped and laughed. His team was happy. In the evening Rose and Dan played tennis and Nan played the piano.",
+          "questions": [
+            {
+              "question": {
+                "en": "What is Leo's hobby?",
+                "th": "งานอดิเรกของลีโอคืออะไร"
+              },
+              "choices": [
+                "Tennis",
+                "Football",
+                "Piano"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "Who played the piano?",
+                "th": "ใครเล่นเปียโน"
+              },
+              "choices": [
+                "Rose",
+                "Leo",
+                "Nan"
+              ],
+              "answer": 2
+            },
+            {
+              "question": {
+                "en": "Was Leo's team happy?",
+                "th": "ทีมของลีโอมีความสุขไหม"
+              },
+              "choices": [
+                "Yes, it was",
+                "No, it was not"
+              ],
+              "answer": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: hobbies in the past",
+        "th": "เขียน: งานอดิเรกในอดีต"
+      },
+      "exercises": [
+        {
+          "id": "d074-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "played",
+            "The",
+            "team",
+            "a",
+            "match"
+          ],
+          "answer": "The team played a match",
+          "statementOnly": true
+        },
+        {
+          "id": "d074-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำ (งานอดิเรก; สโมสร)"
+          },
+          "text": "My ___ is tennis. We played at a ___.",
+          "answer": [
+            "hobby",
+            "club"
+          ]
+        },
+        {
+          "id": "d074-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "แนนเล่นเปียโนเมื่อวาน",
+          "accept": [
+            "Nan played the piano yesterday",
+            "Yesterday Nan played the piano"
+          ]
+        },
+        {
+          "id": "d074-write-04",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ทีมของลีโอเล่นแข่งเมื่อวันเสาร์ที่แล้ว",
+          "accept": [
+            "Leo's team played a match last Saturday",
+            "Last Saturday Leo's team played a match"
+          ]
+        },
+        {
+          "id": "d074-write-05",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "งานอดิเรกของฉันคือเทนนิส",
+          "accept": [
+            "My hobby is tennis"
+          ]
+        }
+      ]
+    }
+  ]
+}
