@@ -1,0 +1,319 @@
+{
+  "day": 18,
+  "phase": 1,
+  "week": 3,
+  "type": "lesson",
+  "cefr": "preA1",
+  "title": {
+    "en": "These are my parents! /θ/ and /ð/ together",
+    "th": "These are my parents! เสียง /θ/ และ /ð/ รวมกัน"
+  },
+  "objectives": [
+    {
+      "en": "Use these and those for more than one person or thing",
+      "th": "ใช้ these และ those กับคนหรือสิ่งของมากกว่าหนึ่งได้"
+    },
+    {
+      "en": "Tell /θ/ and /ð/ apart, and tell them from /s/, /z/ and /d/",
+      "th": "แยกเสียง /θ/ กับ /ð/ ได้ และแยกจาก /s/, /z/, /d/ ได้"
+    },
+    {
+      "en": "Talk about men, women, people and grandparents",
+      "th": "พูดถึงผู้ชาย ผู้หญิง ผู้คน และตายายหรือปู่ย่าได้"
+    }
+  ],
+  "estimatedMinutes": 30,
+  "vocab": [
+    "v-these",
+    "v-those",
+    "v-man",
+    "v-woman",
+    "v-people",
+    "v-grandmother",
+    "v-grandfather",
+    "v-eighteen"
+  ],
+  "sections": [
+    {
+      "skill": "pronunciation",
+      "title": {
+        "en": "/θ/ and /ð/ together",
+        "th": "เสียง /θ/ และ /ð/ รวมกัน"
+      },
+      "exercises": [
+        {
+          "id": "d018-pron-01",
+          "type": "phoneme_intro",
+          "instruction": {
+            "th": "ฟังและสังเกตรูปปาก"
+          },
+          "phoneme": "th",
+          "ipa": "/θ/ /ð/",
+          "tipTh": "ทบทวนสองเสียงของ th: /θ/ ไม่สั่นคอ (thank, three, thirteen, birthday) และ /ð/ สั่นคอ (this, that, these, those, mother, father, brother, with) ลิ้นอยู่ระหว่างฟันเหมือนกัน ต่างกันที่เสียงสั่นในคอ these และ those ลงท้ายด้วย /z/ ให้สั่นคอตลอดคำ คนไทยมักพูดเป็น 'ดีส' 'โดส' ให้ระวังอย่าให้ลิ้นหลบไปอยู่หลังฟันบน ฝึกพูดช้า ๆ: three (ไม่สั่น) – these (สั่น)",
+          "examples": [
+            "three",
+            "these",
+            "those",
+            "thank"
+          ]
+        },
+        {
+          "id": "d018-pron-02",
+          "type": "minimal_pair",
+          "instruction": {
+            "th": "ฟังแล้วเลือกคำที่ได้ยิน"
+          },
+          "pairs": [
+            {
+              "a": "those",
+              "b": "doze",
+              "answer": "a"
+            },
+            {
+              "a": "worth",
+              "b": "worse",
+              "answer": "b"
+            },
+            {
+              "a": "thin",
+              "b": "fin",
+              "answer": "a"
+            }
+          ]
+        },
+        {
+          "id": "d018-pron-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวังเสียง /ð/ ใน those, grandmother และ grandfather"
+          },
+          "text": "Those are my grandmother and grandfather.",
+          "ipa": "/ðoʊz ɑːr maɪ ˈɡrænmʌðər ænd ˈɡrænfɑːðər/"
+        }
+      ]
+    },
+    {
+      "skill": "listening",
+      "title": {
+        "en": "Listen: these people, those people",
+        "th": "ฟัง: คนกลุ่มนี้ คนกลุ่มนั้น"
+      },
+      "exercises": [
+        {
+          "id": "d018-listen-01",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าคนกลุ่มที่อยู่ไกล (those) คือใคร"
+          },
+          "audioText": "These are my parents. Those are my grandmother and grandfather.",
+          "question": {
+            "en": "Who are those?",
+            "th": "คนกลุ่มนั้นคือใคร"
+          },
+          "choices": [
+            "Parents",
+            "Grandmother and grandfather",
+            "Friends"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "d018-listen-02",
+          "type": "listen_choose",
+          "instruction": {
+            "th": "ฟังแล้วตอบว่าเพื่อนอายุเท่าไร"
+          },
+          "audioText": "This woman is my teacher. That man is my teacher, too. These people are my friends. They are eighteen.",
+          "question": {
+            "en": "How old are the friends?",
+            "th": "เพื่อนอายุเท่าไร"
+          },
+          "choices": [
+            "Sixteen",
+            "Seventeen",
+            "Eighteen"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "d018-listen-03",
+          "type": "dictation",
+          "instruction": {
+            "th": "ฟังแล้วพิมพ์ตาม"
+          },
+          "audioText": "These people are my friends. They are very nice."
+        }
+      ]
+    },
+    {
+      "skill": "speaking",
+      "title": {
+        "en": "These and those",
+        "th": "these และ those"
+      },
+      "exercises": [
+        {
+          "id": "d018-speak-01",
+          "type": "shadowing",
+          "instruction": {
+            "th": "พูดตามทันทีทีละประโยค"
+          },
+          "lines": [
+            "These are my parents.",
+            "Those are my friends.",
+            "This man is my grandfather.",
+            "That woman is my grandmother.",
+            "They are very nice people."
+          ]
+        },
+        {
+          "id": "d018-speak-02",
+          "type": "speak_answer",
+          "instruction": {
+            "th": "นึกภาพคนสองกลุ่ม กลุ่มที่อยู่ใกล้ใช้ these กลุ่มที่อยู่ไกลใช้ those แล้วบอกว่าเป็นใคร"
+          },
+          "prompt": "Who are these people? Who are those people?",
+          "sampleAnswer": "These are my parents. Those are my friends.",
+          "keywords": [
+            "these",
+            "those"
+          ]
+        },
+        {
+          "id": "d018-speak-03",
+          "type": "repeat_after_me",
+          "instruction": {
+            "th": "ฟังแล้วพูดตาม ระวัง /ð/ ใน those และ women ออกเสียงว่า 'วิมิน' (/ˈwɪmɪn/) ไม่ใช่ 'โวเมน'"
+          },
+          "text": "Those men and women are my friends.",
+          "ipa": "/ðoʊz men ænd ˈwɪmɪn ɑːr maɪ frendz/"
+        }
+      ]
+    },
+    {
+      "skill": "reading",
+      "title": {
+        "en": "Max and his family",
+        "th": "แม็กซ์กับครอบครัว"
+      },
+      "exercises": [
+        {
+          "id": "d018-read-01",
+          "type": "read_passage",
+          "instruction": {
+            "th": "อ่านแล้วตอบคำถาม"
+          },
+          "text": "Hello! I am Max. This is my family. This woman is my mother. This man is my father. That woman is my grandmother. That man is my grandfather. My brother is eighteen. He is a student. We are very happy.",
+          "questions": [
+            {
+              "question": {
+                "en": "Who is this woman?",
+                "th": "ผู้หญิงคนนี้คือใคร"
+              },
+              "choices": [
+                "His mother",
+                "His grandmother"
+              ],
+              "answer": 0
+            },
+            {
+              "question": {
+                "en": "Who is that man?",
+                "th": "ผู้ชายคนนั้นคือใคร"
+              },
+              "choices": [
+                "His father",
+                "His grandfather"
+              ],
+              "answer": 1
+            },
+            {
+              "question": {
+                "en": "How old is his brother?",
+                "th": "พี่ชายหรือน้องชายของเขาอายุเท่าไร"
+              },
+              "choices": [
+                "Seventeen",
+                "Eighteen"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing",
+      "title": {
+        "en": "Write: these and those",
+        "th": "เขียน: these และ those"
+      },
+      "exercises": [
+        {
+          "id": "d018-write-01",
+          "type": "arrange_words",
+          "instruction": {
+            "th": "เรียงคำให้เป็นประโยค"
+          },
+          "words": [
+            "are",
+            "These",
+            "my",
+            "parents"
+          ],
+          "answer": "These are my parents"
+        },
+        {
+          "id": "d018-write-02",
+          "type": "fill_blank",
+          "instruction": {
+            "th": "เติมคำที่หายไป"
+          },
+          "text": "One man, two ___. One woman, two ___.",
+          "answer": [
+            "men",
+            "women"
+          ]
+        },
+        {
+          "id": "d018-write-03",
+          "type": "translate_th_en",
+          "instruction": {
+            "th": "แปลเป็นภาษาอังกฤษ"
+          },
+          "th": "ผู้หญิงคนนั้นคือยายของฉัน",
+          "accept": [
+            "That woman is my grandmother"
+          ]
+        },
+        {
+          "id": "d018-write-04",
+          "type": "vocab_match",
+          "instruction": {
+            "th": "จับคู่คำกับความหมายภาษาไทย"
+          },
+          "pairs": [
+            {
+              "vocabId": "v-these"
+            },
+            {
+              "vocabId": "v-those"
+            },
+            {
+              "vocabId": "v-man"
+            },
+            {
+              "vocabId": "v-woman"
+            },
+            {
+              "vocabId": "v-people"
+            },
+            {
+              "vocabId": "v-grandfather"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
