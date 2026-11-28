@@ -53,7 +53,12 @@ export default async function DayPage({ params, searchParams }: { params: Promis
       <StatusScreen
         icon="🔒"
         title="ยังไม่ปลดล็อก"
-        actions={<Link href={`/day/${playableDay}`} className={buttonClass("primary")}>ไปบทเรียนวันที่ {playableDay}</Link>}
+        actions={
+          // while a checkpoint blocks, the one way on is the checkpoint (day A is already finished), whichever later day was asked for
+          blocking !== null
+            ? <Link href={`/checkpoint/${blocking}`} className={buttonClass("primary")}>ไปทำแบบทดสอบ</Link>
+            : <Link href={`/day/${playableDay}`} className={buttonClass("primary")}>ไปบทเรียนวันที่ {playableDay}</Link>
+        }
       >
         <p className={TEXT}>เรียนบทก่อนหน้าให้จบตามลำดับก่อน แล้วบทวันที่ {day} จะเปิดให้</p>
       </StatusScreen>

@@ -23,7 +23,8 @@ export async function getCurrentDay(): Promise<number> {
  */
 export const getGate = cache(async () => {
   const profile = await getLearnerProfile();
-  const gate = await getCheckpointGate(getDb(), await getCurrentUserId(), profile, { getCheckpoint });
+  // the user id comes with the (cached) profile row: no second getCurrentUserId() per request
+  const gate = await getCheckpointGate(getDb(), profile.userId, profile, { getCheckpoint });
   return { currentDay: profile.currentDay, blocking: gate.blocking, playableDay: gate.playableDay };
 });
 
