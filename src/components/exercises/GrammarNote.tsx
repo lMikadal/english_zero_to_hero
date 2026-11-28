@@ -21,7 +21,7 @@ export function GrammarNote({ exercise, onContinue }: ExerciseProps<"grammar_not
       <Instruction th={exercise.instruction.th} en={exercise.instruction.en} />
       <Card pad="p-4" className="flex flex-col gap-3">
         <p className="self-start rounded-full border border-accent/40 px-2.5 py-0.5 text-xs font-medium text-accent">ไวยากรณ์</p>
-        <h4 className="break-words text-lg font-bold leading-snug text-fg">{exercise.titleTh}</h4>
+        <h4 className="text-balance break-words text-lg font-bold leading-snug text-fg">{exercise.titleTh}</h4>
         <div className="flex flex-col gap-2 text-[15px] leading-relaxed text-fg">
           {paragraphs.map((p, i) => <p key={i} className="break-words"><MixedText text={p} /></p>)}
         </div>
@@ -51,8 +51,8 @@ export function GrammarNote({ exercise, onContinue }: ExerciseProps<"grammar_not
       <AudioFallback audio={audio} />
       <CardList>
         {exercise.examples.map((e, i) => (
-          <li key={i} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3">
-            <span className="min-w-0 flex-1 basis-40">
+          <li key={i} className="flex flex-col items-start gap-2.5 px-4 py-3">
+            <span className="min-w-0">
               <span lang="en" className="block break-words text-[17px] font-medium leading-snug text-fg">{e.en}</span>
               <span className="mt-0.5 block break-words text-[13px] text-muted">{e.th}</span>
             </span>
