@@ -15,9 +15,10 @@ import { checkThaiNames } from "./thai-names";
 import { checkVocabForms } from "./vocab-forms";
 import { checkVocabSpelling } from "./vocab-spelling";
 import { checkSoundWords } from "./sound-words";
+import { checkNewWordsPerDay, checkVocabMatch, checkWeekRecycle, checkWordExposure } from "./word-load";
 import { checkTaughtWords, checkVocabUsedOnItsDay } from "./taught-words";
 
 export function checkContentRules(data: ContentData): Problem[] {
   const ctx = buildContext(data);
-  return [...checkTaughtWords(ctx), ...checkGrammarNotYet(ctx), ...checkGrammarNote(ctx), ...checkGrammarNoteRequired(ctx), ...checkVocabUsedOnItsDay(ctx), ...checkGlossUniqueness(ctx), ...checkPronunciation(ctx), ...checkSoundWords(ctx), ...checkPhonemeTags(ctx), ...checkArrangeWords(ctx), ...checkArrangeQuestion(ctx), ...checkAnswerForms(ctx), ...checkCast(ctx), ...checkCastProps(ctx), ...checkThaiNames(ctx), ...checkVocabForms(ctx), ...checkVocabSpelling(ctx)];
+  return [...checkTaughtWords(ctx), ...checkGrammarNotYet(ctx), ...checkGrammarNote(ctx), ...checkGrammarNoteRequired(ctx), ...checkVocabUsedOnItsDay(ctx), ...checkGlossUniqueness(ctx), ...checkPronunciation(ctx), ...checkSoundWords(ctx), ...checkPhonemeTags(ctx), ...checkArrangeWords(ctx), ...checkArrangeQuestion(ctx), ...checkAnswerForms(ctx), ...checkCast(ctx), ...checkCastProps(ctx), ...checkThaiNames(ctx), ...checkVocabForms(ctx), ...checkVocabSpelling(ctx), ...checkWordExposure(ctx), ...checkWeekRecycle(ctx), ...checkVocabMatch(ctx), ...checkNewWordsPerDay(ctx)];
 }
